@@ -318,16 +318,23 @@
     </label>
     <select class="lang-select" data-canonical="">
       
-        <option value="en" data-href="/en/2024/10/myblog/" selected="">
+        <option value="en" data-href="/en/2024/10/myblog/" 
+          >
           English
         </option>
       
-        <option value="zh-CN" data-href="/zh-CN/2024/10/myblog/" selected="">
+        <option value="zh-CN" data-href="/zh-CN/2024/10/myblog/" 
+           selected >
           简体中文
         </option>
       
     </select>
   </div>
+<script>
+  document.querySelector('.lang-select').addEventListener('change', function() {
+    window.location.href = this.options[this.selectedIndex].getAttribute('data-href');
+  });
+</script>
 
         
 
