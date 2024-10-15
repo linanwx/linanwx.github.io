@@ -46,7 +46,7 @@
 <meta property="og:description" content="Off-by-One Overflow Attack AnalysisBackgroundLast week, I attended a security course that included an example of an off-by-one overflow vulnerability. Here is the original code: 1234567891011121314151">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2024-10-15T13:18:15.000Z">
-<meta property="article:modified_time" content="2024-10-15T14:15:17.708Z">
+<meta property="article:modified_time" content="2024-10-15T14:17:34.248Z">
 <meta property="article:author" content="Nansen Li (李楠森)">
 <meta property="article:tag" content="vulnerability">
 <meta property="article:tag" content="exploitation">
@@ -209,7 +209,7 @@
       <span class="post-meta-item-text">Posted on</span>
       
 
-      <time title="Created: 2024-10-15 14:18:15 / Modified: 15:15:17" itemprop="dateCreated datePublished" datetime="2024-10-15T14:18:15+01:00">2024-10-15</time>
+      <time title="Created: 2024-10-15 14:18:15 / Modified: 15:17:34" itemprop="dateCreated datePublished" datetime="2024-10-15T14:18:15+01:00">2024-10-15</time>
     </span>
 
   
@@ -262,9 +262,7 @@
 <li>When the command <code>perl -e &#39;system &quot;./obo&quot;, &quot;\x38\x84\x04\x08&quot;x256&#39;</code> is executed, the program takes these repeated bytes as the input to <code>./obo</code>.</li>
 <li>As the <code>foo</code> function returns, the <code>leave</code> and <code>ret</code> instructions are executed, leading to the return address being overwritten. This causes the program to jump to the <code>bar</code> function, printing the success message multiple times.</li>
 </ul>
-<h2 id="Further-Analysis-Determining-Effective-Overwrite-Locations"><a href="#Further-Analysis-Determining-Effective-Overwrite-Locations" class="headerlink" title="Further Analysis: Determining Effective Overwrite Locations"></a>Further Analysis: Determining Effective Overwrite Locations</h2><p>Certainly! Here’s an English explanation of the stack frame layout as part of your article:</p>
-<hr>
-<h2 id="Stack-Frame-Layout-Explanation"><a href="#Stack-Frame-Layout-Explanation" class="headerlink" title="Stack Frame Layout Explanation"></a>Stack Frame Layout Explanation</h2><p>During the GDB debugging session, the memory layout for the stack frame of the <code>foo</code> function looks like this:</p>
+<h2 id="Further-Analysis-Determining-Effective-Overwrite-Locations"><a href="#Further-Analysis-Determining-Effective-Overwrite-Locations" class="headerlink" title="Further Analysis: Determining Effective Overwrite Locations"></a>Further Analysis: Determining Effective Overwrite Locations</h2><h2 id="Stack-Frame-Layout-Explanation"><a href="#Stack-Frame-Layout-Explanation" class="headerlink" title="Stack Frame Layout Explanation"></a>Stack Frame Layout Explanation</h2><p>During the GDB debugging session, the memory layout for the stack frame of the <code>foo</code> function looks like this:</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">0xbfffed10   return address</span><br><span class="line">0xbfffed0c   saved frame pointer (ebp)</span><br><span class="line">0xbfffed0b   buf[1023]</span><br><span class="line">...</span><br><span class="line">0xbfffed03   buf[1015]</span><br><span class="line">0xbfffed02   buf[1014]</span><br><span class="line">0xbfffed01   buf[1013]</span><br><span class="line">0xbfffed00   buf[1012]</span><br><span class="line">...</span><br><span class="line">0xbfffe90c   buf[0]</span><br></pre></td></tr></table></figure>
 
 <ul>
