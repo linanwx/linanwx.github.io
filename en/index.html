@@ -199,7 +199,7 @@
       <span class="post-meta-item-text">Posted on</span>
       
 
-      <time title="Created: 2024-10-15 14:18:15 / Modified: 14:21:48" itemprop="dateCreated datePublished" datetime="2024-10-15T14:18:15+01:00">2024-10-15</time>
+      <time title="Created: 2024-10-15 14:18:15 / Modified: 15:15:17" itemprop="dateCreated datePublished" datetime="2024-10-15T14:18:15+01:00">2024-10-15</time>
     </span>
 
   
@@ -253,7 +253,21 @@
 <li>When the command <code>perl -e &#39;system &quot;./obo&quot;, &quot;\x38\x84\x04\x08&quot;x256&#39;</code> is executed, the program takes these repeated bytes as the input to <code>./obo</code>.</li>
 <li>As the <code>foo</code> function returns, the <code>leave</code> and <code>ret</code> instructions are executed, leading to the return address being overwritten. This causes the program to jump to the <code>bar</code> function, printing the success message multiple times.</li>
 </ul>
-<h2 id="Further-Analysis-Determining-Effective-Overwrite-Locations"><a href="#Further-Analysis-Determining-Effective-Overwrite-Locations" class="headerlink" title="Further Analysis: Determining Effective Overwrite Locations"></a>Further Analysis: Determining Effective Overwrite Locations</h2><p>To perform a successful attack, it’s crucial to determine precisely which bytes need to be overwritten in order to manipulate the control flow effectively. In this example, the overflow occurs when <code>buf[sizeof(buf)] = &#39;\0&#39;</code> is executed, causing the least significant byte of the saved frame pointer (<code>ebp</code>) to be set to <code>0</code>. Thus, the value of <code>ebp</code> needs to be adjusted to ensure it points back into the buffer area, allowing the execution to proceed in the desired way and eventually jump to the <code>bar</code> function.</p>
+<h2 id="Further-Analysis-Determining-Effective-Overwrite-Locations"><a href="#Further-Analysis-Determining-Effective-Overwrite-Locations" class="headerlink" title="Further Analysis: Determining Effective Overwrite Locations"></a>Further Analysis: Determining Effective Overwrite Locations</h2><p>Certainly! Here’s an English explanation of the stack frame layout as part of your article:</p>
+<hr>
+<h2 id="Stack-Frame-Layout-Explanation"><a href="#Stack-Frame-Layout-Explanation" class="headerlink" title="Stack Frame Layout Explanation"></a>Stack Frame Layout Explanation</h2><p>During the GDB debugging session, the memory layout for the stack frame of the <code>foo</code> function looks like this:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">0xbfffed10   return address</span><br><span class="line">0xbfffed0c   saved frame pointer (ebp)</span><br><span class="line">0xbfffed0b   buf[1023]</span><br><span class="line">...</span><br><span class="line">0xbfffed03   buf[1015]</span><br><span class="line">0xbfffed02   buf[1014]</span><br><span class="line">0xbfffed01   buf[1013]</span><br><span class="line">0xbfffed00   buf[1012]</span><br><span class="line">...</span><br><span class="line">0xbfffe90c   buf[0]</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p><strong>Return address</strong>: Located at <code>0xbfffed10</code>, this is the address that the program will jump to after the <code>foo</code> function finishes executing. Overwriting this address can control the flow of the program and potentially redirect it to malicious code (e.g., the <code>bar</code> function).</p>
+</li>
+<li><p><strong>Saved frame pointer (<code>ebp</code>)</strong>: Stored at <code>0xbfffed0c</code>, this value is used to restore the calling function’s stack frame after <code>foo</code> finishes. In this example, we can see how the off-by-one overflow can overwrite the least significant byte of <code>ebp</code>.</p>
+</li>
+<li><p><strong>Buffer (<code>buf</code>)</strong>: The buffer starts at address <code>0xbfffe90c</code> and extends to <code>0xbfffed0b</code>, with <code>buf[0]</code> located at <code>0xbfffe90c</code> and <code>buf[1023]</code> at <code>0xbfffed0b</code>. The vulnerable line in the code, <code>buf[sizeof(buf)] = &#39;\0&#39;;</code>, writes a null terminator (<code>\0</code>) just outside the bounds of this buffer, affecting the saved frame pointer.</p>
+</li>
+</ul>
+<p>In the off-by-one overflow scenario, the write operation overwrites the least significant byte of <code>ebp</code>, which is stored at <code>0xbfffed0c</code>. By manipulating the value of <code>ebp</code>, we can influence the stack behavior when the <code>leave</code> and <code>ret</code> instructions are executed, eventually allowing us to control the program flow and redirect execution to the <code>bar</code> function.</p>
+<p>To perform a successful attack, it’s crucial to determine precisely which bytes need to be overwritten in order to manipulate the control flow effectively. In this example, the overflow occurs when <code>buf[sizeof(buf)] = &#39;\0&#39;</code> is executed, causing the least significant byte of the saved frame pointer (<code>ebp</code>) to be set to <code>0</code>. Thus, the value of <code>ebp</code> needs to be adjusted to ensure it points back into the buffer area, allowing the execution to proceed in the desired way and eventually jump to the <code>bar</code> function.</p>
 <p>Based on further analysis and testing, the following insights were obtained:</p>
 <ul>
 <li><p>To accurately determine the overwrite location, the value of <code>ebp</code> is crucial. However, obtaining this value is challenging because:</p>
