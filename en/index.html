@@ -138,7 +138,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">8</span>
+          <span class="site-state-item-count">10</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -160,6 +160,156 @@
     </div>
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://nansenli.com/en/post/2024/10/leetcode241020/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Nansen Li (李楠森)">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Nansen">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Nansen">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/en/post/2024/10/leetcode241020/" class="post-title-link" itemprop="url">Leetcode Notes</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+      
+
+      <time title="Created: 2024-10-21 19:39:42 / Modified: 19:43:47" itemprop="dateCreated datePublished" datetime="2024-10-21T19:39:42+01:00">2024-10-21</time>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/en/post/2024/10/leetcode241020/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="en/post/2024/10/leetcode241020/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <p>Today, I began the long journey of practicing Leetcode problems. Previously, I only did a few problems to maintain familiarity, but today, I officially started preparing for interviews.</p>
+<p>I have been thinking about how to efficiently solve Leetcode problems. In my opinion, to be efficient, one must memorize problems. Just as reading a book a hundred times reveals its meaning, training a language model through extensive practice hones its coding skills. Similarly, with Leetcode, through repeated practice, the answers will come naturally; quantity brings quality.</p>
+<h2 id="53-Maximum-Subarray"><a href="#53-Maximum-Subarray" class="headerlink" title="53. Maximum Subarray"></a><a target="_blank" rel="noopener" href="https://leetcode.com/problems/maximum-subarray/">53. Maximum Subarray</a></h2><p>The solution can be approached using <strong>Kadane’s Algorithm</strong>. The code is as follows:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">maxSubArray</span>(<span class="params">nums</span>):</span><br><span class="line">    max_current = max_global = nums[<span class="number">0</span>]</span><br><span class="line">    <span class="keyword">for</span> num <span class="keyword">in</span> nums[<span class="number">1</span>:]:</span><br><span class="line">        max_current = <span class="built_in">max</span>(num, max_current + num)</span><br><span class="line">        max_global = <span class="built_in">max</span>(max_global, max_current)</span><br><span class="line">    <span class="keyword">return</span> max_global</span><br></pre></td></tr></table></figure>
+
+<p>This is a classic dynamic programming problem, and the above algorithm actually hides the essence of dynamic programming.</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="type">int</span> <span class="title">maxSubArray</span><span class="params">(vector&lt;<span class="type">int</span>&gt;&amp; nums)</span> </span>&#123;</span><br><span class="line">        <span class="function">vector&lt;<span class="type">int</span>&gt; <span class="title">dp</span><span class="params">(nums.size())</span></span>;</span><br><span class="line">        dp[<span class="number">0</span>] = nums[<span class="number">0</span>];</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">1</span>; i &lt; nums.<span class="built_in">size</span>(); i++) &#123;</span><br><span class="line">            dp[i] = <span class="built_in">max</span>(dp[i - <span class="number">1</span>] + nums[i], nums[i]);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> *<span class="built_in">max_element</span>(dp.<span class="built_in">begin</span>(), dp.<span class="built_in">end</span>());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>This code better reflects the essence of dynamic programming.</p>
+<p>To understand the formula <code>dp[i] = max(nums[i] + dp[i-1], nums[i])</code>, we can analyze it from a dynamic programming perspective. The core idea here is to make the optimal choice at each position. Here is a detailed explanation:</p>
+<h3 id="1-What-does-dp-i-represent"><a href="#1-What-does-dp-i-represent" class="headerlink" title="1. What does dp[i] represent?"></a>1. What does <code>dp[i]</code> represent?</h3><ul>
+<li><code>dp[i]</code> represents the <strong>maximum subarray sum ending at position <code>i</code></strong>.</li>
+</ul>
+<h3 id="2-Why-compare-nums-i-dp-i-1-and-nums-i"><a href="#2-Why-compare-nums-i-dp-i-1-and-nums-i" class="headerlink" title="2. Why compare nums[i] + dp[i-1] and nums[i]?"></a>2. Why compare <code>nums[i] + dp[i-1]</code> and <code>nums[i]</code>?</h3><ul>
+<li>The key question is: <strong>Should the current maximum subarray include the previous part (<code>dp[i-1]</code>)?</strong><ul>
+<li><strong><code>nums[i] + dp[i-1]</code></strong>: If <code>dp[i-1]</code> is positive, adding the current <code>nums[i]</code> will increase the subarray sum, so we choose to add it.</li>
+<li><strong><code>nums[i]</code></strong>: If <code>dp[i-1]</code> is negative, we choose to start a new subarray from the current position, as a negative sum will only drag down the current sum.</li>
+</ul>
+</li>
+</ul>
+<h3 id="3-Why-not-compare-subsequent-numbers"><a href="#3-Why-not-compare-subsequent-numbers" class="headerlink" title="3. Why not compare subsequent numbers?"></a>3. Why not compare subsequent numbers?</h3><ul>
+<li>When making the comparison, we assume the subarray stops at position <code>i</code>. In other words, we consider the maximum value within the range <code>[0:i]</code>. At position <code>i</code>, we either add the previous subarray or abandon it and only use the current number.</li>
+<li>We then traverse the entire array, finding the maximum value at each position, and finally return the largest value.</li>
+</ul>
+<h2 id="57-Insert-Interval"><a href="#57-Insert-Interval" class="headerlink" title="57. Insert Interval"></a><a target="_blank" rel="noopener" href="https://leetcode.com/problems/insert-interval/">57. Insert Interval</a></h2><p>This is a classic interval merging problem, where we need to merge a new interval into existing intervals.</p>
+<p>The solution can be broken down as follows:</p>
+<ul>
+<li>Step 1: Add all non-overlapping intervals that come before <code>newInterval</code> to the result.</li>
+<li>Step 2: Merge all potentially overlapping intervals with <code>newInterval</code>. Note the conditions for merging.</li>
+<li>Step 3: Add the remaining intervals to the result.</li>
+</ul>
+<p>Note that the condition for merging intervals is that the start of the previous interval is less than or equal to the end of the subsequent interval, i.e., <code>intervals[i][0] &lt;= newInterval[1]</code>.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span>:</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">insert</span>(<span class="params">self, intervals: <span class="type">List</span>[<span class="type">List</span>[<span class="built_in">int</span>]], newInterval: <span class="type">List</span>[<span class="built_in">int</span>]</span>) -&gt; <span class="type">List</span>[<span class="type">List</span>[<span class="built_in">int</span>]]:</span><br><span class="line">        ret_list = []</span><br><span class="line">        i = <span class="number">0</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">while</span> i &lt; <span class="built_in">len</span>(intervals) <span class="keyword">and</span> intervals[i][<span class="number">1</span>] &lt; newInterval[<span class="number">0</span>]:</span><br><span class="line">            ret_list.append(intervals[i])</span><br><span class="line">            i += <span class="number">1</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">while</span> i &lt; <span class="built_in">len</span>(intervals) <span class="keyword">and</span> intervals[i][<span class="number">0</span>] &lt;= newInterval[<span class="number">1</span>]:</span><br><span class="line">            newInterval[<span class="number">0</span>] = <span class="built_in">min</span>(intervals[i][<span class="number">0</span>], newInterval[<span class="number">0</span>])</span><br><span class="line">            newInterval[<span class="number">1</span>] = <span class="built_in">max</span>(intervals[i][<span class="number">1</span>], newInterval[<span class="number">1</span>])</span><br><span class="line">            i += <span class="number">1</span></span><br><span class="line"></span><br><span class="line">        ret_list.append(newInterval)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">while</span> i &lt; <span class="built_in">len</span>(intervals):</span><br><span class="line">            ret_list.append(intervals[i])</span><br><span class="line">            i += <span class="number">1</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> ret_list</span><br></pre></td></tr></table></figure>
+
+<p>With careful attention to detail, this problem is not difficult.</p>
+<h2 id="300-Longest-Increasing-Subsequence"><a href="#300-Longest-Increasing-Subsequence" class="headerlink" title="300. Longest Increasing Subsequence"></a><a target="_blank" rel="noopener" href="https://leetcode.com/problems/longest-increasing-subsequence/">300. Longest Increasing Subsequence</a></h2><p>This is obviously a dynamic programming problem.</p>
+<p><code>dp[i]</code> represents the length of the longest increasing subsequence ending with a certain number.</p>
+<p>Each time an element is added, we update the current <code>dp</code> array. If the current number is greater than the previous one, we increment the result by 1.</p>
+<p>Note that the first <code>dp[i]</code> starts from index 1.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span>:</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">lengthOfLIS</span>(<span class="params">self, nums: <span class="type">List</span>[<span class="built_in">int</span>]</span>) -&gt; <span class="built_in">int</span>:</span><br><span class="line">        dp = [<span class="number">1</span>] * <span class="built_in">len</span>(nums)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>, <span class="built_in">len</span>(nums)):</span><br><span class="line">            <span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(i):</span><br><span class="line">                <span class="keyword">if</span> nums[j] &lt; nums[i]:</span><br><span class="line">                    dp[i] = <span class="built_in">max</span>(dp[i], dp[j] + <span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">max</span>(dp)</span><br></pre></td></tr></table></figure>
+
+<p><strong>Complexity Analysis</strong>:</p>
+<ul>
+<li>Time Complexity: $O(n^2)$, due to the two nested loops.</li>
+<li>Space Complexity: $O(n)$, as we need a <code>dp</code> array of length <code>n</code>.</li>
+</ul>
+<h2 id="674-Longest-Continuous-Increasing-Subsequence"><a href="#674-Longest-Continuous-Increasing-Subsequence" class="headerlink" title="674. Longest Continuous Increasing Subsequence"></a><a target="_blank" rel="noopener" href="https://leetcode.com/problems/longest-continuous-increasing-subsequence/">674. Longest Continuous Increasing Subsequence</a></h2><p>This is a simple problem, but still worth understanding.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span>:</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">findLengthOfLCIS</span>(<span class="params">self, nums: <span class="type">List</span>[<span class="built_in">int</span>]</span>) -&gt; <span class="built_in">int</span>:</span><br><span class="line">        dp = [<span class="number">1</span>] * <span class="built_in">len</span>(nums)</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>, <span class="built_in">len</span>(nums)):</span><br><span class="line">            <span class="keyword">if</span> nums[i] &gt; nums[i-<span class="number">1</span>]:</span><br><span class="line">                dp[i] = <span class="built_in">max</span>(dp[i], dp[i-<span class="number">1</span>] + <span class="number">1</span>)</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">max</span>(dp)</span><br></pre></td></tr></table></figure>
+
+<h2 id="392-Is-Subsequence"><a href="#392-Is-Subsequence" class="headerlink" title="392. Is Subsequence"></a><a target="_blank" rel="noopener" href="https://leetcode.com/problems/is-subsequence/">392. Is Subsequence</a></h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span>:</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">isSubsequence</span>(<span class="params">self, s: <span class="built_in">str</span>, t: <span class="built_in">str</span></span>) -&gt; <span class="built_in">bool</span>:</span><br><span class="line">        i = <span class="number">0</span></span><br><span class="line">        j = <span class="number">0</span></span><br><span class="line">        <span class="keyword">while</span> i &lt; <span class="built_in">len</span>(s) <span class="keyword">and</span> j &lt; <span class="built_in">len</span>(t):</span><br><span class="line">            <span class="keyword">if</span> s[i] == t[j]:</span><br><span class="line">                i += <span class="number">1</span></span><br><span class="line">            j += <span class="number">1</span></span><br><span class="line">        <span class="keyword">return</span> i == <span class="built_in">len</span>(s)</span><br></pre></td></tr></table></figure>
+
+<p>This problem can be solved using a two-pointer technique, with <code>t</code> as the base. If <code>s</code> contains matching characters, we move forward; if we reach the end of <code>s</code>, it means the match is complete.</p>
+<h2 id="115-Distinct-Subsequences"><a href="#115-Distinct-Subsequences" class="headerlink" title="115. Distinct Subsequences"></a><a target="_blank" rel="noopener" href="https://leetcode.com/problems/distinct-subsequences/">115. Distinct Subsequences</a></h2><p>This problem asks us to find how many distinct subsequences of string <code>s</code> equal string <code>t</code>.</p>
+<p>First, we need to define <code>dp</code>, where <code>dp[i][j]</code> represents the number of distinct subsequences that can be formed from the first <code>i</code> characters of <code>s</code> to form the first <code>j</code> characters of <code>t</code>.</p>
+<ul>
+<li><code>dp[i][0]</code> represents when <code>t</code> is an empty string, the result is 1.</li>
+<li><code>dp[0][j]</code> represents forming <code>t</code> from an empty string, which results in 0.</li>
+</ul>
+<p>For <code>dp[i][j]</code>, the result depends on the characters at positions <code>i</code> and <code>j</code>:</p>
+<ul>
+<li>If they are equal, the result is the sum of the cases where <code>s[i-1]</code> is not matched (<code>dp[i-1][j]</code>) and the cases where it is matched (<code>dp[i-1][j-1]</code>).</li>
+<li>If they are not equal, the result is equal to <code>dp[i-1][j]</code>.</li>
+</ul>
+<p>Note that <code>i, j</code> refer to the first <code>i</code> and <code>j</code> characters.</p>
+<p>Additionally, <code>dp[0][0]</code> is initialized to 1, as an empty string is a subsequence of any string.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span>:</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">numDistinct</span>(<span class="params">self, s: <span class="built_in">str</span>, t: <span class="built_in">str</span></span>) -&gt; <span class="built_in">int</span>:</span><br><span class="line">        dp = [[<span class="number">0</span> <span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(t) + <span class="number">1</span>)] <span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(s) + <span class="number">1</span>)]</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(s) + <span class="number">1</span>):</span><br><span class="line">            dp[i][<span class="number">0</span>] = <span class="number">1</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>, <span class="built_in">len</span>(t) + <span class="number">1</span>):</span><br><span class="line">            <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>, <span class="built_in">len</span>(s) + <span class="number">1</span>):</span><br><span class="line">                <span class="keyword">if</span> s[i-<span class="number">1</span>] == t[j-<span class="number">1</span>]:</span><br><span class="line">                    dp[i][j] = dp[i-<span class="number">1</span>][j] + dp[i-<span class="number">1</span>][j-<span class="number">1</span>]</span><br><span class="line">                <span class="keyword">else</span>:</span><br><span class="line">                    dp[i][j] = dp[i-<span class="number">1</span>][j]</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> dp[-<span class="number">1</span>][-<span class="number">1</span>]</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
