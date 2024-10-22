@@ -318,6 +318,292 @@
   
   
 
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://nansenli.com/zh-CN/post/2024/10/leetcode241020/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Nansen Li (李楠森)">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Nansen">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Nansen">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/zh-CN/post/2024/10/leetcode241020/" class="post-title-link" itemprop="url">Leetcode 背题</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+      
+
+      <time title="Created: 2024-10-21 19:39:36 / Modified: 19:42:32" itemprop="dateCreated datePublished" datetime="2024-10-21T19:39:36+01:00">2024-10-21</time>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/zh-CN/post/2024/10/leetcode241020/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="zh-CN/post/2024/10/leetcode241020/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <p>今天开始了漫长的刷题流程。之前只是简单做了一些题目，保持手感，但今天开始，就要为面试正式准备了。</p>
+<p>之前一直在思考一个问题：如何高效地刷 Leetcode。我认为，要高效地刷题，首先就得背题。书读百遍，其义自见，大语言模型经过大量训练，也锻炼出了写代码的能力。同样地，我相信 Leetcode 也一样，通过多次练习，答案自然会浮现，量变产生质变。</p>
+<h2 id="53-Maximum-Subarray"><a href="#53-Maximum-Subarray" class="headerlink" title="53. Maximum Subarray"></a><a target="_blank" rel="noopener" href="https://leetcode.com/problems/maximum-subarray/">53. Maximum Subarray</a></h2><p>解题思路可以使用 <strong>Kadane’s Algorithm</strong>，代码如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">maxSubArray</span>(<span class="params">nums</span>):</span><br><span class="line">    max_current = max_global = nums[<span class="number">0</span>]</span><br><span class="line">    <span class="keyword">for</span> num <span class="keyword">in</span> nums[<span class="number">1</span>:]:</span><br><span class="line">        max_current = <span class="built_in">max</span>(num, max_current + num)</span><br><span class="line">        max_global = <span class="built_in">max</span>(max_global, max_current)</span><br><span class="line">    <span class="keyword">return</span> max_global</span><br></pre></td></tr></table></figure>
+
+<p>这是一个典型的动态规划题目，上面的算法其实隐藏了动态规划的本质。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="type">int</span> <span class="title">maxSubArray</span><span class="params">(vector&lt;<span class="type">int</span>&gt;&amp; nums)</span> </span>&#123;</span><br><span class="line">        <span class="function">vector&lt;<span class="type">int</span>&gt; <span class="title">dp</span><span class="params">(nums.size())</span></span>;</span><br><span class="line">        dp[<span class="number">0</span>] = nums[<span class="number">0</span>];</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">1</span>; i &lt; nums.<span class="built_in">size</span>(); i++) &#123;</span><br><span class="line">            dp[i] = <span class="built_in">max</span>(dp[i - <span class="number">1</span>] + nums[i], nums[i]);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> *<span class="built_in">max_element</span>(dp.<span class="built_in">begin</span>(), dp.<span class="built_in">end</span>());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>这段代码更好地体现了动态规划的思想。</p>
+<p>理解 <code>dp[i] = max(nums[i] + dp[i-1], nums[i])</code> 的公式可以从动态规划的角度来解析。这个公式的核心在于“在每一个位置上，我们要做出一个最优选择”。以下是详细解释：</p>
+<h3 id="1-dp-i-的含义是什么？"><a href="#1-dp-i-的含义是什么？" class="headerlink" title="1. dp[i] 的含义是什么？"></a>1. <code>dp[i]</code> 的含义是什么？</h3><ul>
+<li><code>dp[i]</code> 表示以位置 <code>i</code> 结尾的 <strong>最大子数组和</strong>。</li>
+</ul>
+<h3 id="2-为什么比较-nums-i-dp-i-1-和-nums-i-？"><a href="#2-为什么比较-nums-i-dp-i-1-和-nums-i-？" class="headerlink" title="2. 为什么比较 nums[i] + dp[i-1] 和 nums[i]？"></a>2. 为什么比较 <code>nums[i] + dp[i-1]</code> 和 <code>nums[i]</code>？</h3><ul>
+<li>核心问题是：<strong>当前的最大子数组和是否应该包括之前的部分（<code>dp[i-1]</code>）？</strong><ul>
+<li>**<code>nums[i] + dp[i-1]</code>**：如果 <code>dp[i-1]</code> 是正数，加上当前的 <code>nums[i]</code> 会让子数组和变大，那么我们选择累加。</li>
+<li>**<code>nums[i]</code>**：如果 <code>dp[i-1]</code> 是负数，我们选择从当前位置重新开始一个新的子数组，因为负数只会拖累当前和。</li>
+</ul>
+</li>
+</ul>
+<h3 id="3-为什么不用比较后续的数？"><a href="#3-为什么不用比较后续的数？" class="headerlink" title="3. 为什么不用比较后续的数？"></a>3. 为什么不用比较后续的数？</h3><ul>
+<li>我们在比较时，是假设数组在位置 <code>i</code> 停止。也就是说，我们考虑 <code>[0:i]</code> 这个范围内的最大值，对于位置 <code>i</code> 来说，要么加上之前的子数组，要么放弃之前的子数组，只采用当前的数。</li>
+<li>然后，我们遍历整个数组，找出在每个位置停下来的最大值，最终返回最大的那个值。</li>
+</ul>
+<h2 id="57-Insert-Interval"><a href="#57-Insert-Interval" class="headerlink" title="57. Insert Interval"></a><a target="_blank" rel="noopener" href="https://leetcode.com/problems/insert-interval/">57. Insert Interval</a></h2><p>这是一个经典的区间合并问题，需要将新插入的区间合并到已有的区间中。</p>
+<p>可以使用分解法来解决：</p>
+<ul>
+<li>第一步，将不重叠且在 <code>newInterval</code> 之前的区间添加到结果中。</li>
+<li>第二步，合并所有可能重叠的区间到 <code>newInterval</code> 中，注意这里的判断条件。</li>
+<li>第三步，将剩余的区间添加到结果中。</li>
+</ul>
+<p>注意，合并区间的判断条件是前一个区间的开始小于等于后一个区间的结束，即 <code>intervals[i][0] &lt;= newInterval[1]</code>。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span>:</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">insert</span>(<span class="params">self, intervals: <span class="type">List</span>[<span class="type">List</span>[<span class="built_in">int</span>]], newInterval: <span class="type">List</span>[<span class="built_in">int</span>]</span>) -&gt; <span class="type">List</span>[<span class="type">List</span>[<span class="built_in">int</span>]]:</span><br><span class="line">        ret_list = []</span><br><span class="line">        i = <span class="number">0</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">while</span> i &lt; <span class="built_in">len</span>(intervals) <span class="keyword">and</span> intervals[i][<span class="number">1</span>] &lt; newInterval[<span class="number">0</span>]:</span><br><span class="line">            ret_list.append(intervals[i])</span><br><span class="line">            i += <span class="number">1</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">while</span> i &lt; <span class="built_in">len</span>(intervals) <span class="keyword">and</span> intervals[i][<span class="number">0</span>] &lt;= newInterval[<span class="number">1</span>]:</span><br><span class="line">            newInterval[<span class="number">0</span>] = <span class="built_in">min</span>(intervals[i][<span class="number">0</span>], newInterval[<span class="number">0</span>])</span><br><span class="line">            newInterval[<span class="number">1</span>] = <span class="built_in">max</span>(intervals[i][<span class="number">1</span>], newInterval[<span class="number">1</span>])</span><br><span class="line">            i += <span class="number">1</span></span><br><span class="line"></span><br><span class="line">        ret_list.append(newInterval)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">while</span> i &lt; <span class="built_in">len</span>(intervals):</span><br><span class="line">            ret_list.append(intervals[i])</span><br><span class="line">            i += <span class="number">1</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> ret_list</span><br></pre></td></tr></table></figure>
+
+<p>只要注意细节，这个题目其实并不难。</p>
+<h2 id="300-Longest-Increasing-Subsequence"><a href="#300-Longest-Increasing-Subsequence" class="headerlink" title="300. Longest Increasing Subsequence"></a><a target="_blank" rel="noopener" href="https://leetcode.com/problems/longest-increasing-subsequence/">300. Longest Increasing Subsequence</a></h2><p>显然是一个动态规划问题。</p>
+<p><code>dp[i]</code> 表示以某个数字结尾的最长递增子序列的长度。</p>
+<p>每次加入一个元素，我们更新当前的 <code>dp</code> 数组，如果当前数字比之前的小，它们的结果就加 1。</p>
+<p>注意，第一个 <code>dp[i]</code> 是从下标 1 开始的。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span>:</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">lengthOfLIS</span>(<span class="params">self, nums: <span class="type">List</span>[<span class="built_in">int</span>]</span>) -&gt; <span class="built_in">int</span>:</span><br><span class="line">        dp = [<span class="number">1</span>] * <span class="built_in">len</span>(nums)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>, <span class="built_in">len</span>(nums)):</span><br><span class="line">            <span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(i):</span><br><span class="line">                <span class="keyword">if</span> nums[j] &lt; nums[i]:</span><br><span class="line">                    dp[i] = <span class="built_in">max</span>(dp[i], dp[j] + <span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">max</span>(dp)</span><br></pre></td></tr></table></figure>
+
+<p><strong>复杂度分析</strong>：</p>
+<ul>
+<li>时间复杂度：$O(n^2)$，因为有两个嵌套的循环。</li>
+<li>空间复杂度：$O(n)$，因为需要一个长度为 <code>n</code> 的 <code>dp</code> 数组。</li>
+</ul>
+<h2 id="674-Longest-Continuous-Increasing-Subsequence"><a href="#674-Longest-Continuous-Increasing-Subsequence" class="headerlink" title="674. Longest Continuous Increasing Subsequence"></a><a target="_blank" rel="noopener" href="https://leetcode.com/problems/longest-continuous-increasing-subsequence/">674. Longest Continuous Increasing Subsequence</a></h2><p>这是一个简单题目，但仍然值得理解。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span>:</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">findLengthOfLCIS</span>(<span class="params">self, nums: <span class="type">List</span>[<span class="built_in">int</span>]</span>) -&gt; <span class="built_in">int</span>:</span><br><span class="line">        dp = [<span class="number">1</span>] * <span class="built_in">len</span>(nums)</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>, <span class="built_in">len</span>(nums)):</span><br><span class="line">            <span class="keyword">if</span> nums[i] &gt; nums[i-<span class="number">1</span>]:</span><br><span class="line">                dp[i] = <span class="built_in">max</span>(dp[i], dp[i-<span class="number">1</span>] + <span class="number">1</span>)</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">max</span>(dp)</span><br></pre></td></tr></table></figure>
+
+<h2 id="392-Is-Subsequence"><a href="#392-Is-Subsequence" class="headerlink" title="392. Is Subsequence"></a><a target="_blank" rel="noopener" href="https://leetcode.com/problems/is-subsequence/">392. Is Subsequence</a></h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span>:</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">isSubsequence</span>(<span class="params">self, s: <span class="built_in">str</span>, t: <span class="built_in">str</span></span>) -&gt; <span class="built_in">bool</span>:</span><br><span class="line">        i = <span class="number">0</span></span><br><span class="line">        j = <span class="number">0</span></span><br><span class="line">        <span class="keyword">while</span> i &lt; <span class="built_in">len</span>(s) <span class="keyword">and</span> j &lt; <span class="built_in">len</span>(t):</span><br><span class="line">            <span class="keyword">if</span> s[i] == t[j]:</span><br><span class="line">                i += <span class="number">1</span></span><br><span class="line">            j += <span class="number">1</span></span><br><span class="line">        <span class="keyword">return</span> i == <span class="built_in">len</span>(s)</span><br></pre></td></tr></table></figure>
+
+<p>这个题目可以用双指针法，以 <code>t</code> 为基准，如果 <code>s</code> 中有相同字符就向前推进，如果 <code>s</code> 到结尾了，说明匹配完成。</p>
+<h2 id="115-Distinct-Subsequences"><a href="#115-Distinct-Subsequences" class="headerlink" title="115. Distinct Subsequences"></a><a target="_blank" rel="noopener" href="https://leetcode.com/problems/distinct-subsequences/">115. Distinct Subsequences</a></h2><p>这个问题要求我们找到字符串 <code>s</code> 中有多少不同的子序列等于字符串 <code>t</code>。</p>
+<p>首先，我们需要定义 <code>dp</code>，其中 <code>dp[i][j]</code> 表示从 <code>s</code> 的前 <code>i</code> 个字符中形成 <code>t</code> 的前 <code>j</code> 个字符的不同子序列数。</p>
+<ul>
+<li><code>dp[i][0]</code> 表示当 <code>t</code> 为空串时，结果为 1。</li>
+<li><code>dp[0][j]</code> 表示从空串中形成 <code>t</code>，结果为 0。</li>
+</ul>
+<p>对于 <code>dp[i][j]</code>，其结果取决于位置 <code>i</code> 和 <code>j</code> 的字符：</p>
+<ul>
+<li>如果两者相等，结果等于不匹配 <code>s[i-1]</code> 的情况（<code>dp[i-1][j]</code>）加上匹配的情况（<code>dp[i-1][j-1]</code>）。</li>
+<li>如果不相等，则结果等于 <code>dp[i-1][j]</code>。</li>
+</ul>
+<p>注意，这里 <code>i, j</code> 指的是前 <code>i</code> 个和前 <code>j</code> 个字符。</p>
+<p>此外，<code>dp[0][0]</code> 初始化为 1，因为空字符串是任何字符串的子序列。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span>:</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">numDistinct</span>(<span class="params">self, s: <span class="built_in">str</span>, t: <span class="built_in">str</span></span>) -&gt; <span class="built_in">int</span>:</span><br><span class="line">        dp = [[<span class="number">0</span> <span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(t) + <span class="number">1</span>)] <span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(s) + <span class="number">1</span>)]</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(s) + <span class="number">1</span>):</span><br><span class="line">            dp[i][<span class="number">0</span>] = <span class="number">1</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>, <span class="built_in">len</span>(t) + <span class="number">1</span>):</span><br><span class="line">            <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>, <span class="built_in">len</span>(s) + <span class="number">1</span>):</span><br><span class="line">                <span class="keyword">if</span> s[i-<span class="number">1</span>] == t[j-<span class="number">1</span>]:</span><br><span class="line">                    dp[i][j] = dp[i-<span class="number">1</span>][j] + dp[i-<span class="number">1</span>][j-<span class="number">1</span>]</span><br><span class="line">                <span class="keyword">else</span>:</span><br><span class="line">                    dp[i][j] = dp[i-<span class="number">1</span>][j]</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> dp[-<span class="number">1</span>][-<span class="number">1</span>]</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://nansenli.com/zh-CN/post/2024/10/oboattact-md/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Nansen Li (李楠森)">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Nansen">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Nansen">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/zh-CN/post/2024/10/oboattact-md/" class="post-title-link" itemprop="url">Off-by-One 溢出攻击分析</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+      
+
+      <time title="Created: 2024-10-15 14:18:44 / Modified: 14:21:58" itemprop="dateCreated datePublished" datetime="2024-10-15T14:18:44+01:00">2024-10-15</time>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/zh-CN/post/2024/10/oboattact-md/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="zh-CN/post/2024/10/oboattact-md/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="Off-by-One-溢出攻击分析"><a href="#Off-by-One-溢出攻击分析" class="headerlink" title="Off-by-One 溢出攻击分析"></a>Off-by-One 溢出攻击分析</h1><h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>上周，我参加了一门安全课程，其中包含了一个 off-by-one 溢出漏洞的示例。以下是原始代码：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* 简单的 off-by-one 溢出示例 */</span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;string.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">foo</span><span class="params">(<span class="type">char</span> *input)</span> &#123;</span><br><span class="line">  <span class="type">char</span> buf[<span class="number">1024</span>];</span><br><span class="line">  <span class="built_in">strncpy</span>(buf, input, <span class="keyword">sizeof</span>(buf));</span><br><span class="line">  buf[<span class="keyword">sizeof</span>(buf)] = <span class="string">&#x27;\0&#x27;</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">bar</span><span class="params">(<span class="type">void</span>)</span> &#123;</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">&quot;I&#x27;ve been hacked\n&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">(<span class="type">int</span> argc, <span class="type">char</span> **argv)</span> &#123;</span><br><span class="line">  <span class="keyword">if</span> (argc != <span class="number">2</span>) &#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;Usage: %s input_string\n&quot;</span>, argv[<span class="number">0</span>]);</span><br><span class="line">    <span class="built_in">exit</span>(EXIT_FAILURE);</span><br><span class="line">  &#125;</span><br><span class="line">  foo(argv[<span class="number">1</span>]);</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>利用此漏洞的攻击命令是：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">perl -e <span class="string">&#x27;system &quot;./obo&quot;, &quot;\x38\x84\x04\x08&quot;x256&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<p>运行此命令的结果是屏幕上打印出多行 <code>I&#39;ve been hacked</code>。</p>
+<h2 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h2><p>当程序进入 <code>foo</code> 函数时，内存布局如下（使用 GDB 观察到）：</p>
+<p>从上到下，布局包含返回地址、保存的帧指针（saved frame pointer）和缓冲区 (<code>buf</code>)。</p>
+<p>当执行 <code>buf[sizeof(buf)] = &#39;\0&#39;;</code> 时，保存的帧指针 (<code>ebp</code>) 的最低有效字节被设置为 <code>0</code>。为了确保 <code>ebp</code> 在被部分覆盖后仍然指向 <code>buf</code> 区域内，需要至少 1024 字节的缓冲区。具体来说，需要覆盖 <code>ebp</code>，使其保持在合理范围内（最高到 <code>0xff</code>），这就是为什么缓冲区设置为 <code>0xff * 4</code> 字节的原因。</p>
+<h2 id="理解-foo-返回时的汇编命令"><a href="#理解-foo-返回时的汇编命令" class="headerlink" title="理解 foo 返回时的汇编命令"></a>理解 <code>foo</code> 返回时的汇编命令</h2><p>当 <code>foo</code> 函数返回时，通常会执行以下关键的汇编指令：</p>
+<h3 id="1-leave-指令"><a href="#1-leave-指令" class="headerlink" title="1. leave 指令"></a>1. <code>leave</code> 指令</h3><p><code>leave</code> 指令等价于：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mov esp, ebp</span><br><span class="line">pop ebp</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>mov esp, ebp</code>：将栈指针 (<code>esp</code>) 设置为帧指针 (<code>ebp</code>) 的值，恢复栈指针到当前栈帧的顶部，从而释放当前函数占用的空间。</li>
+<li><code>pop ebp</code>：将栈顶的值弹出并赋给帧指针 (<code>ebp</code>)，从而恢复调用者的帧指针。实际上，相当于将返回地址写入 <code>ebp</code>，这意味着将栈中的值（通常是调用者的帧地址）赋给 <code>ebp</code>，从而恢复调用者的栈帧。</li>
+</ul>
+<p><code>leave</code> 的作用是将 <code>esp</code> 恢复到函数调用前的位置，并弹出保存的 <code>ebp</code>。如果 <code>ebp</code> 被覆盖为指向某个特殊地址（例如缓冲区内的地址），在函数返回时可能导致错误的栈指针位置。</p>
+<h3 id="2-ret-指令"><a href="#2-ret-指令" class="headerlink" title="2. ret 指令"></a>2. <code>ret</code> 指令</h3><p><code>ret</code> 指令从栈顶弹出一个地址并跳转到该地址：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pop eip</span><br></pre></td></tr></table></figure>
+
+<p>如果返回地址被覆盖为 <code>bar</code> 函数的地址，执行流将跳转到 <code>bar</code>，允许攻击者执行任意代码。本质上，<code>ret</code> 会将一个地址弹出到指令指针 (<code>eip</code>) 并跳转到该地址继续执行。</p>
+<h2 id="攻击步骤"><a href="#攻击步骤" class="headerlink" title="攻击步骤"></a>攻击步骤</h2><ul>
+<li>当执行命令 <code>perl -e &#39;system &quot;./obo&quot;, &quot;\x38\x84\x04\x08&quot;x256&#39;</code> 时，程序会将这些重复的字节作为输入传递给 <code>./obo</code>。</li>
+<li>在 <code>foo</code> 函数返回时，执行了 <code>leave</code> 和 <code>ret</code> 指令，由于返回地址被覆盖，程序跳转到 <code>bar</code> 函数，打印出成功的消息多次。</li>
+</ul>
+<h2 id="进一步分析：确定有效的覆盖位置"><a href="#进一步分析：确定有效的覆盖位置" class="headerlink" title="进一步分析：确定有效的覆盖位置"></a>进一步分析：确定有效的覆盖位置</h2><p>为了成功执行攻击，关键在于精确确定需要覆盖哪些字节，以有效地操控控制流。在这个例子中，溢出发生在执行 <code>buf[sizeof(buf)] = &#39;\0&#39;</code> 时，导致保存的帧指针 (<code>ebp</code>) 的最低有效字节被设置为 <code>0</code>。因此，需要调整 <code>ebp</code> 的值，确保其指向缓冲区区域，从而使执行流程按预期进行，最终跳转到 <code>bar</code> 函数。</p>
+<p>基于进一步的分析和测试，得出以下见解：</p>
+<ul>
+<li><p>要准确确定覆盖位置，<code>ebp</code> 的值至关重要。然而，获得这个值是有挑战的，因为：</p>
+<ol>
+<li>GDB 调试会影响地址布局。</li>
+<li>输入参数的长度会影响地址布局。</li>
+</ol>
+</li>
+<li><p>在 GDB 调试下，<code>foo</code> 函数内的布局如下：</p>
+</li>
+<li><p>执行 <code>buf[sizeof(buf)] = &#39;\0&#39;;</code> 后，<code>ebp</code> 被修改，使得返回地址实际上取的是 <code>ebp + 1</code> 处的值，即地址 <code>0xbfffed00 + 1</code>，也就是 <code>0xbfffed04</code>。</p>
+</li>
+<li><p>对应的偏移位置在 <code>buf</code> 的第 255 个位置，这意味着可以通过只在该特定位置填入返回地址来构造攻击。在 GDB 中使用以下命令进行验证：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">r $(perl -e <span class="string">&#x27;print  &quot;\x01\x01\x01\x01&quot;x254 . &quot;\x38\x84\x04\x08&quot;x1 . &quot;\x01\x01\x01\x01&quot;x1&#x27;</span>)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>经过验证，这在 GDB 调试下是有效的，但需要注意以下细节：</p>
+<ol>
+<li>输入参数的长度必须始终为 256 字节，否则 <code>ebp</code> 的值会发生变化，因为输入参数会占用栈空间，从而影响帧的起始位置，进而影响 <code>ebp</code> 的值。</li>
+<li>填充必须使用非零值，如 <code>0x01</code>，因为如果遇到 <code>0</code> 值，<code>strncpy</code> 会提前终止。</li>
+</ol>
+</li>
+<li><p>直接执行程序时（即不使用 GDB），内存布局不同，导致偏移位置也不同。通过实验，发现偏移位置在第 235 个位置。对应的攻击命令是：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./obo $(perl -e <span class="string">&#x27;print  &quot;\x01\x01\x01\x01&quot;x234 . &quot;\x38\x84\x04\x08&quot;x1 . &quot;\x01\x01\x01\x01&quot;x21&#x27;</span>)</span><br></pre></td></tr></table></figure></li>
+</ul>
+<p>这样就实现了找到准确覆盖位置并成功执行攻击的效果。</p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
     <link itemprop="mainEntityOfPage" href="https://nansenli.com/en/post/2024/10/oboattact-md/">
 
@@ -441,6 +727,105 @@
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./obo $(perl -e <span class="string">&#x27;print  &quot;\x01\x01\x01\x01&quot;x234 . &quot;\x38\x84\x04\x08&quot;x1 . &quot;\x01\x01\x01\x01&quot;x21&#x27;</span>)</span><br></pre></td></tr></table></figure></li>
 </ul>
 <p>This achieves the desired effect of accurately finding the overwrite location and successfully executing the attack.</p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://nansenli.com/zh-CN/post/2024/10/obsidian-latex-fix/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Nansen Li (李楠森)">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Nansen">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Nansen">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/zh-CN/post/2024/10/obsidian-latex-fix/" class="post-title-link" itemprop="url">将ChatGPT公式格式转换为Obsidian兼容格式</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+      
+
+      <time title="Created: 2024-10-14 15:24:27 / Modified: 20:33:49" itemprop="dateCreated datePublished" datetime="2024-10-14T15:24:27+01:00">2024-10-14</time>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/zh-CN/post/2024/10/obsidian-latex-fix/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="zh-CN/post/2024/10/obsidian-latex-fix/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <p>ChatGPT生成的公式使用了以下格式：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">\[</span><br><span class="line">公式内容</span><br><span class="line">\]</span><br></pre></td></tr></table></figure>
+
+<p>而Obsidian中的公式渲染使用的是以下格式：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$$</span><br><span class="line">公式内容</span><br><span class="line">$$</span><br></pre></td></tr></table></figure>
+
+<p>当我们将ChatGPT的公式复制到Obsidian中时，这种差异会导致无法正确渲染。</p>
+<h2 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h2><p>我们可以创建一个Obsidian脚本，在粘贴操作时自动替换公式的格式。</p>
+<h3 id="1-创建脚本"><a href="#1-创建脚本" class="headerlink" title="1. 创建脚本"></a>1. 创建脚本</h3><p>可以使用Obsidian中的插件来解决这个问题。</p>
+<p>在你的库中，在<code>template</code>目录下创建一个文件<code>fixlatex.js</code>，并输入以下内容：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable language_">module</span>.<span class="property">exports</span> = <span class="title function_">async</span> (params) =&gt; &#123;</span><br><span class="line">    <span class="keyword">const</span> &#123; quickAddApi &#125; = params;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 获取剪贴板内容</span></span><br><span class="line">    <span class="keyword">const</span> clipboardContent = <span class="keyword">await</span> quickAddApi.<span class="property">utility</span>.<span class="title function_">getClipboard</span>();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 检查是否成功获取内容</span></span><br><span class="line">    <span class="keyword">if</span> (!clipboardContent) &#123;</span><br><span class="line">        <span class="keyword">new</span> <span class="title class_">Notice</span>(<span class="string">&quot;剪贴板为空或无法访问。&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">const</span> modifiedContent = clipboardContent</span><br><span class="line">        .<span class="title function_">replace</span>(<span class="regexp">/\\\[|\\\]/g</span>, <span class="string">&#x27;$$$$&#x27;</span>)              <span class="comment">// 转换 \[ \] 为 $$ $$</span></span><br><span class="line">        .<span class="title function_">replace</span>(<span class="regexp">/\\\(\s*|\s*\\\)/g</span>, <span class="string">&#x27;$$&#x27;</span>);       <span class="comment">// 转换 \( \) 为 $</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 将修改后的内容写回剪贴板</span></span><br><span class="line">    <span class="keyword">await</span> navigator.<span class="property">clipboard</span>.<span class="title function_">writeText</span>(modifiedContent);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">new</span> <span class="title class_">Notice</span>(<span class="string">&quot;剪贴板内容已处理并修改！&quot;</span>);</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-在QuickAdd中设置脚本"><a href="#2-在QuickAdd中设置脚本" class="headerlink" title="2. 在QuickAdd中设置脚本"></a>2. 在QuickAdd中设置脚本</h3><p>安装QuickAdd插件，并创建一个<code>Macro</code>，按如下图中的配置进行设置并保存。Macro的第一步是执行我们刚刚创建的用户脚本<code>fixlatex.js</code>，第二步是等待100毫秒，第三步是执行粘贴操作。</p>
+<p><img src="https://i.imgur.com/grA8L8V.png"></p>
+<h3 id="3-在Commander中设置侧边快捷键"><a href="#3-在Commander中设置侧边快捷键" class="headerlink" title="3. 在Commander中设置侧边快捷键"></a>3. 在Commander中设置侧边快捷键</h3><p>安装Commander插件，并将刚刚创建的QuickAdd操作设置为侧边栏的快捷键。你也可以跳过这一步，直接使用Obsidian命令执行这个操作。</p>
+<h3 id="4-验证效果"><a href="#4-验证效果" class="headerlink" title="4. 验证效果"></a>4. 验证效果</h3><p>现在，在ChatGPT的网页中（目前在APP中点击复制按钮似乎有点问题），点击复制按钮后，在Obsidian中点击侧边栏快捷键，或者手动执行QuickAdd命令，就可以将ChatGPT中的内容复制到Obsidian中，并自动转换Latex格式。</p>
 
       
     </div>
@@ -602,7 +987,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2024-10-22 10:57:47" itemprop="dateModified" datetime="2024-10-22T10:57:47+01:00">2024-10-22</time>
+      <time title="Modified: 2024-10-22 10:58:23" itemprop="dateModified" datetime="2024-10-22T10:58:23+01:00">2024-10-22</time>
     </span>
 
   
@@ -629,8 +1014,7 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <p>Here’s the translated version:</p>
-<h1 id="About-Me"><a href="#About-Me" class="headerlink" title="About Me"></a>About Me</h1><p>Written on October 11, 2024, in Dublin, Ireland.</p>
+          <h1 id="About-Me"><a href="#About-Me" class="headerlink" title="About Me"></a>About Me</h1><p>Written on October 11, 2024, in Dublin, Ireland.</p>
 <hr>
 <h2 id="Self-Introduction"><a href="#Self-Introduction" class="headerlink" title="Self Introduction"></a>Self Introduction</h2><p>Hello everyone, my name is Li Nansen, previously known as Li Nan. I’m from China and a technology-loving engineer. I hold a bachelor’s degree in Mechatronic Engineering and two master’s degrees in Computer Science: Embedded Systems and Natural Language Processing. I previously worked as a Go Language Engineer at a major internet company in China, and I am currently pursuing a master’s degree in Natural Language Processing at a university in Dublin.</p>
 <p>I am deeply interested in frontend and backend development, system architecture, algorithms, game development, and generative AI (e.g., Stable Diffusion and ChatGPT). I’ve always been dedicated to improving my programming skills and enjoy experimenting with new technologies, keeping myself sensitive to industry trends.</p>
@@ -646,6 +1030,203 @@
 <h3 id="How-do-you-define-success"><a href="#How-do-you-define-success" class="headerlink" title="How do you define success?"></a>How do you define success?</h3><p>Knowing what you want, striving for it, and finally achieving it—that is success. I’ve always been searching for what I truly want, but sometimes it feels unclear. Although I’ve achieved many goals, I’m still exploring. Perhaps in others’ eyes, I’m successful, but I think there’s still room for improvement.</p>
 <h3 id="Do-you-enjoy-traveling-If-you-could-travel-anywhere-where-would-you-go"><a href="#Do-you-enjoy-traveling-If-you-could-travel-anywhere-where-would-you-go" class="headerlink" title="Do you enjoy traveling? If you could travel anywhere, where would you go?"></a>Do you enjoy traveling? If you could travel anywhere, where would you go?</h3><p>Yes, I enjoy traveling. I’ve been to places like the United States, Japan, Australia, and New Zealand. The scenery there is quite beautiful.</p>
 <p>If I could, I would go to the Moon. Maybe I’d watch the beautiful Earth from there. Perhaps one day, when I let go of all my attachments, I’ll take off my oxygen mask while gazing at the Earth. But, of course, I think that day will never come!</p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://nansenli.com/zh-CN/post/2024/10/aboutme/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Nansen Li (李楠森)">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Nansen">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Nansen">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/zh-CN/post/2024/10/aboutme/" class="post-title-link" itemprop="url">关于我</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2024-10-11 20:55:02" itemprop="dateCreated datePublished" datetime="2024-10-11T20:55:02+01:00">2024-10-11</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2024-10-22 10:56:49" itemprop="dateModified" datetime="2024-10-22T10:56:49+01:00">2024-10-22</time>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/zh-CN/post/2024/10/aboutme/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="zh-CN/post/2024/10/aboutme/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="关于我"><a href="#关于我" class="headerlink" title="关于我"></a>关于我</h1><p>本文书写于 2024年10月11日，都柏林，爱尔兰。</p>
+<hr>
+<h2 id="自我介绍"><a href="#自我介绍" class="headerlink" title="自我介绍"></a>自我介绍</h2><p>大家好，我叫李楠森，曾用名李楠。我来自中国，是一名热爱科技的工程师。我拥有机械电子的本科学位和两个计算机科学的硕士学位，分别是嵌入式系统和自然语言处理。我曾在中国一家大型互联网公司担任过 Go 语言工程师，目前正在都柏林一所大学攻读硕士学位，主攻自然语言处理。</p>
+<p>我对前端和后端开发、系统架构、算法、游戏开发，以及生成式 AI（例如 Stable Diffusion 和 ChatGPT）有着浓厚的兴趣。我一直致力于提高自己的编程能力，也喜欢尝试新技术，保持对行业发展的敏感度。</p>
+<p>如果你对技术或者生活方式有相同的兴趣，欢迎联系我，我们可以一起讨论和交流。</p>
+<hr>
+<h2 id="碎碎念"><a href="#碎碎念" class="headerlink" title="碎碎念"></a>碎碎念</h2><p>我知道你会对我本人好奇，我会让 ChatGPT 提出一些问题，然后我再回答。看看这些问题是否满足了你的好奇心。</p>
+<h3 id="你最喜欢的编程语言是什么？为什么？"><a href="#你最喜欢的编程语言是什么？为什么？" class="headerlink" title="你最喜欢的编程语言是什么？为什么？"></a>你最喜欢的编程语言是什么？为什么？</h3><p>我喜欢 Go 语言。它简洁、现代且高效。它的设计理念是“少即是多”，非常节制，我喜欢有自己态度的语言。<br>该做什么。学生时代可能最喜欢玩游戏吧，从小就喜欢玩各种游戏，特别是 PC 端的单机游戏。不过，工作以后这些爱好也没有时间再继续下去了。</p>
+<h3 id="你最喜欢的电影或电视剧是哪部？为什么？"><a href="#你最喜欢的电影或电视剧是哪部？为什么？" class="headerlink" title="你最喜欢的电影或电视剧是哪部？为什么？"></a>你最喜欢的电影或电视剧是哪部？为什么？</h3><p>我很少会说“喜欢”这个词，其实大部分作品如果认真欣赏，都会有闪光点。不过，最让我难以释怀的电影应该是《银翼杀手 2049》。结局中，K 躺在雪中的台阶上，慢慢合上了双眼，那一刻充满了孤独与反思，让我深有共鸣。</p>
+<h3 id="作为一个工程师，你认为最大的挑战是什么？"><a href="#作为一个工程师，你认为最大的挑战是什么？" class="headerlink" title="作为一个工程师，你认为最大的挑战是什么？"></a>作为一个工程师，你认为最大的挑战是什么？</h3><p>我觉得最大的挑战是人——如何处理自己，如何处理他人。工程和科学总有解决办法，但人没有一个真正的最优解。而幸运的是，我总能处理好这个挑战。</p>
+<h3 id="你为什么选择留学爱尔兰？这段经历对你有什么影响？"><a href="#你为什么选择留学爱尔兰？这段经历对你有什么影响？" class="headerlink" title="你为什么选择留学爱尔兰？这段经历对你有什么影响？"></a>你为什么选择留学爱尔兰？这段经历对你有什么影响？</h3><p>最初，我的目标是美国，但是后来我改变了主意，我开始瞄准其他国家，特别是英语国家，如澳大利亚、加拿大、新西兰。爱尔兰有很多科技公司，紧邻整个欧盟市场，所以我最终选择了爱尔兰。</p>
+<p>我不知道这段经历的具体影响，但它非常重大。这次经历彻底改变了我。</p>
+<h3 id="在你看来，成功的定义是什么？"><a href="#在你看来，成功的定义是什么？" class="headerlink" title="在你看来，成功的定义是什么？"></a>在你看来，成功的定义是什么？</h3><p>知道自己想要什么，并为之努力，最终实现——这就是成功。我一直在寻找自己真正想要的东西，但有时候觉得目标并不明确，虽然也实现了很多目标，但还在不断探索中。也许在别人眼中我是成功的，但我觉得还有很多改进的地方。</p>
+<h3 id="你喜欢旅行吗？如果可以去任何地方旅行，你会选择哪里？"><a href="#你喜欢旅行吗？如果可以去任何地方旅行，你会选择哪里？" class="headerlink" title="你喜欢旅行吗？如果可以去任何地方旅行，你会选择哪里？"></a>你喜欢旅行吗？如果可以去任何地方旅行，你会选择哪里？</h3><p>喜欢，我曾去过美国，日本，澳大利亚，新西兰等地方旅行。那里的景色都不错。</p>
+<p>如果可以，我会去月球。我可能会在月球上看着美丽的地球。也许有一天，当我放下了一切执念，我会在那时摘下自己的氧气面罩，当然，我想这一天永远不会到来！</p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://nansenli.com/zh-CN/post/2024/10/myblog/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Nansen Li (李楠森)">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Nansen">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Nansen">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/zh-CN/post/2024/10/myblog/" class="post-title-link" itemprop="url">我的博客</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2024-10-10 21:06:26" itemprop="dateCreated datePublished" datetime="2024-10-10T21:06:26+01:00">2024-10-10</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2024-10-11 01:20:45" itemprop="dateModified" datetime="2024-10-11T01:20:45+01:00">2024-10-11</time>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/zh-CN/post/2024/10/myblog/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="zh-CN/post/2024/10/myblog/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <p>我是李楠森，这里是我的第一篇笔记，我不知道我能记录多少内容，也不知道能记录多久，但是我会尽力坚持去记录。</p>
+<blockquote>
+<p>于 2024年10月11日凌晨 1点20分 爱尔兰 都柏林</p>
+</blockquote>
 
       
     </div>
