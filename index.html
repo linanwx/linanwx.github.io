@@ -138,7 +138,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">12</span>
+          <span class="site-state-item-count">14</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -160,6 +160,104 @@
     </div>
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://nansenli.com/en/post/2024/10/raycast-craft/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Nansen Li (李楠森)">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Nansen">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Nansen">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/en/post/2024/10/raycast-craft/" class="post-title-link" itemprop="url">How to handle the inconsistency in LaTeX formatting from ChatGPT between Obsidian and Craft.</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+      
+
+      <time title="Created: 2024-10-26 12:59:21 / Modified: 13:01:17" itemprop="dateCreated datePublished" datetime="2024-10-26T12:59:21+01:00">2024-10-26</time>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/en/post/2024/10/raycast-craft/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="en/post/2024/10/raycast-craft/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <p>In a previous article, I used Obsidian’s QuickAdd to create a script that automatically converts text copied from ChatGPT and fixes the LaTeX formatting. However, there is no suitable plugin available for the Craft app.</p>
+<p>We can use Raycast to achieve this functionality uniformly.</p>
+<hr>
+<h1 id="Create-a-Raycast-Script"><a href="#Create-a-Raycast-Script" class="headerlink" title="Create a Raycast Script"></a>Create a Raycast Script</h1><p>First, we need to create a script.</p>
+<p><img src="https://res.craft.do/user/full/c5e6e898-910c-6f27-fbc5-91f4c34a9511/doc/807ADA48-9980-42C3-9BA8-136F966CD4A9/F182CBD0-1613-4125-8D24-917683A8EA73_2/CVdOosoD7Oc2T1qC3WBN9tGoE5z0ixvfd5diCpBxsG0z/Image.png" alt="image"></p>
+<p>Next, select the Bash template.</p>
+<p>Then, we edit the Bash script and enter the following code:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Required parameters:</span></span><br><span class="line"><span class="comment"># @raycast.schemaVersion 1</span></span><br><span class="line"><span class="comment"># @raycast.title Copy From ChatGPT</span></span><br><span class="line"><span class="comment"># @raycast.mode silent</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Optional parameters:</span></span><br><span class="line"><span class="comment"># @raycast.icon 🤖</span></span><br><span class="line"><span class="comment"># @raycast.packageName ChatGPT Utils</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Documentation:</span></span><br><span class="line"><span class="comment"># @raycast.description Copy From ChatGPT</span></span><br><span class="line"><span class="comment"># @raycast.author Nansen Li</span></span><br><span class="line"><span class="comment"># @raycast.authorURL nansenli.com</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Get clipboard content</span></span><br><span class="line">clipboard_content=$(pbpaste)</span><br><span class="line"></span><br><span class="line"><span class="comment"># Check if content was successfully retrieved</span></span><br><span class="line"><span class="keyword">if</span> [ -z <span class="string">&quot;<span class="variable">$clipboard_content</span>&quot;</span> ]; <span class="keyword">then</span></span><br><span class="line">    <span class="built_in">echo</span> <span class="string">&quot;Clipboard is empty or inaccessible.&quot;</span></span><br><span class="line">    <span class="built_in">exit</span> 1</span><br><span class="line"><span class="keyword">fi</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Process clipboard content</span></span><br><span class="line">modified_content=$(<span class="built_in">echo</span> <span class="string">&quot;<span class="variable">$clipboard_content</span>&quot;</span> | \</span><br><span class="line">    sed <span class="string">&#x27;s/\\\[/$$/g; s/\\\]/$$/g; s/\\( /$/g; s/ \\\)/$/g&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># Write the modified content back to the clipboard</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;<span class="variable">$modified_content</span>&quot;</span> | pbcopy</span><br></pre></td></tr></table></figure>
+
+<hr>
+<p>After creating the script, we need to add the directory containing the script to Raycast.</p>
+<p><img src="https://res.craft.do/user/full/c5e6e898-910c-6f27-fbc5-91f4c34a9511/doc/807ADA48-9980-42C3-9BA8-136F966CD4A9/C5D4A349-5648-46F2-A5B0-3881563659A7_2/zvYyttwVwKK8ZuyBdX2Ohd7mPFZfHSw253MaW9xaOiAz/Image.png" alt="image"></p>
+<p>In this step, select the directory where the script was just created. At this point, we can see the newly created script in <code>Script Commands</code>.</p>
+<hr>
+<h1 id="How-to-Use"><a href="#How-to-Use" class="headerlink" title="How to Use"></a>How to Use</h1><p>After copying a formula from ChatGPT, open the Raycast panel, find the newly created script, and run it. The clipboard content will be automatically fixed. Then, simply paste it into Obsidian or Craft.</p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
