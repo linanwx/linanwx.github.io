@@ -137,7 +137,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">14</span>
+          <span class="site-state-item-count">16</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -159,6 +159,204 @@
     </div>
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://nansenli.com/zh-CN/post/2024/10/obsidian-latex-fix/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Nansen Li (李楠森)">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Nansen">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Nansen">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/zh-CN/post/2024/10/obsidian-latex-fix/" class="post-title-link" itemprop="url">将ChatGPT公式格式转换为Obsidian兼容格式</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+      
+
+      <time title="Created: 2024-10-14 15:24:27 / Modified: 20:33:49" itemprop="dateCreated datePublished" datetime="2024-10-14T15:24:27+01:00">2024-10-14</time>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/zh-CN/post/2024/10/obsidian-latex-fix/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="zh-CN/post/2024/10/obsidian-latex-fix/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <p>ChatGPT生成的公式使用了以下格式：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">\[</span><br><span class="line">公式内容</span><br><span class="line">\]</span><br></pre></td></tr></table></figure>
+
+<p>而Obsidian中的公式渲染使用的是以下格式：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$$</span><br><span class="line">公式内容</span><br><span class="line">$$</span><br></pre></td></tr></table></figure>
+
+<p>当我们将ChatGPT的公式复制到Obsidian中时，这种差异会导致无法正确渲染。</p>
+<h2 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h2><p>我们可以创建一个Obsidian脚本，在粘贴操作时自动替换公式的格式。</p>
+<h3 id="1-创建脚本"><a href="#1-创建脚本" class="headerlink" title="1. 创建脚本"></a>1. 创建脚本</h3><p>可以使用Obsidian中的插件来解决这个问题。</p>
+<p>在你的库中，在<code>template</code>目录下创建一个文件<code>fixlatex.js</code>，并输入以下内容：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable language_">module</span>.<span class="property">exports</span> = <span class="title function_">async</span> (params) =&gt; &#123;</span><br><span class="line">    <span class="keyword">const</span> &#123; quickAddApi &#125; = params;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 获取剪贴板内容</span></span><br><span class="line">    <span class="keyword">const</span> clipboardContent = <span class="keyword">await</span> quickAddApi.<span class="property">utility</span>.<span class="title function_">getClipboard</span>();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 检查是否成功获取内容</span></span><br><span class="line">    <span class="keyword">if</span> (!clipboardContent) &#123;</span><br><span class="line">        <span class="keyword">new</span> <span class="title class_">Notice</span>(<span class="string">&quot;剪贴板为空或无法访问。&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">const</span> modifiedContent = clipboardContent</span><br><span class="line">        .<span class="title function_">replace</span>(<span class="regexp">/\\\[|\\\]/g</span>, <span class="string">&#x27;$$$$&#x27;</span>)              <span class="comment">// 转换 \[ \] 为 $$ $$</span></span><br><span class="line">        .<span class="title function_">replace</span>(<span class="regexp">/\\\(\s*|\s*\\\)/g</span>, <span class="string">&#x27;$$&#x27;</span>);       <span class="comment">// 转换 \( \) 为 $</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 将修改后的内容写回剪贴板</span></span><br><span class="line">    <span class="keyword">await</span> navigator.<span class="property">clipboard</span>.<span class="title function_">writeText</span>(modifiedContent);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">new</span> <span class="title class_">Notice</span>(<span class="string">&quot;剪贴板内容已处理并修改！&quot;</span>);</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-在QuickAdd中设置脚本"><a href="#2-在QuickAdd中设置脚本" class="headerlink" title="2. 在QuickAdd中设置脚本"></a>2. 在QuickAdd中设置脚本</h3><p>安装QuickAdd插件，并创建一个<code>Macro</code>，按如下图中的配置进行设置并保存。Macro的第一步是执行我们刚刚创建的用户脚本<code>fixlatex.js</code>，第二步是等待100毫秒，第三步是执行粘贴操作。</p>
+<p><img src="https://i.imgur.com/grA8L8V.png"></p>
+<h3 id="3-在Commander中设置侧边快捷键"><a href="#3-在Commander中设置侧边快捷键" class="headerlink" title="3. 在Commander中设置侧边快捷键"></a>3. 在Commander中设置侧边快捷键</h3><p>安装Commander插件，并将刚刚创建的QuickAdd操作设置为侧边栏的快捷键。你也可以跳过这一步，直接使用Obsidian命令执行这个操作。</p>
+<h3 id="4-验证效果"><a href="#4-验证效果" class="headerlink" title="4. 验证效果"></a>4. 验证效果</h3><p>现在，在ChatGPT的网页中（目前在APP中点击复制按钮似乎有点问题），点击复制按钮后，在Obsidian中点击侧边栏快捷键，或者手动执行QuickAdd命令，就可以将ChatGPT中的内容复制到Obsidian中，并自动转换Latex格式。</p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://nansenli.com/en/post/2024/10/obsidian-latex-fix/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Nansen Li (李楠森)">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Nansen">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Nansen">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/en/post/2024/10/obsidian-latex-fix/" class="post-title-link" itemprop="url">Convert ChatGPT Formula Format to Obsidian-Compatible Format</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+      
+
+      <time title="Created: 2024-10-14 15:24:21 / Modified: 20:33:25" itemprop="dateCreated datePublished" datetime="2024-10-14T15:24:21+01:00">2024-10-14</time>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/en/post/2024/10/obsidian-latex-fix/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="en/post/2024/10/obsidian-latex-fix/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <p>The formulas generated by ChatGPT use the following format:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">\[</span><br><span class="line">Formula Content</span><br><span class="line">\]</span><br></pre></td></tr></table></figure>
+
+<p>However, Obsidian renders formulas using the following format:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$$</span><br><span class="line">Formula Content</span><br><span class="line">$$</span><br></pre></td></tr></table></figure>
+
+<p>When copying a formula from ChatGPT to Obsidian, this difference prevents proper rendering.</p>
+<h2 id="Solution"><a href="#Solution" class="headerlink" title="Solution"></a>Solution</h2><p>We can create a script for Obsidian to automatically replace the formula format when pasting.</p>
+<h3 id="1-Create-the-Script"><a href="#1-Create-the-Script" class="headerlink" title="1. Create the Script"></a>1. Create the Script</h3><p>We can solve this issue using a plugin in Obsidian.</p>
+<p>In your vault, create a file named <code>fixlatex.js</code> under the <code>template</code> directory, and input the following content:</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable language_">module</span>.<span class="property">exports</span> = <span class="title function_">async</span> (params) =&gt; &#123;</span><br><span class="line">    <span class="keyword">const</span> &#123; quickAddApi &#125; = params;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Get clipboard content</span></span><br><span class="line">    <span class="keyword">const</span> clipboardContent = <span class="keyword">await</span> quickAddApi.<span class="property">utility</span>.<span class="title function_">getClipboard</span>();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Check if content was successfully retrieved</span></span><br><span class="line">    <span class="keyword">if</span> (!clipboardContent) &#123;</span><br><span class="line">        <span class="keyword">new</span> <span class="title class_">Notice</span>(<span class="string">&quot;Clipboard is empty or inaccessible.&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">const</span> modifiedContent = clipboardContent</span><br><span class="line">        .<span class="title function_">replace</span>(<span class="regexp">/\\\[|\\\]/g</span>, <span class="string">&#x27;$$$$&#x27;</span>)              <span class="comment">// Convert \[ \] to $$ $$</span></span><br><span class="line">        .<span class="title function_">replace</span>(<span class="regexp">/\\\(\s*|\s*\\\)/g</span>, <span class="string">&#x27;$$&#x27;</span>);       <span class="comment">// Convert \( \) to $</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// Write the modified content back to the clipboard</span></span><br><span class="line">    <span class="keyword">await</span> navigator.<span class="property">clipboard</span>.<span class="title function_">writeText</span>(modifiedContent);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">new</span> <span class="title class_">Notice</span>(<span class="string">&quot;Clipboard content has been processed and modified!&quot;</span>);</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-Set-Up-the-Script-in-QuickAdd"><a href="#2-Set-Up-the-Script-in-QuickAdd" class="headerlink" title="2. Set Up the Script in QuickAdd"></a>2. Set Up the Script in QuickAdd</h3><p>Install the QuickAdd plugin and create a <code>Macro</code>, configuring it as shown below, then save it. The first step in the Macro is to execute our user script <code>fixlatex.js</code>, the second step is to wait for 100 milliseconds, and the third step is to execute the paste action.</p>
+<p><img src="https://i.imgur.com/grA8L8V.png"></p>
+<h3 id="3-Set-Sidebar-Shortcut-in-Commander"><a href="#3-Set-Sidebar-Shortcut-in-Commander" class="headerlink" title="3. Set Sidebar Shortcut in Commander"></a>3. Set Sidebar Shortcut in Commander</h3><p>Install the Commander plugin and set up the QuickAdd action we just created as a sidebar shortcut. You can also skip this step and directly use an Obsidian command to execute this action.</p>
+<h3 id="4-Verify-the-Effect"><a href="#4-Verify-the-Effect" class="headerlink" title="4. Verify the Effect"></a>4. Verify the Effect</h3><p>Now, on the ChatGPT webpage (currently there seems to be an issue when clicking the copy button in the app), click the copy button, then in Obsidian, click the sidebar shortcut or manually execute the QuickAdd command. This will copy the content from ChatGPT to Obsidian and automatically convert the LaTeX format.</p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -204,7 +402,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2024-11-02 09:04:22" itemprop="dateModified" datetime="2024-11-02T09:04:22+00:00">2024-11-02</time>
+      <time title="Modified: 2024-11-03 14:21:25" itemprop="dateModified" datetime="2024-11-03T14:21:25+00:00">2024-11-03</time>
     </span>
 
   
