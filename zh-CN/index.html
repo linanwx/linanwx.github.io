@@ -368,104 +368,6 @@
   
   
 
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://nansenli.com/en/post/2024/10/raycast-craft/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Nansen Li (李楠森) 🌈">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Nansen">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Nansen">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/en/post/2024/10/raycast-craft/" class="post-title-link" itemprop="url">How to handle the inconsistency in LaTeX formatting from ChatGPT between Obsidian and Craft.</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-      
-
-      <time title="创建时间：2024-10-26 12:59:21 / 修改时间：13:01:17" itemprop="dateCreated datePublished" datetime="2024-10-26T12:59:21+01:00">2024-10-26</time>
-    </span>
-
-  
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Disqus：</span>
-    
-    <a title="disqus" href="/en/post/2024/10/raycast-craft/#disqus_thread" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="en/post/2024/10/raycast-craft/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <p>In a previous article, I used Obsidian’s QuickAdd to create a script that automatically converts text copied from ChatGPT and fixes the LaTeX formatting. However, there is no suitable plugin available for the Craft app.</p>
-<p>We can use Raycast to achieve this functionality uniformly.</p>
-<hr>
-<h1 id="Create-a-Raycast-Script"><a href="#Create-a-Raycast-Script" class="headerlink" title="Create a Raycast Script"></a>Create a Raycast Script</h1><p>First, we need to create a script.</p>
-<p><img src="https://res.craft.do/user/full/c5e6e898-910c-6f27-fbc5-91f4c34a9511/doc/807ADA48-9980-42C3-9BA8-136F966CD4A9/F182CBD0-1613-4125-8D24-917683A8EA73_2/CVdOosoD7Oc2T1qC3WBN9tGoE5z0ixvfd5diCpBxsG0z/Image.png" alt="image"></p>
-<p>Next, select the Bash template.</p>
-<p>Then, we edit the Bash script and enter the following code:</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Required parameters:</span></span><br><span class="line"><span class="comment"># @raycast.schemaVersion 1</span></span><br><span class="line"><span class="comment"># @raycast.title Copy From ChatGPT</span></span><br><span class="line"><span class="comment"># @raycast.mode silent</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Optional parameters:</span></span><br><span class="line"><span class="comment"># @raycast.icon 🤖</span></span><br><span class="line"><span class="comment"># @raycast.packageName ChatGPT Utils</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Documentation:</span></span><br><span class="line"><span class="comment"># @raycast.description Copy From ChatGPT</span></span><br><span class="line"><span class="comment"># @raycast.author Nansen Li</span></span><br><span class="line"><span class="comment"># @raycast.authorURL nansenli.com</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Get clipboard content</span></span><br><span class="line">clipboard_content=$(pbpaste)</span><br><span class="line"></span><br><span class="line"><span class="comment"># Check if content was successfully retrieved</span></span><br><span class="line"><span class="keyword">if</span> [ -z <span class="string">&quot;<span class="variable">$clipboard_content</span>&quot;</span> ]; <span class="keyword">then</span></span><br><span class="line">    <span class="built_in">echo</span> <span class="string">&quot;Clipboard is empty or inaccessible.&quot;</span></span><br><span class="line">    <span class="built_in">exit</span> 1</span><br><span class="line"><span class="keyword">fi</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Process clipboard content</span></span><br><span class="line">modified_content=$(<span class="built_in">echo</span> <span class="string">&quot;<span class="variable">$clipboard_content</span>&quot;</span> | \</span><br><span class="line">    sed <span class="string">&#x27;s/\\\[/$$/g; s/\\\]/$$/g; s/\\( /$/g; s/ \\\)/$/g&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># Write the modified content back to the clipboard</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;<span class="variable">$modified_content</span>&quot;</span> | pbcopy</span><br></pre></td></tr></table></figure>
-
-<hr>
-<p>After creating the script, we need to add the directory containing the script to Raycast.</p>
-<p><img src="https://res.craft.do/user/full/c5e6e898-910c-6f27-fbc5-91f4c34a9511/doc/807ADA48-9980-42C3-9BA8-136F966CD4A9/C5D4A349-5648-46F2-A5B0-3881563659A7_2/zvYyttwVwKK8ZuyBdX2Ohd7mPFZfHSw253MaW9xaOiAz/Image.png" alt="image"></p>
-<p>In this step, select the directory where the script was just created. At this point, we can see the newly created script in <code>Script Commands</code>.</p>
-<hr>
-<h1 id="How-to-Use"><a href="#How-to-Use" class="headerlink" title="How to Use"></a>How to Use</h1><p>After copying a formula from ChatGPT, open the Raycast panel, find the newly created script, and run it. The clipboard content will be automatically fixed. Then, simply paste it into Obsidian or Craft.</p>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://nansenli.com/zh-CN/post/2024/10/raycast-craft/">
 
@@ -564,100 +466,6 @@
   
   
 
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://nansenli.com/en/post/2024/10/huawei2024/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Nansen Li (李楠森) 🌈">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Nansen">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Nansen">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/en/post/2024/10/huawei2024/" class="post-title-link" itemprop="url">Summary of Huawei Ireland Research Center Tech Arena 2024 Competition</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-      
-
-      <time title="创建时间：2024-10-24 10:01:27 / 修改时间：11:33:37" itemprop="dateCreated datePublished" datetime="2024-10-24T10:01:27+01:00">2024-10-24</time>
-    </span>
-
-  
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Disqus：</span>
-    
-    <a title="disqus" href="/en/post/2024/10/huawei2024/#disqus_thread" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="en/post/2024/10/huawei2024/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h2 id="Background"><a href="#Background" class="headerlink" title="Background"></a>Background</h2><p>I’m Nansen, and I participated in the 2024 Huawei Ireland Research Center Server Cluster Management Optimization Competition. Here, I’d like to share my experience in this competition and summarize some key takeaways.</p>
-<p>Our algorithm code can be found here: <a target="_blank" rel="noopener" href="https://github.com/linanwx/huawei2024">huawei2024</a></p>
-<h2 id="Competition-Results"><a href="#Competition-Results" class="headerlink" title="Competition Results"></a>Competition Results</h2><p>We achieved first place in the algorithm section, scoring approximately 4%-5% higher than the second to fourth places, giving us a significant advantage. However, we faced considerable challenges in the presentation segment. First, we recognized that there is room for improvement in our English fluency. Second, we found that our presentation slides could be more polished and visually appealing. Lastly, we encountered some challenges with time management. Nevertheless, despite these obstacles, we still managed to secure third place overall.</p>
-<h2 id="Competition-Process"><a href="#Competition-Process" class="headerlink" title="Competition Process"></a>Competition Process</h2><p>The competition was divided into two stages. The first stage allowed ample preparation time. Once we settled on using the simulated annealing algorithm, we began developing it. The main difficulty in this stage was optimizing and understanding the requirements of the task. During development, we encountered numerous bugs, but after fixing them, our score improved significantly.</p>
-<p>In the second stage, as the problem was released on the day of the competition, I continued optimizing the algorithm from the first stage, successfully increasing the evaluation speed by 1000 times. This significantly boosted our performance in the second stage, providing us with enough strength to vie for first place.</p>
-<p>In the final round, our algorithm performed very consistently, and after some adjustments, we took a considerable lead over our competitors. However, because we didn’t put enough emphasis on making an effective presentation, we mistakenly believed that high algorithm performance alone would guarantee a top score, which proved to be wrong.</p>
-<h2 id="Lessons-Learned"><a href="#Lessons-Learned" class="headerlink" title="Lessons Learned"></a>Lessons Learned</h2><h3 id="Algorithm-Choice"><a href="#Algorithm-Choice" class="headerlink" title="Algorithm Choice"></a>Algorithm Choice</h3><p>Fortunately, I chose the right algorithm from the outset, and shortly after the problem was released, I devised a framework that suited the entire competition. However, I did take some wrong turns, such as attempting impractical algorithms like PPO. After initial trials failed, I should have moved on instead of wasting further effort. Given the limited time, we should focus on achievable optimal results within the shortest period rather than pursuing ideal but unrealistic solutions. It’s also crucial to recognize one’s limitations and concentrate on goals that are achievable in the available time.</p>
-<h3 id="Team-Collaboration"><a href="#Team-Collaboration" class="headerlink" title="Team Collaboration"></a>Team Collaboration</h3><p>Luckily, our team division was reasonable this time, and I did my best to ensure every member could contribute their value. One area for improvement is communicating more with team members to understand their ideas and preferences. Since I mainly handled the algorithm part, I had relatively little interaction with teammates, which I will work to improve next time.</p>
-<h3 id="Presentation-Design"><a href="#Presentation-Design" class="headerlink" title="Presentation Design"></a>Presentation Design</h3><p>We didn’t anticipate that the level of presentation skills from other teams would be so high. My teammates speculated that some competitors might have a business background, giving them an advantage in crafting presentations. Moreover, they had five members in their team while we only had three, which put us at a disadvantage regarding manpower. These were objective challenges, but if we had paid more attention to creating our presentation, the first prize could have been within our reach.</p>
-<h3 id="Over-committing-Leading-to-Imbalance"><a href="#Over-committing-Leading-to-Imbalance" class="headerlink" title="Over-committing Leading to Imbalance"></a>Over-committing Leading to Imbalance</h3><p>In the final round, our algorithm was already quite excellent, and our score surpassed the previously top-ranked team. However, I continued spending considerable time on further optimizations. Even though we were significantly ahead, this focus caused us to neglect the preparation of our presentation. In hindsight, I should have known when to stop and fully recognized the importance of balancing different aspects of the scoring criteria.</p>
-<h2 id="Conclusion"><a href="#Conclusion" class="headerlink" title="Conclusion"></a>Conclusion</h2><p>Participating in the Huawei Tech Arena 2024 competition provided me with invaluable experience. The competition highlighted our strengths, but also revealed areas where we need to improve in terms of showcasing skills and team collaboration. Looking ahead, I will keep these lessons in mind and strive to continuously improve myself in future competitions. If you have any questions, feel free to leave them in the comments section.</p>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://nansenli.com/zh-CN/post/2024/10/huawei2024/">
 
@@ -727,156 +535,6 @@
 <h3 id="PPT的制作"><a href="#PPT的制作" class="headerlink" title="PPT的制作"></a>PPT的制作</h3><p>我们没有预料到，其他参赛队伍的PPT水平如此之高。我的队友猜测，他们可能有商科背景，这使得他们在制作PPT时具有优势。此外，他们的团队有五名成员，而我们只有三名，这也让我们在人员配备上处于劣势。这些都是客观上的挑战，但如果我们更加重视PPT的制作，或许第一名就是我们的。</p>
 <h3 id="过分投入导致失衡"><a href="#过分投入导致失衡" class="headerlink" title="过分投入导致失衡"></a>过分投入导致失衡</h3><p>在决赛阶段，其实我们的算法已经非常出色，分数也超过了此前排名第一的队伍。然而，我仍然花了大量时间继续优化算法，尽管我们的算法分数领先对手很多，但却因此忽略了PPT的准备。事实上，我应该适可而止，并充分理解评分标准的重要性。</p>
 <h2 id="结论"><a href="#结论" class="headerlink" title="结论"></a>结论</h2><p>通过参加华为Tech Arena 2024竞赛，我获得了宝贵的经验。这次比赛不仅展示了我们的优势，也暴露了我们在展示技能和团队协作方面需要改进的地方。展望未来，我会牢记这些经验教训，并在今后的比赛中不断改进自己。如果您有问题，可以在留言区反馈给我。</p>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://nansenli.com/en/post/2024/10/leetcode241020/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Nansen Li (李楠森) 🌈">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Nansen">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Nansen">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/en/post/2024/10/leetcode241020/" class="post-title-link" itemprop="url">Leetcode Notes</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-      
-
-      <time title="创建时间：2024-10-21 19:39:42 / 修改时间：19:43:47" itemprop="dateCreated datePublished" datetime="2024-10-21T19:39:42+01:00">2024-10-21</time>
-    </span>
-
-  
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Disqus：</span>
-    
-    <a title="disqus" href="/en/post/2024/10/leetcode241020/#disqus_thread" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="en/post/2024/10/leetcode241020/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <p>Today, I began the long journey of practicing Leetcode problems. Previously, I only did a few problems to maintain familiarity, but today, I officially started preparing for interviews.</p>
-<p>I have been thinking about how to efficiently solve Leetcode problems. In my opinion, to be efficient, one must memorize problems. Just as reading a book a hundred times reveals its meaning, training a language model through extensive practice hones its coding skills. Similarly, with Leetcode, through repeated practice, the answers will come naturally; quantity brings quality.</p>
-<h2 id="53-Maximum-Subarray"><a href="#53-Maximum-Subarray" class="headerlink" title="53. Maximum Subarray"></a><a target="_blank" rel="noopener" href="https://leetcode.com/problems/maximum-subarray/">53. Maximum Subarray</a></h2><p>The solution can be approached using <strong>Kadane’s Algorithm</strong>. The code is as follows:</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">maxSubArray</span>(<span class="params">nums</span>):</span><br><span class="line">    max_current = max_global = nums[<span class="number">0</span>]</span><br><span class="line">    <span class="keyword">for</span> num <span class="keyword">in</span> nums[<span class="number">1</span>:]:</span><br><span class="line">        max_current = <span class="built_in">max</span>(num, max_current + num)</span><br><span class="line">        max_global = <span class="built_in">max</span>(max_global, max_current)</span><br><span class="line">    <span class="keyword">return</span> max_global</span><br></pre></td></tr></table></figure>
-
-<p>This is a classic dynamic programming problem, and the above algorithm actually hides the essence of dynamic programming.</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="type">int</span> <span class="title">maxSubArray</span><span class="params">(vector&lt;<span class="type">int</span>&gt;&amp; nums)</span> </span>&#123;</span><br><span class="line">        <span class="function">vector&lt;<span class="type">int</span>&gt; <span class="title">dp</span><span class="params">(nums.size())</span></span>;</span><br><span class="line">        dp[<span class="number">0</span>] = nums[<span class="number">0</span>];</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">1</span>; i &lt; nums.<span class="built_in">size</span>(); i++) &#123;</span><br><span class="line">            dp[i] = <span class="built_in">max</span>(dp[i - <span class="number">1</span>] + nums[i], nums[i]);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> *<span class="built_in">max_element</span>(dp.<span class="built_in">begin</span>(), dp.<span class="built_in">end</span>());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-
-<p>This code better reflects the essence of dynamic programming.</p>
-<p>To understand the formula <code>dp[i] = max(nums[i] + dp[i-1], nums[i])</code>, we can analyze it from a dynamic programming perspective. The core idea here is to make the optimal choice at each position. Here is a detailed explanation:</p>
-<h3 id="1-What-does-dp-i-represent"><a href="#1-What-does-dp-i-represent" class="headerlink" title="1. What does dp[i] represent?"></a>1. What does <code>dp[i]</code> represent?</h3><ul>
-<li><code>dp[i]</code> represents the <strong>maximum subarray sum ending at position <code>i</code></strong>.</li>
-</ul>
-<h3 id="2-Why-compare-nums-i-dp-i-1-and-nums-i"><a href="#2-Why-compare-nums-i-dp-i-1-and-nums-i" class="headerlink" title="2. Why compare nums[i] + dp[i-1] and nums[i]?"></a>2. Why compare <code>nums[i] + dp[i-1]</code> and <code>nums[i]</code>?</h3><ul>
-<li>The key question is: <strong>Should the current maximum subarray include the previous part (<code>dp[i-1]</code>)?</strong><ul>
-<li><strong><code>nums[i] + dp[i-1]</code></strong>: If <code>dp[i-1]</code> is positive, adding the current <code>nums[i]</code> will increase the subarray sum, so we choose to add it.</li>
-<li><strong><code>nums[i]</code></strong>: If <code>dp[i-1]</code> is negative, we choose to start a new subarray from the current position, as a negative sum will only drag down the current sum.</li>
-</ul>
-</li>
-</ul>
-<h3 id="3-Why-not-compare-subsequent-numbers"><a href="#3-Why-not-compare-subsequent-numbers" class="headerlink" title="3. Why not compare subsequent numbers?"></a>3. Why not compare subsequent numbers?</h3><ul>
-<li>When making the comparison, we assume the subarray stops at position <code>i</code>. In other words, we consider the maximum value within the range <code>[0:i]</code>. At position <code>i</code>, we either add the previous subarray or abandon it and only use the current number.</li>
-<li>We then traverse the entire array, finding the maximum value at each position, and finally return the largest value.</li>
-</ul>
-<h2 id="57-Insert-Interval"><a href="#57-Insert-Interval" class="headerlink" title="57. Insert Interval"></a><a target="_blank" rel="noopener" href="https://leetcode.com/problems/insert-interval/">57. Insert Interval</a></h2><p>This is a classic interval merging problem, where we need to merge a new interval into existing intervals.</p>
-<p>The solution can be broken down as follows:</p>
-<ul>
-<li>Step 1: Add all non-overlapping intervals that come before <code>newInterval</code> to the result.</li>
-<li>Step 2: Merge all potentially overlapping intervals with <code>newInterval</code>. Note the conditions for merging.</li>
-<li>Step 3: Add the remaining intervals to the result.</li>
-</ul>
-<p>Note that the condition for merging intervals is that the start of the previous interval is less than or equal to the end of the subsequent interval, i.e., <code>intervals[i][0] &lt;= newInterval[1]</code>.</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span>:</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">insert</span>(<span class="params">self, intervals: <span class="type">List</span>[<span class="type">List</span>[<span class="built_in">int</span>]], newInterval: <span class="type">List</span>[<span class="built_in">int</span>]</span>) -&gt; <span class="type">List</span>[<span class="type">List</span>[<span class="built_in">int</span>]]:</span><br><span class="line">        ret_list = []</span><br><span class="line">        i = <span class="number">0</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">while</span> i &lt; <span class="built_in">len</span>(intervals) <span class="keyword">and</span> intervals[i][<span class="number">1</span>] &lt; newInterval[<span class="number">0</span>]:</span><br><span class="line">            ret_list.append(intervals[i])</span><br><span class="line">            i += <span class="number">1</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">while</span> i &lt; <span class="built_in">len</span>(intervals) <span class="keyword">and</span> intervals[i][<span class="number">0</span>] &lt;= newInterval[<span class="number">1</span>]:</span><br><span class="line">            newInterval[<span class="number">0</span>] = <span class="built_in">min</span>(intervals[i][<span class="number">0</span>], newInterval[<span class="number">0</span>])</span><br><span class="line">            newInterval[<span class="number">1</span>] = <span class="built_in">max</span>(intervals[i][<span class="number">1</span>], newInterval[<span class="number">1</span>])</span><br><span class="line">            i += <span class="number">1</span></span><br><span class="line"></span><br><span class="line">        ret_list.append(newInterval)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">while</span> i &lt; <span class="built_in">len</span>(intervals):</span><br><span class="line">            ret_list.append(intervals[i])</span><br><span class="line">            i += <span class="number">1</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> ret_list</span><br></pre></td></tr></table></figure>
-
-<p>With careful attention to detail, this problem is not difficult.</p>
-<h2 id="300-Longest-Increasing-Subsequence"><a href="#300-Longest-Increasing-Subsequence" class="headerlink" title="300. Longest Increasing Subsequence"></a><a target="_blank" rel="noopener" href="https://leetcode.com/problems/longest-increasing-subsequence/">300. Longest Increasing Subsequence</a></h2><p>This is obviously a dynamic programming problem.</p>
-<p><code>dp[i]</code> represents the length of the longest increasing subsequence ending with a certain number.</p>
-<p>Each time an element is added, we update the current <code>dp</code> array. If the current number is greater than the previous one, we increment the result by 1.</p>
-<p>Note that the first <code>dp[i]</code> starts from index 1.</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span>:</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">lengthOfLIS</span>(<span class="params">self, nums: <span class="type">List</span>[<span class="built_in">int</span>]</span>) -&gt; <span class="built_in">int</span>:</span><br><span class="line">        dp = [<span class="number">1</span>] * <span class="built_in">len</span>(nums)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>, <span class="built_in">len</span>(nums)):</span><br><span class="line">            <span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(i):</span><br><span class="line">                <span class="keyword">if</span> nums[j] &lt; nums[i]:</span><br><span class="line">                    dp[i] = <span class="built_in">max</span>(dp[i], dp[j] + <span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">max</span>(dp)</span><br></pre></td></tr></table></figure>
-
-<p><strong>Complexity Analysis</strong>:</p>
-<ul>
-<li>Time Complexity: $O(n^2)$, due to the two nested loops.</li>
-<li>Space Complexity: $O(n)$, as we need a <code>dp</code> array of length <code>n</code>.</li>
-</ul>
-<h2 id="674-Longest-Continuous-Increasing-Subsequence"><a href="#674-Longest-Continuous-Increasing-Subsequence" class="headerlink" title="674. Longest Continuous Increasing Subsequence"></a><a target="_blank" rel="noopener" href="https://leetcode.com/problems/longest-continuous-increasing-subsequence/">674. Longest Continuous Increasing Subsequence</a></h2><p>This is a simple problem, but still worth understanding.</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span>:</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">findLengthOfLCIS</span>(<span class="params">self, nums: <span class="type">List</span>[<span class="built_in">int</span>]</span>) -&gt; <span class="built_in">int</span>:</span><br><span class="line">        dp = [<span class="number">1</span>] * <span class="built_in">len</span>(nums)</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>, <span class="built_in">len</span>(nums)):</span><br><span class="line">            <span class="keyword">if</span> nums[i] &gt; nums[i-<span class="number">1</span>]:</span><br><span class="line">                dp[i] = <span class="built_in">max</span>(dp[i], dp[i-<span class="number">1</span>] + <span class="number">1</span>)</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">max</span>(dp)</span><br></pre></td></tr></table></figure>
-
-<h2 id="392-Is-Subsequence"><a href="#392-Is-Subsequence" class="headerlink" title="392. Is Subsequence"></a><a target="_blank" rel="noopener" href="https://leetcode.com/problems/is-subsequence/">392. Is Subsequence</a></h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span>:</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">isSubsequence</span>(<span class="params">self, s: <span class="built_in">str</span>, t: <span class="built_in">str</span></span>) -&gt; <span class="built_in">bool</span>:</span><br><span class="line">        i = <span class="number">0</span></span><br><span class="line">        j = <span class="number">0</span></span><br><span class="line">        <span class="keyword">while</span> i &lt; <span class="built_in">len</span>(s) <span class="keyword">and</span> j &lt; <span class="built_in">len</span>(t):</span><br><span class="line">            <span class="keyword">if</span> s[i] == t[j]:</span><br><span class="line">                i += <span class="number">1</span></span><br><span class="line">            j += <span class="number">1</span></span><br><span class="line">        <span class="keyword">return</span> i == <span class="built_in">len</span>(s)</span><br></pre></td></tr></table></figure>
-
-<p>This problem can be solved using a two-pointer technique, with <code>t</code> as the base. If <code>s</code> contains matching characters, we move forward; if we reach the end of <code>s</code>, it means the match is complete.</p>
-<h2 id="115-Distinct-Subsequences"><a href="#115-Distinct-Subsequences" class="headerlink" title="115. Distinct Subsequences"></a><a target="_blank" rel="noopener" href="https://leetcode.com/problems/distinct-subsequences/">115. Distinct Subsequences</a></h2><p>This problem asks us to find how many distinct subsequences of string <code>s</code> equal string <code>t</code>.</p>
-<p>First, we need to define <code>dp</code>, where <code>dp[i][j]</code> represents the number of distinct subsequences that can be formed from the first <code>i</code> characters of <code>s</code> to form the first <code>j</code> characters of <code>t</code>.</p>
-<ul>
-<li><code>dp[i][0]</code> represents when <code>t</code> is an empty string, the result is 1.</li>
-<li><code>dp[0][j]</code> represents forming <code>t</code> from an empty string, which results in 0.</li>
-</ul>
-<p>For <code>dp[i][j]</code>, the result depends on the characters at positions <code>i</code> and <code>j</code>:</p>
-<ul>
-<li>If they are equal, the result is the sum of the cases where <code>s[i-1]</code> is not matched (<code>dp[i-1][j]</code>) and the cases where it is matched (<code>dp[i-1][j-1]</code>).</li>
-<li>If they are not equal, the result is equal to <code>dp[i-1][j]</code>.</li>
-</ul>
-<p>Note that <code>i, j</code> refer to the first <code>i</code> and <code>j</code> characters.</p>
-<p>Additionally, <code>dp[0][0]</code> is initialized to 1, as an empty string is a subsequence of any string.</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span>:</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">numDistinct</span>(<span class="params">self, s: <span class="built_in">str</span>, t: <span class="built_in">str</span></span>) -&gt; <span class="built_in">int</span>:</span><br><span class="line">        dp = [[<span class="number">0</span> <span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(t) + <span class="number">1</span>)] <span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(s) + <span class="number">1</span>)]</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(s) + <span class="number">1</span>):</span><br><span class="line">            dp[i][<span class="number">0</span>] = <span class="number">1</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>, <span class="built_in">len</span>(t) + <span class="number">1</span>):</span><br><span class="line">            <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>, <span class="built_in">len</span>(s) + <span class="number">1</span>):</span><br><span class="line">                <span class="keyword">if</span> s[i-<span class="number">1</span>] == t[j-<span class="number">1</span>]:</span><br><span class="line">                    dp[i][j] = dp[i-<span class="number">1</span>][j] + dp[i-<span class="number">1</span>][j-<span class="number">1</span>]</span><br><span class="line">                <span class="keyword">else</span>:</span><br><span class="line">                    dp[i][j] = dp[i-<span class="number">1</span>][j]</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> dp[-<span class="number">1</span>][-<span class="number">1</span>]</span><br></pre></td></tr></table></figure>
-
 
       
     </div>
@@ -1188,154 +846,6 @@
   
   
 
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://nansenli.com/en/post/2024/10/oboattact-md/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Nansen Li (李楠森) 🌈">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Nansen">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Nansen">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/en/post/2024/10/oboattact-md/" class="post-title-link" itemprop="url">Off-by-One Overflow Attack Analysis</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-      
-
-      <time title="创建时间：2024-10-15 14:18:15 / 修改时间：15:17:34" itemprop="dateCreated datePublished" datetime="2024-10-15T14:18:15+01:00">2024-10-15</time>
-    </span>
-
-  
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Disqus：</span>
-    
-    <a title="disqus" href="/en/post/2024/10/oboattact-md/#disqus_thread" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="en/post/2024/10/oboattact-md/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h1 id="Off-by-One-Overflow-Attack-Analysis"><a href="#Off-by-One-Overflow-Attack-Analysis" class="headerlink" title="Off-by-One Overflow Attack Analysis"></a>Off-by-One Overflow Attack Analysis</h1><h2 id="Background"><a href="#Background" class="headerlink" title="Background"></a>Background</h2><p>Last week, I attended a security course that included an example of an off-by-one overflow vulnerability. Here is the original code:</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* Simple off-by-one overflow example */</span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;string.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">foo</span><span class="params">(<span class="type">char</span> *input)</span> &#123;</span><br><span class="line">  <span class="type">char</span> buf[<span class="number">1024</span>];</span><br><span class="line">  <span class="built_in">strncpy</span>(buf, input, <span class="keyword">sizeof</span>(buf));</span><br><span class="line">  buf[<span class="keyword">sizeof</span>(buf)] = <span class="string">&#x27;\0&#x27;</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">bar</span><span class="params">(<span class="type">void</span>)</span> &#123;</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">&quot;I&#x27;ve been hacked\n&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">(<span class="type">int</span> argc, <span class="type">char</span> **argv)</span> &#123;</span><br><span class="line">  <span class="keyword">if</span> (argc != <span class="number">2</span>) &#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;Usage: %s input_string\n&quot;</span>, argv[<span class="number">0</span>]);</span><br><span class="line">    <span class="built_in">exit</span>(EXIT_FAILURE);</span><br><span class="line">  &#125;</span><br><span class="line">  foo(argv[<span class="number">1</span>]);</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>The answer provided for exploiting this vulnerability is:</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">perl -e <span class="string">&#x27;system &quot;./obo&quot;, &quot;\x38\x84\x04\x08&quot;x256&#x27;</span></span><br></pre></td></tr></table></figure>
-
-<p>The result of running this command is that multiple lines of <code>I&#39;ve been hacked</code> are printed on the screen.</p>
-<h2 id="Analysis"><a href="#Analysis" class="headerlink" title="Analysis"></a>Analysis</h2><p>When the program enters the <code>foo</code> function, the memory layout looks like this (as observed using GDB):</p>
-<p>From top to bottom, the layout contains the return address, the saved frame pointer, and the buffer (<code>buf</code>).</p>
-<p>When the line <code>buf[sizeof(buf)] = &#39;\0&#39;;</code> is executed, the least significant byte of the saved frame pointer (<code>ebp</code>) is set to <code>0</code>. To ensure that <code>ebp</code> still points within the <code>buf</code> region after being partially overwritten, a buffer of at least 1024 bytes is required. Specifically, <code>ebp</code> needs to be overwritten such that it remains within a reasonable range (— up to <code>0xff</code>), which is why the buffer is set to <code>0xff * 4</code> bytes.</p>
-<h2 id="Understanding-Assembly-Commands-on-foo-Return"><a href="#Understanding-Assembly-Commands-on-foo-Return" class="headerlink" title="Understanding Assembly Commands on foo Return"></a>Understanding Assembly Commands on <code>foo</code> Return</h2><p>When the <code>foo</code> function returns, it typically executes the following key assembly instructions:</p>
-<h3 id="1-leave-Instruction"><a href="#1-leave-Instruction" class="headerlink" title="1. leave Instruction"></a>1. <code>leave</code> Instruction</h3><p>The <code>leave</code> instruction is equivalent to:</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mov esp, ebp</span><br><span class="line">pop ebp</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li><code>mov esp, ebp</code>: This sets the stack pointer (<code>esp</code>) to the value of the frame pointer (<code>ebp</code>), restoring the stack pointer to the top of the current stack frame and effectively releasing the space occupied by the current function.</li>
-<li><code>pop ebp</code>: This pops the value at the top of the stack and assigns it to the frame pointer (<code>ebp</code>), thereby restoring the caller’s frame pointer. Essentially, it writes the return address into <code>ebp</code>, meaning it assigns the stack value (usually the caller’s frame address) to <code>ebp</code>, restoring the caller’s stack frame.</li>
-</ul>
-<p>The effect of <code>leave</code> is to restore <code>esp</code> to its state before the function was called and to pop the saved <code>ebp</code>. If <code>ebp</code> has been overwritten to point to a special address (such as an address within the buffer), it can result in an incorrect stack pointer location during function return.</p>
-<h3 id="2-ret-Instruction"><a href="#2-ret-Instruction" class="headerlink" title="2. ret Instruction"></a>2. <code>ret</code> Instruction</h3><p>The <code>ret</code> instruction pops an address off the top of the stack and jumps to that address:</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pop eip</span><br></pre></td></tr></table></figure>
-
-<p>If the return address has been overwritten with the address of the <code>bar</code> function, the execution flow will jump to <code>bar</code>, allowing an attacker to run arbitrary code. Essentially, <code>ret</code> pops an address into the instruction pointer (<code>eip</code>) and jumps to that address to continue execution.</p>
-<h2 id="Attack-Steps"><a href="#Attack-Steps" class="headerlink" title="Attack Steps"></a>Attack Steps</h2><ul>
-<li>When the command <code>perl -e &#39;system &quot;./obo&quot;, &quot;\x38\x84\x04\x08&quot;x256&#39;</code> is executed, the program takes these repeated bytes as the input to <code>./obo</code>.</li>
-<li>As the <code>foo</code> function returns, the <code>leave</code> and <code>ret</code> instructions are executed, leading to the return address being overwritten. This causes the program to jump to the <code>bar</code> function, printing the success message multiple times.</li>
-</ul>
-<h2 id="Further-Analysis-Determining-Effective-Overwrite-Locations"><a href="#Further-Analysis-Determining-Effective-Overwrite-Locations" class="headerlink" title="Further Analysis: Determining Effective Overwrite Locations"></a>Further Analysis: Determining Effective Overwrite Locations</h2><h2 id="Stack-Frame-Layout-Explanation"><a href="#Stack-Frame-Layout-Explanation" class="headerlink" title="Stack Frame Layout Explanation"></a>Stack Frame Layout Explanation</h2><p>During the GDB debugging session, the memory layout for the stack frame of the <code>foo</code> function looks like this:</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">0xbfffed10   return address</span><br><span class="line">0xbfffed0c   saved frame pointer (ebp)</span><br><span class="line">0xbfffed0b   buf[1023]</span><br><span class="line">...</span><br><span class="line">0xbfffed03   buf[1015]</span><br><span class="line">0xbfffed02   buf[1014]</span><br><span class="line">0xbfffed01   buf[1013]</span><br><span class="line">0xbfffed00   buf[1012]</span><br><span class="line">...</span><br><span class="line">0xbfffe90c   buf[0]</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li><p><strong>Return address</strong>: Located at <code>0xbfffed10</code>, this is the address that the program will jump to after the <code>foo</code> function finishes executing. Overwriting this address can control the flow of the program and potentially redirect it to malicious code (e.g., the <code>bar</code> function).</p>
-</li>
-<li><p><strong>Saved frame pointer (<code>ebp</code>)</strong>: Stored at <code>0xbfffed0c</code>, this value is used to restore the calling function’s stack frame after <code>foo</code> finishes. In this example, we can see how the off-by-one overflow can overwrite the least significant byte of <code>ebp</code>.</p>
-</li>
-<li><p><strong>Buffer (<code>buf</code>)</strong>: The buffer starts at address <code>0xbfffe90c</code> and extends to <code>0xbfffed0b</code>, with <code>buf[0]</code> located at <code>0xbfffe90c</code> and <code>buf[1023]</code> at <code>0xbfffed0b</code>. The vulnerable line in the code, <code>buf[sizeof(buf)] = &#39;\0&#39;;</code>, writes a null terminator (<code>\0</code>) just outside the bounds of this buffer, affecting the saved frame pointer.</p>
-</li>
-</ul>
-<p>In the off-by-one overflow scenario, the write operation overwrites the least significant byte of <code>ebp</code>, which is stored at <code>0xbfffed0c</code>. By manipulating the value of <code>ebp</code>, we can influence the stack behavior when the <code>leave</code> and <code>ret</code> instructions are executed, eventually allowing us to control the program flow and redirect execution to the <code>bar</code> function.</p>
-<p>To perform a successful attack, it’s crucial to determine precisely which bytes need to be overwritten in order to manipulate the control flow effectively. In this example, the overflow occurs when <code>buf[sizeof(buf)] = &#39;\0&#39;</code> is executed, causing the least significant byte of the saved frame pointer (<code>ebp</code>) to be set to <code>0</code>. Thus, the value of <code>ebp</code> needs to be adjusted to ensure it points back into the buffer area, allowing the execution to proceed in the desired way and eventually jump to the <code>bar</code> function.</p>
-<p>Based on further analysis and testing, the following insights were obtained:</p>
-<ul>
-<li><p>To accurately determine the overwrite location, the value of <code>ebp</code> is crucial. However, obtaining this value is challenging because:</p>
-<ol>
-<li>GDB debugging affects address layout.</li>
-<li>The length of the input parameter affects the address layout.</li>
-</ol>
-</li>
-<li><p>Under GDB debugging, the layout within the <code>foo</code> function looks like this:</p>
-</li>
-<li><p>After executing <code>buf[sizeof(buf)] = &#39;\0&#39;;</code>, <code>ebp</code> is modified such that the return address effectively takes the value at <code>ebp + 1</code>, which is the address <code>0xbfffed00 + 1</code>, or <code>0xbfffed04</code>.</p>
-</li>
-<li><p>The corresponding offset is at position 255 in <code>buf</code>, meaning the attack can be constructed by filling in the return address only at that specific location. The following command was used for verification in GDB:</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">r $(perl -e <span class="string">&#x27;print  &quot;\x01\x01\x01\x01&quot;x254 . &quot;\x38\x84\x04\x08&quot;x1 . &quot;\x01\x01\x01\x01&quot;x1&#x27;</span>)</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>This was verified to work under GDB debugging, with some details to note:</p>
-<ol>
-<li>The input parameter length must always be 256 bytes; otherwise, the value of <code>ebp</code> will change, as the input parameter occupies stack space, affecting the starting position of the frame and thereby affecting the value of <code>ebp</code>.</li>
-<li>Padding must use non-zero values such as <code>0x01</code>, because <code>strncpy</code> will terminate early if it encounters a <code>0</code> value.</li>
-</ol>
-</li>
-<li><p>When executing the program directly (i.e., without GDB), the memory layout differs, resulting in a different offset position. Through experimentation, it was found that the offset is at position 235. The corresponding attack command is:</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./obo $(perl -e <span class="string">&#x27;print  &quot;\x01\x01\x01\x01&quot;x234 . &quot;\x38\x84\x04\x08&quot;x1 . &quot;\x01\x01\x01\x01&quot;x21&#x27;</span>)</span><br></pre></td></tr></table></figure></li>
-</ul>
-<p>This achieves the desired effect of accurately finding the overwrite location and successfully executing the attack.</p>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://nansenli.com/zh-CN/post/2024/10/obsidian-latex-fix/">
 
@@ -1428,9 +938,196 @@
 
 
 
-  <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/zh-CN/page/2/">2</a><a class="extend next" rel="next" title="下一页" aria-label="下一页" href="/zh-CN/page/2/"><i class="fa fa-angle-right"></i></a>
-  </nav>
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://nansenli.com/zh-CN/post/2024/10/aboutme/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Nansen Li (李楠森) 🌈">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Nansen">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Nansen">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/zh-CN/post/2024/10/aboutme/" class="post-title-link" itemprop="url">关于我</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2024-10-11 20:55:02" itemprop="dateCreated datePublished" datetime="2024-10-11T20:55:02+01:00">2024-10-11</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2024-12-18 13:59:03" itemprop="dateModified" datetime="2024-12-18T13:59:03+00:00">2024-12-18</time>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/zh-CN/post/2024/10/aboutme/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="zh-CN/post/2024/10/aboutme/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="关于我"><a href="#关于我" class="headerlink" title="关于我"></a>关于我</h1><p>本文书写于 2024年10月11日，都柏林，爱尔兰。</p>
+<hr>
+<h2 id="自我介绍"><a href="#自我介绍" class="headerlink" title="自我介绍"></a>自我介绍</h2><p>大家好，我叫李楠森，曾用名李楠。我来自中国，是一名热爱科技的工程师。我拥有机械电子的本科学位和两个计算机科学的硕士学位。我曾在中国一家大型互联网公司担任过 Go 语言工程师，目前正在都柏林一所大学攻读硕士学位。</p>
+<p>我本科学习机械电子工程，并且此期间参与了组织的中国大学生电子设计竞赛和在中国举办的智能汽车比赛。我在此期间逐渐对编程更感兴趣，为此，我开始攻读一个计算机工程的硕士学位，以追寻我真正热爱的东西。在硕士期间，我继续参与了和编程相关的比赛，并且在一家大型互联网公司实习。我有幸取得了该公司的正式职位，作为软件工程师，工作了三年。</p>
+<p>在工作期间，我有幸为上亿用户开发软件并直接服务客户。每当我发布服务，我都很小心翼翼，我知道我所发布的不仅仅是冰冷的代码，还影响着成千上万用户的体验。</p>
+<p>为了帮助家族企业从疫情中恢复，我离开了公司，去帮助我的家人。同时，我开始巩固我的外语技能，申请一段海外的学习机会。现在，我来到爱尔兰，开始继续深入学习计算机科学相关的知识。</p>
+<p>我对前端和后端开发、系统架构、算法、游戏开发，以及生成式 AI（例如 Stable Diffusion 和 ChatGPT）有着浓厚的兴趣。我一直致力于提高自己的编程能力，也喜欢尝试新技术，保持对行业发展的敏感度。</p>
+<p>如果你对技术或者生活方式有相同的兴趣，欢迎联系我，我们可以一起讨论和交流。</p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://nansenli.com/zh-CN/post/2024/10/myblog/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Nansen Li (李楠森) 🌈">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Nansen">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Nansen">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/zh-CN/post/2024/10/myblog/" class="post-title-link" itemprop="url">我的博客</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2024-10-10 21:06:26" itemprop="dateCreated datePublished" datetime="2024-10-10T21:06:26+01:00">2024-10-10</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2024-10-11 01:20:45" itemprop="dateModified" datetime="2024-10-11T01:20:45+01:00">2024-10-11</time>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/zh-CN/post/2024/10/myblog/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="zh-CN/post/2024/10/myblog/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <p>我是李楠森，这里是我的第一篇笔记，我不知道我能记录多少内容，也不知道能记录多久，但是我会尽力坚持去记录。</p>
+<blockquote>
+<p>于 2024年10月11日凌晨 1点20分 爱尔兰 都柏林</p>
+</blockquote>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
 
 </div>
   </main>
