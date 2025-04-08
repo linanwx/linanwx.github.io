@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha256-5eIC48iZUHmSlSUz9XtjRyK2mzQkHScZY1WdMaoz74E=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"nansenli.com","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.21.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+  <div class="languages">
+    <label class="lang-select-label">
+      <i class="fa fa-language"></i>
+      <span>English</span>
+      <i class="fa fa-angle-up" aria-hidden="true"></i>
+    </label>
+    <select class="lang-select" data-canonical="" aria-label="Select language">
+      
+        <option value="en" data-href="/en/post/2025/04/aitest/" selected="">
+          English
+        </option>
+      
+        <option value="zh-CN" data-href="/zh-CN/post/2025/04/aitest/" selected="">
+          简体中文
+        </option>
+      
+    </select>
+  </div>
+
+    <meta name="description" content="ChatGPT GPT-4o: Versatile. Excellent for daily communication and learning, with sufficient context window to easily handle code and document retrieval tasks. Supports multiple attachment formats and o">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Summary of LLM Tools Usage Experience">
+<meta property="og:url" content="https://nansenli.com/en/post/2025/04/aitest/index.html">
+<meta property="og:site_name" content="Nansen">
+<meta property="og:description" content="ChatGPT GPT-4o: Versatile. Excellent for daily communication and learning, with sufficient context window to easily handle code and document retrieval tasks. Supports multiple attachment formats and o">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2025-04-08T18:47:48.000Z">
+<meta property="article:modified_time" content="2025-04-08T18:50:38.315Z">
+<meta property="article:author" content="Nansen Li (李楠森) 🌈">
+<meta property="article:tag" content="LLM">
+<meta property="article:tag" content="AI">
+<meta property="article:tag" content="ChatGPT">
+<meta property="article:tag" content="Claude">
+<meta property="article:tag" content="DeepSeek">
+<meta property="article:tag" content="Grok">
+<meta property="article:tag" content="Gemini">
+<meta property="article:tag" content="v0.dev">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://nansenli.com/en/post/2025/04/aitest/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://nansenli.com/en/post/2025/04/aitest/","path":"en/post/2025/04/aitest/","title":"Summary of LLM Tools Usage Experience"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Summary of LLM Tools Usage Experience | Nansen</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Nansen</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">🌈</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li><li class="menu-item menu-item-github"><a href="https://github.com/linanwx" rel="section" target="_blank"><i class="fab fa-github fa-fw"></i>github</a></li><li class="menu-item menu-item-linkedin"><a href="https://www.linkedin.com/in/nansen-li-3bb0a3146/" rel="section" target="_blank"><i class="fab fa-linkedin fa-fw"></i>linkedin</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#ChatGPT"><span class="nav-number">1.</span> <span class="nav-text">ChatGPT</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Claude"><span class="nav-number">2.</span> <span class="nav-text">Claude</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#DeepSeek"><span class="nav-number">3.</span> <span class="nav-text">DeepSeek</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Grok"><span class="nav-number">4.</span> <span class="nav-text">Grok</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Gemini"><span class="nav-number">5.</span> <span class="nav-text">Gemini</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#v0-dev"><span class="nav-number">6.</span> <span class="nav-text">v0.dev</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#chat-qwen-ai"><span class="nav-number">7.</span> <span class="nav-text">chat.qwen.ai</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Zhihu-Direct-Answer"><span class="nav-number">8.</span> <span class="nav-text">Zhihu Direct Answer</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Perplexity"><span class="nav-number">9.</span> <span class="nav-text">Perplexity</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Cursor"><span class="nav-number">10.</span> <span class="nav-text">Cursor</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Nansen Li (李楠森) 🌈</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">22</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">26</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://nansenli.com/en/post/2025/04/aitest/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Nansen Li (李楠森) 🌈">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Nansen">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Summary of LLM Tools Usage Experience | Nansen">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Summary of LLM Tools Usage Experience
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+      
+
+      <time title="Created: 2025-04-08 19:47:48 / Modified: 19:50:38" itemprop="dateCreated datePublished" datetime="2025-04-08T19:47:48+01:00">2025-04-08</time>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/en/post/2025/04/aitest/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="en/post/2025/04/aitest/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="ChatGPT"><a href="#ChatGPT" class="headerlink" title="ChatGPT"></a>ChatGPT</h1><ul>
+<li><p>GPT-4o: Versatile. Excellent for daily communication and learning, with sufficient context window to easily handle code and document retrieval tasks. Supports multiple attachment formats and online code execution. Drawback: generates limited context length, not suitable for very long content. For lengthy conversations, context compression is severe and may forget earlier content.</p>
+</li>
+<li><p>Projects: Somewhat redundant. Suitable for scenarios requiring frequent searching and text retrieval across multiple files.</p>
+</li>
+<li><p>GPT-4o mini: Weaker than GPT-4o, but has a massive context window, recommended for translating very long texts.</p>
+</li>
+<li><p>o1: Excellent chain-of-thought model, only used for solving complex code and math problems. Not good at handling emotional or intuitive problems.</p>
+</li>
+<li><p>o3-mini: Severe hallucinations, inferior to o1, but extremely fast reasoning speed.</p>
+</li>
+<li><p>Search: Slightly redundant. New version’s search results are heavily restricted, even inferior to model output without search. Suitable as a light search alternative.</p>
+</li>
+<li><p>Deep Research: Excellent tool. Best quality among similar features, most comprehensive output results.</p>
+</li>
+<li><p>GPT-4.5-preview: Excellent. Massive context window, strong long-text comprehension. Has vast memory and strongest intuition. Not good at reasoning.</p>
+</li>
+<li><p>Canvas: Overall inferior to Cursor. Context output too small, text length limited. Suitable for short-text scenarios with real-time editing.</p>
+</li>
+<li><p>Work with Apps on macOS: Functionality experience crushed by Cursor, essentially a simplified version of Cursor.</p>
+</li>
+</ul>
+<h1 id="Claude"><a href="#Claude" class="headerlink" title="Claude"></a>Claude</h1><ul>
+<li>Claude 3.7 Sonnet: Excellent, suitable for generating various code. Web version supports massive context, almost matching API’s context history message retention. Model very suitable for writing communication texts like emails, with accurate, concise, and unpretentious wording. Drawback: limited usage in free version.</li>
+</ul>
+<h1 id="DeepSeek"><a href="#DeepSeek" class="headerlink" title="DeepSeek"></a>DeepSeek</h1><ul>
+<li><p>R1: Severe hallucinations, unstable performance, occasionally affecting usage. Alternative to o1.</p>
+</li>
+<li><p>V3: Very excellent, alternative to GPT-4o.</p>
+</li>
+</ul>
+<h1 id="Grok"><a href="#Grok" class="headerlink" title="Grok"></a>Grok</h1><ul>
+<li><p>Grok-3: Generates text fluently and naturally, less AI-like, suitable for natural writing and novel creation. Overall mediocre, fewer tools than GPT-4o.</p>
+</li>
+<li><p>Deep Search: Slightly redundant. Generated content heavily templated, affecting quality.</p>
+</li>
+</ul>
+<h1 id="Gemini"><a href="#Gemini" class="headerlink" title="Gemini"></a>Gemini</h1><ul>
+<li><p>2.5 Pro: Very excellent model, alternative to GPT-4o, few hallucinations, high-quality search results. Supports integration with Google tools, very useful in specific scenarios, such as uploading screenshots or text and automatically creating events in Google Calendar.</p>
+</li>
+<li><p>Deep Research: Average, slightly better than old GPT Search. Occasional comprehension deviations, search and document generation executed in stages, process fragmented, heavily templated. Currently the only product that can replace GPT Deep Research.</p>
+</li>
+</ul>
+<h1 id="v0-dev"><a href="#v0-dev" class="headerlink" title="v0.dev"></a>v0.dev</h1><ul>
+<li>Suitable for writing and previewing frontend components online.</li>
+</ul>
+<h1 id="chat-qwen-ai"><a href="#chat-qwen-ai" class="headerlink" title="chat.qwen.ai"></a>chat.qwen.ai</h1><ul>
+<li>Qwen2.5-Max: Very excellent model, alternative to GPT-4o, fast generation speed, supports thinking mode.</li>
+</ul>
+<h1 id="Zhihu-Direct-Answer"><a href="#Zhihu-Direct-Answer" class="headerlink" title="Zhihu Direct Answer"></a>Zhihu Direct Answer</h1><ul>
+<li>Supports searching Zhihu’s entire network content. Possible competitor is Xiaohongshu Direct Answer.</li>
+</ul>
+<h1 id="Perplexity"><a href="#Perplexity" class="headerlink" title="Perplexity"></a>Perplexity</h1><ul>
+<li>Supports basic search, mediocre quality, slightly redundant.</li>
+</ul>
+<h1 id="Cursor"><a href="#Cursor" class="headerlink" title="Cursor"></a>Cursor</h1><ul>
+<li>Excellent tool. Can index entire code repositories, suitable for large project development. Supports multiple model switching, local command line execution and terminal takeover, suitable for the following tasks:<ul>
+<li>Writing LaTeX documents, replacing Overleaf</li>
+<li>Assisting with various assignments</li>
+<li>Code repository search and specific feature location</li>
+<li>Creating unit tests</li>
+<li>Executing git operations</li>
+<li>Executing deployment tasks</li>
+</ul>
+</li>
+<li>Can execute almost everything involving documents and command lines, helpful in development, debugging, debugging, and document writing</li>
+<li>Truly the most Agent-like product at the current stage</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/LLM/" rel="tag"># LLM</a>
+              <a href="/tags/AI/" rel="tag"># AI</a>
+              <a href="/tags/ChatGPT/" rel="tag"># ChatGPT</a>
+              <a href="/tags/Claude/" rel="tag"># Claude</a>
+              <a href="/tags/DeepSeek/" rel="tag"># DeepSeek</a>
+              <a href="/tags/Grok/" rel="tag"># Grok</a>
+              <a href="/tags/Gemini/" rel="tag"># Gemini</a>
+              <a href="/tags/v0-dev/" rel="tag"># v0.dev</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/zh-CN/post/2025/02/rodin/" rel="prev" title="如何在搭载 Apple 芯片的 MacBook 上安装 Rodin 软件">
+                  <i class="fa fa-angle-left"></i> 如何在搭载 Apple 芯片的 MacBook 上安装 Rodin 软件
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/zh-CN/post/2025/04/aitest/" rel="next" title="LLM 工具使用体验总结">
+                  LLM 工具使用体验总结 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    
+  <div class="comments" id="disqus_thread">
+    <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+  </div>
+  
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2025</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Nansen Li (李楠森) 🌈</span>
+  </div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+<script class="next-config" data-name="disqus" type="application/json">{"enable":true,"shortname":"nansenli","count":true,"i18n":{"disqus":"disqus"}}</script>
+<script src="/js/third-party/comments/disqus.js"></script>
+
+</body>
+</html>
