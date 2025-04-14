@@ -6,7 +6,7 @@
 
 <link rel='canonical' href='https://nansenli.com/zh-cn/post/2025/01/feal-4/'>
 
-<link rel="stylesheet" href="/scss/style.min.6a12bf910fc038cbe9b80babeda59614bc5345ea20e3f1f03b809941fcf45b1d.css"><meta property='og:title' content="差分攻击 FEAL-4：从原理到实现">
+<link rel="stylesheet" href="/scss/style.min.1084ac713783b88e0bd9807a58068e10aae22e99420f94a9234654a4e199baa4.css"><meta property='og:title' content="差分攻击 FEAL-4：从原理到实现">
 <meta property='og:description' content="这篇文章主要介绍了如何对传统分组密码算法 FEAL-4 进行差分分析（Differential Cryptanalysis），并展示了攻击进程和关键实现细节。文中还包含了部分实验数据和攻击结果，可供有兴趣的读者参考或复现。 两张重要图片 在正式展开分析之前，先给出两张与 FEAL-4 密切相关的图片，方便对差分传播和整体加密流程有一个直观认识。 差分传播示意图 下图展示了在 FEAL-4 中，明文差分（XOR 形式）如何在加密轮次中传播并最终反映到密文上。 FEAL-4 工作流示意图 下图是 FEAL-4 的整体加密框架示意，包括明文的左右分块、各轮子密钥注入以及 F 函数的运用流程。 F 函数的特性 FEAL-4 的轮函数（即 F 函数）可以视作对 32 位输入进行某种随机化排列（Permutation）。在差分分析中，我们并不需要 F 的具体实现，而更关注它的两个关键差分属性： 若 $X \\oplus Y = 0$，则 $F(X) = F(Y)$。 若 $X \\oplus Y = 0x80800000$，则 $F(X) \\oplus F(Y) = 0x02000000$。 有了这两个结论，在后续分析时就能推断特定差分输入下的输出表现，从而帮助定位子密钥。 差分路径的详细分析 假设我们选择一对特殊的明文 $P_0$ 和 $P_1$，满足： $$ P_0 \\oplus P_1 = 0x8080000080800000 = P^{\\prime}. $$ 这个特定差分向量有助于简化 FEAL-4 若干轮次输出中的差分计算。 1. 初始轮次差分推导 令 $(L0_0, R0_0)$ 表示 $P_0$ 的左右分块（同理 $(L0_1, R0_1)$ 表示 $P_1$ 的左右分块）。">
 <meta property='og:url' content='https://nansenli.com/zh-cn/post/2025/01/feal-4/'>
 <meta property='og:site_name' content='Nansen Li'>
