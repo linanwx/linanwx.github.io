@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>FEAL-4 on Nansen Li</title>
+        <link>https://example.org/zh-cn/tags/feal-4/</link>
+        <description>Recent content in FEAL-4 on Nansen Li</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>zh-cn</language>
+        <lastBuildDate>Wed, 01 Jan 2025 13:15:04 +0000</lastBuildDate><atom:link href="https://example.org/zh-cn/tags/feal-4/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>差分攻击 FEAL-4：从原理到实现</title>
+        <link>https://example.org/zh-cn/post/2025/01/feal-4/</link>
+        <pubDate>Wed, 01 Jan 2025 13:15:04 +0000</pubDate>
+        
+        <guid>https://example.org/zh-cn/post/2025/01/feal-4/</guid>
+        <description>&lt;p&gt;这篇文章主要介绍了如何对传统分组密码算法 FEAL-4 进行差分分析（Differential Cryptanalysis），并展示了攻击进程和关键实现细节。文中还包含了部分实验数据和攻击结果，可供有兴趣的读者参考或复现。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;两张重要图片&#34;&gt;两张重要图片
+&lt;/h2&gt;&lt;p&gt;在正式展开分析之前，先给出两张与 FEAL-4 密切相关的图片，方便对差分传播和整体加密流程有一个直观认识。&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;差分传播示意图&lt;/strong&gt;&lt;br&gt;
+下图展示了在 FEAL-4 中，明文差分（XOR 形式）如何在加密轮次中传播并最终反映到密文上。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://res.craft.do/user/full/c5e6e898-910c-6f27-fbc5-91f4c34a9511/doc/BC194830-506A-4A58-A67E-4C93B48730F8/E52F074B-64AB-4DF4-A553-907625B5D18F_2/UTpozkY6Wu2EoytDJ1dciSe132jz20EsyjndJ7GALVQz/Image.png&#34;
+	
+	
+	
+	loading=&#34;lazy&#34;
+	
+	
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;FEAL-4 工作流示意图&lt;/strong&gt;&lt;br&gt;
+下图是 FEAL-4 的整体加密框架示意，包括明文的左右分块、各轮子密钥注入以及 F 函数的运用流程。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://res.craft.do/user/full/c5e6e898-910c-6f27-fbc5-91f4c34a9511/doc/BC194830-506A-4A58-A67E-4C93B48730F8/FCB4E65D-A8EE-457F-A78C-4A788E832B87_2/rzEGfY9PioZpJMMK4Q466xqJI7rwGXEPRybyCDPuHW8z/Image.png&#34;
+	
+	
+	
+	loading=&#34;lazy&#34;
+	
+	
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;f-函数的特性&#34;&gt;F 函数的特性
+&lt;/h2&gt;&lt;p&gt;FEAL-4 的轮函数（即 F 函数）可以视作对 32 位输入进行某种随机化排列（Permutation）。在差分分析中，我们并不需要 F 的具体实现，而更关注它的两个关键差分属性：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;若 $X \oplus Y = 0$，则 $F(X) = F(Y)$。&lt;/li&gt;
+&lt;li&gt;若 $X \oplus Y = 0x80800000$，则 $F(X) \oplus F(Y) = 0x02000000$。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;有了这两个结论，在后续分析时就能推断特定差分输入下的输出表现，从而帮助定位子密钥。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;差分路径的详细分析&#34;&gt;差分路径的详细分析
+&lt;/h2&gt;&lt;p&gt;假设我们选择一对特殊的明文 $P_0$ 和 $P_1$，满足：
+$$
+P_0 \oplus P_1 = 0x8080000080800000 = P^{\prime}.
+$$
+这个特定差分向量有助于简化 FEAL-4 若干轮次输出中的差分计算。&lt;/p&gt;
+&lt;h3 id=&#34;1-初始轮次差分推导&#34;&gt;1. 初始轮次差分推导
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;令 $(L0_0, R0_0)$ 表示 $P_0$ 的左右分块（同理 $(L0_1, R0_1)$ 表示 $P_1$ 的左右分块）。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;经过第一轮的异或操作后：
+$$
+L1_0 \oplus L1_1 = (L0_0 \oplus K4) \oplus (L0_1 \oplus K4)
+= L0_0 \oplus L1_0
+= 0x80800000.
+$$
+同理可推出右半部分的差分。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;进一步由于加密时存在 “额外一轮 XOR”，可得到：
+$$
+R2_0 \oplus R2_1
+= (R1_0 \oplus L1_0) \oplus (R1_1 \oplus L1_1)
+= 0x80800000 \oplus 0x80800000
+= 0.
+$$
+这意味着在后续计算中，差分会以更简单的形式得以归并。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;2-后向差分计算backward-calculation&#34;&gt;2. 后向差分计算（Backward Calculation）
+&lt;/h3&gt;&lt;p&gt;当我们获得明文对 $(P_0, P_1)$ 与对应的密文对 $(C_0, C_1)$ 后，可以进一步进行后向推导。令密文记作 $(L, R)$，则：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;计算出 $C^{\prime} = C_0 \oplus C_1$，得到 $(L^{\prime}, R^{\prime})$。&lt;/li&gt;
+&lt;li&gt;根据已知差分性质，可在末轮逐步还原 $X^{\prime}$、$Y^{\prime}$、$Z^{\prime}$ 等中间变量。&lt;/li&gt;
+&lt;li&gt;利用这些结果便可对各子密钥展开攻击或验证。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;攻击-k3&#34;&gt;攻击 K3
+&lt;/h2&gt;&lt;p&gt;在差分分析中，往往先从某个中间轮次子密钥开始，例如 $K_3$。具体步骤如下：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;选取明文对：&lt;/strong&gt; 我生成了 12 对满足&lt;br&gt;
+$$
+P_0 \oplus P_1 = 0x8080000080800000
+$$&lt;br&gt;
+的随机明文。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;加密并提取差分：&lt;/strong&gt; 将上述明文对加密后，得到相应的密文对；结合差分路径推导出 $Y_0$、$Y_1$、$Z^{\prime}$ 等中间值。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;遍历 $K_3$：&lt;/strong&gt;&lt;br&gt;
+$$
+Z^{\prime} = Z_0 \oplus Z_1 = F(Y_0 \oplus K_3) \oplus F(Y_1 \oplus K_3).
+$$&lt;br&gt;
+只要找到满足差分方程 $= 0x02000000$ 的候选即保留。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;通过这种方法，我成功得到四个候选子密钥：&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;cfa38976, cfa309f6, 4f238976, 4f2309f6
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;执行以上过程的命令示例为：&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;./main -mode=attackk3 -file=K3.txt
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;该实现与我在 &lt;a class=&#34;link&#34; href=&#34;https://www.theamazingking.com&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;www.theamazingking.com&lt;/a&gt; 上介绍的方法一致。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;攻击-k2&#34;&gt;攻击 K2
+&lt;/h2&gt;&lt;p&gt;在拿到 $K_3$ 的若干候选后，可以继续推算 $K_2$。其核心方程：
+$$
+X&amp;rsquo; = X_0 \oplus X_1
+= F(U_0 \oplus K_2) \oplus F(U_1 \oplus K_2),
+$$
+其中 $U$ 来自于上一轮运算（包括对 $Y$、$Z$ 等的进一步计算）。同样地：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;生成明文对，满足差分条件
+$$
+P_0 \oplus P_1 = 0x0000000080800000.
+$$&lt;/li&gt;
+&lt;li&gt;抓取加密后密文差分，通过遍历所有可能 $K_2$ 值，检查是否能满足差分约束 $=0x02000000$。&lt;/li&gt;
+&lt;li&gt;命令示例：
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;./main -mode=attackk2 -file=K2.txt -k3=cfa38976,cfa309f6,4f238976,4f2309f6
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+&lt;li&gt;最终输出示例如下所示：
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;Candidate K2: 8b722e41 (K3: cfa38976)
+Candidate K2: 8b72aec1 (K3: cfa38976)
+...
+Candidate K2: 89722e43 (K3: 4f2309f6)
+Candidate K2: 8972aec3 (K3: 4f2309f6)
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;攻击-k1&#34;&gt;攻击 K1
+&lt;/h2&gt;&lt;p&gt;类似地，攻击 $K_1$ 也可以按前面流程来做。&lt;br&gt;
+为了让差分路径能稳定呈现预期结果，我生成了 12 对满足&lt;br&gt;
+$$
+P_0 \oplus P_1 = 0x0000000002000000
+$$&lt;br&gt;
+的明文，并验证其加密输出。&lt;/p&gt;
+&lt;p&gt;命令示例：&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;./main -mode=attackk1 -file=K1.txt -k3k2=&amp;#34;cfa38976,8b722e41; cfa38976,8b72aec1; ...&amp;#34;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;可一次性将前面得到的所有 $K_3, K_2$ 候选组合带入，最终找到对应的 $K_1$ 候选。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;攻击-k0-k4-k5&#34;&gt;攻击 K0, K4, K5
+&lt;/h2&gt;&lt;p&gt;当 $K_3, K_2, K_1$ 全部到手后，就可以反推最后一轮所需的 $K_0, K_4, K_5$。&lt;br&gt;
+设最终加密得到的左、右部分为 $L_0, R_0$。对应的明文分块为 $PL, PR$。则有：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;$PL \oplus K_4 = LR_0$&lt;/li&gt;
+&lt;li&gt;$PR \oplus K_5 = RR_0$&lt;/li&gt;
+&lt;li&gt;$RR_0 \oplus LR_0 = R_0$&lt;/li&gt;
+&lt;li&gt;$f(R_0 \oplus K_0) \oplus L_0 = LR_0$&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;只要枚举所有可能的 $K_0$，即可通过上述方程解出相应的 $K_4$ 与 $K_5$。然后用其他明文-密文对交叉验证正确性。若都满足，则得到正确的最终密钥集。&lt;/p&gt;
+&lt;p&gt;命令示例：&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;./main -mode=attackk0k4k5 -k3k2k1=&amp;#34;...&amp;#34; -file=K1.txt -file2=K1_p.txt
+&lt;/code&gt;&lt;/pre&gt;&lt;hr&gt;
+&lt;h2 id=&#34;实现优化与验证&#34;&gt;实现、优化与验证
+&lt;/h2&gt;&lt;h3 id=&#34;1-自动化生成与并行计算&#34;&gt;1. 自动化生成与并行计算
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;自动生成随机明文对&lt;/strong&gt;：在代码中事先控制 XOR 差分，即可批量输出满足需求的明文文件（如 &lt;code&gt;K3_p.txt&lt;/code&gt;, &lt;code&gt;K2_p.txt&lt;/code&gt;, &lt;code&gt;K1_p.txt&lt;/code&gt;）。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;并行化搜索&lt;/strong&gt;：使用 Go 语言的 Goroutines，开启 10 个并行任务，在带有 10 核的 Mac 上最大化利用 CPU 资源。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;进度条与可视化&lt;/strong&gt;：通过 &lt;code&gt;progressbar&lt;/code&gt; 库实时显示搜索进度，让实验过程更直观。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;2-验证方法&#34;&gt;2. 验证方法
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;本地自定义密钥测试&lt;/strong&gt;&lt;br&gt;
+先选定一套已知的 $K_0$–$K_5$（如 &lt;code&gt;0x00000001, 0x00000002, 0x00000004, 0x00000008, 0x00000010, 0x00000020&lt;/code&gt;），对前面生成的明文对进行加密，并重复差分分析过程，看是否能在结果中匹配这套密钥。&lt;br&gt;
+实验证明能够正确还原这组测试密钥，从而确认代码逻辑的准确性。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;特定明文-密文对测试&lt;/strong&gt;&lt;br&gt;
+选定一个明文 &lt;code&gt;1234567890abcdef&lt;/code&gt; 和在 Einstein Zone 生成的密文 &lt;code&gt;f43ae3eeb56e2bbf&lt;/code&gt;，验证最终得到的 256 组候选 $K_0$–$K_5$ 中，每一组都可重现这条加密映射，进一步确认攻击流程无误。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;最终结果&#34;&gt;最终结果
+&lt;/h2&gt;&lt;p&gt;所有解出的 $K_0$–$K_5$ 存放于 &lt;code&gt;final_result.txt&lt;/code&gt;。去重后包括以下范围：&lt;/p&gt;
+&lt;h3 id=&#34;possible-values-for-k0&#34;&gt;Possible Values for K0
+&lt;/h3&gt;&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;890c2148 890ca1c8 098c2148 098ca1c8 ...
+0b8c214a 0b8ca1ca 8b0c214a 8b0ca1ca
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;possible-values-for-k1&#34;&gt;Possible Values for K1
+&lt;/h3&gt;&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;471f077e 471f87fe c79f077e c79f87fc ...
+451f077c 451f87fc c59f077c c59f87fc
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;possible-values-for-k2&#34;&gt;Possible Values for K2
+&lt;/h3&gt;&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;8b722e41 8b72aec1 8b722e43 8b72aec3 ...
+89722e43 8972aec3
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;possible-values-for-k3&#34;&gt;Possible Values for K3
+&lt;/h3&gt;&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;cfa38976 cfa309f6 4f238976 4f2309f6
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;possible-values-for-k4&#34;&gt;Possible Values for K4
+&lt;/h3&gt;&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;89eb0024 89eb0026 8beb0024 8beb0026
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;possible-values-for-k5&#34;&gt;Possible Values for K5
+&lt;/h3&gt;&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;b85e6bc0 b85e6bc2 ba5e6bc0 ba5e6bc2
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;借助差分分析，我们最终能获得一批子密钥候选集。与现代分组密码（AES 等）相比，FEAL-4 的轮数较少、结构也更为简洁，因此在教学和研究中非常适合用于演示差分分析思路。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;总结&#34;&gt;总结
+&lt;/h2&gt;&lt;p&gt;本文详细展示了对 FEAL-4 进行差分攻击的完整流程，包括从差分路径设计、生成明文对、中间子密钥 ($K_3, K_2, K_1$) 攻击，再到最后对 $K_0, K_4, K_5$ 的逆向求解。同时也介绍了代码实现过程中的几处优化和验证方法。&lt;br&gt;
+FEAL-4 算法因为较低的轮数和简单的结构为差分分析提供了便利。然而对于现代更安全、更复杂的分组算法，同样的分析思路也至关重要。本案例希望对密码学的学习者和研究者有所启发，如有任何问题或改进方案，欢迎在评论区讨论交流！&lt;/p&gt;
+</description>
+        </item>
+        
+    </channel>
+</rss>

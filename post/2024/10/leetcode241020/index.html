@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="Today, I began the long journey of practicing Leetcode problems. Previously, I only did a few problems to maintain familiarity, but today, I officially started preparing for interviews. I have been thinking about how to efficiently solve Leetcode problems. In my opinion, to be efficient, one must memorize problems. Just as reading a book a hundred times reveals its meaning, training a language model through extensive practice hones its coding skills.">
+<title>Leetcode Notes</title>
+
+<link rel='canonical' href='https://example.org/post/2024/10/leetcode241020/'>
+
+<link rel="stylesheet" href="/scss/style.min.6a12bf910fc038cbe9b80babeda59614bc5345ea20e3f1f03b809941fcf45b1d.css"><meta property='og:title' content="Leetcode Notes">
+<meta property='og:description' content="Today, I began the long journey of practicing Leetcode problems. Previously, I only did a few problems to maintain familiarity, but today, I officially started preparing for interviews. I have been thinking about how to efficiently solve Leetcode problems. In my opinion, to be efficient, one must memorize problems. Just as reading a book a hundred times reveals its meaning, training a language model through extensive practice hones its coding skills.">
+<meta property='og:url' content='https://example.org/post/2024/10/leetcode241020/'>
+<meta property='og:site_name' content='Nansen Li'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2024-10-21T19:39:42&#43;00:00'/><meta property='article:modified_time' content='2024-10-21T19:39:42&#43;00:00'/>
+<meta name="twitter:title" content="Leetcode Notes">
+<meta name="twitter:description" content="Today, I began the long journey of practicing Leetcode problems. Previously, I only did a few problems to maintain familiarity, but today, I officially started preparing for interviews. I have been thinking about how to efficiently solve Leetcode problems. In my opinion, to be efficient, one must memorize problems. Just as reading a book a hundred times reveals its meaning, training a language model through extensive practice hones its coding skills.">
+  
+
+
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="Toggle Menu">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/avatar_hu96777ff80939aaa7d938dddcc232fcc6_1414962_300x0_resize_box_3.png" width="300"
+                            height="300" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+                    <span class="emoji">🌈</span>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">Nansen Li</a></h1>
+            <h2 class="site-description"></h2>
+        </div>
+    </header><ol class="menu-social">
+            
+                <li>
+                    <a 
+                        href='https://github.com/linanwx'
+                        target="_blank"
+                        title="GitHub"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://www.linkedin.com/in/nansen-li-3bb0a3146/'
+                        target="_blank"
+                        title="LinkedIn"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-brand-linkedin"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M8 11v5" /><path d="M8 8v.01" /><path d="M12 16v-5" /><path d="M16 16v-3a2 2 0 1 0 -4 0" /><path d="M3 7a4 4 0 0 1 4 -4h10a4 4 0 0 1 4 4v10a4 4 0 0 1 -4 4h-10a4 4 0 0 1 -4 -4z" /></svg>
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='index.xml'
+                        target="_blank"
+                        title="RSS"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-rss" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="5" cy="19" r="1" />
+  <path d="M4 4a16 16 0 0 1 16 16" />
+  <path d="M4 11a9 9 0 0 1 9 9" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+</svg>
+
+
+
+                
+                <span>Home</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/page/archives/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>Archives</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/page/search/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
+
+
+
+                
+                <span>Search</span>
+            </a>
+        </li>
+        
+        <li class="menu-bottom-section">
+            <ol class="menu">
+                    
+                        <li id="i18n-switch">  
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-language" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M4 5h7" />
+  <path d="M9 3v2c0 4.418 -2.239 8 -5 8" />
+  <path d="M5 9c-.003 2.144 2.952 3.908 6.7 4" />
+  <path d="M12 20l4 -9l4 9" />
+  <path d="M19.1 18h-6.2" />
+</svg>
+
+
+
+                            <select name="language" title="language" onchange="window.location.href = this.selectedOptions[0].value">
+                                
+                                    <option value="https://example.org/" selected>English</option>
+                                
+                                    <option value="https://example.org/zh-cn/" >中文</option>
+                                
+                            </select>
+                        </li>
+                    
+                
+
+                
+                    <li id="dark-mode-toggle">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <span>Dark Mode</span>
+                    </li>
+                
+            </ol>
+        </li>
+    </ol>
+</aside>
+
+    
+
+            <main class="main full-width">
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/post/2024/10/leetcode241020/">Leetcode Notes</a>
+        </h2>
+    
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">Oct 21, 2024</time>
+            </div>
+        
+
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+                <time class="article-time--reading">
+                    5 minute read
+                </time>
+            </div>
+        
+    </footer>
+    
+
+    
+        <footer class="article-translations">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-language" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M4 5h7" />
+  <path d="M9 3v2c0 4.418 -2.239 8 -5 8" />
+  <path d="M5 9c-.003 2.144 2.952 3.908 6.7 4" />
+  <path d="M12 20l4 -9l4 9" />
+  <path d="M19.1 18h-6.2" />
+</svg>
+
+
+
+            <div>
+                
+                    <a href="https://example.org/zh-cn/post/2024/10/leetcode241020/" class="link">中文</a>
+                
+            </div>
+        </footer>
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <p>Today, I began the long journey of practicing Leetcode problems. Previously, I only did a few problems to maintain familiarity, but today, I officially started preparing for interviews.</p>
+<p>I have been thinking about how to efficiently solve Leetcode problems. In my opinion, to be efficient, one must memorize problems. Just as reading a book a hundred times reveals its meaning, training a language model through extensive practice hones its coding skills. Similarly, with Leetcode, through repeated practice, the answers will come naturally; quantity brings quality.</p>
+<h2 id="53-maximum-subarrayhttpsleetcodecomproblemsmaximum-subarray"><a class="link" href="https://leetcode.com/problems/maximum-subarray/"  target="_blank" rel="noopener"
+    >53. Maximum Subarray</a>
+</h2><p>The solution can be approached using <strong>Kadane&rsquo;s Algorithm</strong>. The code is as follows:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">maxSubArray</span>(nums):
+</span></span><span style="display:flex;"><span>    max_current <span style="color:#f92672">=</span> max_global <span style="color:#f92672">=</span> nums[<span style="color:#ae81ff">0</span>]
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> num <span style="color:#f92672">in</span> nums[<span style="color:#ae81ff">1</span>:]:
+</span></span><span style="display:flex;"><span>        max_current <span style="color:#f92672">=</span> max(num, max_current <span style="color:#f92672">+</span> num)
+</span></span><span style="display:flex;"><span>        max_global <span style="color:#f92672">=</span> max(max_global, max_current)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> max_global
+</span></span></code></pre></div><p>This is a classic dynamic programming problem, and the above algorithm actually hides the essence of dynamic programming.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Solution</span> {
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span><span style="color:#f92672">:</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> maxSubArray(vector<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">int</span><span style="color:#f92672">&gt;&amp;</span> nums) {
+</span></span><span style="display:flex;"><span>        vector<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">int</span><span style="color:#f92672">&gt;</span> dp(nums.size());
+</span></span><span style="display:flex;"><span>        dp[<span style="color:#ae81ff">0</span>] <span style="color:#f92672">=</span> nums[<span style="color:#ae81ff">0</span>];
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">int</span> i <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>; i <span style="color:#f92672">&lt;</span> nums.size(); i<span style="color:#f92672">++</span>) {
+</span></span><span style="display:flex;"><span>            dp[i] <span style="color:#f92672">=</span> max(dp[i <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span>] <span style="color:#f92672">+</span> nums[i], nums[i]);
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">max_element</span>(dp.begin(), dp.end());
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>};
+</span></span></code></pre></div><p>This code better reflects the essence of dynamic programming.</p>
+<p>To understand the formula <code>dp[i] = max(nums[i] + dp[i-1], nums[i])</code>, we can analyze it from a dynamic programming perspective. The core idea here is to make the optimal choice at each position. Here is a detailed explanation:</p>
+<h3 id="1-what-does-dpi-represent">1. What does <code>dp[i]</code> represent?
+</h3><ul>
+<li><code>dp[i]</code> represents the <strong>maximum subarray sum ending at position <code>i</code></strong>.</li>
+</ul>
+<h3 id="2-why-compare-numsi--dpi-1-and-numsi">2. Why compare <code>nums[i] + dp[i-1]</code> and <code>nums[i]</code>?
+</h3><ul>
+<li>The key question is: <strong>Should the current maximum subarray include the previous part (<code>dp[i-1]</code>)?</strong>
+<ul>
+<li><strong><code>nums[i] + dp[i-1]</code></strong>: If <code>dp[i-1]</code> is positive, adding the current <code>nums[i]</code> will increase the subarray sum, so we choose to add it.</li>
+<li><strong><code>nums[i]</code></strong>: If <code>dp[i-1]</code> is negative, we choose to start a new subarray from the current position, as a negative sum will only drag down the current sum.</li>
+</ul>
+</li>
+</ul>
+<h3 id="3-why-not-compare-subsequent-numbers">3. Why not compare subsequent numbers?
+</h3><ul>
+<li>When making the comparison, we assume the subarray stops at position <code>i</code>. In other words, we consider the maximum value within the range <code>[0:i]</code>. At position <code>i</code>, we either add the previous subarray or abandon it and only use the current number.</li>
+<li>We then traverse the entire array, finding the maximum value at each position, and finally return the largest value.</li>
+</ul>
+<h2 id="57-insert-intervalhttpsleetcodecomproblemsinsert-interval"><a class="link" href="https://leetcode.com/problems/insert-interval/"  target="_blank" rel="noopener"
+    >57. Insert Interval</a>
+</h2><p>This is a classic interval merging problem, where we need to merge a new interval into existing intervals.</p>
+<p>The solution can be broken down as follows:</p>
+<ul>
+<li>Step 1: Add all non-overlapping intervals that come before <code>newInterval</code> to the result.</li>
+<li>Step 2: Merge all potentially overlapping intervals with <code>newInterval</code>. Note the conditions for merging.</li>
+<li>Step 3: Add the remaining intervals to the result.</li>
+</ul>
+<p>Note that the condition for merging intervals is that the start of the previous interval is less than or equal to the end of the subsequent interval, i.e., <code>intervals[i][0] &lt;= newInterval[1]</code>.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Solution</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">insert</span>(self, intervals: List[List[int]], newInterval: List[int]) <span style="color:#f92672">-&gt;</span> List[List[int]]:
+</span></span><span style="display:flex;"><span>        ret_list <span style="color:#f92672">=</span> []
+</span></span><span style="display:flex;"><span>        i <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">while</span> i <span style="color:#f92672">&lt;</span> len(intervals) <span style="color:#f92672">and</span> intervals[i][<span style="color:#ae81ff">1</span>] <span style="color:#f92672">&lt;</span> newInterval[<span style="color:#ae81ff">0</span>]:
+</span></span><span style="display:flex;"><span>            ret_list<span style="color:#f92672">.</span>append(intervals[i])
+</span></span><span style="display:flex;"><span>            i <span style="color:#f92672">+=</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">while</span> i <span style="color:#f92672">&lt;</span> len(intervals) <span style="color:#f92672">and</span> intervals[i][<span style="color:#ae81ff">0</span>] <span style="color:#f92672">&lt;=</span> newInterval[<span style="color:#ae81ff">1</span>]:
+</span></span><span style="display:flex;"><span>            newInterval[<span style="color:#ae81ff">0</span>] <span style="color:#f92672">=</span> min(intervals[i][<span style="color:#ae81ff">0</span>], newInterval[<span style="color:#ae81ff">0</span>])
+</span></span><span style="display:flex;"><span>            newInterval[<span style="color:#ae81ff">1</span>] <span style="color:#f92672">=</span> max(intervals[i][<span style="color:#ae81ff">1</span>], newInterval[<span style="color:#ae81ff">1</span>])
+</span></span><span style="display:flex;"><span>            i <span style="color:#f92672">+=</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        ret_list<span style="color:#f92672">.</span>append(newInterval)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">while</span> i <span style="color:#f92672">&lt;</span> len(intervals):
+</span></span><span style="display:flex;"><span>            ret_list<span style="color:#f92672">.</span>append(intervals[i])
+</span></span><span style="display:flex;"><span>            i <span style="color:#f92672">+=</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> ret_list
+</span></span></code></pre></div><p>With careful attention to detail, this problem is not difficult.</p>
+<h2 id="300-longest-increasing-subsequencehttpsleetcodecomproblemslongest-increasing-subsequence"><a class="link" href="https://leetcode.com/problems/longest-increasing-subsequence/"  target="_blank" rel="noopener"
+    >300. Longest Increasing Subsequence</a>
+</h2><p>This is obviously a dynamic programming problem.</p>
+<p><code>dp[i]</code> represents the length of the longest increasing subsequence ending with a certain number.</p>
+<p>Each time an element is added, we update the current <code>dp</code> array. If the current number is greater than the previous one, we increment the result by 1.</p>
+<p>Note that the first <code>dp[i]</code> starts from index 1.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Solution</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">lengthOfLIS</span>(self, nums: List[int]) <span style="color:#f92672">-&gt;</span> int:
+</span></span><span style="display:flex;"><span>        dp <span style="color:#f92672">=</span> [<span style="color:#ae81ff">1</span>] <span style="color:#f92672">*</span> len(nums)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">1</span>, len(nums)):
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">for</span> j <span style="color:#f92672">in</span> range(i):
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">if</span> nums[j] <span style="color:#f92672">&lt;</span> nums[i]:
+</span></span><span style="display:flex;"><span>                    dp[i] <span style="color:#f92672">=</span> max(dp[i], dp[j] <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> max(dp)
+</span></span></code></pre></div><p><strong>Complexity Analysis</strong>:</p>
+<ul>
+<li>Time Complexity: $O(n^2)$, due to the two nested loops.</li>
+<li>Space Complexity: $O(n)$, as we need a <code>dp</code> array of length <code>n</code>.</li>
+</ul>
+<h2 id="674-longest-continuous-increasing-subsequencehttpsleetcodecomproblemslongest-continuous-increasing-subsequence"><a class="link" href="https://leetcode.com/problems/longest-continuous-increasing-subsequence/"  target="_blank" rel="noopener"
+    >674. Longest Continuous Increasing Subsequence</a>
+</h2><p>This is a simple problem, but still worth understanding.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Solution</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">findLengthOfLCIS</span>(self, nums: List[int]) <span style="color:#f92672">-&gt;</span> int:
+</span></span><span style="display:flex;"><span>        dp <span style="color:#f92672">=</span> [<span style="color:#ae81ff">1</span>] <span style="color:#f92672">*</span> len(nums)
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">1</span>, len(nums)):
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> nums[i] <span style="color:#f92672">&gt;</span> nums[i<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>]:
+</span></span><span style="display:flex;"><span>                dp[i] <span style="color:#f92672">=</span> max(dp[i], dp[i<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>] <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> max(dp)
+</span></span></code></pre></div><h2 id="392-is-subsequencehttpsleetcodecomproblemsis-subsequence"><a class="link" href="https://leetcode.com/problems/is-subsequence/"  target="_blank" rel="noopener"
+    >392. Is Subsequence</a>
+</h2><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Solution</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">isSubsequence</span>(self, s: str, t: str) <span style="color:#f92672">-&gt;</span> bool:
+</span></span><span style="display:flex;"><span>        i <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>        j <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">while</span> i <span style="color:#f92672">&lt;</span> len(s) <span style="color:#f92672">and</span> j <span style="color:#f92672">&lt;</span> len(t):
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> s[i] <span style="color:#f92672">==</span> t[j]:
+</span></span><span style="display:flex;"><span>                i <span style="color:#f92672">+=</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>            j <span style="color:#f92672">+=</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> i <span style="color:#f92672">==</span> len(s)
+</span></span></code></pre></div><p>This problem can be solved using a two-pointer technique, with <code>t</code> as the base. If <code>s</code> contains matching characters, we move forward; if we reach the end of <code>s</code>, it means the match is complete.</p>
+<h2 id="115-distinct-subsequenceshttpsleetcodecomproblemsdistinct-subsequences"><a class="link" href="https://leetcode.com/problems/distinct-subsequences/"  target="_blank" rel="noopener"
+    >115. Distinct Subsequences</a>
+</h2><p>This problem asks us to find how many distinct subsequences of string <code>s</code> equal string <code>t</code>.</p>
+<p>First, we need to define <code>dp</code>, where <code>dp[i][j]</code> represents the number of distinct subsequences that can be formed from the first <code>i</code> characters of <code>s</code> to form the first <code>j</code> characters of <code>t</code>.</p>
+<ul>
+<li><code>dp[i][0]</code> represents when <code>t</code> is an empty string, the result is 1.</li>
+<li><code>dp[0][j]</code> represents forming <code>t</code> from an empty string, which results in 0.</li>
+</ul>
+<p>For <code>dp[i][j]</code>, the result depends on the characters at positions <code>i</code> and <code>j</code>:</p>
+<ul>
+<li>If they are equal, the result is the sum of the cases where <code>s[i-1]</code> is not matched (<code>dp[i-1][j]</code>) and the cases where it is matched (<code>dp[i-1][j-1]</code>).</li>
+<li>If they are not equal, the result is equal to <code>dp[i-1][j]</code>.</li>
+</ul>
+<p>Note that <code>i, j</code> refer to the first <code>i</code> and <code>j</code> characters.</p>
+<p>Additionally, <code>dp[0][0]</code> is initialized to 1, as an empty string is a subsequence of any string.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Solution</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">numDistinct</span>(self, s: str, t: str) <span style="color:#f92672">-&gt;</span> int:
+</span></span><span style="display:flex;"><span>        dp <span style="color:#f92672">=</span> [[<span style="color:#ae81ff">0</span> <span style="color:#66d9ef">for</span> _ <span style="color:#f92672">in</span> range(len(t) <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>)] <span style="color:#66d9ef">for</span> _ <span style="color:#f92672">in</span> range(len(s) <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>)]
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(len(s) <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>):
+</span></span><span style="display:flex;"><span>            dp[i][<span style="color:#ae81ff">0</span>] <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span> j <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">1</span>, len(t) <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>):
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">1</span>, len(s) <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>):
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">if</span> s[i<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>] <span style="color:#f92672">==</span> t[j<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>]:
+</span></span><span style="display:flex;"><span>                    dp[i][j] <span style="color:#f92672">=</span> dp[i<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>][j] <span style="color:#f92672">+</span> dp[i<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>][j<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>]
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">else</span>:
+</span></span><span style="display:flex;"><span>                    dp[i][j] <span style="color:#f92672">=</span> dp[i<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>][j]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> dp[<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>][<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>]
+</span></span></code></pre></div>
+</section>
+
+
+    <footer class="article-footer">
+    
+
+    </footer>
+
+
+    
+</article>
+
+    
+
+    
+
+     
+    
+        
+    <div class="disqus-container">
+    <div id="disqus_thread"></div>
+<script>
+    window.disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "nansenli" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+<style>
+    .disqus-container {
+        background-color: var(--card-background);
+        border-radius: var(--card-border-radius);
+        box-shadow: var(--shadow-l1);
+        padding: var(--card-padding);
+    }
+</style>
+
+<script>
+    window.addEventListener('onColorSchemeChange', (e) => {
+        if (typeof DISQUS == 'object') {
+            DISQUS.reset({
+                reload: true
+            });
+        }
+    })
+</script>
+
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+        2025 Nansen Li
+    </section>
+    
+    <section class="powerby">
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.30.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.1e9a3bafd846ced4c345d084b355fb8c7bae75701c338f8a1f8a82c780137826.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>

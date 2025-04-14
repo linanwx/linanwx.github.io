@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="Off-by-One 溢出攻击分析 背景 上周，我参加了一门安全课程，其中包含了一个 off-by-one 溢出漏洞的示例。以下是原始代码： /* 简单的 off-by-one 溢出示例 */ #include &lt;stdio.h&gt; #include &lt;stdlib.h&gt; #include &lt;string.h&gt; void foo(char *input) { char buf[1024]; strncpy(buf, input, sizeof(buf)); buf[sizeof(buf)] = &#39;\\0&#39;; } void bar(void) { printf(&#34;I&#39;ve been hacked\\n&#34;); } int main(int argc, char **argv) { if (argc != 2) { printf(&#34;Usage: %s input_string\\n&#34;, argv[0]); exit(EXIT_FAILURE); } foo(argv[1]); return 0; } 利用此漏洞的攻击命令是： perl -e &#39;system &#34;./obo&#34;, &#34;\\x38\\x84\\x04\\x08&#34;x256&#39; 运行此命令的结果是屏幕上打印出多行 I've been hacked。 分析 当程序进入 foo 函数时，内存布局如下（使用 GDB 观察到）：">
+<title>Off-by-One 溢出攻击分析</title>
+
+<link rel='canonical' href='https://example.org/zh-cn/post/2024/10/oboattact-md/'>
+
+<link rel="stylesheet" href="/scss/style.min.6a12bf910fc038cbe9b80babeda59614bc5345ea20e3f1f03b809941fcf45b1d.css"><meta property='og:title' content="Off-by-One 溢出攻击分析">
+<meta property='og:description' content="Off-by-One 溢出攻击分析 背景 上周，我参加了一门安全课程，其中包含了一个 off-by-one 溢出漏洞的示例。以下是原始代码： /* 简单的 off-by-one 溢出示例 */ #include &lt;stdio.h&gt; #include &lt;stdlib.h&gt; #include &lt;string.h&gt; void foo(char *input) { char buf[1024]; strncpy(buf, input, sizeof(buf)); buf[sizeof(buf)] = &#39;\\0&#39;; } void bar(void) { printf(&#34;I&#39;ve been hacked\\n&#34;); } int main(int argc, char **argv) { if (argc != 2) { printf(&#34;Usage: %s input_string\\n&#34;, argv[0]); exit(EXIT_FAILURE); } foo(argv[1]); return 0; } 利用此漏洞的攻击命令是： perl -e &#39;system &#34;./obo&#34;, &#34;\\x38\\x84\\x04\\x08&#34;x256&#39; 运行此命令的结果是屏幕上打印出多行 I've been hacked。 分析 当程序进入 foo 函数时，内存布局如下（使用 GDB 观察到）：">
+<meta property='og:url' content='https://example.org/zh-cn/post/2024/10/oboattact-md/'>
+<meta property='og:site_name' content='Nansen Li'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:tag' content='漏洞' /><meta property='article:tag' content='攻击' /><meta property='article:tag' content='off-by-one' /><meta property='article:tag' content='缓冲区溢出' /><meta property='article:published_time' content='2024-10-15T14:18:44&#43;00:00'/><meta property='article:modified_time' content='2024-10-15T14:18:44&#43;00:00'/>
+<meta name="twitter:title" content="Off-by-One 溢出攻击分析">
+<meta name="twitter:description" content="Off-by-One 溢出攻击分析 背景 上周，我参加了一门安全课程，其中包含了一个 off-by-one 溢出漏洞的示例。以下是原始代码： /* 简单的 off-by-one 溢出示例 */ #include &lt;stdio.h&gt; #include &lt;stdlib.h&gt; #include &lt;string.h&gt; void foo(char *input) { char buf[1024]; strncpy(buf, input, sizeof(buf)); buf[sizeof(buf)] = &#39;\\0&#39;; } void bar(void) { printf(&#34;I&#39;ve been hacked\\n&#34;); } int main(int argc, char **argv) { if (argc != 2) { printf(&#34;Usage: %s input_string\\n&#34;, argv[0]); exit(EXIT_FAILURE); } foo(argv[1]); return 0; } 利用此漏洞的攻击命令是： perl -e &#39;system &#34;./obo&#34;, &#34;\\x38\\x84\\x04\\x08&#34;x256&#39; 运行此命令的结果是屏幕上打印出多行 I've been hacked。 分析 当程序进入 foo 函数时，内存布局如下（使用 GDB 观察到）：">
+  
+
+
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="切换菜单">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/zh-cn/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/avatar_hu96777ff80939aaa7d938dddcc232fcc6_1414962_300x0_resize_box_3.png" width="300"
+                            height="300" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+                    <span class="emoji">🌈</span>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/zh-cn">Nansen Li</a></h1>
+            <h2 class="site-description"></h2>
+        </div>
+    </header><ol class="menu-social">
+            
+                <li>
+                    <a 
+                        href='https://github.com/linanwx'
+                        target="_blank"
+                        title="GitHub"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://www.linkedin.com/in/nansen-li-3bb0a3146/'
+                        target="_blank"
+                        title="LinkedIn"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-brand-linkedin"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M8 11v5" /><path d="M8 8v.01" /><path d="M12 16v-5" /><path d="M16 16v-3a2 2 0 1 0 -4 0" /><path d="M3 7a4 4 0 0 1 4 -4h10a4 4 0 0 1 4 4v10a4 4 0 0 1 -4 4h-10a4 4 0 0 1 -4 -4z" /></svg>
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='index.xml'
+                        target="_blank"
+                        title="RSS"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-rss" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="5" cy="19" r="1" />
+  <path d="M4 4a16 16 0 0 1 16 16" />
+  <path d="M4 11a9 9 0 0 1 9 9" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/zh-cn/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+</svg>
+
+
+
+                
+                <span>主页</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/zh-cn/page/archives/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>归档</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/zh-cn/page/search/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
+
+
+
+                
+                <span>搜索</span>
+            </a>
+        </li>
+        
+        <li class="menu-bottom-section">
+            <ol class="menu">
+                    
+                        <li id="i18n-switch">  
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-language" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M4 5h7" />
+  <path d="M9 3v2c0 4.418 -2.239 8 -5 8" />
+  <path d="M5 9c-.003 2.144 2.952 3.908 6.7 4" />
+  <path d="M12 20l4 -9l4 9" />
+  <path d="M19.1 18h-6.2" />
+</svg>
+
+
+
+                            <select name="language" title="language" onchange="window.location.href = this.selectedOptions[0].value">
+                                
+                                    <option value="https://example.org/" >English</option>
+                                
+                                    <option value="https://example.org/zh-cn/" selected>中文</option>
+                                
+                            </select>
+                        </li>
+                    
+                
+
+                
+                    <li id="dark-mode-toggle">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <span>暗色模式</span>
+                    </li>
+                
+            </ol>
+        </li>
+    </ol>
+</aside>
+
+    
+
+            <main class="main full-width">
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/zh-cn/post/2024/10/oboattact-md/">Off-by-One 溢出攻击分析</a>
+        </h2>
+    
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">Oct 15, 2024</time>
+            </div>
+        
+
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+                <time class="article-time--reading">
+                    阅读时长: 2 分钟
+                </time>
+            </div>
+        
+    </footer>
+    
+
+    
+        <footer class="article-translations">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-language" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M4 5h7" />
+  <path d="M9 3v2c0 4.418 -2.239 8 -5 8" />
+  <path d="M5 9c-.003 2.144 2.952 3.908 6.7 4" />
+  <path d="M12 20l4 -9l4 9" />
+  <path d="M19.1 18h-6.2" />
+</svg>
+
+
+
+            <div>
+                
+                    <a href="https://example.org/post/2024/10/oboattact-md/" class="link">English</a>
+                
+            </div>
+        </footer>
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <h1 id="off-by-one-溢出攻击分析">Off-by-One 溢出攻击分析
+</h1><h2 id="背景">背景
+</h2><p>上周，我参加了一门安全课程，其中包含了一个 off-by-one 溢出漏洞的示例。以下是原始代码：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#75715e">/* 简单的 off-by-one 溢出示例 */</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;stdio.h&gt;</span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;stdlib.h&gt;</span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;string.h&gt;</span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">foo</span>(<span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span>input) {
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">char</span> buf[<span style="color:#ae81ff">1024</span>];
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">strncpy</span>(buf, input, <span style="color:#66d9ef">sizeof</span>(buf));
+</span></span><span style="display:flex;"><span>  buf[<span style="color:#66d9ef">sizeof</span>(buf)] <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;\0&#39;</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">bar</span>(<span style="color:#66d9ef">void</span>) {
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">printf</span>(<span style="color:#e6db74">&#34;I&#39;ve been hacked</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>);
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">main</span>(<span style="color:#66d9ef">int</span> argc, <span style="color:#66d9ef">char</span> <span style="color:#f92672">**</span>argv) {
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">if</span> (argc <span style="color:#f92672">!=</span> <span style="color:#ae81ff">2</span>) {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">printf</span>(<span style="color:#e6db74">&#34;Usage: %s input_string</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, argv[<span style="color:#ae81ff">0</span>]);
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">exit</span>(EXIT_FAILURE);
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">foo</span>(argv[<span style="color:#ae81ff">1</span>]);
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>利用此漏洞的攻击命令是：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>perl -e <span style="color:#e6db74">&#39;system &#34;./obo&#34;, &#34;\x38\x84\x04\x08&#34;x256&#39;</span>
+</span></span></code></pre></div><p>运行此命令的结果是屏幕上打印出多行 <code>I've been hacked</code>。</p>
+<h2 id="分析">分析
+</h2><p>当程序进入 <code>foo</code> 函数时，内存布局如下（使用 GDB 观察到）：</p>
+<p>从上到下，布局包含返回地址、保存的帧指针（saved frame pointer）和缓冲区 (<code>buf</code>)。</p>
+<p>当执行 <code>buf[sizeof(buf)] = '\0';</code> 时，保存的帧指针 (<code>ebp</code>) 的最低有效字节被设置为 <code>0</code>。为了确保 <code>ebp</code> 在被部分覆盖后仍然指向 <code>buf</code> 区域内，需要至少 1024 字节的缓冲区。具体来说，需要覆盖 <code>ebp</code>，使其保持在合理范围内（最高到 <code>0xff</code>），这就是为什么缓冲区设置为 <code>0xff * 4</code> 字节的原因。</p>
+<h2 id="理解-foo-返回时的汇编命令">理解 <code>foo</code> 返回时的汇编命令
+</h2><p>当 <code>foo</code> 函数返回时，通常会执行以下关键的汇编指令：</p>
+<h3 id="1-leave-指令">1. <code>leave</code> 指令
+</h3><p><code>leave</code> 指令等价于：</p>
+<pre tabindex="0"><code class="language-assembly" data-lang="assembly">mov esp, ebp
+pop ebp
+</code></pre><ul>
+<li><code>mov esp, ebp</code>：将栈指针 (<code>esp</code>) 设置为帧指针 (<code>ebp</code>) 的值，恢复栈指针到当前栈帧的顶部，从而释放当前函数占用的空间。</li>
+<li><code>pop ebp</code>：将栈顶的值弹出并赋给帧指针 (<code>ebp</code>)，从而恢复调用者的帧指针。实际上，相当于将返回地址写入 <code>ebp</code>，这意味着将栈中的值（通常是调用者的帧地址）赋给 <code>ebp</code>，从而恢复调用者的栈帧。</li>
+</ul>
+<p><code>leave</code> 的作用是将 <code>esp</code> 恢复到函数调用前的位置，并弹出保存的 <code>ebp</code>。如果 <code>ebp</code> 被覆盖为指向某个特殊地址（例如缓冲区内的地址），在函数返回时可能导致错误的栈指针位置。</p>
+<h3 id="2-ret-指令">2. <code>ret</code> 指令
+</h3><p><code>ret</code> 指令从栈顶弹出一个地址并跳转到该地址：</p>
+<pre tabindex="0"><code class="language-assembly" data-lang="assembly">pop eip
+</code></pre><p>如果返回地址被覆盖为 <code>bar</code> 函数的地址，执行流将跳转到 <code>bar</code>，允许攻击者执行任意代码。本质上，<code>ret</code> 会将一个地址弹出到指令指针 (<code>eip</code>) 并跳转到该地址继续执行。</p>
+<h2 id="攻击步骤">攻击步骤
+</h2><ul>
+<li>当执行命令 <code>perl -e 'system &quot;./obo&quot;, &quot;\x38\x84\x04\x08&quot;x256'</code> 时，程序会将这些重复的字节作为输入传递给 <code>./obo</code>。</li>
+<li>在 <code>foo</code> 函数返回时，执行了 <code>leave</code> 和 <code>ret</code> 指令，由于返回地址被覆盖，程序跳转到 <code>bar</code> 函数，打印出成功的消息多次。</li>
+</ul>
+<h2 id="进一步分析确定有效的覆盖位置">进一步分析：确定有效的覆盖位置
+</h2><p>为了成功执行攻击，关键在于精确确定需要覆盖哪些字节，以有效地操控控制流。在这个例子中，溢出发生在执行 <code>buf[sizeof(buf)] = '\0'</code> 时，导致保存的帧指针 (<code>ebp</code>) 的最低有效字节被设置为 <code>0</code>。因此，需要调整 <code>ebp</code> 的值，确保其指向缓冲区区域，从而使执行流程按预期进行，最终跳转到 <code>bar</code> 函数。</p>
+<p>基于进一步的分析和测试，得出以下见解：</p>
+<ul>
+<li>
+<p>要准确确定覆盖位置，<code>ebp</code> 的值至关重要。然而，获得这个值是有挑战的，因为：</p>
+<ol>
+<li>GDB 调试会影响地址布局。</li>
+<li>输入参数的长度会影响地址布局。</li>
+</ol>
+</li>
+<li>
+<p>在 GDB 调试下，<code>foo</code> 函数内的布局如下：</p>
+</li>
+<li>
+<p>执行 <code>buf[sizeof(buf)] = '\0';</code> 后，<code>ebp</code> 被修改，使得返回地址实际上取的是 <code>ebp + 1</code> 处的值，即地址 <code>0xbfffed00 + 1</code>，也就是 <code>0xbfffed04</code>。</p>
+</li>
+<li>
+<p>对应的偏移位置在 <code>buf</code> 的第 255 个位置，这意味着可以通过只在该特定位置填入返回地址来构造攻击。在 GDB 中使用以下命令进行验证：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>r <span style="color:#66d9ef">$(</span>perl -e <span style="color:#e6db74">&#39;print  &#34;\x01\x01\x01\x01&#34;x254 . &#34;\x38\x84\x04\x08&#34;x1 . &#34;\x01\x01\x01\x01&#34;x1&#39;</span><span style="color:#66d9ef">)</span>
+</span></span></code></pre></div></li>
+<li>
+<p>经过验证，这在 GDB 调试下是有效的，但需要注意以下细节：</p>
+<ol>
+<li>输入参数的长度必须始终为 256 字节，否则 <code>ebp</code> 的值会发生变化，因为输入参数会占用栈空间，从而影响帧的起始位置，进而影响 <code>ebp</code> 的值。</li>
+<li>填充必须使用非零值，如 <code>0x01</code>，因为如果遇到 <code>0</code> 值，<code>strncpy</code> 会提前终止。</li>
+</ol>
+</li>
+<li>
+<p>直接执行程序时（即不使用 GDB），内存布局不同，导致偏移位置也不同。通过实验，发现偏移位置在第 235 个位置。对应的攻击命令是：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>./obo <span style="color:#66d9ef">$(</span>perl -e <span style="color:#e6db74">&#39;print  &#34;\x01\x01\x01\x01&#34;x234 . &#34;\x38\x84\x04\x08&#34;x1 . &#34;\x01\x01\x01\x01&#34;x21&#39;</span><span style="color:#66d9ef">)</span>
+</span></span></code></pre></div></li>
+</ul>
+<p>这样就实现了找到准确覆盖位置并成功执行攻击的效果。</p>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+    <section class="article-tags">
+        
+            <a href="/zh-cn/tags/%E6%BC%8F%E6%B4%9E/">漏洞</a>
+        
+            <a href="/zh-cn/tags/%E6%94%BB%E5%87%BB/">攻击</a>
+        
+            <a href="/zh-cn/tags/off-by-one/">Off-by-One</a>
+        
+            <a href="/zh-cn/tags/%E7%BC%93%E5%86%B2%E5%8C%BA%E6%BA%A2%E5%87%BA/">缓冲区溢出</a>
+        
+    </section>
+
+
+    </footer>
+
+
+    
+</article>
+
+    
+
+    
+
+     
+    
+        
+    <div class="disqus-container">
+    <div id="disqus_thread"></div>
+<script>
+    window.disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "nansenli" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+<style>
+    .disqus-container {
+        background-color: var(--card-background);
+        border-radius: var(--card-border-radius);
+        box-shadow: var(--shadow-l1);
+        padding: var(--card-padding);
+    }
+</style>
+
+<script>
+    window.addEventListener('onColorSchemeChange', (e) => {
+        if (typeof DISQUS == 'object') {
+            DISQUS.reset({
+                reload: true
+            });
+        }
+    })
+</script>
+
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+        2025 Nansen Li
+    </section>
+    
+    <section class="powerby">
+        使用 <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> 构建 <br />
+        主题 <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.30.0">Stack</a></b> 由 <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a> 设计
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.1e9a3bafd846ced4c345d084b355fb8c7bae75701c338f8a1f8a82c780137826.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>

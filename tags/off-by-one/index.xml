@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>Off-by-One on Nansen Li</title>
+        <link>https://example.org/tags/off-by-one/</link>
+        <description>Recent content in Off-by-One on Nansen Li</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>en</language>
+        <lastBuildDate>Tue, 15 Oct 2024 14:18:15 +0000</lastBuildDate><atom:link href="https://example.org/tags/off-by-one/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>Off-by-One Overflow Attack Analysis</title>
+        <link>https://example.org/post/2024/10/oboattact-md/</link>
+        <pubDate>Tue, 15 Oct 2024 14:18:15 +0000</pubDate>
+        
+        <guid>https://example.org/post/2024/10/oboattact-md/</guid>
+        <description>&lt;h1 id=&#34;off-by-one-overflow-attack-analysis&#34;&gt;Off-by-One Overflow Attack Analysis
+&lt;/h1&gt;&lt;h2 id=&#34;background&#34;&gt;Background
+&lt;/h2&gt;&lt;p&gt;Last week, I attended a security course that included an example of an off-by-one overflow vulnerability. Here is the original code:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-c&#34; data-lang=&#34;c&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;/* Simple off-by-one overflow example */&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;#include&lt;/span&gt; &lt;span style=&#34;color:#75715e&#34;&gt;&amp;lt;stdio.h&amp;gt;&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;#include&lt;/span&gt; &lt;span style=&#34;color:#75715e&#34;&gt;&amp;lt;stdlib.h&amp;gt;&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;#include&lt;/span&gt; &lt;span style=&#34;color:#75715e&#34;&gt;&amp;lt;string.h&amp;gt;&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;void&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;foo&lt;/span&gt;(&lt;span style=&#34;color:#66d9ef&#34;&gt;char&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt;input) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  &lt;span style=&#34;color:#66d9ef&#34;&gt;char&lt;/span&gt; buf[&lt;span style=&#34;color:#ae81ff&#34;&gt;1024&lt;/span&gt;];
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  &lt;span style=&#34;color:#a6e22e&#34;&gt;strncpy&lt;/span&gt;(buf, input, &lt;span style=&#34;color:#66d9ef&#34;&gt;sizeof&lt;/span&gt;(buf));
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  buf[&lt;span style=&#34;color:#66d9ef&#34;&gt;sizeof&lt;/span&gt;(buf)] &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;\0&amp;#39;&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;void&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;bar&lt;/span&gt;(&lt;span style=&#34;color:#66d9ef&#34;&gt;void&lt;/span&gt;) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  &lt;span style=&#34;color:#a6e22e&#34;&gt;printf&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;I&amp;#39;ve been hacked&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;\n&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;main&lt;/span&gt;(&lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; argc, &lt;span style=&#34;color:#66d9ef&#34;&gt;char&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;**&lt;/span&gt;argv) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (argc &lt;span style=&#34;color:#f92672&#34;&gt;!=&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;2&lt;/span&gt;) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#a6e22e&#34;&gt;printf&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Usage: %s input_string&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;\n&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;, argv[&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;]);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#a6e22e&#34;&gt;exit&lt;/span&gt;(EXIT_FAILURE);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  &lt;span style=&#34;color:#a6e22e&#34;&gt;foo&lt;/span&gt;(argv[&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;]);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;The answer provided for exploiting this vulnerability is:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;perl -e &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;system &amp;#34;./obo&amp;#34;, &amp;#34;\x38\x84\x04\x08&amp;#34;x256&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;The result of running this command is that multiple lines of &lt;code&gt;I&#39;ve been hacked&lt;/code&gt; are printed on the screen.&lt;/p&gt;
+&lt;h2 id=&#34;analysis&#34;&gt;Analysis
+&lt;/h2&gt;&lt;p&gt;When the program enters the &lt;code&gt;foo&lt;/code&gt; function, the memory layout looks like this (as observed using GDB):&lt;/p&gt;
+&lt;p&gt;From top to bottom, the layout contains the return address, the saved frame pointer, and the buffer (&lt;code&gt;buf&lt;/code&gt;).&lt;/p&gt;
+&lt;p&gt;When the line &lt;code&gt;buf[sizeof(buf)] = &#39;\0&#39;;&lt;/code&gt; is executed, the least significant byte of the saved frame pointer (&lt;code&gt;ebp&lt;/code&gt;) is set to &lt;code&gt;0&lt;/code&gt;. To ensure that &lt;code&gt;ebp&lt;/code&gt; still points within the &lt;code&gt;buf&lt;/code&gt; region after being partially overwritten, a buffer of at least 1024 bytes is required. Specifically, &lt;code&gt;ebp&lt;/code&gt; needs to be overwritten such that it remains within a reasonable range (— up to &lt;code&gt;0xff&lt;/code&gt;), which is why the buffer is set to &lt;code&gt;0xff * 4&lt;/code&gt; bytes.&lt;/p&gt;
+&lt;h2 id=&#34;understanding-assembly-commands-on-foo-return&#34;&gt;Understanding Assembly Commands on &lt;code&gt;foo&lt;/code&gt; Return
+&lt;/h2&gt;&lt;p&gt;When the &lt;code&gt;foo&lt;/code&gt; function returns, it typically executes the following key assembly instructions:&lt;/p&gt;
+&lt;h3 id=&#34;1-leave-instruction&#34;&gt;1. &lt;code&gt;leave&lt;/code&gt; Instruction
+&lt;/h3&gt;&lt;p&gt;The &lt;code&gt;leave&lt;/code&gt; instruction is equivalent to:&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code class=&#34;language-assembly&#34; data-lang=&#34;assembly&#34;&gt;mov esp, ebp
+pop ebp
+&lt;/code&gt;&lt;/pre&gt;&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;mov esp, ebp&lt;/code&gt;: This sets the stack pointer (&lt;code&gt;esp&lt;/code&gt;) to the value of the frame pointer (&lt;code&gt;ebp&lt;/code&gt;), restoring the stack pointer to the top of the current stack frame and effectively releasing the space occupied by the current function.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;pop ebp&lt;/code&gt;: This pops the value at the top of the stack and assigns it to the frame pointer (&lt;code&gt;ebp&lt;/code&gt;), thereby restoring the caller&amp;rsquo;s frame pointer. Essentially, it writes the return address into &lt;code&gt;ebp&lt;/code&gt;, meaning it assigns the stack value (usually the caller&amp;rsquo;s frame address) to &lt;code&gt;ebp&lt;/code&gt;, restoring the caller&amp;rsquo;s stack frame.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;The effect of &lt;code&gt;leave&lt;/code&gt; is to restore &lt;code&gt;esp&lt;/code&gt; to its state before the function was called and to pop the saved &lt;code&gt;ebp&lt;/code&gt;. If &lt;code&gt;ebp&lt;/code&gt; has been overwritten to point to a special address (such as an address within the buffer), it can result in an incorrect stack pointer location during function return.&lt;/p&gt;
+&lt;h3 id=&#34;2-ret-instruction&#34;&gt;2. &lt;code&gt;ret&lt;/code&gt; Instruction
+&lt;/h3&gt;&lt;p&gt;The &lt;code&gt;ret&lt;/code&gt; instruction pops an address off the top of the stack and jumps to that address:&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code class=&#34;language-assembly&#34; data-lang=&#34;assembly&#34;&gt;pop eip
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;If the return address has been overwritten with the address of the &lt;code&gt;bar&lt;/code&gt; function, the execution flow will jump to &lt;code&gt;bar&lt;/code&gt;, allowing an attacker to run arbitrary code. Essentially, &lt;code&gt;ret&lt;/code&gt; pops an address into the instruction pointer (&lt;code&gt;eip&lt;/code&gt;) and jumps to that address to continue execution.&lt;/p&gt;
+&lt;h2 id=&#34;attack-steps&#34;&gt;Attack Steps
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;When the command &lt;code&gt;perl -e &#39;system &amp;quot;./obo&amp;quot;, &amp;quot;\x38\x84\x04\x08&amp;quot;x256&#39;&lt;/code&gt; is executed, the program takes these repeated bytes as the input to &lt;code&gt;./obo&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;As the &lt;code&gt;foo&lt;/code&gt; function returns, the &lt;code&gt;leave&lt;/code&gt; and &lt;code&gt;ret&lt;/code&gt; instructions are executed, leading to the return address being overwritten. This causes the program to jump to the &lt;code&gt;bar&lt;/code&gt; function, printing the success message multiple times.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;further-analysis-determining-effective-overwrite-locations&#34;&gt;Further Analysis: Determining Effective Overwrite Locations
+&lt;/h2&gt;&lt;h2 id=&#34;stack-frame-layout-explanation&#34;&gt;Stack Frame Layout Explanation
+&lt;/h2&gt;&lt;p&gt;During the GDB debugging session, the memory layout for the stack frame of the &lt;code&gt;foo&lt;/code&gt; function looks like this:&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;0xbfffed10   return address
+0xbfffed0c   saved frame pointer (ebp)
+0xbfffed0b   buf[1023]
+...
+0xbfffed03   buf[1015]
+0xbfffed02   buf[1014]
+0xbfffed01   buf[1013]
+0xbfffed00   buf[1012]
+...
+0xbfffe90c   buf[0]
+&lt;/code&gt;&lt;/pre&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Return address&lt;/strong&gt;: Located at &lt;code&gt;0xbfffed10&lt;/code&gt;, this is the address that the program will jump to after the &lt;code&gt;foo&lt;/code&gt; function finishes executing. Overwriting this address can control the flow of the program and potentially redirect it to malicious code (e.g., the &lt;code&gt;bar&lt;/code&gt; function).&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Saved frame pointer (&lt;code&gt;ebp&lt;/code&gt;)&lt;/strong&gt;: Stored at &lt;code&gt;0xbfffed0c&lt;/code&gt;, this value is used to restore the calling function&amp;rsquo;s stack frame after &lt;code&gt;foo&lt;/code&gt; finishes. In this example, we can see how the off-by-one overflow can overwrite the least significant byte of &lt;code&gt;ebp&lt;/code&gt;.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Buffer (&lt;code&gt;buf&lt;/code&gt;)&lt;/strong&gt;: The buffer starts at address &lt;code&gt;0xbfffe90c&lt;/code&gt; and extends to &lt;code&gt;0xbfffed0b&lt;/code&gt;, with &lt;code&gt;buf[0]&lt;/code&gt; located at &lt;code&gt;0xbfffe90c&lt;/code&gt; and &lt;code&gt;buf[1023]&lt;/code&gt; at &lt;code&gt;0xbfffed0b&lt;/code&gt;. The vulnerable line in the code, &lt;code&gt;buf[sizeof(buf)] = &#39;\0&#39;;&lt;/code&gt;, writes a null terminator (&lt;code&gt;\0&lt;/code&gt;) just outside the bounds of this buffer, affecting the saved frame pointer.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;In the off-by-one overflow scenario, the write operation overwrites the least significant byte of &lt;code&gt;ebp&lt;/code&gt;, which is stored at &lt;code&gt;0xbfffed0c&lt;/code&gt;. By manipulating the value of &lt;code&gt;ebp&lt;/code&gt;, we can influence the stack behavior when the &lt;code&gt;leave&lt;/code&gt; and &lt;code&gt;ret&lt;/code&gt; instructions are executed, eventually allowing us to control the program flow and redirect execution to the &lt;code&gt;bar&lt;/code&gt; function.&lt;/p&gt;
+&lt;p&gt;To perform a successful attack, it&amp;rsquo;s crucial to determine precisely which bytes need to be overwritten in order to manipulate the control flow effectively. In this example, the overflow occurs when &lt;code&gt;buf[sizeof(buf)] = &#39;\0&#39;&lt;/code&gt; is executed, causing the least significant byte of the saved frame pointer (&lt;code&gt;ebp&lt;/code&gt;) to be set to &lt;code&gt;0&lt;/code&gt;. Thus, the value of &lt;code&gt;ebp&lt;/code&gt; needs to be adjusted to ensure it points back into the buffer area, allowing the execution to proceed in the desired way and eventually jump to the &lt;code&gt;bar&lt;/code&gt; function.&lt;/p&gt;
+&lt;p&gt;Based on further analysis and testing, the following insights were obtained:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;To accurately determine the overwrite location, the value of &lt;code&gt;ebp&lt;/code&gt; is crucial. However, obtaining this value is challenging because:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;GDB debugging affects address layout.&lt;/li&gt;
+&lt;li&gt;The length of the input parameter affects the address layout.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Under GDB debugging, the layout within the &lt;code&gt;foo&lt;/code&gt; function looks like this:&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;After executing &lt;code&gt;buf[sizeof(buf)] = &#39;\0&#39;;&lt;/code&gt;, &lt;code&gt;ebp&lt;/code&gt; is modified such that the return address effectively takes the value at &lt;code&gt;ebp + 1&lt;/code&gt;, which is the address &lt;code&gt;0xbfffed00 + 1&lt;/code&gt;, or &lt;code&gt;0xbfffed04&lt;/code&gt;.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;The corresponding offset is at position 255 in &lt;code&gt;buf&lt;/code&gt;, meaning the attack can be constructed by filling in the return address only at that specific location. The following command was used for verification in GDB:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;r &lt;span style=&#34;color:#66d9ef&#34;&gt;$(&lt;/span&gt;perl -e &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;print  &amp;#34;\x01\x01\x01\x01&amp;#34;x254 . &amp;#34;\x38\x84\x04\x08&amp;#34;x1 . &amp;#34;\x01\x01\x01\x01&amp;#34;x1&amp;#39;&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;This was verified to work under GDB debugging, with some details to note:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;The input parameter length must always be 256 bytes; otherwise, the value of &lt;code&gt;ebp&lt;/code&gt; will change, as the input parameter occupies stack space, affecting the starting position of the frame and thereby affecting the value of &lt;code&gt;ebp&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;Padding must use non-zero values such as &lt;code&gt;0x01&lt;/code&gt;, because &lt;code&gt;strncpy&lt;/code&gt; will terminate early if it encounters a &lt;code&gt;0&lt;/code&gt; value.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;When executing the program directly (i.e., without GDB), the memory layout differs, resulting in a different offset position. Through experimentation, it was found that the offset is at position 235. The corresponding attack command is:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;./obo &lt;span style=&#34;color:#66d9ef&#34;&gt;$(&lt;/span&gt;perl -e &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;print  &amp;#34;\x01\x01\x01\x01&amp;#34;x234 . &amp;#34;\x38\x84\x04\x08&amp;#34;x1 . &amp;#34;\x01\x01\x01\x01&amp;#34;x21&amp;#39;&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;This achieves the desired effect of accurately finding the overwrite location and successfully executing the attack.&lt;/p&gt;
+</description>
+        </item>
+        
+    </channel>
+</rss>

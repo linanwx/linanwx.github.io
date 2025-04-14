@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="Off-by-One Overflow Attack Analysis Background Last week, I attended a security course that included an example of an off-by-one overflow vulnerability. Here is the original code: /* Simple off-by-one overflow example */ #include &lt;stdio.h&gt; #include &lt;stdlib.h&gt; #include &lt;string.h&gt; void foo(char *input) { char buf[1024]; strncpy(buf, input, sizeof(buf)); buf[sizeof(buf)] = &#39;\\0&#39;; } void bar(void) { printf(&#34;I&#39;ve been hacked\\n&#34;); } int main(int argc, char **argv) { if (argc != 2) { printf(&#34;Usage: %s input_string\\n&#34;, argv[0]); exit(EXIT_FAILURE); } foo(argv[1]); return 0; } The answer provided for exploiting this vulnerability is:">
+<title>Off-by-One Overflow Attack Analysis</title>
+
+<link rel='canonical' href='https://example.org/post/2024/10/oboattact-md/'>
+
+<link rel="stylesheet" href="/scss/style.min.6a12bf910fc038cbe9b80babeda59614bc5345ea20e3f1f03b809941fcf45b1d.css"><meta property='og:title' content="Off-by-One Overflow Attack Analysis">
+<meta property='og:description' content="Off-by-One Overflow Attack Analysis Background Last week, I attended a security course that included an example of an off-by-one overflow vulnerability. Here is the original code: /* Simple off-by-one overflow example */ #include &lt;stdio.h&gt; #include &lt;stdlib.h&gt; #include &lt;string.h&gt; void foo(char *input) { char buf[1024]; strncpy(buf, input, sizeof(buf)); buf[sizeof(buf)] = &#39;\\0&#39;; } void bar(void) { printf(&#34;I&#39;ve been hacked\\n&#34;); } int main(int argc, char **argv) { if (argc != 2) { printf(&#34;Usage: %s input_string\\n&#34;, argv[0]); exit(EXIT_FAILURE); } foo(argv[1]); return 0; } The answer provided for exploiting this vulnerability is:">
+<meta property='og:url' content='https://example.org/post/2024/10/oboattact-md/'>
+<meta property='og:site_name' content='Nansen Li'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:tag' content='vulnerability' /><meta property='article:tag' content='exploitation' /><meta property='article:tag' content='off-by-one' /><meta property='article:tag' content='buffer overflow' /><meta property='article:published_time' content='2024-10-15T14:18:15&#43;00:00'/><meta property='article:modified_time' content='2024-10-15T14:18:15&#43;00:00'/>
+<meta name="twitter:title" content="Off-by-One Overflow Attack Analysis">
+<meta name="twitter:description" content="Off-by-One Overflow Attack Analysis Background Last week, I attended a security course that included an example of an off-by-one overflow vulnerability. Here is the original code: /* Simple off-by-one overflow example */ #include &lt;stdio.h&gt; #include &lt;stdlib.h&gt; #include &lt;string.h&gt; void foo(char *input) { char buf[1024]; strncpy(buf, input, sizeof(buf)); buf[sizeof(buf)] = &#39;\\0&#39;; } void bar(void) { printf(&#34;I&#39;ve been hacked\\n&#34;); } int main(int argc, char **argv) { if (argc != 2) { printf(&#34;Usage: %s input_string\\n&#34;, argv[0]); exit(EXIT_FAILURE); } foo(argv[1]); return 0; } The answer provided for exploiting this vulnerability is:">
+  
+
+
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="Toggle Menu">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/avatar_hu96777ff80939aaa7d938dddcc232fcc6_1414962_300x0_resize_box_3.png" width="300"
+                            height="300" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+                    <span class="emoji">🌈</span>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">Nansen Li</a></h1>
+            <h2 class="site-description"></h2>
+        </div>
+    </header><ol class="menu-social">
+            
+                <li>
+                    <a 
+                        href='https://github.com/linanwx'
+                        target="_blank"
+                        title="GitHub"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://www.linkedin.com/in/nansen-li-3bb0a3146/'
+                        target="_blank"
+                        title="LinkedIn"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-brand-linkedin"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M8 11v5" /><path d="M8 8v.01" /><path d="M12 16v-5" /><path d="M16 16v-3a2 2 0 1 0 -4 0" /><path d="M3 7a4 4 0 0 1 4 -4h10a4 4 0 0 1 4 4v10a4 4 0 0 1 -4 4h-10a4 4 0 0 1 -4 -4z" /></svg>
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='index.xml'
+                        target="_blank"
+                        title="RSS"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-rss" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="5" cy="19" r="1" />
+  <path d="M4 4a16 16 0 0 1 16 16" />
+  <path d="M4 11a9 9 0 0 1 9 9" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+</svg>
+
+
+
+                
+                <span>Home</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/page/archives/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>Archives</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/page/search/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
+
+
+
+                
+                <span>Search</span>
+            </a>
+        </li>
+        
+        <li class="menu-bottom-section">
+            <ol class="menu">
+                    
+                        <li id="i18n-switch">  
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-language" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M4 5h7" />
+  <path d="M9 3v2c0 4.418 -2.239 8 -5 8" />
+  <path d="M5 9c-.003 2.144 2.952 3.908 6.7 4" />
+  <path d="M12 20l4 -9l4 9" />
+  <path d="M19.1 18h-6.2" />
+</svg>
+
+
+
+                            <select name="language" title="language" onchange="window.location.href = this.selectedOptions[0].value">
+                                
+                                    <option value="https://example.org/" selected>English</option>
+                                
+                                    <option value="https://example.org/zh-cn/" >中文</option>
+                                
+                            </select>
+                        </li>
+                    
+                
+
+                
+                    <li id="dark-mode-toggle">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <span>Dark Mode</span>
+                    </li>
+                
+            </ol>
+        </li>
+    </ol>
+</aside>
+
+    
+
+            <main class="main full-width">
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/post/2024/10/oboattact-md/">Off-by-One Overflow Attack Analysis</a>
+        </h2>
+    
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">Oct 15, 2024</time>
+            </div>
+        
+
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+                <time class="article-time--reading">
+                    6 minute read
+                </time>
+            </div>
+        
+    </footer>
+    
+
+    
+        <footer class="article-translations">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-language" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M4 5h7" />
+  <path d="M9 3v2c0 4.418 -2.239 8 -5 8" />
+  <path d="M5 9c-.003 2.144 2.952 3.908 6.7 4" />
+  <path d="M12 20l4 -9l4 9" />
+  <path d="M19.1 18h-6.2" />
+</svg>
+
+
+
+            <div>
+                
+                    <a href="https://example.org/zh-cn/post/2024/10/oboattact-md/" class="link">中文</a>
+                
+            </div>
+        </footer>
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <h1 id="off-by-one-overflow-attack-analysis">Off-by-One Overflow Attack Analysis
+</h1><h2 id="background">Background
+</h2><p>Last week, I attended a security course that included an example of an off-by-one overflow vulnerability. Here is the original code:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#75715e">/* Simple off-by-one overflow example */</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;stdio.h&gt;</span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;stdlib.h&gt;</span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;string.h&gt;</span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">foo</span>(<span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span>input) {
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">char</span> buf[<span style="color:#ae81ff">1024</span>];
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">strncpy</span>(buf, input, <span style="color:#66d9ef">sizeof</span>(buf));
+</span></span><span style="display:flex;"><span>  buf[<span style="color:#66d9ef">sizeof</span>(buf)] <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;\0&#39;</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">bar</span>(<span style="color:#66d9ef">void</span>) {
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">printf</span>(<span style="color:#e6db74">&#34;I&#39;ve been hacked</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>);
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">main</span>(<span style="color:#66d9ef">int</span> argc, <span style="color:#66d9ef">char</span> <span style="color:#f92672">**</span>argv) {
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">if</span> (argc <span style="color:#f92672">!=</span> <span style="color:#ae81ff">2</span>) {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">printf</span>(<span style="color:#e6db74">&#34;Usage: %s input_string</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, argv[<span style="color:#ae81ff">0</span>]);
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">exit</span>(EXIT_FAILURE);
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">foo</span>(argv[<span style="color:#ae81ff">1</span>]);
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>The answer provided for exploiting this vulnerability is:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>perl -e <span style="color:#e6db74">&#39;system &#34;./obo&#34;, &#34;\x38\x84\x04\x08&#34;x256&#39;</span>
+</span></span></code></pre></div><p>The result of running this command is that multiple lines of <code>I've been hacked</code> are printed on the screen.</p>
+<h2 id="analysis">Analysis
+</h2><p>When the program enters the <code>foo</code> function, the memory layout looks like this (as observed using GDB):</p>
+<p>From top to bottom, the layout contains the return address, the saved frame pointer, and the buffer (<code>buf</code>).</p>
+<p>When the line <code>buf[sizeof(buf)] = '\0';</code> is executed, the least significant byte of the saved frame pointer (<code>ebp</code>) is set to <code>0</code>. To ensure that <code>ebp</code> still points within the <code>buf</code> region after being partially overwritten, a buffer of at least 1024 bytes is required. Specifically, <code>ebp</code> needs to be overwritten such that it remains within a reasonable range (— up to <code>0xff</code>), which is why the buffer is set to <code>0xff * 4</code> bytes.</p>
+<h2 id="understanding-assembly-commands-on-foo-return">Understanding Assembly Commands on <code>foo</code> Return
+</h2><p>When the <code>foo</code> function returns, it typically executes the following key assembly instructions:</p>
+<h3 id="1-leave-instruction">1. <code>leave</code> Instruction
+</h3><p>The <code>leave</code> instruction is equivalent to:</p>
+<pre tabindex="0"><code class="language-assembly" data-lang="assembly">mov esp, ebp
+pop ebp
+</code></pre><ul>
+<li><code>mov esp, ebp</code>: This sets the stack pointer (<code>esp</code>) to the value of the frame pointer (<code>ebp</code>), restoring the stack pointer to the top of the current stack frame and effectively releasing the space occupied by the current function.</li>
+<li><code>pop ebp</code>: This pops the value at the top of the stack and assigns it to the frame pointer (<code>ebp</code>), thereby restoring the caller&rsquo;s frame pointer. Essentially, it writes the return address into <code>ebp</code>, meaning it assigns the stack value (usually the caller&rsquo;s frame address) to <code>ebp</code>, restoring the caller&rsquo;s stack frame.</li>
+</ul>
+<p>The effect of <code>leave</code> is to restore <code>esp</code> to its state before the function was called and to pop the saved <code>ebp</code>. If <code>ebp</code> has been overwritten to point to a special address (such as an address within the buffer), it can result in an incorrect stack pointer location during function return.</p>
+<h3 id="2-ret-instruction">2. <code>ret</code> Instruction
+</h3><p>The <code>ret</code> instruction pops an address off the top of the stack and jumps to that address:</p>
+<pre tabindex="0"><code class="language-assembly" data-lang="assembly">pop eip
+</code></pre><p>If the return address has been overwritten with the address of the <code>bar</code> function, the execution flow will jump to <code>bar</code>, allowing an attacker to run arbitrary code. Essentially, <code>ret</code> pops an address into the instruction pointer (<code>eip</code>) and jumps to that address to continue execution.</p>
+<h2 id="attack-steps">Attack Steps
+</h2><ul>
+<li>When the command <code>perl -e 'system &quot;./obo&quot;, &quot;\x38\x84\x04\x08&quot;x256'</code> is executed, the program takes these repeated bytes as the input to <code>./obo</code>.</li>
+<li>As the <code>foo</code> function returns, the <code>leave</code> and <code>ret</code> instructions are executed, leading to the return address being overwritten. This causes the program to jump to the <code>bar</code> function, printing the success message multiple times.</li>
+</ul>
+<h2 id="further-analysis-determining-effective-overwrite-locations">Further Analysis: Determining Effective Overwrite Locations
+</h2><h2 id="stack-frame-layout-explanation">Stack Frame Layout Explanation
+</h2><p>During the GDB debugging session, the memory layout for the stack frame of the <code>foo</code> function looks like this:</p>
+<pre tabindex="0"><code>0xbfffed10   return address
+0xbfffed0c   saved frame pointer (ebp)
+0xbfffed0b   buf[1023]
+...
+0xbfffed03   buf[1015]
+0xbfffed02   buf[1014]
+0xbfffed01   buf[1013]
+0xbfffed00   buf[1012]
+...
+0xbfffe90c   buf[0]
+</code></pre><ul>
+<li>
+<p><strong>Return address</strong>: Located at <code>0xbfffed10</code>, this is the address that the program will jump to after the <code>foo</code> function finishes executing. Overwriting this address can control the flow of the program and potentially redirect it to malicious code (e.g., the <code>bar</code> function).</p>
+</li>
+<li>
+<p><strong>Saved frame pointer (<code>ebp</code>)</strong>: Stored at <code>0xbfffed0c</code>, this value is used to restore the calling function&rsquo;s stack frame after <code>foo</code> finishes. In this example, we can see how the off-by-one overflow can overwrite the least significant byte of <code>ebp</code>.</p>
+</li>
+<li>
+<p><strong>Buffer (<code>buf</code>)</strong>: The buffer starts at address <code>0xbfffe90c</code> and extends to <code>0xbfffed0b</code>, with <code>buf[0]</code> located at <code>0xbfffe90c</code> and <code>buf[1023]</code> at <code>0xbfffed0b</code>. The vulnerable line in the code, <code>buf[sizeof(buf)] = '\0';</code>, writes a null terminator (<code>\0</code>) just outside the bounds of this buffer, affecting the saved frame pointer.</p>
+</li>
+</ul>
+<p>In the off-by-one overflow scenario, the write operation overwrites the least significant byte of <code>ebp</code>, which is stored at <code>0xbfffed0c</code>. By manipulating the value of <code>ebp</code>, we can influence the stack behavior when the <code>leave</code> and <code>ret</code> instructions are executed, eventually allowing us to control the program flow and redirect execution to the <code>bar</code> function.</p>
+<p>To perform a successful attack, it&rsquo;s crucial to determine precisely which bytes need to be overwritten in order to manipulate the control flow effectively. In this example, the overflow occurs when <code>buf[sizeof(buf)] = '\0'</code> is executed, causing the least significant byte of the saved frame pointer (<code>ebp</code>) to be set to <code>0</code>. Thus, the value of <code>ebp</code> needs to be adjusted to ensure it points back into the buffer area, allowing the execution to proceed in the desired way and eventually jump to the <code>bar</code> function.</p>
+<p>Based on further analysis and testing, the following insights were obtained:</p>
+<ul>
+<li>
+<p>To accurately determine the overwrite location, the value of <code>ebp</code> is crucial. However, obtaining this value is challenging because:</p>
+<ol>
+<li>GDB debugging affects address layout.</li>
+<li>The length of the input parameter affects the address layout.</li>
+</ol>
+</li>
+<li>
+<p>Under GDB debugging, the layout within the <code>foo</code> function looks like this:</p>
+</li>
+<li>
+<p>After executing <code>buf[sizeof(buf)] = '\0';</code>, <code>ebp</code> is modified such that the return address effectively takes the value at <code>ebp + 1</code>, which is the address <code>0xbfffed00 + 1</code>, or <code>0xbfffed04</code>.</p>
+</li>
+<li>
+<p>The corresponding offset is at position 255 in <code>buf</code>, meaning the attack can be constructed by filling in the return address only at that specific location. The following command was used for verification in GDB:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>r <span style="color:#66d9ef">$(</span>perl -e <span style="color:#e6db74">&#39;print  &#34;\x01\x01\x01\x01&#34;x254 . &#34;\x38\x84\x04\x08&#34;x1 . &#34;\x01\x01\x01\x01&#34;x1&#39;</span><span style="color:#66d9ef">)</span>
+</span></span></code></pre></div></li>
+<li>
+<p>This was verified to work under GDB debugging, with some details to note:</p>
+<ol>
+<li>The input parameter length must always be 256 bytes; otherwise, the value of <code>ebp</code> will change, as the input parameter occupies stack space, affecting the starting position of the frame and thereby affecting the value of <code>ebp</code>.</li>
+<li>Padding must use non-zero values such as <code>0x01</code>, because <code>strncpy</code> will terminate early if it encounters a <code>0</code> value.</li>
+</ol>
+</li>
+<li>
+<p>When executing the program directly (i.e., without GDB), the memory layout differs, resulting in a different offset position. Through experimentation, it was found that the offset is at position 235. The corresponding attack command is:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>./obo <span style="color:#66d9ef">$(</span>perl -e <span style="color:#e6db74">&#39;print  &#34;\x01\x01\x01\x01&#34;x234 . &#34;\x38\x84\x04\x08&#34;x1 . &#34;\x01\x01\x01\x01&#34;x21&#39;</span><span style="color:#66d9ef">)</span>
+</span></span></code></pre></div></li>
+</ul>
+<p>This achieves the desired effect of accurately finding the overwrite location and successfully executing the attack.</p>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+    <section class="article-tags">
+        
+            <a href="/tags/vulnerability/">Vulnerability</a>
+        
+            <a href="/tags/exploitation/">Exploitation</a>
+        
+            <a href="/tags/off-by-one/">Off-by-One</a>
+        
+            <a href="/tags/buffer-overflow/">Buffer Overflow</a>
+        
+    </section>
+
+
+    </footer>
+
+
+    
+</article>
+
+    
+
+    
+
+     
+    
+        
+    <div class="disqus-container">
+    <div id="disqus_thread"></div>
+<script>
+    window.disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "nansenli" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+<style>
+    .disqus-container {
+        background-color: var(--card-background);
+        border-radius: var(--card-border-radius);
+        box-shadow: var(--shadow-l1);
+        padding: var(--card-padding);
+    }
+</style>
+
+<script>
+    window.addEventListener('onColorSchemeChange', (e) => {
+        if (typeof DISQUS == 'object') {
+            DISQUS.reset({
+                reload: true
+            });
+        }
+    })
+</script>
+
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+        2025 Nansen Li
+    </section>
+    
+    <section class="powerby">
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.30.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.1e9a3bafd846ced4c345d084b355fb8c7bae75701c338f8a1f8a82c780137826.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>

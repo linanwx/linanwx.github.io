@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+    <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="这篇文章主要介绍了如何对传统分组密码算法 FEAL-4 进行差分分析（Differential Cryptanalysis），并展示了攻击进程和关键实现细节。文中还包含了部分实验数据和攻击结果，可供有兴趣的读者参考或复现。 两张重要图片 在正式展开分析之前，先给出两张与 FEAL-4 密切相关的图片，方便对差分传播和整体加密流程有一个直观认识。 差分传播示意图 下图展示了在 FEAL-4 中，明文差分（XOR 形式）如何在加密轮次中传播并最终反映到密文上。 FEAL-4 工作流示意图 下图是 FEAL-4 的整体加密框架示意，包括明文的左右分块、各轮子密钥注入以及 F 函数的运用流程。 F 函数的特性 FEAL-4 的轮函数（即 F 函数）可以视作对 32 位输入进行某种随机化排列（Permutation）。在差分分析中，我们并不需要 F 的具体实现，而更关注它的两个关键差分属性： 若 $X \\oplus Y = 0$，则 $F(X) = F(Y)$。 若 $X \\oplus Y = 0x80800000$，则 $F(X) \\oplus F(Y) = 0x02000000$。 有了这两个结论，在后续分析时就能推断特定差分输入下的输出表现，从而帮助定位子密钥。 差分路径的详细分析 假设我们选择一对特殊的明文 $P_0$ 和 $P_1$，满足： $$ P_0 \\oplus P_1 = 0x8080000080800000 = P^{\\prime}. $$ 这个特定差分向量有助于简化 FEAL-4 若干轮次输出中的差分计算。 1. 初始轮次差分推导 令 $(L0_0, R0_0)$ 表示 $P_0$ 的左右分块（同理 $(L0_1, R0_1)$ 表示 $P_1$ 的左右分块）。">
+<title>差分攻击 FEAL-4：从原理到实现</title>
+
+<link rel='canonical' href='http://localhost:1313/zh-cn/post/zh-cn/2025/01/feal-4/'>
+
+<link rel="stylesheet" href="/scss/style.min.663803bebe609202d5b39d848f2d7c2dc8b598a2d879efa079fa88893d29c49c.css"><meta property='og:title' content="差分攻击 FEAL-4：从原理到实现">
+<meta property='og:description' content="这篇文章主要介绍了如何对传统分组密码算法 FEAL-4 进行差分分析（Differential Cryptanalysis），并展示了攻击进程和关键实现细节。文中还包含了部分实验数据和攻击结果，可供有兴趣的读者参考或复现。 两张重要图片 在正式展开分析之前，先给出两张与 FEAL-4 密切相关的图片，方便对差分传播和整体加密流程有一个直观认识。 差分传播示意图 下图展示了在 FEAL-4 中，明文差分（XOR 形式）如何在加密轮次中传播并最终反映到密文上。 FEAL-4 工作流示意图 下图是 FEAL-4 的整体加密框架示意，包括明文的左右分块、各轮子密钥注入以及 F 函数的运用流程。 F 函数的特性 FEAL-4 的轮函数（即 F 函数）可以视作对 32 位输入进行某种随机化排列（Permutation）。在差分分析中，我们并不需要 F 的具体实现，而更关注它的两个关键差分属性： 若 $X \\oplus Y = 0$，则 $F(X) = F(Y)$。 若 $X \\oplus Y = 0x80800000$，则 $F(X) \\oplus F(Y) = 0x02000000$。 有了这两个结论，在后续分析时就能推断特定差分输入下的输出表现，从而帮助定位子密钥。 差分路径的详细分析 假设我们选择一对特殊的明文 $P_0$ 和 $P_1$，满足： $$ P_0 \\oplus P_1 = 0x8080000080800000 = P^{\\prime}. $$ 这个特定差分向量有助于简化 FEAL-4 若干轮次输出中的差分计算。 1. 初始轮次差分推导 令 $(L0_0, R0_0)$ 表示 $P_0$ 的左右分块（同理 $(L0_1, R0_1)$ 表示 $P_1$ 的左右分块）。">
+<meta property='og:url' content='http://localhost:1313/zh-cn/post/zh-cn/2025/01/feal-4/'>
+<meta property='og:site_name' content='Nansen Li 🌈'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:tag' content='密码学' /><meta property='article:tag' content='差分攻击' /><meta property='article:tag' content='FEAL-4' /><meta property='article:tag' content='密码分析' /><meta property='article:published_time' content='2025-01-01T13:15:04&#43;00:00'/><meta property='article:modified_time' content='2025-01-01T13:15:04&#43;00:00'/>
+<meta name="twitter:title" content="差分攻击 FEAL-4：从原理到实现">
+<meta name="twitter:description" content="这篇文章主要介绍了如何对传统分组密码算法 FEAL-4 进行差分分析（Differential Cryptanalysis），并展示了攻击进程和关键实现细节。文中还包含了部分实验数据和攻击结果，可供有兴趣的读者参考或复现。 两张重要图片 在正式展开分析之前，先给出两张与 FEAL-4 密切相关的图片，方便对差分传播和整体加密流程有一个直观认识。 差分传播示意图 下图展示了在 FEAL-4 中，明文差分（XOR 形式）如何在加密轮次中传播并最终反映到密文上。 FEAL-4 工作流示意图 下图是 FEAL-4 的整体加密框架示意，包括明文的左右分块、各轮子密钥注入以及 F 函数的运用流程。 F 函数的特性 FEAL-4 的轮函数（即 F 函数）可以视作对 32 位输入进行某种随机化排列（Permutation）。在差分分析中，我们并不需要 F 的具体实现，而更关注它的两个关键差分属性： 若 $X \\oplus Y = 0$，则 $F(X) = F(Y)$。 若 $X \\oplus Y = 0x80800000$，则 $F(X) \\oplus F(Y) = 0x02000000$。 有了这两个结论，在后续分析时就能推断特定差分输入下的输出表现，从而帮助定位子密钥。 差分路径的详细分析 假设我们选择一对特殊的明文 $P_0$ 和 $P_1$，满足： $$ P_0 \\oplus P_1 = 0x8080000080800000 = P^{\\prime}. $$ 这个特定差分向量有助于简化 FEAL-4 若干轮次输出中的差分计算。 1. 初始轮次差分推导 令 $(L0_0, R0_0)$ 表示 $P_0$ 的左右分块（同理 $(L0_1, R0_1)$ 表示 $P_1$ 的左右分块）。">
+  
+
+
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column compact"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="切换菜单">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/zh-cn/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/avatar_huda2458f72ce188392d75c5d51cd8e24e_373_300x0_resize_box_3.png" width="300"
+                            height="300" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/zh-cn">Nansen Li 🌈</a></h1>
+            <h2 class="site-description"></h2>
+        </div>
+    </header><ol class="menu" id="main-menu">
+        
+        
+        <li class="menu-bottom-section">
+            <ol class="menu">
+                    
+                        <li id="i18n-switch">  
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-language" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M4 5h7" />
+  <path d="M9 3v2c0 4.418 -2.239 8 -5 8" />
+  <path d="M5 9c-.003 2.144 2.952 3.908 6.7 4" />
+  <path d="M12 20l4 -9l4 9" />
+  <path d="M19.1 18h-6.2" />
+</svg>
+
+
+
+                            <select name="language" title="language" onchange="window.location.href = this.selectedOptions[0].value">
+                                
+                                    <option value="http://localhost:1313/" >English</option>
+                                
+                                    <option value="http://localhost:1313/zh-cn/" selected>中文</option>
+                                
+                            </select>
+                        </li>
+                    
+                
+
+                
+                    <li id="dark-mode-toggle">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <span>暗色模式</span>
+                    </li>
+                
+            </ol>
+        </li>
+    </ol>
+</aside>
+
+    
+
+            <main class="main full-width">
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/zh-cn/post/zh-cn/2025/01/feal-4/">差分攻击 FEAL-4：从原理到实现</a>
+        </h2>
+    
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">Jan 01, 2025</time>
+            </div>
+        
+
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+                <time class="article-time--reading">
+                    阅读时长: 3 分钟
+                </time>
+            </div>
+        
+    </footer>
+    
+
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <p>这篇文章主要介绍了如何对传统分组密码算法 FEAL-4 进行差分分析（Differential Cryptanalysis），并展示了攻击进程和关键实现细节。文中还包含了部分实验数据和攻击结果，可供有兴趣的读者参考或复现。</p>
+<hr>
+<h2 id="两张重要图片">两张重要图片
+</h2><p>在正式展开分析之前，先给出两张与 FEAL-4 密切相关的图片，方便对差分传播和整体加密流程有一个直观认识。</p>
+<ol>
+<li>
+<p><strong>差分传播示意图</strong><br>
+下图展示了在 FEAL-4 中，明文差分（XOR 形式）如何在加密轮次中传播并最终反映到密文上。</p>
+<p><img src="https://res.craft.do/user/full/c5e6e898-910c-6f27-fbc5-91f4c34a9511/doc/BC194830-506A-4A58-A67E-4C93B48730F8/E52F074B-64AB-4DF4-A553-907625B5D18F_2/UTpozkY6Wu2EoytDJ1dciSe132jz20EsyjndJ7GALVQz/Image.png"
+	
+	
+	
+	loading="lazy"
+	
+	
+></p>
+</li>
+<li>
+<p><strong>FEAL-4 工作流示意图</strong><br>
+下图是 FEAL-4 的整体加密框架示意，包括明文的左右分块、各轮子密钥注入以及 F 函数的运用流程。</p>
+<p><img src="https://res.craft.do/user/full/c5e6e898-910c-6f27-fbc5-91f4c34a9511/doc/BC194830-506A-4A58-A67E-4C93B48730F8/FCB4E65D-A8EE-457F-A78C-4A788E832B87_2/rzEGfY9PioZpJMMK4Q466xqJI7rwGXEPRybyCDPuHW8z/Image.png"
+	
+	
+	
+	loading="lazy"
+	
+	
+></p>
+</li>
+</ol>
+<hr>
+<h2 id="f-函数的特性">F 函数的特性
+</h2><p>FEAL-4 的轮函数（即 F 函数）可以视作对 32 位输入进行某种随机化排列（Permutation）。在差分分析中，我们并不需要 F 的具体实现，而更关注它的两个关键差分属性：</p>
+<ul>
+<li>若 $X \oplus Y = 0$，则 $F(X) = F(Y)$。</li>
+<li>若 $X \oplus Y = 0x80800000$，则 $F(X) \oplus F(Y) = 0x02000000$。</li>
+</ul>
+<p>有了这两个结论，在后续分析时就能推断特定差分输入下的输出表现，从而帮助定位子密钥。</p>
+<hr>
+<h2 id="差分路径的详细分析">差分路径的详细分析
+</h2><p>假设我们选择一对特殊的明文 $P_0$ 和 $P_1$，满足：
+$$
+P_0 \oplus P_1 = 0x8080000080800000 = P^{\prime}.
+$$
+这个特定差分向量有助于简化 FEAL-4 若干轮次输出中的差分计算。</p>
+<h3 id="1-初始轮次差分推导">1. 初始轮次差分推导
+</h3><ul>
+<li>
+<p>令 $(L0_0, R0_0)$ 表示 $P_0$ 的左右分块（同理 $(L0_1, R0_1)$ 表示 $P_1$ 的左右分块）。</p>
+</li>
+<li>
+<p>经过第一轮的异或操作后：
+$$
+L1_0 \oplus L1_1 = (L0_0 \oplus K4) \oplus (L0_1 \oplus K4)
+= L0_0 \oplus L1_0
+= 0x80800000.
+$$
+同理可推出右半部分的差分。</p>
+</li>
+<li>
+<p>进一步由于加密时存在 “额外一轮 XOR”，可得到：
+$$
+R2_0 \oplus R2_1
+= (R1_0 \oplus L1_0) \oplus (R1_1 \oplus L1_1)
+= 0x80800000 \oplus 0x80800000
+= 0.
+$$
+这意味着在后续计算中，差分会以更简单的形式得以归并。</p>
+</li>
+</ul>
+<h3 id="2-后向差分计算backward-calculation">2. 后向差分计算（Backward Calculation）
+</h3><p>当我们获得明文对 $(P_0, P_1)$ 与对应的密文对 $(C_0, C_1)$ 后，可以进一步进行后向推导。令密文记作 $(L, R)$，则：</p>
+<ul>
+<li>计算出 $C^{\prime} = C_0 \oplus C_1$，得到 $(L^{\prime}, R^{\prime})$。</li>
+<li>根据已知差分性质，可在末轮逐步还原 $X^{\prime}$、$Y^{\prime}$、$Z^{\prime}$ 等中间变量。</li>
+<li>利用这些结果便可对各子密钥展开攻击或验证。</li>
+</ul>
+<hr>
+<h2 id="攻击-k3">攻击 K3
+</h2><p>在差分分析中，往往先从某个中间轮次子密钥开始，例如 $K_3$。具体步骤如下：</p>
+<ol>
+<li><strong>选取明文对：</strong> 我生成了 12 对满足<br>
+$$
+P_0 \oplus P_1 = 0x8080000080800000
+$$<br>
+的随机明文。</li>
+<li><strong>加密并提取差分：</strong> 将上述明文对加密后，得到相应的密文对；结合差分路径推导出 $Y_0$、$Y_1$、$Z^{\prime}$ 等中间值。</li>
+<li><strong>遍历 $K_3$：</strong><br>
+$$
+Z^{\prime} = Z_0 \oplus Z_1 = F(Y_0 \oplus K_3) \oplus F(Y_1 \oplus K_3).
+$$<br>
+只要找到满足差分方程 $= 0x02000000$ 的候选即保留。</li>
+</ol>
+<p>通过这种方法，我成功得到四个候选子密钥：</p>
+<pre tabindex="0"><code>cfa38976, cfa309f6, 4f238976, 4f2309f6
+</code></pre><p>执行以上过程的命令示例为：</p>
+<pre tabindex="0"><code>./main -mode=attackk3 -file=K3.txt
+</code></pre><p>该实现与我在 <a class="link" href="https://www.theamazingking.com"  target="_blank" rel="noopener"
+    >www.theamazingking.com</a> 上介绍的方法一致。</p>
+<hr>
+<h2 id="攻击-k2">攻击 K2
+</h2><p>在拿到 $K_3$ 的若干候选后，可以继续推算 $K_2$。其核心方程：
+$$
+X&rsquo; = X_0 \oplus X_1
+= F(U_0 \oplus K_2) \oplus F(U_1 \oplus K_2),
+$$
+其中 $U$ 来自于上一轮运算（包括对 $Y$、$Z$ 等的进一步计算）。同样地：</p>
+<ol>
+<li>生成明文对，满足差分条件
+$$
+P_0 \oplus P_1 = 0x0000000080800000.
+$$</li>
+<li>抓取加密后密文差分，通过遍历所有可能 $K_2$ 值，检查是否能满足差分约束 $=0x02000000$。</li>
+<li>命令示例：
+<pre tabindex="0"><code>./main -mode=attackk2 -file=K2.txt -k3=cfa38976,cfa309f6,4f238976,4f2309f6
+</code></pre></li>
+<li>最终输出示例如下所示：
+<pre tabindex="0"><code>Candidate K2: 8b722e41 (K3: cfa38976)
+Candidate K2: 8b72aec1 (K3: cfa38976)
+...
+Candidate K2: 89722e43 (K3: 4f2309f6)
+Candidate K2: 8972aec3 (K3: 4f2309f6)
+</code></pre></li>
+</ol>
+<hr>
+<h2 id="攻击-k1">攻击 K1
+</h2><p>类似地，攻击 $K_1$ 也可以按前面流程来做。<br>
+为了让差分路径能稳定呈现预期结果，我生成了 12 对满足<br>
+$$
+P_0 \oplus P_1 = 0x0000000002000000
+$$<br>
+的明文，并验证其加密输出。</p>
+<p>命令示例：</p>
+<pre tabindex="0"><code>./main -mode=attackk1 -file=K1.txt -k3k2=&#34;cfa38976,8b722e41; cfa38976,8b72aec1; ...&#34;
+</code></pre><p>可一次性将前面得到的所有 $K_3, K_2$ 候选组合带入，最终找到对应的 $K_1$ 候选。</p>
+<hr>
+<h2 id="攻击-k0-k4-k5">攻击 K0, K4, K5
+</h2><p>当 $K_3, K_2, K_1$ 全部到手后，就可以反推最后一轮所需的 $K_0, K_4, K_5$。<br>
+设最终加密得到的左、右部分为 $L_0, R_0$。对应的明文分块为 $PL, PR$。则有：</p>
+<ul>
+<li>$PL \oplus K_4 = LR_0$</li>
+<li>$PR \oplus K_5 = RR_0$</li>
+<li>$RR_0 \oplus LR_0 = R_0$</li>
+<li>$f(R_0 \oplus K_0) \oplus L_0 = LR_0$</li>
+</ul>
+<p>只要枚举所有可能的 $K_0$，即可通过上述方程解出相应的 $K_4$ 与 $K_5$。然后用其他明文-密文对交叉验证正确性。若都满足，则得到正确的最终密钥集。</p>
+<p>命令示例：</p>
+<pre tabindex="0"><code>./main -mode=attackk0k4k5 -k3k2k1=&#34;...&#34; -file=K1.txt -file2=K1_p.txt
+</code></pre><hr>
+<h2 id="实现优化与验证">实现、优化与验证
+</h2><h3 id="1-自动化生成与并行计算">1. 自动化生成与并行计算
+</h3><ul>
+<li><strong>自动生成随机明文对</strong>：在代码中事先控制 XOR 差分，即可批量输出满足需求的明文文件（如 <code>K3_p.txt</code>, <code>K2_p.txt</code>, <code>K1_p.txt</code>）。</li>
+<li><strong>并行化搜索</strong>：使用 Go 语言的 Goroutines，开启 10 个并行任务，在带有 10 核的 Mac 上最大化利用 CPU 资源。</li>
+<li><strong>进度条与可视化</strong>：通过 <code>progressbar</code> 库实时显示搜索进度，让实验过程更直观。</li>
+</ul>
+<h3 id="2-验证方法">2. 验证方法
+</h3><ul>
+<li>
+<p><strong>本地自定义密钥测试</strong><br>
+先选定一套已知的 $K_0$–$K_5$（如 <code>0x00000001, 0x00000002, 0x00000004, 0x00000008, 0x00000010, 0x00000020</code>），对前面生成的明文对进行加密，并重复差分分析过程，看是否能在结果中匹配这套密钥。<br>
+实验证明能够正确还原这组测试密钥，从而确认代码逻辑的准确性。</p>
+</li>
+<li>
+<p><strong>特定明文-密文对测试</strong><br>
+选定一个明文 <code>1234567890abcdef</code> 和在 Einstein Zone 生成的密文 <code>f43ae3eeb56e2bbf</code>，验证最终得到的 256 组候选 $K_0$–$K_5$ 中，每一组都可重现这条加密映射，进一步确认攻击流程无误。</p>
+</li>
+</ul>
+<hr>
+<h2 id="最终结果">最终结果
+</h2><p>所有解出的 $K_0$–$K_5$ 存放于 <code>final_result.txt</code>。去重后包括以下范围：</p>
+<h3 id="possible-values-for-k0">Possible Values for K0
+</h3><pre tabindex="0"><code>890c2148 890ca1c8 098c2148 098ca1c8 ...
+0b8c214a 0b8ca1ca 8b0c214a 8b0ca1ca
+</code></pre><h3 id="possible-values-for-k1">Possible Values for K1
+</h3><pre tabindex="0"><code>471f077e 471f87fe c79f077e c79f87fc ...
+451f077c 451f87fc c59f077c c59f87fc
+</code></pre><h3 id="possible-values-for-k2">Possible Values for K2
+</h3><pre tabindex="0"><code>8b722e41 8b72aec1 8b722e43 8b72aec3 ...
+89722e43 8972aec3
+</code></pre><h3 id="possible-values-for-k3">Possible Values for K3
+</h3><pre tabindex="0"><code>cfa38976 cfa309f6 4f238976 4f2309f6
+</code></pre><h3 id="possible-values-for-k4">Possible Values for K4
+</h3><pre tabindex="0"><code>89eb0024 89eb0026 8beb0024 8beb0026
+</code></pre><h3 id="possible-values-for-k5">Possible Values for K5
+</h3><pre tabindex="0"><code>b85e6bc0 b85e6bc2 ba5e6bc0 ba5e6bc2
+</code></pre><p>借助差分分析，我们最终能获得一批子密钥候选集。与现代分组密码（AES 等）相比，FEAL-4 的轮数较少、结构也更为简洁，因此在教学和研究中非常适合用于演示差分分析思路。</p>
+<hr>
+<h2 id="总结">总结
+</h2><p>本文详细展示了对 FEAL-4 进行差分攻击的完整流程，包括从差分路径设计、生成明文对、中间子密钥 ($K_3, K_2, K_1$) 攻击，再到最后对 $K_0, K_4, K_5$ 的逆向求解。同时也介绍了代码实现过程中的几处优化和验证方法。<br>
+FEAL-4 算法因为较低的轮数和简单的结构为差分分析提供了便利。然而对于现代更安全、更复杂的分组算法，同样的分析思路也至关重要。本案例希望对密码学的学习者和研究者有所启发，如有任何问题或改进方案，欢迎在评论区讨论交流！</p>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+    <section class="article-tags">
+        
+            <a href="/zh-cn/tags/%E5%AF%86%E7%A0%81%E5%AD%A6/">密码学</a>
+        
+            <a href="/zh-cn/tags/%E5%B7%AE%E5%88%86%E6%94%BB%E5%87%BB/">差分攻击</a>
+        
+            <a href="/zh-cn/tags/feal-4/">FEAL-4</a>
+        
+            <a href="/zh-cn/tags/%E5%AF%86%E7%A0%81%E5%88%86%E6%9E%90/">密码分析</a>
+        
+    </section>
+
+
+    </footer>
+
+
+    
+</article>
+
+    
+
+    
+
+     
+    
+        
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+        2025 Nansen Li 🌈
+    </section>
+    
+    <section class="powerby">
+        使用 <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> 构建 <br />
+        主题 <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.30.0">Stack</a></b> 由 <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a> 设计
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.82b0ae53811e811c05e2f6cbd29afb29624a46d610555aaa96f4687ca24b7860.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>

@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="This article primarily introduces how to perform differential cryptanalysis on the traditional block cipher algorithm FEAL-4, and demonstrates the attack process and key implementation details. The text also includes some experimental data and attack results for interested readers to reference or reproduce. Two Important Images Before delving into the analysis, here are two images closely related to FEAL-4 to provide an intuitive understanding of differential propagation and the overall encryption process.">
+<title>Differential Attack on FEAL-4 - From Principles to Implementation</title>
+
+<link rel='canonical' href='https://example.org/post/2025/01/feal-4/'>
+
+<link rel="stylesheet" href="/scss/style.min.6a12bf910fc038cbe9b80babeda59614bc5345ea20e3f1f03b809941fcf45b1d.css"><meta property='og:title' content="Differential Attack on FEAL-4 - From Principles to Implementation">
+<meta property='og:description' content="This article primarily introduces how to perform differential cryptanalysis on the traditional block cipher algorithm FEAL-4, and demonstrates the attack process and key implementation details. The text also includes some experimental data and attack results for interested readers to reference or reproduce. Two Important Images Before delving into the analysis, here are two images closely related to FEAL-4 to provide an intuitive understanding of differential propagation and the overall encryption process.">
+<meta property='og:url' content='https://example.org/post/2025/01/feal-4/'>
+<meta property='og:site_name' content='Nansen Li'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:tag' content='Cryptography' /><meta property='article:tag' content='Differential Attack' /><meta property='article:tag' content='FEAL-4' /><meta property='article:tag' content='Cryptanalysis' /><meta property='article:published_time' content='2025-01-01T13:15:04&#43;00:00'/><meta property='article:modified_time' content='2025-01-01T13:15:04&#43;00:00'/>
+<meta name="twitter:title" content="Differential Attack on FEAL-4 - From Principles to Implementation">
+<meta name="twitter:description" content="This article primarily introduces how to perform differential cryptanalysis on the traditional block cipher algorithm FEAL-4, and demonstrates the attack process and key implementation details. The text also includes some experimental data and attack results for interested readers to reference or reproduce. Two Important Images Before delving into the analysis, here are two images closely related to FEAL-4 to provide an intuitive understanding of differential propagation and the overall encryption process.">
+  
+
+
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="Toggle Menu">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/avatar_hu96777ff80939aaa7d938dddcc232fcc6_1414962_300x0_resize_box_3.png" width="300"
+                            height="300" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+                    <span class="emoji">🌈</span>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">Nansen Li</a></h1>
+            <h2 class="site-description"></h2>
+        </div>
+    </header><ol class="menu-social">
+            
+                <li>
+                    <a 
+                        href='https://github.com/linanwx'
+                        target="_blank"
+                        title="GitHub"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://www.linkedin.com/in/nansen-li-3bb0a3146/'
+                        target="_blank"
+                        title="LinkedIn"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-brand-linkedin"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M8 11v5" /><path d="M8 8v.01" /><path d="M12 16v-5" /><path d="M16 16v-3a2 2 0 1 0 -4 0" /><path d="M3 7a4 4 0 0 1 4 -4h10a4 4 0 0 1 4 4v10a4 4 0 0 1 -4 4h-10a4 4 0 0 1 -4 -4z" /></svg>
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='index.xml'
+                        target="_blank"
+                        title="RSS"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-rss" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="5" cy="19" r="1" />
+  <path d="M4 4a16 16 0 0 1 16 16" />
+  <path d="M4 11a9 9 0 0 1 9 9" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+</svg>
+
+
+
+                
+                <span>Home</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/page/archives/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>Archives</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/page/search/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
+
+
+
+                
+                <span>Search</span>
+            </a>
+        </li>
+        
+        <li class="menu-bottom-section">
+            <ol class="menu">
+                    
+                        <li id="i18n-switch">  
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-language" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M4 5h7" />
+  <path d="M9 3v2c0 4.418 -2.239 8 -5 8" />
+  <path d="M5 9c-.003 2.144 2.952 3.908 6.7 4" />
+  <path d="M12 20l4 -9l4 9" />
+  <path d="M19.1 18h-6.2" />
+</svg>
+
+
+
+                            <select name="language" title="language" onchange="window.location.href = this.selectedOptions[0].value">
+                                
+                                    <option value="https://example.org/" selected>English</option>
+                                
+                                    <option value="https://example.org/zh-cn/" >中文</option>
+                                
+                            </select>
+                        </li>
+                    
+                
+
+                
+                    <li id="dark-mode-toggle">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <span>Dark Mode</span>
+                    </li>
+                
+            </ol>
+        </li>
+    </ol>
+</aside>
+
+    
+
+            <main class="main full-width">
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/post/2025/01/feal-4/">Differential Attack on FEAL-4 - From Principles to Implementation</a>
+        </h2>
+    
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">Jan 01, 2025</time>
+            </div>
+        
+
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+                <time class="article-time--reading">
+                    7 minute read
+                </time>
+            </div>
+        
+    </footer>
+    
+
+    
+        <footer class="article-translations">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-language" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M4 5h7" />
+  <path d="M9 3v2c0 4.418 -2.239 8 -5 8" />
+  <path d="M5 9c-.003 2.144 2.952 3.908 6.7 4" />
+  <path d="M12 20l4 -9l4 9" />
+  <path d="M19.1 18h-6.2" />
+</svg>
+
+
+
+            <div>
+                
+                    <a href="https://example.org/zh-cn/post/2025/01/feal-4/" class="link">中文</a>
+                
+            </div>
+        </footer>
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <p>This article primarily introduces how to perform differential cryptanalysis on the traditional block cipher algorithm FEAL-4, and demonstrates the attack process and key implementation details. The text also includes some experimental data and attack results for interested readers to reference or reproduce.</p>
+<hr>
+<h2 id="two-important-images">Two Important Images
+</h2><p>Before delving into the analysis, here are two images closely related to FEAL-4 to provide an intuitive understanding of differential propagation and the overall encryption process.</p>
+<ol>
+<li>
+<p><strong>Differential Propagation Diagram</strong><br>
+The figure below shows how plaintext differences (in XOR form) propagate through the encryption rounds in FEAL-4 and ultimately reflect in the ciphertext.</p>
+<p><img src="https://res.craft.do/user/full/c5e6e898-910c-6f27-fbc5-91f4c34a9511/doc/BC194830-506A-4A58-A67E-4C93B48730F8/E52F074B-64AB-4DF4-A553-907625B5D18F_2/UTpozkY6Wu2EoytDJ1dciSe132jz20EsyjndJ7GALVQz/Image.png"
+	
+	
+	
+	loading="lazy"
+	
+	
+></p>
+</li>
+<li>
+<p><strong>FEAL-4 Workflow Diagram</strong><br>
+The following figure illustrates the overall encryption framework of FEAL-4, including the left and right blocks of the plaintext, the injection of round subkeys, and the usage flow of the F function.</p>
+<p><img src="https://res.craft.do/user/full/c5e6e898-910c-6f27-fbc5-91f4c34a9511/doc/BC194830-506A-4A58-A67E-4C93B48730F8/FCB4E65D-A8EE-457F-A78C-4A788E832B87_2/rzEGfY9PioZpJMMK4Q466xqJI7rwGXEPRybyCDPuHW8z/Image.png"
+	
+	
+	
+	loading="lazy"
+	
+	
+></p>
+</li>
+</ol>
+<hr>
+<h2 id="characteristics-of-the-f-function">Characteristics of the F Function
+</h2><p>The round function of FEAL-4 (i.e., the F function) can be viewed as some form of random permutation on a 32-bit input. In differential analysis, we do not need the specific implementation of F, but rather focus on its two key differential properties:</p>
+<ul>
+<li>If $X \oplus Y = 0$, then $F(X) = F(Y)$.</li>
+<li>If $X \oplus Y = 0x80800000$, then $F(X) \oplus F(Y) = 0x02000000$.</li>
+</ul>
+<p>With these two conclusions, we can infer the output behavior under specific differential inputs in subsequent analyses, thereby aiding in locating the subkeys.</p>
+<hr>
+<h2 id="detailed-analysis-of-differential-paths">Detailed Analysis of Differential Paths
+</h2><p>Suppose we choose a pair of special plaintexts $P_0$ and $P_1$ such that:
+$$
+P_0 \oplus P_1 = 0x8080000080800000 = P^{\prime}.
+$$
+This specific differential vector helps simplify the differential computations in several rounds of FEAL-4 outputs.</p>
+<h3 id="1-derivation-of-initial-round-differences">1. Derivation of Initial Round Differences
+</h3><ul>
+<li>
+<p>Let $(L0_0, R0_0)$ denote the left and right blocks of $P_0$ (similarly, $(L0_1, R0_1)$ denotes those of $P_1$).</p>
+</li>
+<li>
+<p>After the XOR operation in the first round:
+$$
+L1_0 \oplus L1_1 = (L0_0 \oplus K4) \oplus (L0_1 \oplus K4)
+= L0_0 \oplus L0_1
+= 0x80800000.
+$$
+Similarly, the differential of the right half can be derived.</p>
+</li>
+<li>
+<p>Furthermore, due to the &ldquo;additional XOR round&rdquo; during encryption, we obtain:
+$$
+R2_0 \oplus R2_1
+= (R1_0 \oplus L1_0) \oplus (R1_1 \oplus L1_1)
+= 0x80800000 \oplus 0x80800000
+= 0.
+$$
+This implies that in subsequent computations, the differences can be merged in a simpler form.</p>
+</li>
+</ul>
+<h3 id="2-backward-differential-calculation">2. Backward Differential Calculation
+</h3><p>After obtaining the plaintext pair $(P_0, P_1)$ and the corresponding ciphertext pair $(C_0, C_1)$, further backward derivations can be made. Let the ciphertext be denoted as $(L, R)$, then:</p>
+<ul>
+<li>Compute $C^{\prime} = C_0 \oplus C_1$, obtaining $(L^{\prime}, R^{\prime})$.</li>
+<li>Based on the known differential properties, gradually restore intermediate variables such as $X^{\prime}$, $Y^{\prime}$, $Z^{\prime}$, etc., in the last round.</li>
+<li>Using these results, attacks or verifications on the subkeys can be performed.</li>
+</ul>
+<hr>
+<h2 id="attacking-k3">Attacking K3
+</h2><p>In differential analysis, one often starts with attacking an intermediate round subkey, such as $K_3$. The specific steps are as follows:</p>
+<ol>
+<li><strong>Select Plaintext Pairs:</strong> I generated 12 pairs of random plaintexts satisfying<br>
+$$
+P_0 \oplus P_1 = 0x8080000080800000
+$$</li>
+<li><strong>Encrypt and Extract Differences:</strong> Encrypt the above plaintext pairs to obtain the corresponding ciphertext pairs; combine with the differential path to derive intermediate values $Y_0$, $Y_1$, $Z^{\prime}$, etc.</li>
+<li><strong>Traverse $K_3$:</strong><br>
+$$
+Z^{\prime} = Z_0 \oplus Z_1 = F(Y_0 \oplus K_3) \oplus F(Y_1 \oplus K_3).
+$$<br>
+Any candidate $K_3$ that satisfies the differential equation $= 0x02000000$ is retained.</li>
+</ol>
+<p>Using this method, I successfully obtained four candidate subkeys:</p>
+<pre tabindex="0"><code>cfa38976, cfa309f6, 4f238976, 4f2309f6
+</code></pre><p>An example command to execute the above process is:</p>
+<pre tabindex="0"><code>./main -mode=attackk3 -file=K3.txt
+</code></pre><p>This implementation is consistent with the method I introduced on <a class="link" href="https://www.theamazingking.com"  target="_blank" rel="noopener"
+    >www.theamazingking.com</a>.</p>
+<hr>
+<h2 id="attacking-k2">Attacking K2
+</h2><p>After obtaining several candidates for $K_3$, we can proceed to deduce $K_2$. The core equation is:
+$$
+X&rsquo; = X_0 \oplus X_1
+= F(U_0 \oplus K_2) \oplus F(U_1 \oplus K_2),
+$$
+where $U$ comes from the previous round operations (including further computations on $Y$, $Z$, etc.). Similarly:</p>
+<ol>
+<li>Generate plaintext pairs that satisfy the differential condition
+$$
+P_0 \oplus P_1 = 0x0000000080800000.
+$$</li>
+<li>Capture ciphertext differences after encryption, and by traversing all possible $K_2$ values, check if the differential constraint $=0x02000000$ is satisfied.</li>
+<li>Example command:
+<pre tabindex="0"><code>./main -mode=attackk2 -file=K2.txt -k3=cfa38976,cfa309f6,4f238976,4f2309f6
+</code></pre></li>
+<li>The final output example is as follows:
+<pre tabindex="0"><code>Candidate K2: 8b722e41 (K3: cfa38976)
+Candidate K2: 8b72aec1 (K3: cfa38976)
+...
+Candidate K2: 89722e43 (K3: 4f2309f6)
+Candidate K2: 8972aec3 (K3: 4f2309f6)
+</code></pre></li>
+</ol>
+<hr>
+<h2 id="attacking-k1">Attacking K1
+</h2><p>Similarly, attacking $K_1$ can be done following the previous process.<br>
+To ensure the differential path consistently presents the expected results, I generated 12 plaintext pairs satisfying<br>
+$$
+P_0 \oplus P_1 = 0x0000000002000000
+$$<br>
+and verified their encryption outputs.</p>
+<p>Example command:</p>
+<pre tabindex="0"><code>./main -mode=attackk1 -file=K1.txt -k3k2=&#34;cfa38976,8b722e41; cfa38976,8b72aec1; ...&#34;
+</code></pre><p>This allows you to input all previously obtained candidate combinations of $K_3$ and $K_2$ at once, and finally find the corresponding $K_1$ candidates.</p>
+<hr>
+<h2 id="attacking-k0-k4-k5">Attacking K0, K4, K5
+</h2><p>Once $K_3$, $K_2$, and $K_1$ are all obtained, $K_0$, $K_4$, and $K_5$ required for the last round can be deduced.<br>
+Let the final encrypted left and right parts be $L_0$, $R_0$. The corresponding plaintext blocks are $PL$, $PR$. Then:</p>
+<ul>
+<li>$PL \oplus K_4 = LR_0$</li>
+<li>$PR \oplus K_5 = RR_0$</li>
+<li>$RR_0 \oplus LR_0 = R_0$</li>
+<li>$f(R_0 \oplus K_0) \oplus L_0 = LR_0$</li>
+</ul>
+<p>By enumerating all possible $K_0$, the corresponding $K_4$ and $K_5$ can be solved through the above equations. Then, use other plaintext-ciphertext pairs to cross-validate correctness. If all are satisfied, the correct final key set is obtained.</p>
+<p>Example command:</p>
+<pre tabindex="0"><code>./main -mode=attackk0k4k5 -k3k2k1=&#34;...&#34; -file=K1.txt -file2=K1_p.txt
+</code></pre><hr>
+<h2 id="implementation-optimization-and-verification">Implementation, Optimization, and Verification
+</h2><h3 id="1-automated-generation-and-parallel-computing">1. Automated Generation and Parallel Computing
+</h3><ul>
+<li><strong>Automatically Generate Random Plaintext Pairs:</strong> Control the XOR differences in the code in advance to batch output plaintext files that meet the requirements (e.g., <code>K3_p.txt</code>, <code>K2_p.txt</code>, <code>K1_p.txt</code>).</li>
+<li><strong>Parallelized Search:</strong> Use Go&rsquo;s Goroutines to start 10 parallel tasks, maximizing CPU resource utilization on a 10-core Mac.</li>
+<li><strong>Progress Bars and Visualization:</strong> Use the <code>progressbar</code> library to display search progress in real-time, making the experimental process more intuitive.</li>
+</ul>
+<h3 id="2-verification-methods">2. Verification Methods
+</h3><ul>
+<li>
+<p><strong>Local Custom Key Testing</strong><br>
+First, select a set of known $K_0$–$K_5$ (e.g., <code>0x00000001, 0x00000002, 0x00000004, 0x00000008, 0x00000010, 0x00000020</code>), encrypt the previously generated plaintext pairs, and repeat the differential analysis process to see if this set of keys can be matched among the results.<br>
+Experiments confirmed the ability to correctly restore this set of test keys, thereby verifying the accuracy of the code logic.</p>
+</li>
+<li>
+<p><strong>Specific Plaintext-Ciphertext Pair Testing</strong><br>
+Select a plaintext <code>1234567890abcdef</code> and the ciphertext <code>f43ae3eeb56e2bbf</code> generated in the Einstein Zone, and verify that each of the 256 candidate $K_0$–$K_5$ sets can reproduce this encryption mapping, further confirming the attack process is correct.</p>
+</li>
+</ul>
+<hr>
+<h2 id="final-results">Final Results
+</h2><p>All deduced $K_0$–$K_5$ are stored in <code>final_result.txt</code>. After deduplication, they include the following ranges:</p>
+<h3 id="possible-values-for-k0">Possible Values for K0
+</h3><pre tabindex="0"><code>890c2148 890ca1c8 098c2148 098ca1c8 ...
+0b8c214a 0b8ca1ca 8b0c214a 8b0ca1ca
+</code></pre><h3 id="possible-values-for-k1">Possible Values for K1
+</h3><pre tabindex="0"><code>471f077e 471f87fe c79f077e c79f87fc ...
+451f077c 451f87fc c59f077c c59f87fc
+</code></pre><h3 id="possible-values-for-k2">Possible Values for K2
+</h3><pre tabindex="0"><code>8b722e41 8b72aec1 8b722e43 8b72aec3 ...
+89722e43 8972aec3
+</code></pre><h3 id="possible-values-for-k3">Possible Values for K3
+</h3><pre tabindex="0"><code>cfa38976 cfa309f6 4f238976 4f2309f6
+</code></pre><h3 id="possible-values-for-k4">Possible Values for K4
+</h3><pre tabindex="0"><code>89eb0024 89eb0026 8beb0024 8beb0026
+</code></pre><h3 id="possible-values-for-k5">Possible Values for K5
+</h3><pre tabindex="0"><code>b85e6bc0 b85e6bc2 ba5e6bc0 ba5e6bc2
+</code></pre><p>With the aid of differential analysis, we ultimately obtained a set of candidate subkeys. Compared to modern block ciphers (such as AES), FEAL-4 has fewer rounds and a simpler structure, making it very suitable for demonstrating the concept of differential analysis in teaching and research.</p>
+<hr>
+<h2 id="conclusion">Conclusion
+</h2><p>This article detailed the complete process of performing a differential attack on FEAL-4, including designing differential paths, generating plaintext pairs, attacking intermediate subkeys ($K_3$, $K_2$, $K_1$), and finally reverse-solving for $K_0$, $K_4$, $K_5$. It also introduced several optimizations and verification methods during the code implementation process.<br>
+The FEAL-4 algorithm, due to its fewer rounds and simpler structure, provides convenience for differential analysis. However, for more secure and complex modern block algorithms, the same analytical approach remains crucial. This case study aims to inspire learners and researchers in cryptography. If you have any questions or improvement suggestions, feel free to discuss and exchange ideas in the comments section!</p>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+    <section class="article-tags">
+        
+            <a href="/tags/cryptography/">Cryptography</a>
+        
+            <a href="/tags/differential-attack/">Differential Attack</a>
+        
+            <a href="/tags/feal-4/">FEAL-4</a>
+        
+            <a href="/tags/cryptanalysis/">Cryptanalysis</a>
+        
+    </section>
+
+
+    </footer>
+
+
+    
+</article>
+
+    
+
+    
+
+     
+    
+        
+    <div class="disqus-container">
+    <div id="disqus_thread"></div>
+<script>
+    window.disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "nansenli" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+<style>
+    .disqus-container {
+        background-color: var(--card-background);
+        border-radius: var(--card-border-radius);
+        box-shadow: var(--shadow-l1);
+        padding: var(--card-padding);
+    }
+</style>
+
+<script>
+    window.addEventListener('onColorSchemeChange', (e) => {
+        if (typeof DISQUS == 'object') {
+            DISQUS.reset({
+                reload: true
+            });
+        }
+    })
+</script>
+
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+        2025 Nansen Li
+    </section>
+    
+    <section class="powerby">
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.30.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.1e9a3bafd846ced4c345d084b355fb8c7bae75701c338f8a1f8a82c780137826.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>
