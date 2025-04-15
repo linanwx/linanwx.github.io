@@ -14,6 +14,23 @@
 <meta name="twitter:title" content="将ChatGPT公式格式转换为Obsidian兼容格式">
 <meta name="twitter:description" content="ChatGPT生成的公式使用了以下格式： \\[ 公式内容 \\] 而Obsidian中的公式渲染使用的是以下格式： $$ 公式内容 $$ 当我们将ChatGPT的公式复制到Obsidian中时，这种差异会导致无法正确渲染。 解决方案 我们可以创建一个Obsidian脚本，在粘贴操作时自动替换公式的格式。 1. 创建脚本 可以使用Obsidian中的插件来解决这个问题。 在你的库中，在template目录下创建一个文件fixlatex.js，并输入以下内容： module.exports = async (params) =&gt; { const { quickAddApi } = params; // 获取剪贴板内容 const clipboardContent = await quickAddApi.utility.getClipboard(); // 检查是否成功获取内容 if (!clipboardContent) { new Notice(&#34;剪贴板为空或无法访问。&#34;); return; } const modifiedContent = clipboardContent .replace(/\\\\\\[|\\\\\\]/g, &#39;$$$$&#39;) // 转换 \\[ \\] 为 $$ $$ .replace(/\\\\\\(\\s*|\\s*\\\\\\)/g, &#39;$$&#39;); // 转换 \\( \\) 为 $ // 将修改后的内容写回剪贴板 await navigator.clipboard.writeText(modifiedContent); new Notice(&#34;剪贴板内容已处理并修改！&#34;); }; 2.">
   
+    
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-WC38C3XE3J"></script>
+      <script>
+        var doNotTrack = false;
+        if ( false ) {
+          var dnt = (navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack);
+          var doNotTrack = (dnt == "1" || dnt == "yes");
+        }
+        if (!doNotTrack) {
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-WC38C3XE3J');
+        }
+      </script>
+    
+  
 
 
     </head>

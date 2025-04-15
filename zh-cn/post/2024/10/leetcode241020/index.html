@@ -14,6 +14,23 @@
 <meta name="twitter:title" content="Leetcode 背题">
 <meta name="twitter:description" content="今天开始了漫长的刷题流程。之前只是简单做了一些题目，保持手感，但今天开始，就要为面试正式准备了。 之前一直在思考一个问题：如何高效地刷 Leetcode。我认为，要高效地刷题，首先就得背题。书读百遍，其义自见，大语言模型经过大量训练，也锻炼出了写代码的能力。同样地，我相信 Leetcode 也一样，通过多次练习，答案自然会浮现，量变产生质变。 53. Maximum Subarray 解题思路可以使用 Kadane&rsquo;s Algorithm，代码如下： def maxSubArray(nums): max_current = max_global = nums[0] for num in nums[1:]: max_current = max(num, max_current + num) max_global = max(max_global, max_current) return max_global 这是一个典型的动态规划题目，上面的算法其实隐藏了动态规划的本质。 class Solution { public: int maxSubArray(vector&lt;int&gt;&amp; nums) { vector&lt;int&gt; dp(nums.size()); dp[0] = nums[0]; for (int i = 1; i &lt; nums.size(); i++) { dp[i] = max(dp[i - 1] + nums[i], nums[i]); } return *max_element(dp.begin(), dp.end()); } }; 这段代码更好地体现了动态规划的思想。">
   
+    
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-WC38C3XE3J"></script>
+      <script>
+        var doNotTrack = false;
+        if ( false ) {
+          var dnt = (navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack);
+          var doNotTrack = (dnt == "1" || dnt == "yes");
+        }
+        if (!doNotTrack) {
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-WC38C3XE3J');
+        }
+      </script>
+    
+  
 
 
     </head>

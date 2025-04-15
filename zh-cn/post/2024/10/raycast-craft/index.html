@@ -14,6 +14,23 @@
 <meta name="twitter:title" content="如何处理ChatGPT的Latex格式和Obsidian与Craft不一致的问题">
 <meta name="twitter:description" content="在之前的文章中，我使用了 Obsidian 的 QuickAdd 来创建一个脚本，自动转换从 ChatGPT 中复制的文本，修复其中的 LaTeX 格式。然而，对于 Craft 这款应用，并没有合适的插件可以使用。 我们可以通过 Raycast 来实现这个功能的统一操作。 创建 Raycast 脚本 首先，我们需要创建一个脚本。 接着选择 Bash 模板。 然后，我们编辑这个 Bash 脚本，输入如下代码： #!/bin/bash # Required parameters: # @raycast.schemaVersion 1 # @raycast.title Copy From ChatGPT # @raycast.mode silent # Optional parameters: # @raycast.icon 🤖 # @raycast.packageName ChatGPT Utils # Documentation: # @raycast.description Copy From ChatGPT # @raycast.author Nansen Li # @raycast.authorURL nansenli.com # 获取剪贴板内容 clipboard_content=$(pbpaste) # 检查是否成功获取内容 if [ -z &#34;$clipboard_content&#34; ]; then echo &#34;剪贴板为空或无法访问。&#34; exit 1 fi # 处理剪贴板内容 modified_content=$(echo &#34;$clipboard_content&#34; | \\ sed &#39;s/\\\\\\[/$$/g; s/\\\\\\]/$$/g; s/\\\\( /$/g; s/ \\\\\\)/$/g&#39;) # 将修改后的内容写回剪贴板 echo &#34;$modified_content&#34; | pbcopy 创建完脚本后，我们还需要将脚本所在的目录添加到 Raycast 中。">
   
+    
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-WC38C3XE3J"></script>
+      <script>
+        var doNotTrack = false;
+        if ( false ) {
+          var dnt = (navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack);
+          var doNotTrack = (dnt == "1" || dnt == "yes");
+        }
+        if (!doNotTrack) {
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-WC38C3XE3J');
+        }
+      </script>
+    
+  
 
 
     </head>
