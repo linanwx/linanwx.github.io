@@ -1,0 +1,971 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="1. Introduction GIC-400 is used for interrupt control. The A20 chip on the Cubieboard2 uses this controller. The GIC controller address on Cubieboard2 is 0x01C80000&mdash;0x01C87FFF, with a length equal to the GIC-400 register length. The specific details are shown below. With 0x01C80000 as the starting address, the following offsets are provided: Offset Address Description 0x0000-0x0FFF Reserved, unused 0x1000-0x1FFF Distributor, useful 0x2000-0x3FFF CPU interfaces, useful 0x4000-0x4FFF Virtual interface control block, for the processor that is performing the accessVirtualization-related, unused 0x5000-0x5FFF Virtual interface control block, for the processor selected by address bits [11:9]Virtualization-related, unused 0x5000-0x51FF0x5200-0x53FF&hellip;0x5E00-0x5FFF Alias for Processor 0Alias for Processor 1&hellip;Alias for Processor 7 0x6000-0x7FFF Virtual CPU interfacesVirtualization-related, unused The commonly used parts are the second and third blocks in the diagram, the 0x1000~0x3fff configuration.">
+<title>ARM GIC-400 Registers</title>
+
+<link rel='canonical' href='https://nansenli.com/post/kokeyuan/arm-gic-400-registers/'>
+
+<link rel="stylesheet" href="/scss/style.min.1084ac713783b88e0bd9807a58068e10aae22e99420f94a9234654a4e199baa4.css"><meta property='og:title' content="ARM GIC-400 Registers">
+<meta property='og:description' content="1. Introduction GIC-400 is used for interrupt control. The A20 chip on the Cubieboard2 uses this controller. The GIC controller address on Cubieboard2 is 0x01C80000&mdash;0x01C87FFF, with a length equal to the GIC-400 register length. The specific details are shown below. With 0x01C80000 as the starting address, the following offsets are provided: Offset Address Description 0x0000-0x0FFF Reserved, unused 0x1000-0x1FFF Distributor, useful 0x2000-0x3FFF CPU interfaces, useful 0x4000-0x4FFF Virtual interface control block, for the processor that is performing the accessVirtualization-related, unused 0x5000-0x5FFF Virtual interface control block, for the processor selected by address bits [11:9]Virtualization-related, unused 0x5000-0x51FF0x5200-0x53FF&hellip;0x5E00-0x5FFF Alias for Processor 0Alias for Processor 1&hellip;Alias for Processor 7 0x6000-0x7FFF Virtual CPU interfacesVirtualization-related, unused The commonly used parts are the second and third blocks in the diagram, the 0x1000~0x3fff configuration.">
+<meta property='og:url' content='https://nansenli.com/post/kokeyuan/arm-gic-400-registers/'>
+<meta property='og:site_name' content='Nansen Li'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:tag' content='ARM' /><meta property='article:tag' content='GIC-400' /><meta property='article:tag' content='Interrupt Controller' /><meta property='article:tag' content='Registers' /><meta property='article:published_time' content='2016-06-30T20:00:00&#43;00:00'/><meta property='article:modified_time' content='2016-06-30T20:00:00&#43;00:00'/>
+<meta name="twitter:title" content="ARM GIC-400 Registers">
+<meta name="twitter:description" content="1. Introduction GIC-400 is used for interrupt control. The A20 chip on the Cubieboard2 uses this controller. The GIC controller address on Cubieboard2 is 0x01C80000&mdash;0x01C87FFF, with a length equal to the GIC-400 register length. The specific details are shown below. With 0x01C80000 as the starting address, the following offsets are provided: Offset Address Description 0x0000-0x0FFF Reserved, unused 0x1000-0x1FFF Distributor, useful 0x2000-0x3FFF CPU interfaces, useful 0x4000-0x4FFF Virtual interface control block, for the processor that is performing the accessVirtualization-related, unused 0x5000-0x5FFF Virtual interface control block, for the processor selected by address bits [11:9]Virtualization-related, unused 0x5000-0x51FF0x5200-0x53FF&hellip;0x5E00-0x5FFF Alias for Processor 0Alias for Processor 1&hellip;Alias for Processor 7 0x6000-0x7FFF Virtual CPU interfacesVirtualization-related, unused The commonly used parts are the second and third blocks in the diagram, the 0x1000~0x3fff configuration.">
+    <link rel="shortcut icon" href="/favicon.ico" />
+
+  
+    
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-WC38C3XE3J"></script>
+      <script>
+        var doNotTrack = false;
+        if ( false ) {
+          var dnt = (navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack);
+          var doNotTrack = (dnt == "1" || dnt == "yes");
+        }
+        if (!doNotTrack) {
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-WC38C3XE3J');
+        }
+      </script>
+    
+  
+
+
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="Toggle Menu">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/avatar_hu96777ff80939aaa7d938dddcc232fcc6_1414962_300x0_resize_box_3.png" width="300"
+                            height="300" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+                    <span class="emoji">🌈</span>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">Nansen Li</a></h1>
+            <h2 class="site-description"></h2>
+        </div>
+    </header><ol class="menu-social">
+            
+                <li>
+                    <a 
+                        href='https://github.com/linanwx'
+                        target="_blank"
+                        title="GitHub"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://www.linkedin.com/in/nansen-li-3bb0a3146/'
+                        target="_blank"
+                        title="LinkedIn"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-brand-linkedin"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M8 11v5" /><path d="M8 8v.01" /><path d="M12 16v-5" /><path d="M16 16v-3a2 2 0 1 0 -4 0" /><path d="M3 7a4 4 0 0 1 4 -4h10a4 4 0 0 1 4 4v10a4 4 0 0 1 -4 4h-10a4 4 0 0 1 -4 -4z" /></svg>
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='index.xml'
+                        target="_blank"
+                        title="RSS"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-rss" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="5" cy="19" r="1" />
+  <path d="M4 4a16 16 0 0 1 16 16" />
+  <path d="M4 11a9 9 0 0 1 9 9" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+</svg>
+
+
+
+                
+                <span>Home</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/page/archives/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>Archives</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/page/search/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
+
+
+
+                
+                <span>Search</span>
+            </a>
+        </li>
+        
+        <li class="menu-bottom-section">
+            <ol class="menu">
+                    
+                        <li id="i18n-switch">  
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-language" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M4 5h7" />
+  <path d="M9 3v2c0 4.418 -2.239 8 -5 8" />
+  <path d="M5 9c-.003 2.144 2.952 3.908 6.7 4" />
+  <path d="M12 20l4 -9l4 9" />
+  <path d="M19.1 18h-6.2" />
+</svg>
+
+
+
+                            <select name="language" title="language" onchange="window.location.href = this.selectedOptions[0].value">
+                                
+                                    <option value="https://nansenli.com/" selected>English</option>
+                                
+                                    <option value="https://nansenli.com/zh-cn/" >中文</option>
+                                
+                            </select>
+                        </li>
+                    
+                
+
+                
+                    <li id="dark-mode-toggle">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <span>Dark Mode</span>
+                    </li>
+                
+            </ol>
+        </li>
+    </ol>
+</aside>
+
+    
+
+            <main class="main full-width">
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/embedded/" >
+                Embedded
+            </a>
+        
+    </header>
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/post/kokeyuan/arm-gic-400-registers/">ARM GIC-400 Registers</a>
+        </h2>
+    
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">Jun 30, 2016</time>
+            </div>
+        
+
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+                <time class="article-time--reading">
+                    4 minute read
+                </time>
+            </div>
+        
+    </footer>
+    
+
+    
+        <footer class="article-translations">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-language" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M4 5h7" />
+  <path d="M9 3v2c0 4.418 -2.239 8 -5 8" />
+  <path d="M5 9c-.003 2.144 2.952 3.908 6.7 4" />
+  <path d="M12 20l4 -9l4 9" />
+  <path d="M19.1 18h-6.2" />
+</svg>
+
+
+
+            <div>
+                
+                    <a href="https://nansenli.com/zh-cn/post/kokeyuan/arm-gic-400-registers/" class="link">中文</a>
+                
+            </div>
+        </footer>
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <h2 id="1-introduction">1. Introduction
+</h2><p>GIC-400 is used for interrupt control. The A20 chip on the Cubieboard2 uses this controller.</p>
+<p>The GIC controller address on Cubieboard2 is 0x01C80000&mdash;0x01C87FFF, with a length equal to the GIC-400 register length.</p>
+<p>The specific details are shown below.</p>
+<p>With 0x01C80000 as the starting address, the following offsets are provided:</p>
+<div class="table-wrapper"><table>
+<thead>
+<tr>
+<th>Offset Address</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0x0000-0x0FFF</td>
+<td>Reserved, unused</td>
+</tr>
+<tr>
+<td>0x1000-0x1FFF</td>
+<td>Distributor, useful</td>
+</tr>
+<tr>
+<td>0x2000-0x3FFF</td>
+<td>CPU interfaces, useful</td>
+</tr>
+<tr>
+<td>0x4000-0x4FFF</td>
+<td>Virtual interface control block, for the processor that is performing the access<!-- raw HTML omitted -->Virtualization-related, unused</td>
+</tr>
+<tr>
+<td>0x5000-0x5FFF</td>
+<td>Virtual interface control block, for the processor selected by address bits [11:9]<!-- raw HTML omitted -->Virtualization-related, unused</td>
+</tr>
+<tr>
+<td>0x5000-0x51FF<!-- raw HTML omitted -->0x5200-0x53FF<!-- raw HTML omitted -->&hellip;<!-- raw HTML omitted -->0x5E00-0x5FFF</td>
+<td>Alias for Processor 0<!-- raw HTML omitted -->Alias for Processor 1<!-- raw HTML omitted -->&hellip;<!-- raw HTML omitted -->Alias for Processor 7</td>
+</tr>
+<tr>
+<td>0x6000-0x7FFF</td>
+<td>Virtual CPU interfaces<!-- raw HTML omitted -->Virtualization-related, unused</td>
+</tr>
+</tbody>
+</table></div>
+<p>The commonly used parts are the second and third blocks in the diagram, the 0x1000~0x3fff configuration.</p>
+<h2 id="2-distributor">2. Distributor
+</h2><p>The address of this distributor register block = GIC controller address + 0x1000. Remember this offset when using it. Starting from here, the following registers are available:</p>
+<div class="table-wrapper"><table>
+<thead>
+<tr>
+<th>Offset</th>
+<th>Name</th>
+<th>Access</th>
+<th>Reset Value</th>
+<th>Function</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0x000</td>
+<td>GICD_CTLR</td>
+<td>RW</td>
+<td>0x00000000[c]</td>
+<td>Distributor Control Register<!-- raw HTML omitted -->Write 1 to enable the controller, required</td>
+</tr>
+<tr>
+<td>0x004</td>
+<td>GICD_TYPER</td>
+<td>RO</td>
+<td>Configuration-dependent[d]</td>
+<td>Interrupt Controller Type Register<!-- raw HTML omitted -->Used to check the total number of interrupt lines</td>
+</tr>
+<tr>
+<td>0x008</td>
+<td>GICD_IIDR</td>
+<td>RO</td>
+<td>0x0200143B</td>
+<td>Distributor Implementer Identification Register, GICD_IIDR<!-- raw HTML omitted -->Contains version information, not particularly useful</td>
+</tr>
+<tr>
+<td>0x080-0x0BC</td>
+<td>GICD_IGROUPRn</td>
+<td>RW</td>
+<td>0x00000000</td>
+<td>Interrupt Group Registers[e]<!-- raw HTML omitted -->A bitmap that controls whether interrupts belong to Group A or B</td>
+</tr>
+<tr>
+<td>0x100</td>
+<td>GICD_ISENABLERn</td>
+<td>RW[f]</td>
+<td>SGIs and PPIs:0x0000FFFF[g]</td>
+<td>Interrupt Set-Enable Registers<!-- raw HTML omitted -->A bitmap for enabling individual interrupts, write 1 to enable. Useful</td>
+</tr>
+<tr>
+<td>0x104-0x13C</td>
+<td></td>
+<td></td>
+<td>SPIs: 0x00000000</td>
+<td></td>
+</tr>
+<tr>
+<td>0x180</td>
+<td>GICD_ICENABLERn</td>
+<td>RW[f]</td>
+<td>0x0000FFFF[g]</td>
+<td>Interrupt Clear-Enable Registers<!-- raw HTML omitted -->Similar to the previous register, but opposite function, write 1 to disable</td>
+</tr>
+<tr>
+<td>0x184-0x1BC</td>
+<td></td>
+<td></td>
+<td>0x00000000</td>
+<td></td>
+</tr>
+<tr>
+<td>0x200-0x23C</td>
+<td>GICD_ISPENDRn</td>
+<td>RW</td>
+<td>0x00000000</td>
+<td>Interrupt Set-Pending Registers<!-- raw HTML omitted -->Pending bitmap, write 1 to enter pending state</td>
+</tr>
+<tr>
+<td>0x280-0x2BC</td>
+<td>GICD_ICPENDRn</td>
+<td>RW</td>
+<td>0x00000000</td>
+<td>Interrupt Clear-Pending Registers<!-- raw HTML omitted -->Similar to above, write 1 for opposite effect, prevents pending state</td>
+</tr>
+<tr>
+<td>0x300-0x33C</td>
+<td>GICD_ISACTIVERn</td>
+<td>RW</td>
+<td>0x00000000</td>
+<td>Interrupt Set-Active Registers<!-- raw HTML omitted -->Bitmap, write 1 to activate an interrupt</td>
+</tr>
+<tr>
+<td>0x380-0x3BC</td>
+<td>GICD_ICACTIVERn</td>
+<td>RW</td>
+<td>0x00000000</td>
+<td>Interrupt Clear-Active Registers<!-- raw HTML omitted -->Write 1 to deactivate an interrupt</td>
+</tr>
+<tr>
+<td>0x400-0x5FC</td>
+<td>GICD_IPRIORITYRn</td>
+<td>RW</td>
+<td>0x00000000</td>
+<td>Interrupt Priority Registers<!-- raw HTML omitted -->Stores priority levels for each interrupt, 8 bits per interrupt</td>
+</tr>
+<tr>
+<td>0x800-0x81C</td>
+<td>GICD_ITARGETSRn</td>
+<td>RO[h]</td>
+<td>-</td>
+<td>Interrupt Processor Targets Registers[i]<!-- raw HTML omitted -->Determines which processor an interrupt should be sent to for handling</td>
+</tr>
+<tr>
+<td>0x820-0x9FC</td>
+<td></td>
+<td>RW</td>
+<td>0x00000000</td>
+<td></td>
+</tr>
+<tr>
+<td>0xC00</td>
+<td>GICD_ICFGRn</td>
+<td>RO</td>
+<td>SGIs: 0xAAAAAAAA</td>
+<td>Interrupt Configuration Registers, GICD_ICFGRn<!-- raw HTML omitted -->Configures whether interrupts are level-triggered or falling-edge triggered</td>
+</tr>
+<tr>
+<td>0xC04</td>
+<td></td>
+<td>RO</td>
+<td>PPIs: 0x55540000</td>
+<td></td>
+</tr>
+<tr>
+<td>0xC08-0xC7C</td>
+<td></td>
+<td>RW[j]</td>
+<td>SPIs: 0x55555555</td>
+<td></td>
+</tr>
+<tr>
+<td>0xD00</td>
+<td>GICD_PPISR</td>
+<td>RO</td>
+<td>0x00000000</td>
+<td>Private Peripheral Interrupt Status Register, GICD_PPISR<!-- raw HTML omitted -->Generally not used</td>
+</tr>
+<tr>
+<td>0xD04-0xD3C</td>
+<td>GICD_SPISRn</td>
+<td>RO</td>
+<td>0x00000000</td>
+<td>Shared Peripheral Interrupt Status Registers, GICD_SPISRn<!-- raw HTML omitted -->Not used</td>
+</tr>
+<tr>
+<td>0xF00</td>
+<td>GICD_SGIR</td>
+<td>WO</td>
+<td>-</td>
+<td>Software Generated Interrupt Register<!-- raw HTML omitted -->Controls software interrupts</td>
+</tr>
+<tr>
+<td>0xF10-0xF1C</td>
+<td>GICD_CPENDSGIRn</td>
+<td>RW</td>
+<td>0x00000000</td>
+<td>SGI Clear-Pending Registers<!-- raw HTML omitted -->Pending bits for software interrupts</td>
+</tr>
+<tr>
+<td>0xF20-0xF2C</td>
+<td>GICD_SPENDSGIRn</td>
+<td>RW</td>
+<td>0x00000000</td>
+<td>SGI Set-Pending Registers<!-- raw HTML omitted -->Similar to above, but writing 1 stops pending</td>
+</tr>
+<tr>
+<td>0xFD0</td>
+<td>GICD_PIDR4</td>
+<td>RO</td>
+<td>0x00000004</td>
+<td>Peripheral ID 4 Register</td>
+</tr>
+<tr>
+<td>0xFD4</td>
+<td>GICD_PIDR5</td>
+<td>RO</td>
+<td>0x00000000</td>
+<td>Peripheral ID 5 Register</td>
+</tr>
+<tr>
+<td>0xFD8</td>
+<td>GICD_PIDR6</td>
+<td>RO</td>
+<td>0x00000000</td>
+<td>Peripheral ID 6 Register</td>
+</tr>
+<tr>
+<td>0xFDC</td>
+<td>GICD_PIDR7</td>
+<td>RO</td>
+<td>0x00000000</td>
+<td>Peripheral ID 7 Register</td>
+</tr>
+<tr>
+<td>0xFE0</td>
+<td>GICD_PIDR0</td>
+<td>RO</td>
+<td>0x00000090</td>
+<td>Peripheral ID 0 Register</td>
+</tr>
+<tr>
+<td>0xFE4</td>
+<td>GICD_PIDR1</td>
+<td>RO</td>
+<td>0x000000B4</td>
+<td>Peripheral ID 1 Register</td>
+</tr>
+<tr>
+<td>0xFE8</td>
+<td>GICD_PIDR2</td>
+<td>RO</td>
+<td>0x0000002B</td>
+<td>Peripheral ID 2 Register</td>
+</tr>
+<tr>
+<td>0xFEC</td>
+<td>GICD_PIDR3</td>
+<td>RO</td>
+<td>0x00000000</td>
+<td>Peripheral ID 3 Register</td>
+</tr>
+<tr>
+<td>0xFF0</td>
+<td>GICD_CIDR0</td>
+<td>RO</td>
+<td>0x0000000D</td>
+<td>Component ID 0 Register</td>
+</tr>
+<tr>
+<td>0xFF4</td>
+<td>GICD_CIDR1</td>
+<td>RO</td>
+<td>0x000000F0</td>
+<td>Component ID 1 Register</td>
+</tr>
+<tr>
+<td>0xFF8</td>
+<td>GICD_CIDR2</td>
+<td>RO</td>
+<td>0x00000005</td>
+<td>Component ID 2 Register</td>
+</tr>
+<tr>
+<td>0xFFC</td>
+<td>GICD_CIDR3</td>
+<td>RO</td>
+<td>0x000000B1</td>
+<td>Component ID 3 Register</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="3-cpu-interface">3. CPU Interface
+</h2><p>Starting address offset is 0x2000</p>
+<div class="table-wrapper"><table>
+<thead>
+<tr>
+<th>Offset</th>
+<th>Name</th>
+<th>Type</th>
+<th>Reset</th>
+<th>Description[a]</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0x0000</td>
+<td>GICC_CTLR</td>
+<td>RW</td>
+<td>0x00000000</td>
+<td>CPU Interface Control Register<!-- raw HTML omitted -->Enable bit. Write 1 to enable</td>
+</tr>
+<tr>
+<td>0x0004</td>
+<td>GICC_PMR</td>
+<td>RW</td>
+<td>0x00000000</td>
+<td>Interrupt Priority Mask Register<!-- raw HTML omitted -->Limits minimum interrupt priority, interrupts with values above this cannot trigger. Best to set this high</td>
+</tr>
+<tr>
+<td>0x0008</td>
+<td>GICC_BPR</td>
+<td>RW</td>
+<td>0x00000002[b]</td>
+<td>Binary Point Register<!-- raw HTML omitted -->The minimum value of the Binary Point Register depends on which security-banked copy is considered:<!-- raw HTML omitted -->0x2 Secure copy<!-- raw HTML omitted -->0x3 Non-secure copy<!-- raw HTML omitted -->Priority grouping</td>
+</tr>
+<tr>
+<td>0x000C</td>
+<td>GICC_IAR</td>
+<td>RO</td>
+<td>0x000003FF</td>
+<td>Interrupt Acknowledge Register<!-- raw HTML omitted -->Read-only, interrupt ID</td>
+</tr>
+<tr>
+<td>0x0010</td>
+<td>GICC_EOIR</td>
+<td>WO</td>
+<td>-</td>
+<td>End of Interrupt Register<!-- raw HTML omitted -->Write to inform the CPU that interrupt processing is complete</td>
+</tr>
+<tr>
+<td>0x0014</td>
+<td>GICC_RPR</td>
+<td>RO</td>
+<td>0x000000FF</td>
+<td>Running Priority Register<!-- raw HTML omitted -->Current interrupt priority</td>
+</tr>
+<tr>
+<td>0x0018</td>
+<td>GICC_HPPIR</td>
+<td>RO</td>
+<td>0x000003FF</td>
+<td>Highest Priority Pending Interrupt Register [c]<!-- raw HTML omitted -->Highest priority interrupt number and its pending value</td>
+</tr>
+<tr>
+<td>0x001C</td>
+<td>GICC_ABPR</td>
+<td>RW</td>
+<td>0x00000003</td>
+<td>Aliased Binary Point Register[d]<!-- raw HTML omitted -->The minimum value of the Aliased Binary Point Register is 0x3.<!-- raw HTML omitted -->Alias register</td>
+</tr>
+<tr>
+<td>0x0020</td>
+<td>GICC_AIAR</td>
+<td>RO</td>
+<td>0x000003FF</td>
+<td>Aliased Interrupt Acknowledge Register[d]<!-- raw HTML omitted -->Alias register</td>
+</tr>
+<tr>
+<td>0x0024</td>
+<td>GICC_AEOIR</td>
+<td>WO</td>
+<td>-</td>
+<td>Aliased End of Interrupt Register[d]<!-- raw HTML omitted -->Alias register</td>
+</tr>
+<tr>
+<td>0x0028</td>
+<td>GICC_AHPPIR</td>
+<td>RO</td>
+<td>0x000003FF</td>
+<td>Aliased Highest Priority Pending Interrupt Register[c][d]<!-- raw HTML omitted -->Alias register</td>
+</tr>
+<tr>
+<td>0x00D0</td>
+<td>GICC_APR0</td>
+<td>RW</td>
+<td>0x00000000</td>
+<td>Active Priority Register<!-- raw HTML omitted -->Used for saving and restoring</td>
+</tr>
+<tr>
+<td>0x00E0</td>
+<td>GICC_NSAPR0</td>
+<td>RW</td>
+<td>0x00000000</td>
+<td>Non-Secure Active Priority Register[d]<!-- raw HTML omitted -->Used for saving and restoring</td>
+</tr>
+<tr>
+<td>0x00FC</td>
+<td>GICC_IIDR</td>
+<td>RO</td>
+<td>0x0202143B</td>
+<td>CPU Interface Identification Register, GICC_IIDR<!-- raw HTML omitted -->Contains version information</td>
+</tr>
+<tr>
+<td>0x1000</td>
+<td>GICC_DIR</td>
+<td>WO</td>
+<td>-</td>
+<td>Deactivate Interrupt Register</td>
+</tr>
+</tbody>
+</table></div>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+    <section class="article-tags">
+        
+            <a href="/tags/arm/">ARM</a>
+        
+            <a href="/tags/gic-400/">GIC-400</a>
+        
+            <a href="/tags/interrupt-controller/">Interrupt Controller</a>
+        
+            <a href="/tags/registers/">Registers</a>
+        
+    </section>
+
+
+    </footer>
+
+
+    
+</article>
+
+    
+
+    
+
+     
+    
+        
+    <div class="disqus-container">
+    <div id="disqus_thread"></div>
+<script>
+    window.disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "nansenli" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+<style>
+    .disqus-container {
+        background-color: var(--card-background);
+        border-radius: var(--card-border-radius);
+        box-shadow: var(--shadow-l1);
+        padding: var(--card-padding);
+    }
+</style>
+
+<script>
+    window.addEventListener('onColorSchemeChange', (e) => {
+        if (typeof DISQUS == 'object') {
+            DISQUS.reset({
+                reload: true
+            });
+        }
+    })
+</script>
+
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+        2025 Nansen Li（李楠森）
+    </section>
+    
+    <section class="powerby">
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.30.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.1e9a3bafd846ced4c345d084b355fb8c7bae75701c338f8a1f8a82c780137826.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>

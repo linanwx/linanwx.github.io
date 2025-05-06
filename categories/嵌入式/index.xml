@@ -6,655 +6,437 @@
         <description>Recent content in 嵌入式 on Nansen Li</description>
         <generator>Hugo -- gohugo.io</generator>
         <language>en</language>
-        <copyright>Nansen Li（李楠森）</copyright><atom:link href="http://localhost:1313/categories/%E5%B5%8C%E5%85%A5%E5%BC%8F/index.xml" rel="self" type="application/rss+xml" /><item>
-        <title>Cubieboard2 添加SPI 驱动支持</title>
-        <link>http://localhost:1313/post/jianshu/%E5%B5%8C%E5%85%A5%E5%BC%8F/cubieboard2-%E6%B7%BB%E5%8A%A0spi-%E9%A9%B1%E5%8A%A8%E6%94%AF%E6%8C%81/</link>
-        <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+        <copyright>Nansen Li（李楠森）</copyright>
+        <lastBuildDate>Thu, 30 Jun 2016 20:00:00 +0000</lastBuildDate><atom:link href="http://localhost:1313/categories/%E5%B5%8C%E5%85%A5%E5%BC%8F/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>ARM GIC-400 寄存器</title>
+        <link>http://localhost:1313/post/kokeyuan/arm-gic-400-registers-zh-cn/</link>
+        <pubDate>Thu, 30 Jun 2016 20:00:00 +0000</pubDate>
         
-        <guid>http://localhost:1313/post/jianshu/%E5%B5%8C%E5%85%A5%E5%BC%8F/cubieboard2-%E6%B7%BB%E5%8A%A0spi-%E9%A9%B1%E5%8A%A8%E6%94%AF%E6%8C%81/</guid>
-        <description>&lt;p&gt;##0.前言&lt;/p&gt;
-&lt;p&gt;由于cubieboard2官方稳定版内核linux-3.4未添加原生spi驱动支持，我们需要为修改内核源码，编译并放入nand中，替换掉原来的uImage镜像，并放入新内核的模块文件。除此之外，还需要修改系统文件，使其完整支持全双工通信。&lt;/p&gt;
-&lt;p&gt;##1.刷入debian系统到nand。（windows下）&lt;/p&gt;
-&lt;p&gt;首先下载为cubieboard2定制的debian系统，地址为：http://dl.cubieboard.org/software/a20-cubieboard/debian/nand/debian-nand.img.gz&lt;/p&gt;
-&lt;p&gt;下载Phoenixsuit，通过Phoenixsuit打开下载的镜像。在cubieboard2未接电源的状态下按住FEL按钮的同时通过OTG线接入电脑，在设备管理器将这个未识别的设备安装驱动，指定驱动安装目录为Phoenixsuit的安装目录，确认安装。&lt;/p&gt;
-&lt;p&gt;然后格式化并刷入镜像。&lt;/p&gt;
-&lt;p&gt;##2.登陆系统&lt;/p&gt;
-&lt;p&gt;将cubieboard2接入网线，该debian系统默认设为静态ip地址192.168.1.124，你可以通过ssh进入该系统。你也可以通过TTL线从UART进行登陆，修改为DHCP方式，然后从路由器查看IP地址，再登陆。路由器账户名密码为root/cubieboard。&lt;/p&gt;
-&lt;p&gt;##3.修改内核（ubuntu下）&lt;/p&gt;
-&lt;p&gt;目前linux内核不支持cubieboard2的spi驱动。首先下载内核源码linux-3.4分支：https://github.com/linux-sunxi/linux-sunxi 。然后为内核增加spi支持（不建议），详情请查看 &lt;a class=&#34;link&#34; href=&#34;http://blog.csdn.net/u010352603/article/details/51657265#&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
-    &gt;http://blog.csdn.net/u010352603/article/details/51657265#&lt;/a&gt; 。这里直接下载已经修改好的spi支持，地址 &lt;a class=&#34;link&#34; href=&#34;https://github.com/linanwx/cubieboard2-spi-support&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
-    &gt;https://github.com/linanwx/cubieboard2-spi-support&lt;/a&gt; 。下载后，将内核目录drivers/spi删除，将下载的spi文件夹放在删除的位置。&lt;/p&gt;
-&lt;p&gt;##4.编译内核（ubuntu下）&lt;/p&gt;
-&lt;p&gt;准备好arm-linux-gnueabihf-gcc编译器，版本不高于5.0&lt;/p&gt;
-&lt;p&gt;在内核目录中，使用终端，输入&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;make ARCH&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;arm CROSS_COMPILE&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;arm-linux-gnueabihf- sun7i_defconfig
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;输入&lt;/p&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;gedit .config
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;找到以下选项，并将其改为&lt;/p&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;CONFIG_SPI=y
-CONFIG_SUNXI_NAND_PARTITION=y
-CONFIG_SUNXI_NAND=y
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;输入以下命令开始编译内核&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;make -j4ARCH&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;arm CROSS_COMPILE&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;arm-linux-gnueabihf- uImage modules
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;由于开启了CONFIG_SPI支持和CONFIG_SUNXI_NAND支持，需要进行一系列的设置。当遇到spi support，CONFIG_SPI_SUN7I，CONFIG_SUN7I_SPI_NDMA时，输入y，其他情况输入回车。&lt;/p&gt;
-&lt;p&gt;检查路径arch/arm/boot下是否有uImage文件&lt;/p&gt;
-&lt;p&gt;输入以下命令生成内核模块&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;make ARCH&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;arm CROSS_COMPILE&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;arm-linux-gnueabihf- INSTALL_MOD_PATH&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;output modules_install
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;检查路径&lt;code&gt;output/lib/modules/3.4.104&lt;/code&gt;目录是否产生&lt;/p&gt;
-&lt;p&gt;##5.替换内核（cubieboard2下）&lt;/p&gt;
-&lt;p&gt;在cubieboard2 中，打开终端，输入&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;mkdir /media/nanda
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;mount /dev/nanda /media/nanda
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;将uImage拷贝至cubieboard2 debian系统的&lt;code&gt;/media/nanda&lt;/code&gt;目录覆盖原来内核&lt;/p&gt;
-&lt;p&gt;使用tar命令打包&lt;code&gt;output/lib/modules/3.4.104&lt;/code&gt; 目录，将该文件传入cubieboard2 的 &lt;code&gt;/lib/modules&lt;/code&gt; 目录，然后解压&lt;/p&gt;
-&lt;p&gt;##6.检查编译成功&lt;/p&gt;
-&lt;p&gt;重启，如果系统正常进入，则成功&lt;/p&gt;
-&lt;p&gt;##7.修改系统文件打开SPI，并使其支持全双工SPI（cubieboard2下）
-重新挂载&lt;code&gt;/dev/nanda&lt;/code&gt;到&lt;code&gt;/media/nanda/&lt;/code&gt; 目录并进入&lt;/p&gt;
-&lt;p&gt;输入如下命令&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;bin2fex script.bin script.fex
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;nano script.fex
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;找到[spi0_para]，将其下面的used改为1，并额外增加如下代码&lt;/p&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;[spi_devices]
-spi_dev_num =1
-
-[spi_board0]
-modalias =&amp;#34;spidev&amp;#34;
-max_speed_hz =100000
-bus_num =0
-chip_select =0
-mode =0
-full_duplex =1
-manual_cs =0
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;输入如下命令&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;fex2bin script.fex script.bin
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;nano /usr/include/linux/spi/spidev.h
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;在&lt;code&gt;__u16 delay_usecs;&lt;/code&gt;上面一行添加&lt;/p&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;__u16 interbyte_usecs;
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;##8.测试spi
-重启cubieboard2。检查路径&lt;code&gt;/dev&lt;/code&gt;下是否存在spidev设备。短接46，48pin脚，管脚图&lt;code&gt;http://docs.cubieboard.org/products/a10_cubieboard/expansion_ports&lt;/code&gt;。
-新建文本输入如下代码&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-c&#34; data-lang=&#34;c&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;/* 
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt; * SPI testing utility (using spidev driver) 
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt; * 
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt; * Copyright (c) 2007  MontaVista Software, Inc. 
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt; * Copyright (c) 2007  Anton Vorontsov &amp;lt;avorontsov@ru.mvista.com&amp;gt; 
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt; * 
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt; * This program is free software; you can redistribute it and/or modify 
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt; * it under the terms of the GNU General Public License as published by 
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt; * the Free Software Foundation; either version 2 of the License. 
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt; * 
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt; * Cross-compile with cross-gcc -I/path/to/cross-kernel/include 
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt; */&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;#include&lt;/span&gt; &lt;span style=&#34;color:#75715e&#34;&gt;&amp;lt;stdint.h&amp;gt;&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;#include&lt;/span&gt; &lt;span style=&#34;color:#75715e&#34;&gt;&amp;lt;unistd.h&amp;gt;&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;#include&lt;/span&gt; &lt;span style=&#34;color:#75715e&#34;&gt;&amp;lt;stdio.h&amp;gt;&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;#include&lt;/span&gt; &lt;span style=&#34;color:#75715e&#34;&gt;&amp;lt;stdlib.h&amp;gt;&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;#include&lt;/span&gt; &lt;span style=&#34;color:#75715e&#34;&gt;&amp;lt;getopt.h&amp;gt;&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;#include&lt;/span&gt; &lt;span style=&#34;color:#75715e&#34;&gt;&amp;lt;fcntl.h&amp;gt;&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;#include&lt;/span&gt; &lt;span style=&#34;color:#75715e&#34;&gt;&amp;lt;sys/ioctl.h&amp;gt;&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;#include&lt;/span&gt; &lt;span style=&#34;color:#75715e&#34;&gt;&amp;lt;linux/types.h&amp;gt;&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;#include&lt;/span&gt; &lt;span style=&#34;color:#75715e&#34;&gt;&amp;lt;linux/spi/spidev.h&amp;gt;&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;#define ARRAY_SIZE(a) (sizeof(a) / sizeof((a)[0]))
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;static&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;void&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;pabort&lt;/span&gt;(&lt;span style=&#34;color:#66d9ef&#34;&gt;const&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;char&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt;s)
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;{
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#a6e22e&#34;&gt;perror&lt;/span&gt;(s);
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#a6e22e&#34;&gt;abort&lt;/span&gt;();
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;static&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;const&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;char&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt;device &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;/dev/spidev0.0&amp;#34;&lt;/span&gt;;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;static&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;uint8_t&lt;/span&gt; mode;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;static&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;uint8_t&lt;/span&gt; bits &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;8&lt;/span&gt;;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;static&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;uint32_t&lt;/span&gt; speed &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;500000&lt;/span&gt;;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;static&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;uint16_t&lt;/span&gt; delay;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;static&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;void&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;transfer&lt;/span&gt;(&lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; fd)
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;{
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; ret;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;uint8_t&lt;/span&gt; tx[] &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; {
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#ae81ff&#34;&gt;0xFF&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;0xFF&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;0xFF&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;0xFF&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;0xFF&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;0xFF&lt;/span&gt;,
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#ae81ff&#34;&gt;0x40&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;0x00&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;0x00&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;0x00&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;0x00&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;0x95&lt;/span&gt;,
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#ae81ff&#34;&gt;0xFF&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;0xFF&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;0xFF&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;0xFF&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;0xFF&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;0xFF&lt;/span&gt;,
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#ae81ff&#34;&gt;0xFF&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;0xFF&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;0xFF&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;0xFF&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;0xFF&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;0xFF&lt;/span&gt;,
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#ae81ff&#34;&gt;0xFF&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;0xFF&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;0xFF&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;0xFF&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;0xFF&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;0xFF&lt;/span&gt;,
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#ae81ff&#34;&gt;0xDE&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;0xAD&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;0xBE&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;0xEF&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;0xBA&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;0xAD&lt;/span&gt;,
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#ae81ff&#34;&gt;0xF0&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;0x0D&lt;/span&gt;,
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    };
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;uint8_t&lt;/span&gt; rx[&lt;span style=&#34;color:#a6e22e&#34;&gt;ARRAY_SIZE&lt;/span&gt;(tx)] &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; {
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;,
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    };
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;struct&lt;/span&gt; spi_ioc_transfer tr &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; {
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        .tx_buf &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; (&lt;span style=&#34;color:#66d9ef&#34;&gt;unsigned&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;long&lt;/span&gt;)tx,
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        .rx_buf &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; (&lt;span style=&#34;color:#66d9ef&#34;&gt;unsigned&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;long&lt;/span&gt;)rx,
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        .len &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;ARRAY_SIZE&lt;/span&gt;(tx),
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        .delay_usecs &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; delay,
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        .speed_hz &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; speed,
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        .bits_per_word &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; bits,
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    };
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    ret &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;ioctl&lt;/span&gt;(fd, &lt;span style=&#34;color:#a6e22e&#34;&gt;SPI_IOC_MESSAGE&lt;/span&gt;(&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;), &lt;span style=&#34;color:#f92672&#34;&gt;&amp;amp;&lt;/span&gt;tr);
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (ret &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;)
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#a6e22e&#34;&gt;pabort&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;can&amp;#39;t send spi message&amp;#34;&lt;/span&gt;);
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;for&lt;/span&gt; (ret &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;; ret &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;ARRAY_SIZE&lt;/span&gt;(tx); ret&lt;span style=&#34;color:#f92672&#34;&gt;++&lt;/span&gt;)
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    {
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (&lt;span style=&#34;color:#f92672&#34;&gt;!&lt;/span&gt;(ret &lt;span style=&#34;color:#f92672&#34;&gt;%&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;6&lt;/span&gt;))
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#a6e22e&#34;&gt;puts&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&amp;#34;&lt;/span&gt;);
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#a6e22e&#34;&gt;printf&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;%.2X &amp;#34;&lt;/span&gt;, rx[ret]);
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#a6e22e&#34;&gt;puts&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&amp;#34;&lt;/span&gt;);
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;static&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;void&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;print_usage&lt;/span&gt;(&lt;span style=&#34;color:#66d9ef&#34;&gt;const&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;char&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt;prog)
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;{
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#a6e22e&#34;&gt;printf&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Usage: %s [-DsbdlHOLC3]&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;\n&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;, prog);
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#a6e22e&#34;&gt;puts&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;  -D --device   device to use (default /dev/spidev0.0)&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;\n&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;         &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;  -s --speed    max speed (Hz)&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;\n&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;         &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;  -d --delay    delay (usec)&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;\n&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;         &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;  -b --bpw      bits per word &lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;\n&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;         &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;  -l --loop     loopback&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;\n&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;         &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;  -H --cpha     clock phase&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;\n&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;         &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;  -O --cpol     clock polarity&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;\n&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;         &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;  -L --lsb      least significant bit first&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;\n&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;         &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;  -C --cs-high  chip select active high&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;\n&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;         &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;  -3 --3wire    SI/SO signals shared&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;\n&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;);
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#a6e22e&#34;&gt;exit&lt;/span&gt;(&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;);
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;static&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;void&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;parse_opts&lt;/span&gt;(&lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; argc, &lt;span style=&#34;color:#66d9ef&#34;&gt;char&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt;argv[])
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;{
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;while&lt;/span&gt; (&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;)
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    {
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;static&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;const&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;struct&lt;/span&gt; option lopts[] &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; {
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            {&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;device&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;D&amp;#39;&lt;/span&gt;},
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            {&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;speed&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;s&amp;#39;&lt;/span&gt;},
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            {&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;delay&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;d&amp;#39;&lt;/span&gt;},
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            {&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;bpw&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;b&amp;#39;&lt;/span&gt;},
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            {&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;loop&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;l&amp;#39;&lt;/span&gt;},
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            {&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;cpha&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;H&amp;#39;&lt;/span&gt;},
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            {&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;cpol&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;O&amp;#39;&lt;/span&gt;},
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            {&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;lsb&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;L&amp;#39;&lt;/span&gt;},
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            {&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;cs-high&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;C&amp;#39;&lt;/span&gt;},
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            {&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;3wire&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;3&amp;#39;&lt;/span&gt;},
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            {&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;no-cs&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;N&amp;#39;&lt;/span&gt;},
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            {&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;ready&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;R&amp;#39;&lt;/span&gt;},
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            {NULL, &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;},
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        };
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; c;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        c &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;getopt_long&lt;/span&gt;(argc, argv, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;D:s:d:b:lHOLC3NR&amp;#34;&lt;/span&gt;, lopts, NULL);
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (c &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;)
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#66d9ef&#34;&gt;break&lt;/span&gt;;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;switch&lt;/span&gt; (c)
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        {
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;case&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;D&amp;#39;&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;:&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            device &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; optarg;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#66d9ef&#34;&gt;break&lt;/span&gt;;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;case&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;s&amp;#39;&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;:&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            speed &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;atoi&lt;/span&gt;(optarg);
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#66d9ef&#34;&gt;break&lt;/span&gt;;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;case&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;d&amp;#39;&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;:&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            delay &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;atoi&lt;/span&gt;(optarg);
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#66d9ef&#34;&gt;break&lt;/span&gt;;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;case&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;b&amp;#39;&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;:&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            bits &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;atoi&lt;/span&gt;(optarg);
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#66d9ef&#34;&gt;break&lt;/span&gt;;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;case&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;l&amp;#39;&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;:&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            mode &lt;span style=&#34;color:#f92672&#34;&gt;|=&lt;/span&gt; SPI_LOOP;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#66d9ef&#34;&gt;break&lt;/span&gt;;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;case&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;H&amp;#39;&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;:&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            mode &lt;span style=&#34;color:#f92672&#34;&gt;|=&lt;/span&gt; SPI_CPHA;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#66d9ef&#34;&gt;break&lt;/span&gt;;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;case&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;O&amp;#39;&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;:&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            mode &lt;span style=&#34;color:#f92672&#34;&gt;|=&lt;/span&gt; SPI_CPOL;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#66d9ef&#34;&gt;break&lt;/span&gt;;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;case&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;L&amp;#39;&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;:&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            mode &lt;span style=&#34;color:#f92672&#34;&gt;|=&lt;/span&gt; SPI_LSB_FIRST;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#66d9ef&#34;&gt;break&lt;/span&gt;;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;case&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;C&amp;#39;&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;:&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            mode &lt;span style=&#34;color:#f92672&#34;&gt;|=&lt;/span&gt; SPI_CS_HIGH;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#66d9ef&#34;&gt;break&lt;/span&gt;;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;case&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;3&amp;#39;&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;:&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            mode &lt;span style=&#34;color:#f92672&#34;&gt;|=&lt;/span&gt; SPI_3WIRE;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#66d9ef&#34;&gt;break&lt;/span&gt;;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;case&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;N&amp;#39;&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;:&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            mode &lt;span style=&#34;color:#f92672&#34;&gt;|=&lt;/span&gt; SPI_NO_CS;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#66d9ef&#34;&gt;break&lt;/span&gt;;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;case&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;R&amp;#39;&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;:&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            mode &lt;span style=&#34;color:#f92672&#34;&gt;|=&lt;/span&gt; SPI_READY;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#66d9ef&#34;&gt;break&lt;/span&gt;;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;default&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;:&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#a6e22e&#34;&gt;print_usage&lt;/span&gt;(argv[&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;]);
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#66d9ef&#34;&gt;break&lt;/span&gt;;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        }
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;main&lt;/span&gt;(&lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; argc, &lt;span style=&#34;color:#66d9ef&#34;&gt;char&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt;argv[])
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;{
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; ret &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; fd;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#a6e22e&#34;&gt;parse_opts&lt;/span&gt;(argc, argv);
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    fd &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;open&lt;/span&gt;(device, O_RDWR);
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (fd &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;)
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#a6e22e&#34;&gt;pabort&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;can&amp;#39;t open device&amp;#34;&lt;/span&gt;);
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;/* 
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;         * spi mode 
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;         */&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    ret &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;ioctl&lt;/span&gt;(fd, SPI_IOC_WR_MODE, &lt;span style=&#34;color:#f92672&#34;&gt;&amp;amp;&lt;/span&gt;mode);
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (ret &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;)
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#a6e22e&#34;&gt;pabort&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;can&amp;#39;t set spi mode&amp;#34;&lt;/span&gt;);
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    ret &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;ioctl&lt;/span&gt;(fd, SPI_IOC_RD_MODE, &lt;span style=&#34;color:#f92672&#34;&gt;&amp;amp;&lt;/span&gt;mode);
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (ret &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;)
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#a6e22e&#34;&gt;pabort&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;can&amp;#39;t get spi mode&amp;#34;&lt;/span&gt;);
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;/* 
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;         * bits per word 
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;         */&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    ret &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;ioctl&lt;/span&gt;(fd, SPI_IOC_WR_BITS_PER_WORD, &lt;span style=&#34;color:#f92672&#34;&gt;&amp;amp;&lt;/span&gt;bits);
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (ret &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;)
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#a6e22e&#34;&gt;pabort&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;can&amp;#39;t set bits per word&amp;#34;&lt;/span&gt;);
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    ret &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;ioctl&lt;/span&gt;(fd, SPI_IOC_RD_BITS_PER_WORD, &lt;span style=&#34;color:#f92672&#34;&gt;&amp;amp;&lt;/span&gt;bits);
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (ret &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;)
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#a6e22e&#34;&gt;pabort&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;can&amp;#39;t get bits per word&amp;#34;&lt;/span&gt;);
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;/* 
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;         * max speed hz 
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;         */&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    ret &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;ioctl&lt;/span&gt;(fd, SPI_IOC_WR_MAX_SPEED_HZ, &lt;span style=&#34;color:#f92672&#34;&gt;&amp;amp;&lt;/span&gt;speed);
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (ret &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;)
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#a6e22e&#34;&gt;pabort&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;can&amp;#39;t set max speed hz&amp;#34;&lt;/span&gt;);
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    ret &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;ioctl&lt;/span&gt;(fd, SPI_IOC_RD_MAX_SPEED_HZ, &lt;span style=&#34;color:#f92672&#34;&gt;&amp;amp;&lt;/span&gt;speed);
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (ret &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;)
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#a6e22e&#34;&gt;pabort&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;can&amp;#39;t get max speed hz&amp;#34;&lt;/span&gt;);
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#a6e22e&#34;&gt;printf&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;spi mode: %d&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;\n&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;, mode);
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#a6e22e&#34;&gt;printf&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;bits per word: %d&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;\n&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;, bits);
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#a6e22e&#34;&gt;printf&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;max speed: %d Hz (%d KHz)&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;\n&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;, speed, speed &lt;span style=&#34;color:#f92672&#34;&gt;/&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;1000&lt;/span&gt;);
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#a6e22e&#34;&gt;transfer&lt;/span&gt;(fd);
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#a6e22e&#34;&gt;close&lt;/span&gt;(fd);
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; ret;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;编译该文件运行，若输出结果如下则修改成功&lt;/p&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;spi mode: 0
-bits per word: 8
-max speed: 500000 Hz (500 KHz)
-
-FF FF FF FF FF FF 
-40 00 00 00 00 95 
-FF FF FF FF FF FF 
-FF FF FF FF FF FF 
-FF FF FF FF FF FF 
-DE AD BE EF BA AD 
-F0 0D 
-&lt;/code&gt;&lt;/pre&gt;</description>
-        </item>
-        <item>
-        <title>libcurl交叉编译arm版本动态库</title>
-        <link>http://localhost:1313/post/jianshu/%E5%B5%8C%E5%85%A5%E5%BC%8F/libcurl%E4%BA%A4%E5%8F%89%E7%BC%96%E8%AF%91arm%E7%89%88%E6%9C%AC%E5%8A%A8%E6%80%81%E5%BA%93/</link>
-        <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-        
-        <guid>http://localhost:1313/post/jianshu/%E5%B5%8C%E5%85%A5%E5%BC%8F/libcurl%E4%BA%A4%E5%8F%89%E7%BC%96%E8%AF%91arm%E7%89%88%E6%9C%AC%E5%8A%A8%E6%80%81%E5%BA%93/</guid>
-        <description>&lt;h2 id=&#34;前言&#34;&gt;前言
-&lt;/h2&gt;&lt;p&gt;最近由于项目需要要进行交叉编译libcurl以完成https通信。这里记录一下过程。&lt;/p&gt;
-&lt;p&gt;首先下载最新版本的源码文件，并解压，如下：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;http://upload-images.jianshu.io/upload_images/4388248-9d2b268681a5a2d8.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&#34;
-	
-	
-	
-	loading=&#34;lazy&#34;
-	
-		alt=&#34;image.png&#34;
-	
-	
-&gt;&lt;/p&gt;
-&lt;p&gt;我用的deepin自带交叉编译工具链，&lt;code&gt;sudo apt install gcc-5-arm-linux-gnueabihf&lt;/code&gt;安装就可以了。&lt;/p&gt;
-&lt;p&gt;arm-linux内容&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;http://upload-images.jianshu.io/upload_images/4388248-d030038d08446de5.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&#34;
-	
-	
-	
-	loading=&#34;lazy&#34;
-	
-		alt=&#34;image.png&#34;
-	
-	
-&gt;&lt;/p&gt;
-&lt;p&gt;在openssl目录下运行以下命令：&lt;/p&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;source ../arm-linux
-./Configure --prefix=$(pwd)/../output shared no-asm linux-armv4
-make -j4
-make install
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;首先导入环境变量。然后进行编译，输出路径在output下面。&lt;/p&gt;
-&lt;p&gt;然后在libcurl 下运行以下命令&lt;/p&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;source ../arm-linux
-./configure --with-ssl=$(pwd)/../output --prefix=$PWD/../output --build=x86_64-pc-linux-gnu --host=arm-linux-gnueabihf  CC=arm-linux-gnueabihf-gcc-5 --without-zlib
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;curl配置结果一览&lt;/p&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;  curl version:     7.58.0
-  Host setup:       x86_64-pc-linux-gnu
-  Install prefix:   /media/linan/72605383-b1ba-4c79-90fd-443514396fbc/curl_workdir/curl-7.58.0/output
-  Compiler:         arm-linux-gnueabihf-gcc-5
-  SSL support:      enabled (OpenSSL)
-  SSH support:      no      (--with-libssh2)
-  zlib support:     no      (--with-zlib)
-  brotli support:   no      (--with-brotli)
-  GSS-API support:  no      (--with-gssapi)
-  TLS-SRP support:  enabled
-  resolver:         POSIX threaded
-  IPv6 support:     enabled
-  Unix sockets support: enabled
-  IDN support:      no      (--with-{libidn2,winidn})
-  Build libcurl:    Shared=yes, Static=yes
-  Built-in manual:  enabled
-  --libcurl option: enabled (--disable-libcurl-option)
-  Verbose errors:   enabled (--disable-verbose)
-  SSPI support:     no      (--enable-sspi)
-  ca cert bundle:   no
-  ca cert path:     no
-  ca fallback:      no
-  LDAP support:     no      (--enable-ldap / --with-ldap-lib / --with-lber-lib)
-  LDAPS support:    no      (--enable-ldaps)
-  RTSP support:     enabled
-  RTMP support:     no      (--with-librtmp)
-  metalink support: no      (--with-libmetalink)
-  PSL support:      no      (libpsl not found)
-  HTTP2 support:    disabled (--with-nghttp2)
-  Protocols:        DICT FILE FTP FTPS GOPHER HTTP HTTPS IMAP IMAPS POP3 POP3S RTSP SMB SMBS SMTP SMTPS TELNET TFTP
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;然后在运行make 以及make install，在curl目录下就会出现output目录。&lt;/p&gt;
-&lt;p&gt;最终，我们需要的是openssl以及curl的动态库，分别是：libssl.so libcrypto.so libcurl.so&lt;/p&gt;
-</description>
-        </item>
-        <item>
-        <title>Ubuntu环境下在STM32上部署RT-thread系统</title>
-        <link>http://localhost:1313/post/jianshu/%E5%B5%8C%E5%85%A5%E5%BC%8F/ubuntu%E7%8E%AF%E5%A2%83%E4%B8%8B%E5%9C%A8stm32%E4%B8%8A%E9%83%A8%E7%BD%B2rt-thread%E7%B3%BB%E7%BB%9F/</link>
-        <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-        
-        <guid>http://localhost:1313/post/jianshu/%E5%B5%8C%E5%85%A5%E5%BC%8F/ubuntu%E7%8E%AF%E5%A2%83%E4%B8%8B%E5%9C%A8stm32%E4%B8%8A%E9%83%A8%E7%BD%B2rt-thread%E7%B3%BB%E7%BB%9F/</guid>
-        <description>&lt;p&gt;RT-Thread是一个中国开源嵌入式系统，目前版本为2.2，已经支持许多微控制器，例如STM32系列，甚至可以在蓝牙BLE芯片中运行。尽管微控制器中资源紧张，但是部署一个易用的微操作系统对项目开发和代码管理是很有益的。&lt;/p&gt;
-&lt;h2 id=&#34;准备工具&#34;&gt;准备工具
-&lt;/h2&gt;&lt;ul&gt;
-&lt;li&gt;STM32开发版一个，支持USB下载功能&lt;/li&gt;
-&lt;li&gt;Ubuntu系统&lt;/li&gt;
-&lt;li&gt;USB转串口线&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;这里我使用了古老的&lt;code&gt;ALIENTEK STM32 MINI V2.0&lt;/code&gt; 开发板，芯片型号为&lt;code&gt;STM32F103RBT6&lt;/code&gt;，Ubuntu系统版本为&lt;code&gt;16.04&lt;/code&gt;&lt;/p&gt;
-&lt;h2 id=&#34;1下载交叉编译工具链&#34;&gt;1.下载交叉编译工具链
-&lt;/h2&gt;&lt;ul&gt;
-&lt;li&gt;下载&lt;code&gt;gcc-arm-none-eabi&lt;/code&gt;交叉编译工具链，对于16.04系统，直接使用&lt;code&gt;apt install gcc-arm-none-eabi&lt;/code&gt; 进行安装&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h2 id=&#34;2下载rt-thread编译工具&#34;&gt;2.下载RT-Thread编译工具
-&lt;/h2&gt;&lt;ul&gt;
-&lt;li&gt;该系统使用scons编译，对于16.04系统，使用 &lt;code&gt;apt install scons&lt;/code&gt; 进行安装&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h2 id=&#34;3下载系统源码&#34;&gt;3.下载系统源码
-&lt;/h2&gt;&lt;ul&gt;
-&lt;li&gt;下载RT-Thread系统，地址为：&lt;code&gt;https://github.com/RT-Thread&lt;/code&gt;&lt;/li&gt;
-&lt;li&gt;解压目录&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h2 id=&#34;4修改编译工程&#34;&gt;4.修改编译工程
-&lt;/h2&gt;&lt;ul&gt;
-&lt;li&gt;进入目录&lt;code&gt;bsp/stm32f10x&lt;/code&gt;&lt;/li&gt;
-&lt;li&gt;编辑文件&lt;code&gt;rtconfig.py&lt;/code&gt;&lt;/li&gt;
-&lt;li&gt;修改 CROSS_TOOL 为 gcc&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h2 id=&#34;5针对板子进行配置&#34;&gt;5.针对板子进行配置
-&lt;/h2&gt;&lt;ul&gt;
-&lt;li&gt;&lt;code&gt;stm32f10x.h&lt;/code&gt; 中对晶振进行配置 &lt;code&gt;HSE_VALUE&lt;/code&gt;，例如800000&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;board.h&lt;/code&gt; 中对RAM进行配置 &lt;code&gt;STM32_SRAM_SIZE&lt;/code&gt;，例如20&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;led.c&lt;/code&gt; 中对 led进行配置&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h2 id=&#34;6编译源码&#34;&gt;6.编译源码
-&lt;/h2&gt;&lt;ul&gt;
-&lt;li&gt;在&lt;code&gt;bsp/stm32f10x&lt;/code&gt;目录下运行 &lt;code&gt;scons&lt;/code&gt;，输入rtthread.bin文件&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h2 id=&#34;7烧录代码&#34;&gt;7.烧录代码
-&lt;/h2&gt;&lt;ul&gt;
-&lt;li&gt;你可以使用Jlink进行下载，须在Jlink官网下载Linux执行文件，由于我是debian系统，可以直接打开JLink_Linux_V614a_x86_64.deb文件进行安装。然后在系统文件下lib/目录下执行&lt;code&gt;JlinkExe&lt;/code&gt;文件，即可以通过Jlink进行下载烧录程序。&lt;/li&gt;
-&lt;li&gt;这里我采用了更为方便的串口烧录。首先将开发板的B0接高电平，B1接低电平，然后使用STM32flash-5.0这个软件进行烧录。
-&lt;ul&gt;
-&lt;li&gt;下载地址&lt;code&gt;https://sourceforge.net/projects/stm32flash/&lt;/code&gt;&lt;/li&gt;
-&lt;li&gt;解压目录，在该目录下运行make，得到stm32flash&lt;/li&gt;
-&lt;li&gt;将&lt;code&gt;rtthread.bin&lt;/code&gt;复制到该目录下，接入USB转串口线，然后输入&lt;code&gt;sudo ./stm32flash -w rtthread.bin -v -g 0x0 /dev/ttyUSB0&lt;/code&gt;，其中&lt;code&gt;ttyUSB0&lt;/code&gt;是串口设备&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h2 id=&#34;8检查是否成功&#34;&gt;8.检查是否成功
-&lt;/h2&gt;&lt;ul&gt;
-&lt;li&gt;若能看到LED灯闪烁，则成功&lt;/li&gt;
-&lt;/ul&gt;
-</description>
-        </item>
-        <item>
-        <title>在RT-Thread中使用SPI和UART设备</title>
-        <link>http://localhost:1313/post/jianshu/%E5%B5%8C%E5%85%A5%E5%BC%8F/%E5%9C%A8rt-thread%E4%B8%AD%E4%BD%BF%E7%94%A8spi%E5%92%8Cuart%E8%AE%BE%E5%A4%87/</link>
-        <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-        
-        <guid>http://localhost:1313/post/jianshu/%E5%B5%8C%E5%85%A5%E5%BC%8F/%E5%9C%A8rt-thread%E4%B8%AD%E4%BD%BF%E7%94%A8spi%E5%92%8Cuart%E8%AE%BE%E5%A4%87/</guid>
-        <description>&lt;p&gt;RT-Thread采用了类似于linux的函数调用方法，这里说明一下如何简单的使用设备。&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;硬件环境 ：STM32F103RBT6&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h2 id=&#34;用户程序位置&#34;&gt;用户程序位置
-&lt;/h2&gt;&lt;p&gt;用户程序在bsp文件夹下面的applications中的applications.c中书写和调用，如果程序比较多，再新建一个c文件分离出去。&lt;/p&gt;
-&lt;h2 id=&#34;spi-驱动文件&#34;&gt;SPI 驱动文件
-&lt;/h2&gt;&lt;p&gt;stm32f10x下面的drivers并没有spi驱动，我们需要将stm32f107对应的spi驱动移植过来。将rt_stm32f10x_spi.c，rt_stm32f10x_spi.h，以及platform.c文件复制过去，然后在rt_init_thread_entry函数中添加rt_platform_init();的调用，在对应文件中加入头文件。然后修改SConscript添加对platform.c，rt_stm32f10x_spi.c的编译，并在config中添加RT_USING_SPI和RT_USING_SPI1的宏定义&lt;/p&gt;
-&lt;p&gt;在platform.c中spi初始化加入如下代码，配置频率&lt;/p&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;        /* config spi */
-        {
-            struct rt_spi_configuration cfg;
-            cfg.data_width = 8;
-            cfg.mode = RT_SPI_MODE_3 | RT_SPI_MSB; /* SPI Compatible Modes 3 and SPI_FirstBit_MSB in lis302dl datasheet */
-            
-            //APB2=168M/2=84M, SPI1 = 84/2,4,8,16,32 = 42M, 21M, 10.5M, 5.25M, 2.625M ...
-            cfg.max_hz = 2625000; /* SPI_BaudRatePrescaler_16=84000000/16=5.25MHz. The max_hz of lis302dl is 10MHz in datasheet */ 
-            rt_spi_configure(&amp;amp;spi_device, &amp;amp;cfg);
-        } /* config spi */  
-&lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&#34;硬件配置&#34;&gt;硬件配置
-&lt;/h2&gt;&lt;p&gt;硬件管脚被配置在platform.c文件中, 我们不修改默认的配置,也就是 PA4567这几个管脚为默认的spi输入输出管脚&lt;/p&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;/*
- * SPI1_MOSI: PA7
- * SPI1_MISO: PA6
- * SPI1_SCK : PA5
- *
- * CS0: PA4  SD card. 这里可以改成自己的spi设备的cs管脚
-*/
-&lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&#34;spi调用&#34;&gt;SPI调用
-&lt;/h2&gt;&lt;p&gt;SPI调用不用使用open函数，只需执行&lt;/p&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;    rt_spi_transfer(spi_device, &amp;amp;ReadAddr, &amp;amp;pBuffer, 1);
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;或者rt_spi_send_then_recv也可以实现不同的效果。&lt;/p&gt;
-&lt;h2 id=&#34;uart调用&#34;&gt;UART调用
-&lt;/h2&gt;&lt;p&gt;UART调用需要使用open函数，这里给出一个简单的例子使用串口设备。&lt;/p&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;void device_thread_entry(void* parameter)
-{
-    rt_device_t device;
-    device = rt_device_find(&amp;#34;uart2&amp;#34;);
-    rt_device_open(device, RT_DEVICE_OFLAG_RDWR|RT_DEVICE_FLAG_INT_RX);
-    char test[10] = &amp;#34;abc&amp;#34;;
-    while(1){
-        rt_size_t reclen = rt_device_read(device, 0, test, 10);
-        if(reclen &amp;gt; 0) rt_device_write(device, 0, test, reclen);
-        rt_thread_delay(500);
-    }
-}
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;可以开启这个线程，我们在uart2中输入10个以内的字符，在5秒后就会回显。如果超过10个字符，应该会在下一次5秒显示。
-在官方markdown文档中，使用了消息机制来处理UART通信，也可以参考。&lt;/p&gt;
-</description>
-        </item>
-        <item>
-        <title>在RT-Thread中使用stm32的hal库驱动串口UART</title>
-        <link>http://localhost:1313/post/jianshu/%E5%B5%8C%E5%85%A5%E5%BC%8F/%E5%9C%A8rt-thread%E4%B8%AD%E4%BD%BF%E7%94%A8stm32%E7%9A%84hal%E5%BA%93%E9%A9%B1%E5%8A%A8%E4%B8%B2%E5%8F%A3uart/</link>
-        <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-        
-        <guid>http://localhost:1313/post/jianshu/%E5%B5%8C%E5%85%A5%E5%BC%8F/%E5%9C%A8rt-thread%E4%B8%AD%E4%BD%BF%E7%94%A8stm32%E7%9A%84hal%E5%BA%93%E9%A9%B1%E5%8A%A8%E4%B8%B2%E5%8F%A3uart/</guid>
-        <description>&lt;h2 id=&#34;前言&#34;&gt;前言
-&lt;/h2&gt;&lt;p&gt;之前一直在Linux下面尝试进行部署了RT-Thread的stm32的开发，这种方式确实是可行的，但是也会带来种种不便之处。使用VSCode + Scons + openocd 进行编辑、编译链接、烧录确实是可以进行开发，但是若要进行调试则没有这种环境的解决方案，只得在eclipse中进行调试。而将RT-Thread改成eclipse的方案虽然可行，但是这样还不如直接在windows下面采用keil 5 来进行开发。&lt;/p&gt;
-&lt;p&gt;由于stm32f103板载flash过小，栈也十分的小，于是换成stm32f411。板子来自于微雪科技的XNUCLEO，和STM官方NUCLEO板子是兼容的。&lt;/p&gt;
-&lt;h2 id=&#34;安装keil-523&#34;&gt;安装Keil 5.23
-&lt;/h2&gt;&lt;p&gt;由于我首先安装了Keil 5.11，然后附带的破解器破解了，之后卸载再安装了Keil 5.23，直接显示已经破解成功。破解器仍然是多年前就流行的注册码生成器。之所以使用Keil 5.23版本，是因为RT-Thread工程只能使用这个版本进行打开。&lt;/p&gt;
-&lt;h2 id=&#34;使用pack-installer安装库&#34;&gt;使用pack installer安装库
-&lt;/h2&gt;&lt;p&gt;只有安装了Keil::STM32F4xx_DFP才能打开RT-Thread的bps分支下的nucleo工程。&lt;/p&gt;
-&lt;h2 id=&#34;安装stm32cubemx&#34;&gt;安装STM32CubeMX
-&lt;/h2&gt;&lt;p&gt;通过STM32CubeMX，我们可以方便的通过鼠标点击生成初始化代码。但是调用函数还是得我们自己写，不如NPX的PE方便。&lt;/p&gt;
-&lt;h2 id=&#34;安装st-link驱动&#34;&gt;安装ST-Link驱动
-&lt;/h2&gt;&lt;p&gt;微雪科技售卖100块钱的板子还附带了ST-Link调试器，那我们就是用ST-Link来进行调试吧。&lt;/p&gt;
-&lt;h2 id=&#34;下载nucleo工程&#34;&gt;下载nucleo工程
-&lt;/h2&gt;&lt;p&gt;打开&lt;code&gt;rt-thread-master\bsp\stm32f411-nucleo&lt;/code&gt;下的Keil 5工程，尝试编译，通过后，简单设置工程的debug，使用ST-Link来进行调试，然后将程序下载到板子里面。虽然程序下进去了，但是没有任何效果，因为主函数是空的。&lt;/p&gt;
-&lt;p&gt;我们在main函数中加入如下代码：&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-C&#34; data-lang=&#34;C&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;main&lt;/span&gt;(&lt;span style=&#34;color:#66d9ef&#34;&gt;void&lt;/span&gt;)
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;{
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  &lt;span style=&#34;color:#75715e&#34;&gt;/* user app entry */&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	&lt;span style=&#34;color:#a6e22e&#34;&gt;MX_GPIO_Init&lt;/span&gt;();
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	&lt;span style=&#34;color:#66d9ef&#34;&gt;while&lt;/span&gt;(&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;){
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;		&lt;span style=&#34;color:#a6e22e&#34;&gt;rt_thread_delay&lt;/span&gt;(&lt;span style=&#34;color:#ae81ff&#34;&gt;5&lt;/span&gt;);
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;		&lt;span style=&#34;color:#a6e22e&#34;&gt;HAL_GPIO_WritePin&lt;/span&gt; (GPIOC, GPIO_PIN_5, GPIO_PIN_SET);
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;		&lt;span style=&#34;color:#a6e22e&#34;&gt;rt_thread_delay&lt;/span&gt;(&lt;span style=&#34;color:#ae81ff&#34;&gt;5&lt;/span&gt;);
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;		&lt;span style=&#34;color:#a6e22e&#34;&gt;HAL_GPIO_WritePin&lt;/span&gt; (GPIOC, GPIO_PIN_5, GPIO_PIN_RESET);
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	}
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;并加上LED的初始化函数&lt;/p&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;static void MX_GPIO_Init(void)
-{
-
-  GPIO_InitTypeDef GPIO_InitStruct;
-
-  /* GPIO Ports Clock Enable */
-  __HAL_RCC_GPIOC_CLK_ENABLE();
-
-  /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_5, GPIO_PIN_RESET);
-
-  /*Configure GPIO pin : PC5 */
-  GPIO_InitStruct.Pin = GPIO_PIN_5;
-  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(GPIOC, &amp;amp;GPIO_InitStruct);
-}
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;这样我们就可以看到板载的LED4灯亮起来了，并且在闪烁。&lt;/p&gt;
-&lt;p&gt;这些初始化代码是从哪来的呢？主函数中的代码，是从网上找的，很简单的操作GPIO的函数，而MX_GPIO_Init这段代码，则来自于STM32CubeMX自动生成的代码。下面会讲如何通过STM32CubeMX生成初始化UART代码。&lt;/p&gt;
-&lt;h2 id=&#34;使用stm32cubemx生成uart初始化代码&#34;&gt;使用STM32CubeMX生成UART初始化代码
-&lt;/h2&gt;&lt;ul&gt;
-&lt;li&gt;首先我们建立一个工程，并设置好芯片型号，下面是演示&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;&lt;img src=&#34;http://upload-images.jianshu.io/upload_images/4388248-1dc88ac9df6bb8d3.gif?imageMogr2/auto-orient/strip&#34;
-	
-	
-	
-	loading=&#34;lazy&#34;
-	
-		alt=&#34;2017-04-06_16-41-06.gif&#34;
-	
-	
-&gt;&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;然后设置串口引脚。
-由于RT-Thread已经初始化了串口1，我以我们不能使用这个。我们可以使用UART6。&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;&lt;img src=&#34;http://upload-images.jianshu.io/upload_images/4388248-67396c8db749e4c2.gif?imageMogr2/auto-orient/strip&#34;
-	
-	
-	
-	loading=&#34;lazy&#34;
-	
-		alt=&#34;2017-04-06_16-57-29.gif&#34;
-	
-	
-&gt;&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;打开工程，将代码偷走，蓝色部分就是我们要拿走的代码&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;&lt;img src=&#34;http://upload-images.jianshu.io/upload_images/4388248-5d28c90d61499a22.gif?imageMogr2/auto-orient/strip&#34;
-	
-	
-	
-	loading=&#34;lazy&#34;
-	
-		alt=&#34;2017-04-06_17-01-11.gif&#34;
-	
-	
-&gt;&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;移植代码
-在void HAL_UART_MspInit(UART_HandleTypeDef *huart)中，添加USART6的代码：&lt;/li&gt;
-&lt;/ul&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;void HAL_UART_MspInit(UART_HandleTypeDef *huart)
-{
-    GPIO_InitTypeDef  GPIO_InitStruct;
-    if (huart-&amp;gt;Instance == USART2)
-    {
-        /*##-1- Enable peripherals and GPIO Clocks #################################*/
-        /* Enable GPIO TX/RX clock */
-        USARTx_TX_GPIO_CLK_ENABLE();
-        USARTx_RX_GPIO_CLK_ENABLE();
-
-        /* Enable USARTx clock */
-        USARTx_CLK_ENABLE(); 
-
-        /*##-2- Configure peripheral GPIO ##########################################*/  
-        /* UART TX GPIO pin configuration  */
-        GPIO_InitStruct.Pin       = USARTx_TX_PIN;
-        GPIO_InitStruct.Mode      = GPIO_MODE_AF_PP;
-        GPIO_InitStruct.Pull      = GPIO_PULLUP;
-        GPIO_InitStruct.Speed     = GPIO_SPEED_FAST;
-        GPIO_InitStruct.Alternate = USARTx_TX_AF;
-
-        HAL_GPIO_Init(USARTx_TX_GPIO_PORT, &amp;amp;GPIO_InitStruct);
-        
-        /* UART RX GPIO pin configuration  */
-        GPIO_InitStruct.Pin = USARTx_RX_PIN;
-        GPIO_InitStruct.Alternate = USARTx_RX_AF;
-        
-        HAL_GPIO_Init(USARTx_RX_GPIO_PORT, &amp;amp;GPIO_InitStruct);
-        
-        HAL_NVIC_SetPriority(USART2_IRQn, 0, 1);
-        HAL_NVIC_EnableIRQ(USART2_IRQn);
-    }
-		if (huart-&amp;gt;Instance == USART6)
-		{
-		/* USER CODE BEGIN USART6_MspInit 0 */
-
-		/* USER CODE END USART6_MspInit 0 */
-			/* Peripheral clock enable */
-			__HAL_RCC_USART6_CLK_ENABLE();
-		
-			/**USART6 GPIO Configuration    
-			PC6     ------&amp;gt; USART6_TX
-			PC7     ------&amp;gt; USART6_RX 
-			*/
-			GPIO_InitStruct.Pin = GPIO_PIN_6|GPIO_PIN_7;
-			GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-			GPIO_InitStruct.Pull = GPIO_PULLUP;
-			GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
-			GPIO_InitStruct.Alternate = GPIO_AF8_USART6;
-			HAL_GPIO_Init(GPIOC, &amp;amp;GPIO_InitStruct);
-
-			/* Peripheral interrupt init */
-			HAL_NVIC_SetPriority(USART6_IRQn, 0, 0);
-			HAL_NVIC_EnableIRQ(USART6_IRQn);
-		/* USER CODE BEGIN USART6_MspInit 1 */
-
-		/* USER CODE END USART6_MspInit 1 */
-		}
-}
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;在main.c文件中，添加&lt;code&gt;MX_USART6_UART_Init();&lt;/code&gt;函数内容，并在主函数中，调用&lt;code&gt;MX_USART6_UART_Init();&lt;/code&gt;进行初始化。&lt;/p&gt;
-&lt;p&gt;之后，在main()函数中进行测试：&lt;/p&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;		uint8_t TxData[10]= &amp;#34;01234abcde&amp;#34;;
-		HAL_UART_Transmit(&amp;amp;huart6,TxData,10,0xf);
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;我们将微雪的板子上的JP4跳帽接在右侧，这样，USB TO UART就能使用PC6、PC7作为串口接口了。然后，接上USB接口到PC机，我们可以在XSHELL之类的串口终端查看PC接受到的字符串。&lt;/p&gt;
+        <guid>http://localhost:1313/post/kokeyuan/arm-gic-400-registers-zh-cn/</guid>
+        <description>&lt;h2 id=&#34;1简介&#34;&gt;1.简介
+&lt;/h2&gt;&lt;p&gt;GIC-400是用于控制中断的。在cubieboard2 上 的A20芯片采用了这款控制器。&lt;/p&gt;
+&lt;p&gt;cubieboard2 的GIC控制器 的地址是0x01C80000&amp;mdash;0x01C87FFF ，长度等于GIC-400寄存器的长度。&lt;/p&gt;
+&lt;p&gt;具体的内容如下所示。&lt;/p&gt;
+&lt;p&gt;以0x01C80000为起始地址，下面给出的是偏移：&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;偏移地址&lt;/th&gt;
+&lt;th&gt;说明&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;0x0000-0x0FFF&lt;/td&gt;
+&lt;td&gt;Reserved 未使用，无用&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;0x1000-0x1FFF&lt;/td&gt;
+&lt;td&gt;Distributor 配置器 有用&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;0x2000-0x3FFF&lt;/td&gt;
+&lt;td&gt;CPU interfaces CPU接口 有用&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;0x4000-0x4FFF&lt;/td&gt;
+&lt;td&gt;Virtual interface control block, for the processor that is performing the access&lt;!-- raw HTML omitted --&gt;虚拟化相关，无用&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;0x5000-0x5FFF&lt;/td&gt;
+&lt;td&gt;Virtual interface control block, for the processor selected by address bits [11:9]&lt;!-- raw HTML omitted --&gt;虚拟化相关，无用&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;0x5000-0x51FF&lt;!-- raw HTML omitted --&gt;0x5200-0x53FF&lt;!-- raw HTML omitted --&gt;&amp;hellip;&lt;!-- raw HTML omitted --&gt;0x5E00-0x5FFF&lt;/td&gt;
+&lt;td&gt;Alias for Processor 0&lt;!-- raw HTML omitted --&gt;Alias for Processor 1&lt;!-- raw HTML omitted --&gt;&amp;hellip;&lt;!-- raw HTML omitted --&gt;Alias for Processor 7&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;0x6000-0x7FFF&lt;/td&gt;
+&lt;td&gt;Virtual CPU interfaces&lt;!-- raw HTML omitted --&gt;虚拟化相关，无用&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;常用的是图中第二块和第三块，0x1000~0x3fff这部分的配置。&lt;/p&gt;
+&lt;h2 id=&#34;2distributor-配置器&#34;&gt;2.Distributor 配置器
+&lt;/h2&gt;&lt;p&gt;distributor这块寄存器的地址 = GIC控制器 的地址 + 0x1000 ，使用的时候别忘记了偏移。然后从这里开始，有如下的寄存器&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;偏移&lt;/th&gt;
+&lt;th&gt;名称&lt;/th&gt;
+&lt;th&gt;可读写&lt;/th&gt;
+&lt;th&gt;复位后&lt;/th&gt;
+&lt;th&gt;作用&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;0x000&lt;/td&gt;
+&lt;td&gt;GICD_CTLR&lt;/td&gt;
+&lt;td&gt;RW&lt;/td&gt;
+&lt;td&gt;0x00000000[c]&lt;/td&gt;
+&lt;td&gt;Distributor Control Register&lt;!-- raw HTML omitted --&gt;写入1使能控制器，必备&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;0x004&lt;/td&gt;
+&lt;td&gt;GICD_TYPER&lt;/td&gt;
+&lt;td&gt;RO&lt;/td&gt;
+&lt;td&gt;Configuration-dependent[d]&lt;/td&gt;
+&lt;td&gt;Interrupt Controller Type Register&lt;!-- raw HTML omitted --&gt;其中可以查看中断线的总数&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;0x008&lt;/td&gt;
+&lt;td&gt;GICD_IIDR&lt;/td&gt;
+&lt;td&gt;RO&lt;/td&gt;
+&lt;td&gt;0x0200143B&lt;/td&gt;
+&lt;td&gt;Distributor Implementer Identification Register, GICD_IIDR&lt;!-- raw HTML omitted --&gt;存了一些版本信息，没用&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;0x080-0x0BC&lt;/td&gt;
+&lt;td&gt;GICD_IGROUPRn&lt;/td&gt;
+&lt;td&gt;RW&lt;/td&gt;
+&lt;td&gt;0x00000000&lt;/td&gt;
+&lt;td&gt;Interrupt Group Registers[e]&lt;!-- raw HTML omitted --&gt;一个位图，控制中断属于A组还是B组&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;0x100&lt;/td&gt;
+&lt;td&gt;GICD_ISENABLERn&lt;/td&gt;
+&lt;td&gt;RW[f]&lt;/td&gt;
+&lt;td&gt;SGIs and PPIs:0x0000FFFF[g]&lt;/td&gt;
+&lt;td&gt;Interrupt Set-Enable Registers&lt;!-- raw HTML omitted --&gt;一个位图，用于使能各个中断，写入1使能。有用&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;0x104-0x13C&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;SPIs: 0x00000000&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;0x180&lt;/td&gt;
+&lt;td&gt;GICD_ICENABLERn&lt;/td&gt;
+&lt;td&gt;RW[f]&lt;/td&gt;
+&lt;td&gt;0x0000FFFF[g]&lt;/td&gt;
+&lt;td&gt;Interrupt Clear-Enable Registers&lt;!-- raw HTML omitted --&gt;和上一个寄存器类似，作用相反，写入1禁止。&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;0x184-0x1BC&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;0x00000000&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;0x200-0x23C&lt;/td&gt;
+&lt;td&gt;GICD_ISPENDRn&lt;/td&gt;
+&lt;td&gt;RW&lt;/td&gt;
+&lt;td&gt;0x00000000&lt;/td&gt;
+&lt;td&gt;Interrupt Set-Pending Registers&lt;!-- raw HTML omitted --&gt;pend位图，写入1可以进入pend状态&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;0x280-0x2BC&lt;/td&gt;
+&lt;td&gt;GICD_ICPENDRn&lt;/td&gt;
+&lt;td&gt;RW&lt;/td&gt;
+&lt;td&gt;0x00000000&lt;/td&gt;
+&lt;td&gt;Interrupt Clear-Pending Registers&lt;!-- raw HTML omitted --&gt;同上，写入1效果相反，阻止pend状态&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;0x300-0x33C&lt;/td&gt;
+&lt;td&gt;GICD_ISACTIVERn&lt;/td&gt;
+&lt;td&gt;RW&lt;/td&gt;
+&lt;td&gt;0x00000000&lt;/td&gt;
+&lt;td&gt;Interrupt Set-Active Registers&lt;!-- raw HTML omitted --&gt;位图，写入1可以激活中断&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;0x380-0x3BC&lt;/td&gt;
+&lt;td&gt;GICD_ICACTIVERn&lt;/td&gt;
+&lt;td&gt;RW&lt;/td&gt;
+&lt;td&gt;0x00000000&lt;/td&gt;
+&lt;td&gt;Interrupt Clear-Active Registers&lt;!-- raw HTML omitted --&gt;写入1反激活中断&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;0x400-0x5FC&lt;/td&gt;
+&lt;td&gt;GICD_IPRIORITYRn&lt;/td&gt;
+&lt;td&gt;RW&lt;/td&gt;
+&lt;td&gt;0x00000000&lt;/td&gt;
+&lt;td&gt;Interrupt Priority Registers&lt;!-- raw HTML omitted --&gt;存着各个中断的优先级，每8位算一个&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;0x800-0x81C&lt;/td&gt;
+&lt;td&gt;GICD_ITARGETSRn&lt;/td&gt;
+&lt;td&gt;RO[h]&lt;/td&gt;
+&lt;td&gt;-&lt;/td&gt;
+&lt;td&gt;Interrupt Processor Targets Registers[i]&lt;!-- raw HTML omitted --&gt;某个中断应该发往哪个处理器进行处理&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;0x820-0x9FC&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;RW&lt;/td&gt;
+&lt;td&gt;0x00000000&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;0xC00&lt;/td&gt;
+&lt;td&gt;GICD_ICFGRn&lt;/td&gt;
+&lt;td&gt;RO&lt;/td&gt;
+&lt;td&gt;SGIs: 0xAAAAAAAA&lt;/td&gt;
+&lt;td&gt;Interrupt Configuration Registers, GICD_ICFGRn&lt;!-- raw HTML omitted --&gt;配置中断是低电平触发还是下降沿触发&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;0xC04&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;RO&lt;/td&gt;
+&lt;td&gt;PPIs: 0x55540000&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;0xC08-0xC7C&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;RW[j]&lt;/td&gt;
+&lt;td&gt;SPIs: 0x55555555&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;0xD00&lt;/td&gt;
+&lt;td&gt;GICD_PPISR&lt;/td&gt;
+&lt;td&gt;RO&lt;/td&gt;
+&lt;td&gt;0x00000000&lt;/td&gt;
+&lt;td&gt;Private Peripheral Interrupt Status Register, GICD_PPISR&lt;!-- raw HTML omitted --&gt;一般没用&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;0xD04-0xD3C&lt;/td&gt;
+&lt;td&gt;GICD_SPISRn&lt;/td&gt;
+&lt;td&gt;RO&lt;/td&gt;
+&lt;td&gt;0x00000000&lt;/td&gt;
+&lt;td&gt;Shared Peripheral Interrupt Status Registers, GICD_SPISRn&lt;!-- raw HTML omitted --&gt;没用&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;0xF00&lt;/td&gt;
+&lt;td&gt;GICD_SGIR&lt;/td&gt;
+&lt;td&gt;WO&lt;/td&gt;
+&lt;td&gt;-&lt;/td&gt;
+&lt;td&gt;Software Generated Interrupt Register&lt;!-- raw HTML omitted --&gt;控制软中断&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;0xF10-0xF1C&lt;/td&gt;
+&lt;td&gt;GICD_CPENDSGIRn&lt;/td&gt;
+&lt;td&gt;RW&lt;/td&gt;
+&lt;td&gt;0x00000000&lt;/td&gt;
+&lt;td&gt;SGI Clear-Pending Registers&lt;!-- raw HTML omitted --&gt;软中断的pend位&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;0xF20-0xF2C&lt;/td&gt;
+&lt;td&gt;GICD_SPENDSGIRn&lt;/td&gt;
+&lt;td&gt;RW&lt;/td&gt;
+&lt;td&gt;0x00000000&lt;/td&gt;
+&lt;td&gt;SGI Set-Pending Registers&lt;!-- raw HTML omitted --&gt;同上，不过写入1时停止pend&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;0xFD0&lt;/td&gt;
+&lt;td&gt;GICD_PIDR4&lt;/td&gt;
+&lt;td&gt;RO&lt;/td&gt;
+&lt;td&gt;0x00000004&lt;/td&gt;
+&lt;td&gt;Peripheral ID 4 Register&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;0xFD4&lt;/td&gt;
+&lt;td&gt;GICD_PIDR5&lt;/td&gt;
+&lt;td&gt;RO&lt;/td&gt;
+&lt;td&gt;0x00000000&lt;/td&gt;
+&lt;td&gt;Peripheral ID 5 Register&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;0xFD8&lt;/td&gt;
+&lt;td&gt;GICD_PIDR6&lt;/td&gt;
+&lt;td&gt;RO&lt;/td&gt;
+&lt;td&gt;0x00000000&lt;/td&gt;
+&lt;td&gt;Peripheral ID 6 Register&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;0xFDC&lt;/td&gt;
+&lt;td&gt;GICD_PIDR7&lt;/td&gt;
+&lt;td&gt;RO&lt;/td&gt;
+&lt;td&gt;0x00000000&lt;/td&gt;
+&lt;td&gt;Peripheral ID 7 Register&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;0xFE0&lt;/td&gt;
+&lt;td&gt;GICD_PIDR0&lt;/td&gt;
+&lt;td&gt;RO&lt;/td&gt;
+&lt;td&gt;0x00000090&lt;/td&gt;
+&lt;td&gt;Peripheral ID 0 Register&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;0xFE4&lt;/td&gt;
+&lt;td&gt;GICD_PIDR1&lt;/td&gt;
+&lt;td&gt;RO&lt;/td&gt;
+&lt;td&gt;0x000000B4&lt;/td&gt;
+&lt;td&gt;Peripheral ID 1 Register&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;0xFE8&lt;/td&gt;
+&lt;td&gt;GICD_PIDR2&lt;/td&gt;
+&lt;td&gt;RO&lt;/td&gt;
+&lt;td&gt;0x0000002B&lt;/td&gt;
+&lt;td&gt;Peripheral ID 2 Register&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;0xFEC&lt;/td&gt;
+&lt;td&gt;GICD_PIDR3&lt;/td&gt;
+&lt;td&gt;RO&lt;/td&gt;
+&lt;td&gt;0x00000000&lt;/td&gt;
+&lt;td&gt;Peripheral ID 3 Register&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;0xFF0&lt;/td&gt;
+&lt;td&gt;GICD_CIDR0&lt;/td&gt;
+&lt;td&gt;RO&lt;/td&gt;
+&lt;td&gt;0x0000000D&lt;/td&gt;
+&lt;td&gt;Component ID 0 Register&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;0xFF4&lt;/td&gt;
+&lt;td&gt;GICD_CIDR1&lt;/td&gt;
+&lt;td&gt;RO&lt;/td&gt;
+&lt;td&gt;0x000000F0&lt;/td&gt;
+&lt;td&gt;Component ID 1 Register&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;0xFF8&lt;/td&gt;
+&lt;td&gt;GICD_CIDR2&lt;/td&gt;
+&lt;td&gt;RO&lt;/td&gt;
+&lt;td&gt;0x00000005&lt;/td&gt;
+&lt;td&gt;Component ID 2 Register&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;0xFFC&lt;/td&gt;
+&lt;td&gt;GICD_CIDR3&lt;/td&gt;
+&lt;td&gt;RO&lt;/td&gt;
+&lt;td&gt;0x000000B1&lt;/td&gt;
+&lt;td&gt;Component ID 3 Register&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h2 id=&#34;3cpu接口&#34;&gt;3.CPU接口
+&lt;/h2&gt;&lt;p&gt;开始地址的偏移量为0x2000&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Offset&lt;/th&gt;
+&lt;th&gt;Name&lt;/th&gt;
+&lt;th&gt;Type&lt;/th&gt;
+&lt;th&gt;Reset&lt;/th&gt;
+&lt;th&gt;Description[a]&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;0x0000&lt;/td&gt;
+&lt;td&gt;GICC_CTLR&lt;/td&gt;
+&lt;td&gt;RW&lt;/td&gt;
+&lt;td&gt;0x00000000&lt;/td&gt;
+&lt;td&gt;CPU Interface Control Register&lt;!-- raw HTML omitted --&gt;使能位。写入1使能&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;0x0004&lt;/td&gt;
+&lt;td&gt;GICC_PMR&lt;/td&gt;
+&lt;td&gt;RW&lt;/td&gt;
+&lt;td&gt;0x00000000&lt;/td&gt;
+&lt;td&gt;Interrupt Priority Mask Register&lt;!-- raw HTML omitted --&gt;限制中断最低优先级，高于此值无法中断，最好写大一点&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;0x0008&lt;/td&gt;
+&lt;td&gt;GICC_BPR&lt;/td&gt;
+&lt;td&gt;RW&lt;/td&gt;
+&lt;td&gt;0x00000002[b]&lt;/td&gt;
+&lt;td&gt;Binary Point Register&lt;!-- raw HTML omitted --&gt;The minimum value of the Binary Point Register depends on which security-banked copy is considered:&lt;!-- raw HTML omitted --&gt;0x2 Secure copy&lt;!-- raw HTML omitted --&gt;0x3 Non-secure copy&lt;!-- raw HTML omitted --&gt;优先级分组&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;0x000C&lt;/td&gt;
+&lt;td&gt;GICC_IAR&lt;/td&gt;
+&lt;td&gt;RO&lt;/td&gt;
+&lt;td&gt;0x000003FF&lt;/td&gt;
+&lt;td&gt;Interrupt Acknowledge Register&lt;!-- raw HTML omitted --&gt;只读，中断id&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;0x0010&lt;/td&gt;
+&lt;td&gt;GICC_EOIR&lt;/td&gt;
+&lt;td&gt;WO&lt;/td&gt;
+&lt;td&gt;-&lt;/td&gt;
+&lt;td&gt;End of Interrupt Register&lt;!-- raw HTML omitted --&gt;写入以告知cpu已经处理完中断&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;0x0014&lt;/td&gt;
+&lt;td&gt;GICC_RPR&lt;/td&gt;
+&lt;td&gt;RO&lt;/td&gt;
+&lt;td&gt;0x000000FF&lt;/td&gt;
+&lt;td&gt;Running Priority Register&lt;!-- raw HTML omitted --&gt;当前中断优先级&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;0x0018&lt;/td&gt;
+&lt;td&gt;GICC_HPPIR&lt;/td&gt;
+&lt;td&gt;RO&lt;/td&gt;
+&lt;td&gt;0x000003FF&lt;/td&gt;
+&lt;td&gt;Highest Priority Pending Interrupt Register [c]&lt;!-- raw HTML omitted --&gt;最高优先级中断号及其pend值&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;0x001C&lt;/td&gt;
+&lt;td&gt;GICC_ABPR&lt;/td&gt;
+&lt;td&gt;RW&lt;/td&gt;
+&lt;td&gt;0x00000003&lt;/td&gt;
+&lt;td&gt;Aliased Binary Point Register[d]&lt;!-- raw HTML omitted --&gt;The minimum value of the Aliased Binary Point Register is 0x3.&lt;!-- raw HTML omitted --&gt;别名寄存器&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;0x0020&lt;/td&gt;
+&lt;td&gt;GICC_AIAR&lt;/td&gt;
+&lt;td&gt;RO&lt;/td&gt;
+&lt;td&gt;0x000003FF&lt;/td&gt;
+&lt;td&gt;Aliased Interrupt Acknowledge Register[d]&lt;!-- raw HTML omitted --&gt;别名寄存器&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;0x0024&lt;/td&gt;
+&lt;td&gt;GICC_AEOIR&lt;/td&gt;
+&lt;td&gt;WO&lt;/td&gt;
+&lt;td&gt;-&lt;/td&gt;
+&lt;td&gt;Aliased End of Interrupt Register[d]&lt;!-- raw HTML omitted --&gt;别名寄存器&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;0x0028&lt;/td&gt;
+&lt;td&gt;GICC_AHPPIR&lt;/td&gt;
+&lt;td&gt;RO&lt;/td&gt;
+&lt;td&gt;0x000003FF&lt;/td&gt;
+&lt;td&gt;Aliased Highest Priority Pending Interrupt Register[c][d]&lt;!-- raw HTML omitted --&gt;别名寄存器&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;0x00D0&lt;/td&gt;
+&lt;td&gt;GICC_APR0&lt;/td&gt;
+&lt;td&gt;RW&lt;/td&gt;
+&lt;td&gt;0x00000000&lt;/td&gt;
+&lt;td&gt;Active Priority Register&lt;!-- raw HTML omitted --&gt;用于保存和恢复&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;0x00E0&lt;/td&gt;
+&lt;td&gt;GICC_NSAPR0&lt;/td&gt;
+&lt;td&gt;RW&lt;/td&gt;
+&lt;td&gt;0x00000000&lt;/td&gt;
+&lt;td&gt;Non-Secure Active Priority Register[d]&lt;!-- raw HTML omitted --&gt;用于保存和恢复&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;0x00FC&lt;/td&gt;
+&lt;td&gt;GICC_IIDR&lt;/td&gt;
+&lt;td&gt;RO&lt;/td&gt;
+&lt;td&gt;0x0202143B&lt;/td&gt;
+&lt;td&gt;CPU Interface Identification Register, GICC_IIDR&lt;!-- raw HTML omitted --&gt;存着版本信息&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;0x1000&lt;/td&gt;
+&lt;td&gt;GICC_DIR&lt;/td&gt;
+&lt;td&gt;WO&lt;/td&gt;
+&lt;td&gt;-&lt;/td&gt;
+&lt;td&gt;Deactivate Interrupt Register&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
 </description>
         </item>
         

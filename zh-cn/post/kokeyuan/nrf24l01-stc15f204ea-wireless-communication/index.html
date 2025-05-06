@@ -1,0 +1,1074 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="本代码适用于 NRF24L01 STC15F204EA(STC15L204EA) 组合成的小型无线收发模块,也可以适用于一般51单片机于NRF24L01通信 前几天在网上购买的一个小型的无线收发模块,卖家发的源代码很简单,没有什么实用的地方,于是移植了原子的STM3224l01程序过来,该程序更完备,更实用 由于几乎没有管脚用来显示收发的内容,所以使用串口通信来完成显示的内容 适用模块图片: 主要接线图: 首先为了串口显示,在网上搜集了如下代码,之所以这样复杂,是因为这块芯片没有串口功能 首先是H文件: #ifndef _UART_H #define _UART_H #define MCU_FREQ 11059200 // 设置晶振频率 #define UART_BUAD 38400 #define ON 1 #define OFF 0 #define UART_TX_PIN P31 #define UART_TX_SET(n) UART_TX_PIN = n #define UART_TX_HIGH() UART_TX_SET(1) #define UART_TX_LOW() UART_TX_SET(0) #define UART_TX_FLIP() UART_TX_PIN = !UART_TX_PIN #define UART_RX_PIN P30 #define UART_RX_SET(n) UART_RX_PIN = n #define UART_RX_HIGH() UART_RX_SET(1) #define UART_RX_LOW() UART_RX_SET(0) #define UART_RX_FLIP() UART_RX_PIN = !UART_RX_PIN void uartInit(void); void uartSendString(char *pS); void uartSendNum(int num); #endif 文件中要设定好晶振的频率和串号的频率,分别为MCU_FREQ和UART_BUAD,设定好以后才能正确收发">
+<title>NRF24L01 &#43; STC15F204EA 无线通信 源代码</title>
+
+<link rel='canonical' href='https://nansenli.com/zh-cn/post/kokeyuan/nrf24l01-stc15f204ea-wireless-communication/'>
+
+<link rel="stylesheet" href="/scss/style.min.1084ac713783b88e0bd9807a58068e10aae22e99420f94a9234654a4e199baa4.css"><meta property='og:title' content="NRF24L01 + STC15F204EA 无线通信 源代码">
+<meta property='og:description' content="本代码适用于 NRF24L01 STC15F204EA(STC15L204EA) 组合成的小型无线收发模块,也可以适用于一般51单片机于NRF24L01通信 前几天在网上购买的一个小型的无线收发模块,卖家发的源代码很简单,没有什么实用的地方,于是移植了原子的STM3224l01程序过来,该程序更完备,更实用 由于几乎没有管脚用来显示收发的内容,所以使用串口通信来完成显示的内容 适用模块图片: 主要接线图: 首先为了串口显示,在网上搜集了如下代码,之所以这样复杂,是因为这块芯片没有串口功能 首先是H文件: #ifndef _UART_H #define _UART_H #define MCU_FREQ 11059200 // 设置晶振频率 #define UART_BUAD 38400 #define ON 1 #define OFF 0 #define UART_TX_PIN P31 #define UART_TX_SET(n) UART_TX_PIN = n #define UART_TX_HIGH() UART_TX_SET(1) #define UART_TX_LOW() UART_TX_SET(0) #define UART_TX_FLIP() UART_TX_PIN = !UART_TX_PIN #define UART_RX_PIN P30 #define UART_RX_SET(n) UART_RX_PIN = n #define UART_RX_HIGH() UART_RX_SET(1) #define UART_RX_LOW() UART_RX_SET(0) #define UART_RX_FLIP() UART_RX_PIN = !UART_RX_PIN void uartInit(void); void uartSendString(char *pS); void uartSendNum(int num); #endif 文件中要设定好晶振的频率和串号的频率,分别为MCU_FREQ和UART_BUAD,设定好以后才能正确收发">
+<meta property='og:url' content='https://nansenli.com/zh-cn/post/kokeyuan/nrf24l01-stc15f204ea-wireless-communication/'>
+<meta property='og:site_name' content='Nansen Li'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:tag' content='NRF24L01' /><meta property='article:tag' content='NRF24L01&#43;' /><meta property='article:tag' content='STC15F204EA' /><meta property='article:tag' content='STC15L204EA' /><meta property='article:tag' content='51单片机' /><meta property='article:tag' content='单片机' /><meta property='article:tag' content='通信' /><meta property='article:tag' content='无线通信' /><meta property='article:published_time' content='2013-09-01T00:55:00&#43;00:00'/><meta property='article:modified_time' content='2013-09-01T00:55:00&#43;00:00'/>
+<meta name="twitter:title" content="NRF24L01 + STC15F204EA 无线通信 源代码">
+<meta name="twitter:description" content="本代码适用于 NRF24L01 STC15F204EA(STC15L204EA) 组合成的小型无线收发模块,也可以适用于一般51单片机于NRF24L01通信 前几天在网上购买的一个小型的无线收发模块,卖家发的源代码很简单,没有什么实用的地方,于是移植了原子的STM3224l01程序过来,该程序更完备,更实用 由于几乎没有管脚用来显示收发的内容,所以使用串口通信来完成显示的内容 适用模块图片: 主要接线图: 首先为了串口显示,在网上搜集了如下代码,之所以这样复杂,是因为这块芯片没有串口功能 首先是H文件: #ifndef _UART_H #define _UART_H #define MCU_FREQ 11059200 // 设置晶振频率 #define UART_BUAD 38400 #define ON 1 #define OFF 0 #define UART_TX_PIN P31 #define UART_TX_SET(n) UART_TX_PIN = n #define UART_TX_HIGH() UART_TX_SET(1) #define UART_TX_LOW() UART_TX_SET(0) #define UART_TX_FLIP() UART_TX_PIN = !UART_TX_PIN #define UART_RX_PIN P30 #define UART_RX_SET(n) UART_RX_PIN = n #define UART_RX_HIGH() UART_RX_SET(1) #define UART_RX_LOW() UART_RX_SET(0) #define UART_RX_FLIP() UART_RX_PIN = !UART_RX_PIN void uartInit(void); void uartSendString(char *pS); void uartSendNum(int num); #endif 文件中要设定好晶振的频率和串号的频率,分别为MCU_FREQ和UART_BUAD,设定好以后才能正确收发">
+    <link rel="shortcut icon" href="/favicon.ico" />
+
+  
+    
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-WC38C3XE3J"></script>
+      <script>
+        var doNotTrack = false;
+        if ( false ) {
+          var dnt = (navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack);
+          var doNotTrack = (dnt == "1" || dnt == "yes");
+        }
+        if (!doNotTrack) {
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-WC38C3XE3J');
+        }
+      </script>
+    
+  
+
+
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="切换菜单">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/zh-cn/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/avatar_hu96777ff80939aaa7d938dddcc232fcc6_1414962_300x0_resize_box_3.png" width="300"
+                            height="300" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+                    <span class="emoji">🌈</span>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/zh-cn">Nansen Li</a></h1>
+            <h2 class="site-description"></h2>
+        </div>
+    </header><ol class="menu-social">
+            
+                <li>
+                    <a 
+                        href='https://github.com/linanwx'
+                        target="_blank"
+                        title="GitHub"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://www.linkedin.com/in/nansen-li-3bb0a3146/'
+                        target="_blank"
+                        title="LinkedIn"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-brand-linkedin"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M8 11v5" /><path d="M8 8v.01" /><path d="M12 16v-5" /><path d="M16 16v-3a2 2 0 1 0 -4 0" /><path d="M3 7a4 4 0 0 1 4 -4h10a4 4 0 0 1 4 4v10a4 4 0 0 1 -4 4h-10a4 4 0 0 1 -4 -4z" /></svg>
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='index.xml'
+                        target="_blank"
+                        title="RSS"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-rss" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="5" cy="19" r="1" />
+  <path d="M4 4a16 16 0 0 1 16 16" />
+  <path d="M4 11a9 9 0 0 1 9 9" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/zh-cn/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+</svg>
+
+
+
+                
+                <span>主页</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/zh-cn/page/archives/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>归档</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/zh-cn/page/search/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
+
+
+
+                
+                <span>搜索</span>
+            </a>
+        </li>
+        
+        <li class="menu-bottom-section">
+            <ol class="menu">
+                    
+                        <li id="i18n-switch">  
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-language" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M4 5h7" />
+  <path d="M9 3v2c0 4.418 -2.239 8 -5 8" />
+  <path d="M5 9c-.003 2.144 2.952 3.908 6.7 4" />
+  <path d="M12 20l4 -9l4 9" />
+  <path d="M19.1 18h-6.2" />
+</svg>
+
+
+
+                            <select name="language" title="language" onchange="window.location.href = this.selectedOptions[0].value">
+                                
+                                    <option value="https://nansenli.com/" >English</option>
+                                
+                                    <option value="https://nansenli.com/zh-cn/" selected>中文</option>
+                                
+                            </select>
+                        </li>
+                    
+                
+
+                
+                    <li id="dark-mode-toggle">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <span>暗色模式</span>
+                    </li>
+                
+            </ol>
+        </li>
+    </ol>
+</aside>
+
+    
+
+            <main class="main full-width">
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/zh-cn/categories/%E5%8D%95%E7%89%87%E6%9C%BA/" >
+                单片机
+            </a>
+        
+    </header>
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/zh-cn/post/kokeyuan/nrf24l01-stc15f204ea-wireless-communication/">NRF24L01 &#43; STC15F204EA 无线通信 源代码</a>
+        </h2>
+    
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">Sep 01, 2013</time>
+            </div>
+        
+
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+                <time class="article-time--reading">
+                    阅读时长: 6 分钟
+                </time>
+            </div>
+        
+    </footer>
+    
+
+    
+        <footer class="article-translations">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-language" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M4 5h7" />
+  <path d="M9 3v2c0 4.418 -2.239 8 -5 8" />
+  <path d="M5 9c-.003 2.144 2.952 3.908 6.7 4" />
+  <path d="M12 20l4 -9l4 9" />
+  <path d="M19.1 18h-6.2" />
+</svg>
+
+
+
+            <div>
+                
+                    <a href="https://nansenli.com/post/kokeyuan/nrf24l01-stc15f204ea-wireless-communication/" class="link">English</a>
+                
+            </div>
+        </footer>
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <p>本代码适用于 NRF24L01 STC15F204EA(STC15L204EA) 组合成的小型无线收发模块,也可以适用于一般51单片机于NRF24L01通信</p>
+<p>前几天在网上购买的一个小型的无线收发模块,卖家发的源代码很简单,没有什么实用的地方,于是移植了原子的STM3224l01程序过来,该程序更完备,更实用</p>
+<p>由于几乎没有管脚用来显示收发的内容,所以使用串口通信来完成显示的内容</p>
+<p>适用模块图片:</p>
+<p><img src="https://i.imgur.com/HywWwPZ.pngpg"
+	
+	
+	
+	loading="lazy"
+	
+		alt="模块图片"
+	
+	
+></p>
+<p>主要接线图:</p>
+<p><img src="http://example.com/wiring_diagram.jpg"
+	
+	
+	
+	loading="lazy"
+	
+		alt="接线图"
+	
+	
+></p>
+<p>首先为了串口显示,在网上搜集了如下代码,之所以这样复杂,是因为这块芯片没有串口功能</p>
+<p>首先是H文件:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#75715e">#ifndef _UART_H
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">#define _UART_H
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#define MCU_FREQ                             11059200 </span><span style="color:#75715e">// 设置晶振频率
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#75715e">#define UART_BUAD                            38400
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">#define ON                                   1
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">#define OFF                                  0  
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#define UART_TX_PIN                          P31
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">#define UART_TX_SET(n)                       UART_TX_PIN = n
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">#define UART_TX_HIGH()                       UART_TX_SET(1)
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">#define UART_TX_LOW()                        UART_TX_SET(0)
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">#define UART_TX_FLIP()                       UART_TX_PIN = !UART_TX_PIN
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#define UART_RX_PIN                          P30
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">#define UART_RX_SET(n)                       UART_RX_PIN = n
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">#define UART_RX_HIGH()                       UART_RX_SET(1)
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">#define UART_RX_LOW()                        UART_RX_SET(0)
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">#define UART_RX_FLIP()                       UART_RX_PIN = !UART_RX_PIN
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">uartInit</span>(<span style="color:#66d9ef">void</span>);
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">uartSendString</span>(<span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span>pS);
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">uartSendNum</span>(<span style="color:#66d9ef">int</span> num);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#endif
+</span></span></span></code></pre></div><p>文件中要设定好晶振的频率和串号的频率,分别为MCU_FREQ和UART_BUAD,设定好以后才能正确收发</p>
+<p>接下来是C文件:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&#34;stdio.h&#34;</span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&#34;uart.h&#34;</span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&#34;15f204ea.h&#34;                //由宏晶官网提供的头文件</span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">typedef</span> <span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">char</span> u8;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">typedef</span> <span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">short</span> u16;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">typedef</span> <span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">int</span> u32;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">typedef</span> <span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">char</span> uchar;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">typedef</span> <span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">int</span> uint;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">typedef</span> <span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">char</span> BYTE;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">static</span> bit bUartFlag;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/******************************************************************************/</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 函数名称：uartInit 
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">// 输入参数：无 
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">// 输出参数：无 
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">// 函数功能：设置好定时器0的工作模式 
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#75715e">/******************************************************************************/</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">uartInit</span>(<span style="color:#66d9ef">void</span>)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/*
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     * 设置定时器0为16位自动重载定时器
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">    */</span>
+</span></span><span style="display:flex;"><span>    AUXR <span style="color:#f92672">|=</span> <span style="color:#ae81ff">0x80</span>; <span style="color:#75715e">//定时器0为1T模式
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    TMOD <span style="color:#f92672">&amp;=</span> <span style="color:#ae81ff">0xF0</span>; <span style="color:#75715e">//设置定时器为模式0(16位自动重装载)
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        TL0 <span style="color:#f92672">=</span> (<span style="color:#ae81ff">0xFFFF</span> <span style="color:#f92672">-</span> MCU_FREQ <span style="color:#f92672">/</span> UART_BUAD) <span style="color:#f92672">&amp;</span> <span style="color:#ae81ff">0xFF</span>; <span style="color:#75715e">//设置定时初值
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        TH0 <span style="color:#f92672">=</span> ((<span style="color:#ae81ff">0xFFFF</span> <span style="color:#f92672">-</span> MCU_FREQ <span style="color:#f92672">/</span> UART_BUAD) <span style="color:#f92672">&gt;&gt;</span> <span style="color:#ae81ff">8</span>) <span style="color:#f92672">&amp;</span> <span style="color:#ae81ff">0xFF</span>; <span style="color:#75715e">//设置定时初值
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    TR0 <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>; <span style="color:#75715e">//定时器0开始计时
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    ET0 <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>; <span style="color:#75715e">//使能定时器0中断
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    EA <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/******************************************************************************/</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 函数名称：uartSendData 
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">// 输入参数：ucData: 发送字节 
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">// 输出参数：无 
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">// 函数功能：使用串口发送一个字节数据 
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#75715e">/******************************************************************************/</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">uartSendData</span>(u8 ucData)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    u8 ucCnt;
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">UART_TX_LOW</span>(); <span style="color:#75715e">//串口起始位开始
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    TR0 <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>; <span style="color:#75715e">//定时器0开始计时
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    ET0 <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>; <span style="color:#75715e">//使能定时器0中断
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    bUartFlag <span style="color:#f92672">=</span> ON; 
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">while</span>(bUartFlag <span style="color:#f92672">==</span> ON);
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/*
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     * 由低位开始，将数据通过串口输出
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     */</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> (ucCnt <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>; ucCnt <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">8</span>; ucCnt<span style="color:#f92672">++</span>) {
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">UART_TX_SET</span>(ucData <span style="color:#f92672">&amp;</span> <span style="color:#ae81ff">0x01</span>);
+</span></span><span style="display:flex;"><span>        ucData <span style="color:#f92672">&gt;&gt;=</span> <span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span>        bUartFlag <span style="color:#f92672">=</span> ON; 
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">while</span>(bUartFlag <span style="color:#f92672">==</span> ON);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">UART_TX_HIGH</span>(); <span style="color:#75715e">// 发送串口停止位  
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    bUartFlag <span style="color:#f92672">=</span> ON; 
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">while</span>(bUartFlag <span style="color:#f92672">==</span> ON);
+</span></span><span style="display:flex;"><span>    TR0 <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>; <span style="color:#75715e">//定时器0结束计时
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    ET0 <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>; <span style="color:#75715e">//禁能定时器0中断    
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>}
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/******************************************************************************/</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 函数名称：uartSendString 
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">// 输入参数：pS: 字符串首地址 
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">// 输出参数：无 
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">// 函数功能：发送字符串通过串口输出 
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#75715e">/******************************************************************************/</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">uartSendString</span>(<span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span>pS)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">while</span> (<span style="color:#f92672">*</span>pS)                      <span style="color:#75715e">//检测字符串结束标志
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">uartSendData</span>(<span style="color:#f92672">*</span>pS<span style="color:#f92672">++</span>);         <span style="color:#75715e">//发送当前字符
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    }
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">uartSendData</span>(<span style="color:#e6db74">&#39;\r&#39;</span>);
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">uartSendData</span>(<span style="color:#e6db74">&#39;\n&#39;</span>);
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">uartSendNum</span>(<span style="color:#66d9ef">int</span> num){           <span style="color:#75715e">//使用sprintf函数打印整数(也可打印小数)
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">char</span> temp[<span style="color:#ae81ff">14</span>];
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">sprintf</span>(temp,<span style="color:#e6db74">&#34;%d&#34;</span>,num);
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">uartSendString</span>(temp);
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/******************************************************************************/</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 函数名称：time0ISR 
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">// 输入参数：无 
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">// 输出参数：无 
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">// 函数功能：串口0服务函数 
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#75715e">/******************************************************************************/</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">time0ISR</span>(<span style="color:#66d9ef">void</span>) interrupt <span style="color:#ae81ff">1</span> using <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    EA <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>    bUartFlag <span style="color:#f92672">=</span> OFF;
+</span></span><span style="display:flex;"><span>    EA <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>这个代码里面调用了15f204ea.h，这是我在宏晶网站下载的头文件,便于大家查找直接列出来了。由于文件太长，这里不再全部列出。</p>
+<p>至此串口显示搞定了</p>
+<p>然后是24l01的程序代码</p>
+<p>先是H文件:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#75715e">#ifndef __24L01_H
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">#define __24L01_H
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&#34;15f204ea.h&#34;</span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">#define u8 unsigned char
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">#define u16 unsigned int
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">typedef</span> <span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">char</span> uchar; 
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">typedef</span> <span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">char</span> uint;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/*nRF24L01引脚定义*/</span> 
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>sbit CE <span style="color:#f92672">=</span> P1<span style="color:#f92672">^</span><span style="color:#ae81ff">4</span>; 
+</span></span><span style="display:flex;"><span>sbit CSN <span style="color:#f92672">=</span> P1<span style="color:#f92672">^</span><span style="color:#ae81ff">5</span>; 
+</span></span><span style="display:flex;"><span>sbit SCK <span style="color:#f92672">=</span> P1<span style="color:#f92672">^</span><span style="color:#ae81ff">2</span>; 
+</span></span><span style="display:flex;"><span>sbit MOSI <span style="color:#f92672">=</span> P1<span style="color:#f92672">^</span><span style="color:#ae81ff">3</span>; 
+</span></span><span style="display:flex;"><span>sbit MISO <span style="color:#f92672">=</span> P1<span style="color:#f92672">^</span><span style="color:#ae81ff">0</span>; 
+</span></span><span style="display:flex;"><span>sbit IRQ <span style="color:#f92672">=</span> P1<span style="color:#f92672">^</span><span style="color:#ae81ff">1</span>; 
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//NRF24L01寄存器操作命令
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#75715e">#define READ_NRF_REG 0x00 </span><span style="color:#75715e">//读配置寄存器,低5位为寄存器地址
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#75715e">#define WRITE_NRF_REG 0x20 </span><span style="color:#75715e">//写配置寄存器,低5位为寄存器地址
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#75715e">#define RD_RX_PLOAD 0x61 </span><span style="color:#75715e">//读RX有效数据,1~32字节
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#75715e">#define WR_TX_PLOAD 0xA0 </span><span style="color:#75715e">//写TX有效数据,1~32字节
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#75715e">#define FLUSH_TX 0xE1 </span><span style="color:#75715e">//清除TX FIFO寄存器.发射模式下用
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#75715e">#define FLUSH_RX 0xE2 </span><span style="color:#75715e">//清除RX FIFO寄存器.接收模式下用
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#75715e">#define REUSE_TX_PL 0xE3 </span><span style="color:#75715e">//重新使用上一包数据,CE为高,数据包被不断发送.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#75715e">#define NOP 0xFF </span><span style="color:#75715e">//空操作,可以用来读状态寄存器
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//SPI(NRF24L01)寄存器地址
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#75715e">#define CONFIG 0x00 </span><span style="color:#75715e">//配置寄存器地址;bit0:1接收模式,0发射模式;bit1:电选择;bit2:CRC模式;bit3:CRC使能;
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//bit4:中断MAX_RT(达到最大重发次数中断)使能;bit5:中断TX_DS使能;bit6:中断RX_DR使能
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#75715e">#define EN_AA 0x01 </span><span style="color:#75715e">//使能自动应答功能 bit0~5,对应通道0~5
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#75715e">#define EN_RXADDR 0x02 </span><span style="color:#75715e">//接收地址允许,bit0~5,对应通道0~5
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#75715e">#define SETUP_AW 0x03 </span><span style="color:#75715e">//设置地址宽度(所有数据通道):bit1,0:00,3字节;01,4字节;02,5字节;
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#75715e">#define SETUP_RETR 0x04 </span><span style="color:#75715e">//建立自动重发;bit3:0,自动重发计数器;bit7:4,自动重发延时 250*x+86us
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#75715e">#define RF_CH 0x05 </span><span style="color:#75715e">//RF通道,bit6:0,工作通道频率;
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#75715e">#define RF_SETUP 0x06 </span><span style="color:#75715e">//RF寄存器;bit3:传输速率(0:1Mbps,1:2Mbps);bit2:1,发射功率;bit0:低噪声放大器增益
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#75715e">#define STATUS 0x07 </span><span style="color:#75715e">//状态寄存器;bit0:TX FIFO满标志;bit3:1,接收数据通道号(最大:6);bit4,达到最多次重发
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//bit5:数据发送完成中断;bit6:接收数据中断;
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#75715e">#define MAX_TX 0x10 </span><span style="color:#75715e">//达到最大发送次数中断
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#75715e">#define TX_OK 0x20 </span><span style="color:#75715e">//TX发送完成中断
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#75715e">#define RX_OK 0x40 </span><span style="color:#75715e">//接收到数据中断
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#75715e">#define OBSERVE_TX 0x08 </span><span style="color:#75715e">//发送检测寄存器,bit7:4,数据包丢失计数器;bit3:0,重发计数器
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#75715e">#define CD 0x09 </span><span style="color:#75715e">//载波检测寄存器,bit0,载波检测;
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#75715e">#define RX_ADDR_P0 0x0A </span><span style="color:#75715e">//数据通道0接收地址,最大长度5个字节,低字节在前
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#75715e">#define RX_ADDR_P1 0x0B </span><span style="color:#75715e">//数据通道1接收地址,最大长度5个字节,低字节在前
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#75715e">#define RX_ADDR_P2 0x0C </span><span style="color:#75715e">//数据通道2接收地址,最低字节可设置,高字节,必须同RX_ADDR_P1[39:8]相等;
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#75715e">#define RX_ADDR_P3 0x0D </span><span style="color:#75715e">//数据通道3接收地址,最低字节可设置,高字节,必须同RX_ADDR_P1[39:8]相等;
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#75715e">#define RX_ADDR_P4 0x0E </span><span style="color:#75715e">//数据通道4接收地址,最低字节可设置,高字节,必须同RX_ADDR_P1[39:8]相等;
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#75715e">#define RX_ADDR_P5 0x0F </span><span style="color:#75715e">//数据通道5接收地址,最低字节可设置,高字节,必须同RX_ADDR_P1[39:8]相等;
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#define TX_ADDR 0x10 </span><span style="color:#75715e">//发送地址(低字节在前),ShockBurstTM模式下,RX_ADDR_P0与此地址相等
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#75715e">#define RX_PW_P0 0x11 </span><span style="color:#75715e">//接收数据通道0有效数据宽度(1~32字节),设置为0则非法
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#75715e">#define RX_PW_P1 0x12 </span><span style="color:#75715e">//接收数据通道1有效数据宽度(1~32字节),设置为0则非法
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#75715e">#define RX_PW_P2 0x13 </span><span style="color:#75715e">//接收数据通道2有效数据宽度(1~32字节),设置为0则非法
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#75715e">#define RX_PW_P3 0x14 </span><span style="color:#75715e">//接收数据通道3有效数据宽度(1~32字节),设置为0则非法
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#75715e">#define RX_PW_P4 0x15 </span><span style="color:#75715e">//接收数据通道4有效数据宽度(1~32字节),设置为0则非法
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#75715e">#define RX_PW_P5 0x16 </span><span style="color:#75715e">//接收数据通道5有效数据宽度(1~32字节),设置为0则非法
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#75715e">#define FIFO_STATUS 0x17 </span><span style="color:#75715e">//FIFO状态寄存器;bit0,RX FIFO寄存器空标志;bit1,RX FIFO满标志;bit2,3,保留
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//bit4,TX FIFO空标志;bit5,TX FIFO满标志;bit6,1,循环发送上一数据包.0,不循环;
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">//////////////////////////////////////////////////////////////////////////////
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//24L01操作线
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#75715e">#define NRF24L01_CE  CE  </span><span style="color:#75715e">//24L01片选信号
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#75715e">#define NRF24L01_CSN CSN </span><span style="color:#75715e">//SPI片选信号
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#75715e">#define NRF24L01_IRQ IRQ </span><span style="color:#75715e">//IRQ主机数据输入
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//24L01发送接收数据宽度定义
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#75715e">#define TX_ADR_WIDTH 5 </span><span style="color:#75715e">//5字节的地址宽度
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#75715e">#define RX_ADR_WIDTH 5 </span><span style="color:#75715e">//5字节的地址宽度
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#75715e">#define TX_PLOAD_WIDTH 32 </span><span style="color:#75715e">//20字节的用户数据宽度
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#75715e">#define RX_PLOAD_WIDTH 32 </span><span style="color:#75715e">//20字节的用户数据宽度
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">NRF24L01_Init</span>(<span style="color:#66d9ef">void</span>);<span style="color:#75715e">//初始化
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">RX_Mode</span>(<span style="color:#66d9ef">void</span>);<span style="color:#75715e">//配置为接收模式
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">TX_Mode</span>(<span style="color:#66d9ef">void</span>);<span style="color:#75715e">//配置为发送模式
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span>u8 <span style="color:#a6e22e">NRF24L01_Check</span>(<span style="color:#66d9ef">void</span>);<span style="color:#75715e">//检查24L01是否存在
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>u8 <span style="color:#a6e22e">NRF24L01_TxPacket</span>(u8 <span style="color:#f92672">*</span>txbuf);<span style="color:#75715e">//发送一个包的数据
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>u8 <span style="color:#a6e22e">NRF24L01_RxPacket</span>(u8 <span style="color:#f92672">*</span>rxbuf);<span style="color:#75715e">//接收一个包的数据
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#75715e">#endif
+</span></span></span></code></pre></div><p>然后是C文件:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&#34;15f204ea.h&#34;</span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&#34;24l01.h&#34;</span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&#34;intrins.h&#34;</span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">const</span> u8 TX_ADDRESS[TX_ADR_WIDTH]<span style="color:#f92672">=</span>{<span style="color:#ae81ff">0x34</span>,<span style="color:#ae81ff">0x43</span>,<span style="color:#ae81ff">0x10</span>,<span style="color:#ae81ff">0x10</span>,<span style="color:#ae81ff">0x03</span>}; <span style="color:#75715e">//发送地址
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">const</span> u8 RX_ADDRESS[RX_ADR_WIDTH]<span style="color:#f92672">=</span>{<span style="color:#ae81ff">0x34</span>,<span style="color:#ae81ff">0x43</span>,<span style="color:#ae81ff">0x10</span>,<span style="color:#ae81ff">0x10</span>,<span style="color:#ae81ff">0x03</span>}; <span style="color:#75715e">//发送地址
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/******************************************************************************************
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">/*延时函数
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">/******************************************************************************************/</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">inerDelay_us</span>(<span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">char</span> n)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span>(;n<span style="color:#f92672">&gt;</span><span style="color:#ae81ff">0</span>;n<span style="color:#f92672">--</span>)
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">_nop_</span>();
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//****************************************************************************************
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#75715e">/*NRF24L01初始化
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">//***************************************************************************************/</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">NRF24L01_Init</span>(<span style="color:#66d9ef">void</span>)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">inerDelay_us</span>(<span style="color:#ae81ff">100</span>);
+</span></span><span style="display:flex;"><span>     CE<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>;    <span style="color:#75715e">// chip enable
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>     CSN<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>;   <span style="color:#75715e">// Spi  disable 
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>     SCK<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>;   <span style="color:#75715e">// 
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>}
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/****************************************************************************************************
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">/*函数：uint SPI_RW(uint uchar)
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">/*功能：NRF24L01的SPI写时序
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">/****************************************************************************************************/</span>
+</span></span><span style="display:flex;"><span>uint <span style="color:#a6e22e">SPI_RW</span>(uint uchar)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    uint bit_ctr;
+</span></span><span style="display:flex;"><span>       <span style="color:#66d9ef">for</span>(bit_ctr<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>;bit_ctr<span style="color:#f92672">&lt;</span><span style="color:#ae81ff">8</span>;bit_ctr<span style="color:#f92672">++</span>) <span style="color:#75715e">// output 8-bit
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>       {
+</span></span><span style="display:flex;"><span>            MOSI <span style="color:#f92672">=</span> (uchar <span style="color:#f92672">&amp;</span> <span style="color:#ae81ff">0x80</span>);         <span style="color:#75715e">// output &#39;uchar&#39;, MSB to MOSI
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            uchar <span style="color:#f92672">=</span> (uchar <span style="color:#f92672">&lt;&lt;</span> <span style="color:#ae81ff">1</span>);           <span style="color:#75715e">// shift next bit into MSB..
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            SCK <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>;                      <span style="color:#75715e">// Set SCK high..
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            uchar <span style="color:#f92672">|=</span> MISO;                 <span style="color:#75715e">// capture current MISO bit
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            SCK <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;                      <span style="color:#75715e">// ..then set SCK low again
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>       }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span>(uchar);                     <span style="color:#75715e">// return read uchar
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>}
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/****************************************************************************************************
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">/*函数：uchar SPI_Read(uchar reg)
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">/*功能：NRF24L01的SPI时序
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">/****************************************************************************************************/</span>
+</span></span><span style="display:flex;"><span>uchar <span style="color:#a6e22e">NRF24L01_Read_Reg</span>(uchar reg)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    uchar reg_val;
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    CSN <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;                <span style="color:#75715e">// CSN low, initialize SPI communication...
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#a6e22e">SPI_RW</span>(reg);            <span style="color:#75715e">// Select register to read from..
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    reg_val <span style="color:#f92672">=</span> <span style="color:#a6e22e">SPI_RW</span>(<span style="color:#ae81ff">0</span>);    <span style="color:#75715e">// ..then read registervalue
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    CSN <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>;                <span style="color:#75715e">// CSN high, terminate SPI communication
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span>(reg_val);        <span style="color:#75715e">// return register value
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/****************************************************************************************************/</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/*功能：NRF24L01读写寄存器函数
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">/****************************************************************************************************/</span>
+</span></span><span style="display:flex;"><span>uint <span style="color:#a6e22e">NRF24L01_Write_Reg</span>(uchar reg, uchar value)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    uint status;
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    CSN <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;                   <span style="color:#75715e">// CSN low, init SPI transaction
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    status <span style="color:#f92672">=</span> <span style="color:#a6e22e">SPI_RW</span>(reg);      <span style="color:#75715e">// select register
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#a6e22e">SPI_RW</span>(value);             <span style="color:#75715e">// ..and write value to it..
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    CSN <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>;                   <span style="color:#75715e">// CSN high again
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span>(status);            <span style="color:#75715e">// return nRF24L01 status uchar
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/****************************************************************************************************/</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/*函数：uint SPI_Read_Buf(uchar reg, uchar *pBuf, uchar uchars)
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">/*功能: 用于读数据，reg：为寄存器地址，pBuf：为待读出数据地址，uchars：读出数据的个数
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">/****************************************************************************************************/</span>
+</span></span><span style="display:flex;"><span>uint <span style="color:#a6e22e">NRF24L01_Read_Buf</span>(uchar reg, uchar <span style="color:#f92672">*</span>pBuf, uchar uchars)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    uint status,uchar_ctr;
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    CSN <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;                            <span style="color:#75715e">// Set CSN low, init SPI tranaction
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    status <span style="color:#f92672">=</span> <span style="color:#a6e22e">SPI_RW</span>(reg);               <span style="color:#75715e">// Select register to write to and read status uchar
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span>(uchar_ctr<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>;uchar_ctr<span style="color:#f92672">&lt;</span>uchars;uchar_ctr<span style="color:#f92672">++</span>)
+</span></span><span style="display:flex;"><span>        pBuf[uchar_ctr] <span style="color:#f92672">=</span> <span style="color:#a6e22e">SPI_RW</span>(<span style="color:#ae81ff">0</span>);    <span style="color:#75715e">// 
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    
+</span></span><span style="display:flex;"><span>    CSN <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>;                           
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span>(status);                    <span style="color:#75715e">// return nRF24L01 status uchar
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>}
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/*********************************************************************************************************
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">/*函数：uint SPI_Write_Buf(uchar reg, uchar *pBuf, uchar uchars)
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">/*功能: 用于写数据：为寄存器地址，pBuf：为待写入数据地址，uchars：写入数据的个数
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">/*********************************************************************************************************/</span>
+</span></span><span style="display:flex;"><span>uint <span style="color:#a6e22e">NRF24L01_Write_Buf</span>(uchar reg, uchar <span style="color:#f92672">*</span>pBuf, uchar uchars)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    uint status,uchar_ctr;
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    CSN <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;            <span style="color:#75715e">//SPI使能       
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    status <span style="color:#f92672">=</span> <span style="color:#a6e22e">SPI_RW</span>(reg);   
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span>(uchar_ctr<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>; uchar_ctr<span style="color:#f92672">&lt;</span>uchars; uchar_ctr<span style="color:#f92672">++</span>) <span style="color:#75715e">//
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#a6e22e">SPI_RW</span>(<span style="color:#f92672">*</span>pBuf<span style="color:#f92672">++</span>);
+</span></span><span style="display:flex;"><span>    CSN <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>;           <span style="color:#75715e">//关闭SPI
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">return</span>(status);    <span style="color:#75715e">// 
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//检测24L01是否存在
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">//返回值:0，成功;1，失败
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>u8 <span style="color:#a6e22e">NRF24L01_Check</span>(<span style="color:#66d9ef">void</span>)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    u8 buf[<span style="color:#ae81ff">5</span>]<span style="color:#f92672">=</span>{<span style="color:#ae81ff">0</span>XA5,<span style="color:#ae81ff">0</span>XA5,<span style="color:#ae81ff">0</span>XA5,<span style="color:#ae81ff">0</span>XA5,<span style="color:#ae81ff">0</span>XA5};
+</span></span><span style="display:flex;"><span>    u8 i;
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">NRF24L01_Write_Buf</span>(WRITE_NRF_REG<span style="color:#f92672">+</span>TX_ADDR,buf,<span style="color:#ae81ff">5</span>);<span style="color:#75715e">//写入5个字节的地址.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#a6e22e">NRF24L01_Read_Buf</span>(TX_ADDR,buf,<span style="color:#ae81ff">5</span>); <span style="color:#75715e">//读出写入的地址
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">for</span>(i<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>;i<span style="color:#f92672">&lt;</span><span style="color:#ae81ff">5</span>;i<span style="color:#f92672">++</span>) <span style="color:#66d9ef">if</span>(buf[i]<span style="color:#f92672">!=</span><span style="color:#ae81ff">0</span>XA5)<span style="color:#66d9ef">break</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span>(i<span style="color:#f92672">!=</span><span style="color:#ae81ff">5</span>)<span style="color:#66d9ef">return</span> <span style="color:#ae81ff">1</span>;<span style="color:#75715e">//检测24L01错误
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>; <span style="color:#75715e">//检测到24L01
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>}
+</span></span><span style="display:flex;"><span>u8 <span style="color:#a6e22e">NRF24L01_TxPacket</span>(u8 <span style="color:#f92672">*</span>txbuf)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    u8 sta;
+</span></span><span style="display:flex;"><span>    NRF24L01_CE<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">NRF24L01_Write_Buf</span>(WR_TX_PLOAD,txbuf,TX_PLOAD_WIDTH);<span style="color:#75715e">//写数据到TX BUF 32个字节
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    NRF24L01_CE<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>;<span style="color:#75715e">//启动发送
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">while</span>(NRF24L01_IRQ<span style="color:#f92672">!=</span><span style="color:#ae81ff">0</span>);<span style="color:#75715e">//等待发送完成
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    sta<span style="color:#f92672">=</span><span style="color:#a6e22e">NRF24L01_Read_Reg</span>(STATUS); <span style="color:#75715e">//读取状态寄存器的值
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#a6e22e">NRF24L01_Write_Reg</span>(WRITE_NRF_REG<span style="color:#f92672">+</span>STATUS,sta); <span style="color:#75715e">//清除TX_DS或MAX_RT中断标志
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">if</span>(sta<span style="color:#f92672">&amp;</span>MAX_TX)<span style="color:#75715e">//达到最大重发次数
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">NRF24L01_Write_Reg</span>(FLUSH_TX,<span style="color:#ae81ff">0xff</span>);<span style="color:#75715e">//清除TX FIFO寄存器
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">return</span> MAX_TX;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span>(sta<span style="color:#f92672">&amp;</span>TX_OK)<span style="color:#75715e">//发送完成
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> TX_OK;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0xff</span>;<span style="color:#75715e">//其他原因发送失败
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>}
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#75715e">//启动NRF24L01发送一次数据
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">//txbuf:待发送数据首地址
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">//返回值:0，接收完成；其他，错误代码
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>u8 <span style="color:#a6e22e">NRF24L01_RxPacket</span>(u8 <span style="color:#f92672">*</span>rxbuf)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    u8 sta;
+</span></span><span style="display:flex;"><span>    sta<span style="color:#f92672">=</span><span style="color:#a6e22e">NRF24L01_Read_Reg</span>(STATUS); <span style="color:#75715e">//读取状态寄存器的值
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#a6e22e">NRF24L01_Write_Reg</span>(WRITE_NRF_REG<span style="color:#f92672">+</span>STATUS,sta); <span style="color:#75715e">//清除TX_DS或MAX_RT中断标志
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">if</span>(sta<span style="color:#f92672">&amp;</span>RX_OK)<span style="color:#75715e">//接收到数据
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">NRF24L01_Read_Buf</span>(RD_RX_PLOAD,rxbuf,RX_PLOAD_WIDTH);<span style="color:#75715e">//读取数据
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#a6e22e">NRF24L01_Write_Reg</span>(FLUSH_RX,<span style="color:#ae81ff">0xff</span>);<span style="color:#75715e">//清除RX FIFO寄存器
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">1</span>;<span style="color:#75715e">//没收到任何数据
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>}
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//该函数初始化NRF24L01到RX模式
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">//设置RX地址,写RX数据宽度,选择RF频道,波特率和LNA HCURR
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">//当CE变高后,即进入RX模式,并可以接收数据了
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">RX_Mode</span>(<span style="color:#66d9ef">void</span>)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    NRF24L01_CE<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">NRF24L01_Write_Buf</span>(WRITE_NRF_REG<span style="color:#f92672">+</span>RX_ADDR_P0,(u8<span style="color:#f92672">*</span>)RX_ADDRESS,RX_ADR_WIDTH);<span style="color:#75715e">//写RX节点地址
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#a6e22e">NRF24L01_Write_Reg</span>(WRITE_NRF_REG<span style="color:#f92672">+</span>EN_AA,<span style="color:#ae81ff">0x01</span>); <span style="color:#75715e">//使能通道0的自动应答
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#a6e22e">NRF24L01_Write_Reg</span>(WRITE_NRF_REG<span style="color:#f92672">+</span>EN_RXADDR,<span style="color:#ae81ff">0x01</span>);<span style="color:#75715e">//使能通道0的接收地址
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#a6e22e">NRF24L01_Write_Reg</span>(WRITE_NRF_REG<span style="color:#f92672">+</span>RF_CH,<span style="color:#ae81ff">40</span>); <span style="color:#75715e">//设置RF通信频率
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#a6e22e">NRF24L01_Write_Reg</span>(WRITE_NRF_REG<span style="color:#f92672">+</span>RX_PW_P0,RX_PLOAD_WIDTH);<span style="color:#75715e">//选择通道0的有效数据宽度
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#a6e22e">NRF24L01_Write_Reg</span>(WRITE_NRF_REG<span style="color:#f92672">+</span>RF_SETUP,<span style="color:#ae81ff">0x0f</span>);<span style="color:#75715e">//设置TX发射参数,0db增益,2Mbps,低噪声增益开启
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#a6e22e">NRF24L01_Write_Reg</span>(WRITE_NRF_REG<span style="color:#f92672">+</span>CONFIG, <span style="color:#ae81ff">0x0f</span>);<span style="color:#75715e">//配置基本工作模式的参数;PWR_UP,EN_CRC,16BIT_CRC,接收模式
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    NRF24L01_CE <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>; <span style="color:#75715e">//CE为高,进入接收模式
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>}
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//该函数初始化NRF24L01到TX模式
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">//设置TX地址,写TX数据宽度,设置RX自动应答的地址,填充TX发送数据,选择RF频道,波特率和LNA HCURR
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">//PWR_UP,CRC使能
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">//当CE变高后,即进入RX模式,并可以接收数据了
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">//CE为高大于10us,则启动发送.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">TX_Mode</span>(<span style="color:#66d9ef">void</span>)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    NRF24L01_CE<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">NRF24L01_Write_Buf</span>(WRITE_NRF_REG<span style="color:#f92672">+</span>TX_ADDR,(u8<span style="color:#f92672">*</span>)TX_ADDRESS,TX_ADR_WIDTH);<span style="color:#75715e">//写TX节点地址
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#a6e22e">NRF24L01_Write_Buf</span>(WRITE_NRF_REG<span style="color:#f92672">+</span>RX_ADDR_P0,(u8<span style="color:#f92672">*</span>)RX_ADDRESS,RX_ADR_WIDTH); <span style="color:#75715e">//设置TX节点地址,主要为了使能ACK
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#a6e22e">NRF24L01_Write_Reg</span>(WRITE_NRF_REG<span style="color:#f92672">+</span>EN_AA,<span style="color:#ae81ff">0x01</span>); <span style="color:#75715e">//使能通道0的自动应答
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#a6e22e">NRF24L01_Write_Reg</span>(WRITE_NRF_REG<span style="color:#f92672">+</span>EN_RXADDR,<span style="color:#ae81ff">0x01</span>); <span style="color:#75715e">//使能通道0的接收地址
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#a6e22e">NRF24L01_Write_Reg</span>(WRITE_NRF_REG<span style="color:#f92672">+</span>SETUP_RETR,<span style="color:#ae81ff">0x1a</span>);<span style="color:#75715e">//设置自动重发间隔时间:500us + 86us;最大自动重发次数:10次
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#a6e22e">NRF24L01_Write_Reg</span>(WRITE_NRF_REG<span style="color:#f92672">+</span>RF_CH,<span style="color:#ae81ff">40</span>); <span style="color:#75715e">//设置RF通道为40
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#a6e22e">NRF24L01_Write_Reg</span>(WRITE_NRF_REG<span style="color:#f92672">+</span>RF_SETUP,<span style="color:#ae81ff">0x0f</span>); <span style="color:#75715e">//设置TX发射参数,0db增益,2Mbps,低噪声增益开启
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#a6e22e">NRF24L01_Write_Reg</span>(WRITE_NRF_REG<span style="color:#f92672">+</span>CONFIG,<span style="color:#ae81ff">0x0e</span>); <span style="color:#75715e">//配置基本工作模式的参数;PWR_UP,EN_CRC,16BIT_CRC,接收模式,开启所有中断
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    NRF24L01_CE<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>;<span style="color:#75715e">//CE为高,10us后启动发送
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#a6e22e">inerDelay_us</span>(<span style="color:#ae81ff">20</span>);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>接下来是主程序调试部分:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&#34;15f204ea.h&#34;</span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&#34;24l01.h&#34;</span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&#34;uart.h&#34;</span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&#34;intrins.h&#34;</span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">delay500ms</span>(<span style="color:#66d9ef">void</span>)   <span style="color:#75715e">//误差 -0.000000000063us
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">char</span> a,b,c;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span>(c<span style="color:#f92672">=</span><span style="color:#ae81ff">212</span>;c<span style="color:#f92672">&gt;</span><span style="color:#ae81ff">0</span>;c<span style="color:#f92672">--</span>)
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span>(b<span style="color:#f92672">=</span><span style="color:#ae81ff">160</span>;b<span style="color:#f92672">&gt;</span><span style="color:#ae81ff">0</span>;b<span style="color:#f92672">--</span>)
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">for</span>(a<span style="color:#f92672">=</span><span style="color:#ae81ff">80</span>;a<span style="color:#f92672">&gt;</span><span style="color:#ae81ff">0</span>;a<span style="color:#f92672">--</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">_nop_</span>();  <span style="color:#75715e">//if Keil,require use intrins.h
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">delay100us</span>(<span style="color:#66d9ef">void</span>)   <span style="color:#75715e">//误差 -0.083188657407us
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">char</span> a,b;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span>(b<span style="color:#f92672">=</span><span style="color:#ae81ff">58</span>;b<span style="color:#f92672">&gt;</span><span style="color:#ae81ff">0</span>;b<span style="color:#f92672">--</span>)
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span>(a<span style="color:#f92672">=</span><span style="color:#ae81ff">8</span>;a<span style="color:#f92672">&gt;</span><span style="color:#ae81ff">0</span>;a<span style="color:#f92672">--</span>);
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span>(){
+</span></span><span style="display:flex;"><span>    u8 tmp_buf[<span style="color:#ae81ff">33</span>];
+</span></span><span style="display:flex;"><span>    u8 key,mode;
+</span></span><span style="display:flex;"><span>    u16 t<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">delay500ms</span>();
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">uartInit</span>();
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">uartSendString</span>(<span style="color:#e6db74">&#34;测试&#34;</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">uartSendNum</span>(<span style="color:#ae81ff">1234</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">NRF24L01_Init</span>();
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">while</span>(<span style="color:#a6e22e">NRF24L01_Check</span>())<span style="color:#75715e">//检测不到24L01
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">uartSendString</span>(<span style="color:#e6db74">&#34;初始化失败&#34;</span>);
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">delay500ms</span>();
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">uartSendString</span>(<span style="color:#e6db74">&#34;请检查&#34;</span>);
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">delay500ms</span>();
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">uartSendString</span>(<span style="color:#e6db74">&#34;启动&#34;</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span>(<span style="color:#ae81ff">0</span>){
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">RX_Mode</span>();
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">uartSendString</span>(<span style="color:#e6db74">&#34;接收模式&#34;</span>);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">while</span>(<span style="color:#ae81ff">1</span>){
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span>(<span style="color:#a6e22e">NRF24L01_RxPacket</span>(tmp_buf)<span style="color:#f92672">==</span><span style="color:#ae81ff">0</span>){
+</span></span><span style="display:flex;"><span>                tmp_buf[<span style="color:#ae81ff">32</span>]<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>;<span style="color:#75715e">//加入字符串结束符
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                <span style="color:#a6e22e">uartSendString</span>(tmp_buf);
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">else</span> <span style="color:#a6e22e">delay100us</span>();
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">else</span>{
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">TX_Mode</span>();
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">uartSendString</span>(<span style="color:#e6db74">&#34;发送模式&#34;</span>);
+</span></span><span style="display:flex;"><span>        mode<span style="color:#f92672">=</span><span style="color:#e6db74">&#39; &#39;</span>;<span style="color:#75715e">//从空格键开始
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">while</span>(<span style="color:#ae81ff">1</span>){
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span>(<span style="color:#a6e22e">NRF24L01_TxPacket</span>(tmp_buf)<span style="color:#f92672">==</span>TX_OK)
+</span></span><span style="display:flex;"><span>            {
+</span></span><span style="display:flex;"><span>                <span style="color:#a6e22e">uartSendString</span>(tmp_buf);
+</span></span><span style="display:flex;"><span>                key<span style="color:#f92672">=</span>mode;
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">for</span>(t<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>;t<span style="color:#f92672">&lt;</span><span style="color:#ae81ff">32</span>;t<span style="color:#f92672">++</span>)
+</span></span><span style="display:flex;"><span>                {
+</span></span><span style="display:flex;"><span>                    key<span style="color:#f92672">++</span>;
+</span></span><span style="display:flex;"><span>                    <span style="color:#66d9ef">if</span>(key<span style="color:#f92672">&gt;</span>(<span style="color:#e6db74">&#39;~&#39;</span>))key<span style="color:#f92672">=</span><span style="color:#e6db74">&#39; &#39;</span>;
+</span></span><span style="display:flex;"><span>                    tmp_buf[t]<span style="color:#f92672">=</span>key;
+</span></span><span style="display:flex;"><span>                }
+</span></span><span style="display:flex;"><span>                mode<span style="color:#f92672">++</span>;
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">if</span>(mode<span style="color:#f92672">&gt;</span><span style="color:#e6db74">&#39;~&#39;</span>)mode<span style="color:#f92672">=</span><span style="color:#e6db74">&#39; &#39;</span>;
+</span></span><span style="display:flex;"><span>                    tmp_buf[<span style="color:#ae81ff">32</span>]<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>;<span style="color:#75715e">//加入结束符
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            }
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">else</span>{
+</span></span><span style="display:flex;"><span>                <span style="color:#a6e22e">uartSendString</span>(<span style="color:#e6db74">&#34;发送失败&#34;</span>);
+</span></span><span style="display:flex;"><span>            };
+</span></span><span style="display:flex;"><span>            <span style="color:#a6e22e">delay500ms</span>();            
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>设定晶振为11.0594MHZ,写入程序以后</p>
+<p>首先连接好串口,然后上电,经过半秒以后,程序会发送串口数据给电脑&quot;测试&quot;和数字&quot;1234&quot;,注意串口工作频率是38400,</p>
+<p>如果确认无误以后应该是可以收到串口数据的,否则就是各个环节的频率没有设定对,要么就是数据线的问题</p>
+<p>然后程序会进行检查,成功返回&quot;启动&quot;,失败则显示&quot;初始化失败&quot;,&ldquo;请检查&rdquo;.失败的这种情况是因为nrf24l01烧坏了,或者是管脚接的不正确</p>
+<p>根据if后面括号里是1还是0,会选择进入接收模式或者发送模式.</p>
+<p>如果是接收模式的话,程序会通过串口发送&quot;接收模式&quot;,如果接收到数据则会返回数据内容;</p>
+<p>如果是发送模式,则程序会发送一段代码(一些不断变化的字符)给指定地址,如果发送成功,则返回发送的长度,并返回发送的数据,发送失败的时候,会显示发送失败;</p>
+<p>如果发送失败,可能是因为接收端不存在,此时NRF24L01_TxPacket返回的数据是10(发送重试最大次数),而不是32(发送的数据位数),所以会报错</p>
+<p>也可能是因为其他原因,则NRF24L01返回0xff,说明是其他原因失败,这时问题就不清楚了,需要仔细查找</p>
+<p>将两个芯片一块写入发程序,一块写入收程序,就可以查看效果了^_^</p>
+<p>至此NRF24L01 与 STC15F204EA (STC15L204EA) 收发搞定</p>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+    <section class="article-tags">
+        
+            <a href="/zh-cn/tags/nrf24l01/">NRF24L01</a>
+        
+            <a href="/zh-cn/tags/nrf24l01&#43;/">NRF24L01&#43;</a>
+        
+            <a href="/zh-cn/tags/stc15f204ea/">STC15F204EA</a>
+        
+            <a href="/zh-cn/tags/stc15l204ea/">STC15L204EA</a>
+        
+            <a href="/zh-cn/tags/51%E5%8D%95%E7%89%87%E6%9C%BA/">51单片机</a>
+        
+            <a href="/zh-cn/tags/%E5%8D%95%E7%89%87%E6%9C%BA/">单片机</a>
+        
+            <a href="/zh-cn/tags/%E9%80%9A%E4%BF%A1/">通信</a>
+        
+            <a href="/zh-cn/tags/%E6%97%A0%E7%BA%BF%E9%80%9A%E4%BF%A1/">无线通信</a>
+        
+    </section>
+
+
+    </footer>
+
+
+    
+</article>
+
+    
+
+    
+
+     
+    
+        
+    <div class="disqus-container">
+    <div id="disqus_thread"></div>
+<script>
+    window.disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "nansenli" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+<style>
+    .disqus-container {
+        background-color: var(--card-background);
+        border-radius: var(--card-border-radius);
+        box-shadow: var(--shadow-l1);
+        padding: var(--card-padding);
+    }
+</style>
+
+<script>
+    window.addEventListener('onColorSchemeChange', (e) => {
+        if (typeof DISQUS == 'object') {
+            DISQUS.reset({
+                reload: true
+            });
+        }
+    })
+</script>
+
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+        2025 Nansen Li（李楠森）
+    </section>
+    
+    <section class="powerby">
+        使用 <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> 构建 <br />
+        主题 <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.30.0">Stack</a></b> 由 <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a> 设计
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.1e9a3bafd846ced4c345d084b355fb8c7bae75701c338f8a1f8a82c780137826.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>
