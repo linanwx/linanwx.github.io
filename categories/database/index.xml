@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>Database on Nansen Li</title>
+        <link>https://nansenli.com/categories/database/</link>
+        <description>Recent content in Database on Nansen Li</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>en</language>
+        <copyright>Nansen Li（李楠森）</copyright>
+        <lastBuildDate>Sun, 02 Sep 2018 14:25:00 +0000</lastBuildDate><atom:link href="https://nansenli.com/categories/database/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>Redis Cluster Learning</title>
+        <link>https://nansenli.com/post/jianshu/%E6%95%B0%E6%8D%AE%E5%BA%93/redis-%E9%9B%86%E7%BE%A4%E5%AD%A6%E4%B9%A0/</link>
+        <pubDate>Sun, 02 Sep 2018 14:25:00 +0000</pubDate>
+        
+        <guid>https://nansenli.com/post/jianshu/%E6%95%B0%E6%8D%AE%E5%BA%93/redis-%E9%9B%86%E7%BE%A4%E5%AD%A6%E4%B9%A0/</guid>
+        <description>&lt;h2 id=&#34;introduction&#34;&gt;Introduction
+&lt;/h2&gt;&lt;p&gt;Let&amp;rsquo;s review the key concepts of Redis clusters:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Configuration&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;A Redis database system has one master database and multiple slave databases&lt;/li&gt;
+&lt;li&gt;The master database doesn&amp;rsquo;t require any special configuration; slave databases just need to add &amp;ndash;slaveof ip port to their configuration&lt;/li&gt;
+&lt;li&gt;Slave databases are read-only by default, and even if changed to writable, it has no practical use&lt;/li&gt;
+&lt;li&gt;Besides adding to the configuration file, you can also use the slaveof command at runtime to modify the master database&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Persistence Review&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;RDB: This method forks the Redis process, the child process writes memory to a file, then replaces the previous RDB snapshot&lt;/li&gt;
+&lt;li&gt;AOF: This method writes every command to a file. When the AOF file gets too large, it needs to be rewritten after a certain number of commands are appended because some commands are redundant. File writing is cached by the operating system and can be configured. Without configuration, data is written to disk every 30s. You can configure it to synchronize the cache with each command or once per second.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;principles&#34;&gt;Principles
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Initialization Replication
+&lt;ul&gt;
+&lt;li&gt;
+&lt;ol&gt;
+&lt;li&gt;When a slave database starts, it sends a SYNC command to the master database&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;ol start=&#34;2&#34;&gt;
+&lt;li&gt;The master database performs a snapshot save, caches commands during the snapshot, then sends both the snapshot and the commands to the slave database&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;ol start=&#34;3&#34;&gt;
+&lt;li&gt;If disconnected, Redis versions 2.6 and earlier would re-initialize replication. Redis 2.8 and later can just transmit commands during the disconnection period.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;ol start=&#34;4&#34;&gt;
+&lt;li&gt;The slave database replaces the temporary snapshot with the RDB snapshot file specified in the configuration. Subsequent operations are consistent with the RDB persistence recovery process.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;Replication Synchronization
+&lt;ul&gt;
+&lt;li&gt;Afterward, the master database sends commands that cause database changes to the slave database&lt;/li&gt;
+&lt;li&gt;Redis uses optimistic replication strategy, with a window of inconsistency. The master database can be configured to be writable when there are multiple database connections, as well as the maximum allowed disconnection time for databases. This can reduce data inconsistency issues to some extent.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;readwrite-separation-for-performance-improvement&#34;&gt;Read/Write Separation for Performance Improvement
+&lt;/h2&gt;&lt;p&gt;Some time-consuming read operations can be accelerated by establishing multiple database slave nodes through replication&lt;/p&gt;
+&lt;h2 id=&#34;slave-database-persistence&#34;&gt;Slave Database Persistence
+&lt;/h2&gt;&lt;p&gt;When using slave databases, the master database&amp;rsquo;s persistence can be disabled. However, when the master database crashes, a role switch between master and slave databases is needed to recover the master database&amp;rsquo;s content. The slave database uses &amp;ldquo;slaveof no one&amp;rdquo;, and the master database uses the slaveof command to set itself as a slave database.&lt;/p&gt;
+&lt;p&gt;In this case, if the master database crashes, it cannot be restarted immediately. Because if restarted immediately, since the master database has no persistence, it would clear the content in the slave database.&lt;/p&gt;
+&lt;h2 id=&#34;diskless-replication&#34;&gt;Diskless Replication
+&lt;/h2&gt;&lt;p&gt;Master-slave replication can use RDB persistence for initialization synchronization.
+When the master database disables RDB snapshots but performs initialization replication, it will still generate an RDB snapshot. At this point, when the master database restarts, it will use the RDB snapshot for recovery. Since the synchronization time point is uncertain, and initialization synchronization may not have happened for a long time, this could lead to recovery at an arbitrary time point.&lt;/p&gt;
+&lt;p&gt;Additionally, creating an RDB snapshot during initialization synchronization requires disk operations, which may affect synchronization efficiency if the disk is too slow.&lt;/p&gt;
+&lt;p&gt;Starting from Redis 2.8.18, Redis introduced diskless replication. When this option is enabled, initialization replication will no longer create an RDB snapshot but will send the RDB snapshot content directly over the network.&lt;/p&gt;
+&lt;h2 id=&#34;incremental-replication&#34;&gt;Incremental Replication
+&lt;/h2&gt;&lt;p&gt;If the master and slave databases disconnect, using initialization replication for the next reconnection would be quite expensive.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Databases generate a unique ID each time they run.&lt;/li&gt;
+&lt;li&gt;During the replication synchronization phase, the master database places each command in a replay log and records the current command&amp;rsquo;s offset.&lt;/li&gt;
+&lt;li&gt;The slave database also needs to record the command offset when receiving commands.&lt;/li&gt;
+&lt;li&gt;When the master-slave connection is ready, the slave database sends psync to tell the master database it can use incremental replication.&lt;/li&gt;
+&lt;li&gt;The master database checks if the ID sent by the slave database matches its own. If not, the master database may have restarted.&lt;/li&gt;
+&lt;li&gt;Then it checks if the slave database&amp;rsquo;s command offset is in the backlog replay log. If so, it sends the commands from the replay log to the slave database.&lt;/li&gt;
+&lt;li&gt;The backlog size can be configured, with a default of 1MB. A larger size allows for better tolerance after disconnection and reconnection.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;sentinel&#34;&gt;Sentinel
+&lt;/h2&gt;&lt;p&gt;The sentinel system was created to solve the inconvenience of maintaining master-slave databases. Previously, there were two problems: inability to detect when the master database goes down, and the master-slave conversion issue after the master database fails.&lt;/p&gt;
+&lt;p&gt;When a sentinel process starts, it reads the configuration file. The configuration file includes master-name, ip, and port. When the master node fails, the sentinel will automatically convert one of the slave nodes to become the master node. When the previous master node recovers, it automatically becomes a slave node.&lt;/p&gt;
+&lt;p&gt;After the sentinel starts, it will periodically perform the following three operations:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Send INFO to master and slave every 10 seconds&lt;/li&gt;
+&lt;li&gt;Send its own information to the &lt;code&gt;__sentinel__:hello&lt;/code&gt; channel of master and slave every 2 seconds&lt;/li&gt;
+&lt;li&gt;Send PING to master database, slave database, and other sentinels every 1 second&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;INFO information allows the sentinel to obtain relevant information about the current database. Sending INFO to the master can obtain its slave databases.
+By sending its information to the channel, all sentinels can receive information about other sentinels monitoring the same database.
+Sentinels establish connections with each other to send ping information.
+When a sentinel sends a ping command and receives no reply, it will consider the target subjectively down. If a master database is found to be subjectively down, the sentinel will ask other sentinels if they also consider it subjectively down. When a certain number is reached, exceeding the quorum set in the sentinel startup parameters, the sentinel considers it objectively down.&lt;/p&gt;
+&lt;p&gt;RAFT Election:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Sentinel A, which discovered the master database to be objectively down, sends a command to other sentinels requesting to be elected as the leader sentinel.&lt;/li&gt;
+&lt;li&gt;If the requested sentinel hasn&amp;rsquo;t voted for anyone else, it will agree.&lt;/li&gt;
+&lt;li&gt;If A finds that the number of agreements exceeds half of the sentinel count and the quorum parameter, then A becomes the leader sentinel.&lt;/li&gt;
+&lt;li&gt;Otherwise, A waits a random time and reinitiates the request for the next round of elections.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;The leader sentinel will perform the following operations:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Check the priority of slave databases; higher priority ones are chosen&lt;/li&gt;
+&lt;li&gt;Check the replication command offset of slave databases; those with larger offsets are chosen&lt;/li&gt;
+&lt;li&gt;Choose the slave database with the smaller ID&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;The selected database will receive a &amp;ldquo;slaveof no one&amp;rdquo; command from the leader sentinel to become the master database, and other slave databases will receive slaveof commands to change their master database. Finally, the internal record is updated to mark the stopped database as a slave of the master database, so when it resumes service, it will recover as a slave database.&lt;/p&gt;
+&lt;h2 id=&#34;deployment&#34;&gt;Deployment
+&lt;/h2&gt;&lt;p&gt;Sentinels are typically deployed on each node. If the Redis cluster is very large, the number of connections between all sentinels and a slave database might be too many, affecting Redis&amp;rsquo;s response to all sentinels. Therefore, the number of deployed sentinels should not be too high.&lt;/p&gt;
+&lt;h2 id=&#34;cluster&#34;&gt;Cluster
+&lt;/h2&gt;&lt;p&gt;For horizontal scaling, I became familiar with Codis during my internship at Tencent. Codis consists of Redis proxies and slave nodes. The main principle is to hash the keys and place them in specific Redis slaves. During script execution, scripts are allocated to specific slaves, which might lead to situations where other keys cannot be found.&lt;/p&gt;
+&lt;p&gt;Besides Codis, there&amp;rsquo;s also Redis Cluster.&lt;/p&gt;
+&lt;p&gt;When starting a Redis instance, change cluster-enables to yes in the configuration to enable cluster configuration.&lt;/p&gt;
+&lt;p&gt;Scripts can be used to conveniently create clusters. New nodes can be added using the cluster meet command with IP and port. After adding a new node, the node will use the gossip protocol to broadcast the node&amp;rsquo;s information to all nodes.&lt;/p&gt;
+&lt;p&gt;Slot allocation: After a new node joins the cluster, it has two options: either use the cluster replicate command to replicate each master database and run as a slave database, or request slot allocation from the cluster to run as a master database.&lt;/p&gt;
+&lt;p&gt;Keys are hashed using crc16. If {*} exists, that part is used for hashing, and then assigned to one of the 16384 slots. The cluster has a slot mapping table at the beginning of creation. Eventually, the data will be stored in the corresponding Redis node.&lt;/p&gt;
+</description>
+        </item>
+        <item>
+        <title>MySQL Study Notes</title>
+        <link>https://nansenli.com/post/jianshu/%E6%95%B0%E6%8D%AE%E5%BA%93/mysql%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/</link>
+        <pubDate>Mon, 05 Mar 2018 07:04:00 +0000</pubDate>
+        
+        <guid>https://nansenli.com/post/jianshu/%E6%95%B0%E6%8D%AE%E5%BA%93/mysql%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/</guid>
+        <description>&lt;h2 id=&#34;introduction&#34;&gt;Introduction
+&lt;/h2&gt;&lt;p&gt;I&amp;rsquo;m using Docker for learning. I&amp;rsquo;ve configured the docker-cn mirror.&lt;/p&gt;
+&lt;h2 id=&#34;setting-up-a-mysql-cluster&#34;&gt;Setting Up a MySQL Cluster
+&lt;/h2&gt;&lt;p&gt;Use the following command to pull the MySQL image:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;docker pull mysql
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Use the following commands to set up one master and one slave:&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;docker run --name mysql-master -P -d -e MYSQL_ROOT_PASSWORD=ln mysql
+docker run --name mysql-slave1 -P -d -e MYSQL_ROOT_PASSWORD=ln mysql
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Where -d configures it as a daemon process, -P exposes all ports, and the root password is set to &amp;ldquo;ln&amp;rdquo;.&lt;/p&gt;
+&lt;p&gt;Use the following commands to enter the two Docker containers:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;docker exec -it mysql-master bash
+docker exec -it mysql-slave1 bash
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Check the network IP. First, we need to install net-tools, which requires an update, and before updating, we need to change the source:&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;sed -i &amp;#39;s/deb.debian.org/mirrors.ustc.edu.cn/g&amp;#39; /etc/apt/sources.list
+apt update
+apt install net-tools
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Enter ifconfig to check the IP address.
+The master is 172.17.0.2, and slave1 is 172.17.0.3.&lt;/p&gt;
+&lt;p&gt;Set login permissions
+In the MySQL master, follow these steps. First login, then set the root user to be accessible without a password from anywhere.&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;mysql -uroot -p
+mysql&amp;gt; grant all privileges on *.* to root@&amp;#39;%&amp;#39; identified by &amp;#39;&amp;#39;;
+Query OK, 0 rows affected (0.02 sec)
+
+mysql&amp;gt;  flush privileges;
+Query OK, 0 rows affected (0.02 sec)
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;In slave1, use the master&amp;rsquo;s database with an empty password:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;mysql -uroot -p -h 172.17.0.2
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Create a database in the master:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;create database test_docker;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Check if the database exists in the slave:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;show databases;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2 id=&#34;miscellaneous&#34;&gt;Miscellaneous
+&lt;/h2&gt;&lt;p&gt;SQL is case-insensitive; SELECT and select are the same.
+It&amp;rsquo;s better to add a semicolon at the end of SQL statements.
+Use &amp;ldquo;use&amp;rdquo; to select a database. Use &amp;ldquo;set&amp;rdquo; to set values.
+The method to add users is with &amp;ldquo;create&amp;rdquo;.
+Then grant permissions to users for databases and tables.&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;mysql -u root -p
+Enter password:**
+mysql&amp;gt; use mysql;
+mysql&amp;gt; create user &amp;#39;linanwx&amp;#39;@&amp;#39;%&amp;#39; identified by &amp;#39;ln&amp;#39;;
+mysql&amp;gt; grant all on *.* to &amp;#39;linanwx&amp;#39;@&amp;#39;%&amp;#39;;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;SHOW DATABASES is used to display the current databases.
+SHOW TABLES is used to display the current tables.&lt;/p&gt;
+</description>
+        </item>
+        <item>
+        <title>Nowcoder Database Notes</title>
+        <link>https://nansenli.com/post/jianshu/%E6%95%B0%E6%8D%AE%E5%BA%93/%E7%89%9B%E5%AE%A2%E6%95%B0%E6%8D%AE%E5%BA%93%E7%AC%94%E8%AE%B0/</link>
+        <pubDate>Mon, 05 Mar 2018 07:04:00 +0000</pubDate>
+        
+        <guid>https://nansenli.com/post/jianshu/%E6%95%B0%E6%8D%AE%E5%BA%93/%E7%89%9B%E5%AE%A2%E6%95%B0%E6%8D%AE%E5%BA%93%E7%AC%94%E8%AE%B0/</guid>
+        <description>&lt;h2 id=&#34;introduction&#34;&gt;Introduction
+&lt;/h2&gt;&lt;p&gt;I&amp;rsquo;m not familiar with SQL but don&amp;rsquo;t want to spend time learning it. So let&amp;rsquo;s learn through practice.&lt;/p&gt;
+&lt;h2 id=&#34;transactions&#34;&gt;Transactions
+&lt;/h2&gt;&lt;p&gt;A transaction is the basic unit of concurrency control. A transaction is a sequence of operations that must either all be executed or none at all; it&amp;rsquo;s an indivisible work unit. For example, in bank transfers: debiting one account and crediting another account are two operations that must either both be executed or neither. Therefore, they should be considered as one transaction. Transactions are the unit by which databases maintain data consistency, ensuring data consistency at the end of each transaction.&lt;/p&gt;
+&lt;p&gt;In simple terms, a transaction is an atomic operation that cannot be divided.&lt;/p&gt;
+&lt;h2 id=&#34;views&#34;&gt;Views
+&lt;/h2&gt;&lt;p&gt;A view is a virtual table that doesn&amp;rsquo;t actually exist. It&amp;rsquo;s just a partial table extracted from the database to make it convenient for certain people to see. Views are defined by select queries—when you create a view, you&amp;rsquo;re actually executing a select statement in the database.&lt;/p&gt;
+&lt;h2 id=&#34;instead-of-triggers&#34;&gt;INSTEAD OF Triggers
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Definition of Triggers
+Triggers are actually a special type of stored procedure. The main function of triggers is to monitor user modifications to data. If a trigger is built for a data table, then when the data table is modified (insert, update, or delete), SQL Server automatically executes the trigger to take appropriate measures for the data modification, thereby ensuring data integrity and security.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;INSTEAD OF triggers specify that the trigger is executed instead of the triggering SQL statement, thus replacing the operation of the triggering statement.&lt;/p&gt;
+&lt;h2 id=&#34;stored-procedures&#34;&gt;Stored Procedures
+&lt;/h2&gt;&lt;p&gt;A stored procedure is a group of SQL statements in a database designed to accomplish a specific function. It&amp;rsquo;s stored in the database and doesn&amp;rsquo;t need to be recompiled when called again after the first compilation. Users execute it by specifying the name of the stored procedure and providing parameters (if the stored procedure has parameters). Stored procedures are important objects in databases.&lt;/p&gt;
+&lt;h2 id=&#34;sql-relational-algebra&#34;&gt;SQL Relational Algebra
+&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;Five Basic Operations:&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;Union (∪), Difference (-), Cartesian Product (×), Projection (σ), Selection (π)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;Four Combined Operations:&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;Intersection (∩), Join (equijoin), Natural Join, Division (÷)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Union includes records that are in both tables. Difference includes records that are in the first table but not in the second. Cartesian product is all one-to-one combinations of records from both tables. Projection is vertical selection, while selection is horizontal selection. Intersection is similar to union, and join connects through common attributes. Division is a complex operation.&lt;/p&gt;
+&lt;h2 id=&#34;relational-schema&#34;&gt;Relational Schema
+&lt;/h2&gt;&lt;p&gt;A relational schema is a description of a relation. As the real world changes over time, the relation in a relational schema will also change. However, many existing facts in the real world dictate that all possible relations in a relational schema must satisfy certain integrity constraints. These constraints are either expressed through limitations on the &lt;a class=&#34;link&#34; href=&#34;https://baike.baidu.com/item/%E5%8F%96%E5%80%BC%E8%8C%83%E5%9B%B4&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;value range&lt;/a&gt; of attributes, such as employee age less than 65 (mandatory retirement at 65), or through the interconnection between &lt;a class=&#34;link&#34; href=&#34;https://baike.baidu.com/item/%E5%B1%9E%E6%80%A7%E5%80%BC&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;attribute values&lt;/a&gt; (mainly reflected in whether values are equal). The relational schema should capture these integrity constraints.&lt;/p&gt;
+&lt;h2 id=&#34;non-relational-databases&#34;&gt;Non-relational Databases
+&lt;/h2&gt;&lt;p&gt;NoSQL (NoSQL = Not Only SQL) means &amp;ldquo;not just SQL.&amp;rdquo; It&amp;rsquo;s used for storing ultra-large-scale data.&lt;/p&gt;
+</description>
+        </item>
+        
+    </channel>
+</rss>

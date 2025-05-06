@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="Official Reference https://golang.org/ref/spec#Types The types include: Method sets Boolean types Numeric types String types Array types Slice types Struct types Pointer types Function types Interface types Map types Channel types Method sets A type may have a method set associated with it. The method set of an interface type is its interface. The method set of any other type T consists of all methods declared with receiver type T. The method set of the corresponding pointer type *T is the set of all methods declared with receiver *T or T (that is, it also contains the method set of T).">
+<title>Go Types Official Reference</title>
+
+<link rel='canonical' href='https://nansenli.com/post/jianshu/go/go%E7%B1%BB%E5%9E%8B%E5%AE%98%E6%96%B9%E5%8F%82%E8%80%83-%E4%B8%AD%E8%8B%B1%E6%96%87%E5%AF%B9%E7%85%A7/'>
+
+<link rel="stylesheet" href="/scss/style.min.1084ac713783b88e0bd9807a58068e10aae22e99420f94a9234654a4e199baa4.css"><meta property='og:title' content="Go Types Official Reference">
+<meta property='og:description' content="Official Reference https://golang.org/ref/spec#Types The types include: Method sets Boolean types Numeric types String types Array types Slice types Struct types Pointer types Function types Interface types Map types Channel types Method sets A type may have a method set associated with it. The method set of an interface type is its interface. The method set of any other type T consists of all methods declared with receiver type T. The method set of the corresponding pointer type *T is the set of all methods declared with receiver *T or T (that is, it also contains the method set of T).">
+<meta property='og:url' content='https://nansenli.com/post/jianshu/go/go%E7%B1%BB%E5%9E%8B%E5%AE%98%E6%96%B9%E5%8F%82%E8%80%83-%E4%B8%AD%E8%8B%B1%E6%96%87%E5%AF%B9%E7%85%A7/'>
+<meta property='og:site_name' content='Nansen Li'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2018-11-14T08:14:00&#43;00:00'/><meta property='article:modified_time' content='2018-11-14T08:14:00&#43;00:00'/>
+<meta name="twitter:title" content="Go Types Official Reference">
+<meta name="twitter:description" content="Official Reference https://golang.org/ref/spec#Types The types include: Method sets Boolean types Numeric types String types Array types Slice types Struct types Pointer types Function types Interface types Map types Channel types Method sets A type may have a method set associated with it. The method set of an interface type is its interface. The method set of any other type T consists of all methods declared with receiver type T. The method set of the corresponding pointer type *T is the set of all methods declared with receiver *T or T (that is, it also contains the method set of T).">
+    <link rel="shortcut icon" href="/favicon.ico" />
+
+  
+    
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-WC38C3XE3J"></script>
+      <script>
+        var doNotTrack = false;
+        if ( false ) {
+          var dnt = (navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack);
+          var doNotTrack = (dnt == "1" || dnt == "yes");
+        }
+        if (!doNotTrack) {
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-WC38C3XE3J');
+        }
+      </script>
+    
+  
+
+
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="Toggle Menu">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/avatar_hu96777ff80939aaa7d938dddcc232fcc6_1414962_300x0_resize_box_3.png" width="300"
+                            height="300" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+                    <span class="emoji">🌈</span>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">Nansen Li</a></h1>
+            <h2 class="site-description"></h2>
+        </div>
+    </header><ol class="menu-social">
+            
+                <li>
+                    <a 
+                        href='https://github.com/linanwx'
+                        target="_blank"
+                        title="GitHub"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://www.linkedin.com/in/nansen-li-3bb0a3146/'
+                        target="_blank"
+                        title="LinkedIn"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-brand-linkedin"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M8 11v5" /><path d="M8 8v.01" /><path d="M12 16v-5" /><path d="M16 16v-3a2 2 0 1 0 -4 0" /><path d="M3 7a4 4 0 0 1 4 -4h10a4 4 0 0 1 4 4v10a4 4 0 0 1 -4 4h-10a4 4 0 0 1 -4 -4z" /></svg>
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='index.xml'
+                        target="_blank"
+                        title="RSS"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-rss" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="5" cy="19" r="1" />
+  <path d="M4 4a16 16 0 0 1 16 16" />
+  <path d="M4 11a9 9 0 0 1 9 9" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+</svg>
+
+
+
+                
+                <span>Home</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/page/archives/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>Archives</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/page/search/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
+
+
+
+                
+                <span>Search</span>
+            </a>
+        </li>
+        
+        <li class="menu-bottom-section">
+            <ol class="menu">
+                    
+                        <li id="i18n-switch">  
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-language" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M4 5h7" />
+  <path d="M9 3v2c0 4.418 -2.239 8 -5 8" />
+  <path d="M5 9c-.003 2.144 2.952 3.908 6.7 4" />
+  <path d="M12 20l4 -9l4 9" />
+  <path d="M19.1 18h-6.2" />
+</svg>
+
+
+
+                            <select name="language" title="language" onchange="window.location.href = this.selectedOptions[0].value">
+                                
+                                    <option value="https://nansenli.com/" selected>English</option>
+                                
+                                    <option value="https://nansenli.com/zh-cn/" >中文</option>
+                                
+                            </select>
+                        </li>
+                    
+                
+
+                
+                    <li id="dark-mode-toggle">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <span>Dark Mode</span>
+                    </li>
+                
+            </ol>
+        </li>
+    </ol>
+</aside>
+
+    
+
+            <main class="main full-width">
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/go/" >
+                Go
+            </a>
+        
+    </header>
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/post/jianshu/go/go%E7%B1%BB%E5%9E%8B%E5%AE%98%E6%96%B9%E5%8F%82%E8%80%83-%E4%B8%AD%E8%8B%B1%E6%96%87%E5%AF%B9%E7%85%A7/">Go Types Official Reference</a>
+        </h2>
+    
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">Nov 14, 2018</time>
+            </div>
+        
+
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+                <time class="article-time--reading">
+                    14 minute read
+                </time>
+            </div>
+        
+    </footer>
+    
+
+    
+        <footer class="article-translations">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-language" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M4 5h7" />
+  <path d="M9 3v2c0 4.418 -2.239 8 -5 8" />
+  <path d="M5 9c-.003 2.144 2.952 3.908 6.7 4" />
+  <path d="M12 20l4 -9l4 9" />
+  <path d="M19.1 18h-6.2" />
+</svg>
+
+
+
+            <div>
+                
+                    <a href="https://nansenli.com/zh-cn/post/jianshu/go/go%E7%B1%BB%E5%9E%8B%E5%AE%98%E6%96%B9%E5%8F%82%E8%80%83-%E4%B8%AD%E8%8B%B1%E6%96%87%E5%AF%B9%E7%85%A7/" class="link">中文</a>
+                
+            </div>
+        </footer>
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <h2 id="official-reference">Official Reference
+</h2><p><a class="link" href="https://golang.org/ref/spec#Types"  target="_blank" rel="noopener"
+    >https://golang.org/ref/spec#Types</a></p>
+<p>The types include:</p>
+<p>Method sets
+Boolean types
+Numeric types
+String types
+Array types
+Slice types
+Struct types
+Pointer types
+Function types
+Interface types
+Map types
+Channel types</p>
+<h2 id="method-sets">Method sets
+</h2><p>A type may have a <em>method set</em> associated with it. The method set of an <a class="link" href="https://golang.org/ref/spec#Interface_types"  target="_blank" rel="noopener"
+    >interface type</a> is its interface. The method set of any other type <code>T</code> consists of all <a class="link" href="https://golang.org/ref/spec#Method_declarations"  target="_blank" rel="noopener"
+    >methods</a> declared with receiver type <code>T</code>. The method set of the corresponding <a class="link" href="https://golang.org/ref/spec#Pointer_types"  target="_blank" rel="noopener"
+    >pointer type</a> <code>*T</code> is the set of all methods declared with receiver <code>*T</code> or <code>T</code> (that is, it also contains the method set of <code>T</code>). Further rules apply to structs containing embedded fields, as described in the section on <a class="link" href="https://golang.org/ref/spec#Struct_types"  target="_blank" rel="noopener"
+    >struct types</a>. Any other type has an empty method set. In a method set, each method must have a <a class="link" href="https://golang.org/ref/spec#Uniqueness_of_identifiers"  target="_blank" rel="noopener"
+    >unique</a> non-<a class="link" href="https://golang.org/ref/spec#Blank_identifier"  target="_blank" rel="noopener"
+    >blank</a><a class="link" href="https://golang.org/ref/spec#MethodName"  target="_blank" rel="noopener"
+    >method name</a>.</p>
+<p>The method set of a type determines the interfaces that the type <a class="link" href="https://golang.org/ref/spec#Interface_types"  target="_blank" rel="noopener"
+    >implements</a> and the methods that can be <a class="link" href="https://golang.org/ref/spec#Calls"  target="_blank" rel="noopener"
+    >called</a> using a receiver of that type.</p>
+<h2 id="boolean-types">Boolean types
+</h2><p>A <em>boolean type</em> represents the set of Boolean truth values denoted by the predeclared constants <code>true</code> and <code>false</code>. The predeclared boolean type is <code>bool</code>; it is a <a class="link" href="https://golang.org/ref/spec#Type_definitions"  target="_blank" rel="noopener"
+    >defined type</a>.</p>
+<h2 id="numeric-types">Numeric types
+</h2><p>A numeric type represents sets of integer or floating-point values. The predeclared architecture-independent numeric types are:</p>
+<pre tabindex="0"><code>uint8       the set of all unsigned  8-bit integers (0 to 255)
+uint16      the set of all unsigned 16-bit integers (0 to 65535)
+uint32      the set of all unsigned 32-bit integers (0 to 4294967295)
+uint64      the set of all unsigned 64-bit integers (0 to 18446744073709551615)
+
+int8        the set of all signed  8-bit integers (-128 to 127)
+int16       the set of all signed 16-bit integers (-32768 to 32767)
+int32       the set of all signed 32-bit integers (-2147483648 to 2147483647)
+int64       the set of all signed 64-bit integers (-9223372036854775808 to 9223372036854775807)
+
+float32     the set of all IEEE-754 32-bit floating-point numbers
+float64     the set of all IEEE-754 64-bit floating-point numbers
+
+complex64   the set of all complex numbers with float32 real and imaginary parts
+complex128  the set of all complex numbers with float64 real and imaginary parts
+
+byte        alias for uint8
+rune        alias for int32
+</code></pre><p>The value of an <em>n</em>-bit integer is <em>n</em> bits wide and represented using <a class="link" href="https://en.wikipedia.org/wiki/Two%27s_complement"  target="_blank" rel="noopener"
+    >two&rsquo;s complement arithmetic</a>.</p>
+<p>There is also a set of predeclared numeric types with implementation-specific sizes:</p>
+<pre tabindex="0"><code>uint     either 32 or 64 bits
+int      same size as uint
+uintptr  an unsigned integer large enough to store the uninterpreted bits of a pointer value
+</code></pre><p>To avoid portability issues all numeric types are <a class="link" href="https://golang.org/ref/spec#Type_definitions"  target="_blank" rel="noopener"
+    >defined types</a> and thus distinct except <code>byte</code>, which is an <a class="link" href="https://golang.org/ref/spec#Alias_declarations"  target="_blank" rel="noopener"
+    >alias</a> for <code>uint8</code>, and <code>rune</code>, which is an alias for <code>int32</code>. Conversions are required when different numeric types are mixed in an expression or assignment. For instance, <code>int32</code> and <code>int</code> are not the same type even though they may have the same size on a particular architecture.</p>
+<h2 id="string-types">String types
+</h2><p>A <em>string type</em> represents the set of string values. A string value is a (possibly empty) sequence of bytes. Strings are immutable: once created, it is impossible to change the contents of a string. The predeclared string type is <code>string</code>; it is a <a class="link" href="https://golang.org/ref/spec#Type_definitions"  target="_blank" rel="noopener"
+    >defined type</a>.</p>
+<p>The length of a string <code>s</code> (its size in bytes) can be discovered using the built-in function <a class="link" href="https://golang.org/ref/spec#Length_and_capacity"  target="_blank" rel="noopener"
+    ><code>len</code></a>. The length is a compile-time constant if the string is a constant. A string&rsquo;s bytes can be accessed by integer <a class="link" href="https://golang.org/ref/spec#Index_expressions"  target="_blank" rel="noopener"
+    >indices</a> 0 through <code>len(s)-1</code>. It is illegal to take the address of such an element; if <code>s[i]</code> is the <code>i</code>&lsquo;th byte of a string, <code>&amp;s[i]</code> is invalid.</p>
+<h2 id="array-types">Array types
+</h2><p>An array is a numbered sequence of elements of a single type, called the element type. The number of elements is called the length and is never negative.</p>
+<pre tabindex="0"><code>ArrayType   = &#34;[&#34; ArrayLength &#34;]&#34; ElementType .
+ArrayLength = Expression .
+ElementType = Type .
+</code></pre><p>The length is part of the array&rsquo;s type; it must evaluate to a non-negative <a class="link" href="https://golang.org/ref/spec#Constants"  target="_blank" rel="noopener"
+    >constant</a> <a class="link" href="https://golang.org/ref/spec#Representability"  target="_blank" rel="noopener"
+    >representable</a> by a value of type <code>int</code>. The length of array <code>a</code> can be discovered using the built-in function <a class="link" href="https://golang.org/ref/spec#Length_and_capacity"  target="_blank" rel="noopener"
+    ><code>len</code></a>. The elements can be addressed by integer <a class="link" href="https://golang.org/ref/spec#Index_expressions"  target="_blank" rel="noopener"
+    >indices</a> 0 through <code>len(a)-1</code>. Array types are always one-dimensional but may be composed to form multi-dimensional types.</p>
+<pre tabindex="0"><code>[32]byte
+[2*N] struct { x, y int32 }
+[1000]*float64
+[3][5]int
+[2][2][2]float64  // same as [2]([2]([2]float64))
+</code></pre><h2 id="slice-types">Slice types
+</h2><p>A slice is a descriptor for a contiguous segment of an <em>underlying array</em> and provides access to a numbered sequence of elements from that array. A slice type denotes the set of all slices of arrays of its element type. The value of an uninitialized slice is <code>nil</code>.</p>
+<pre tabindex="0"><code>SliceType = &#34;[&#34; &#34;]&#34; ElementType .
+</code></pre><p>Like arrays, slices are indexable and have a length. The length of a slice <code>s</code> can be discovered by the built-in function <a class="link" href="https://golang.org/ref/spec#Length_and_capacity"  target="_blank" rel="noopener"
+    ><code>len</code></a>; unlike with arrays it may change during execution. The elements can be addressed by integer <a class="link" href="https://golang.org/ref/spec#Index_expressions"  target="_blank" rel="noopener"
+    >indices</a> 0 through <code>len(s)-1</code>. The slice index of a given element may be less than the index of the same element in the underlying array.</p>
+<p>A slice, once initialized, is always associated with an underlying array that holds its elements. A slice therefore shares storage with its array and with other slices of the same array; by contrast, distinct arrays always represent distinct storage.</p>
+<p>The array underlying a slice may extend past the end of the slice. The <em>capacity</em> is a measure of that extent: it is the sum of the length of the slice and the length of the array beyond the slice; a slice of length up to that capacity can be created by <a class="link" href="https://golang.org/ref/spec#Slice_expressions"  target="_blank" rel="noopener"
+    ><em>slicing</em></a> a new one from the original slice. The capacity of a slice <code>a</code> can be discovered using the built-in function <a class="link" href="https://golang.org/ref/spec#Length_and_capacity"  target="_blank" rel="noopener"
+    ><code>cap(a)</code></a>.</p>
+<p>A new, initialized slice value for a given element type <code>T</code> is made using the built-in function <a class="link" href="https://golang.org/ref/spec#Making_slices_maps_and_channels"  target="_blank" rel="noopener"
+    ><code>make</code></a>, which takes a slice type and parameters specifying the length and optionally the capacity. A slice created with <code>make</code> always allocates a new, hidden array to which the returned slice value refers. That is, executing</p>
+<pre tabindex="0"><code>make([]T, length, capacity)
+</code></pre><p>produces the same slice as allocating an array and <a class="link" href="https://golang.org/ref/spec#Slice_expressions"  target="_blank" rel="noopener"
+    >slicing</a> it, so these two expressions are equivalent:</p>
+<pre tabindex="0"><code>make([]int, 50, 100)
+new([100]int)[0:50]
+</code></pre><p>Like arrays, slices are always one-dimensional but may be composed to construct higher-dimensional objects. With arrays of arrays, the inner arrays are, by construction, always the same length; however with slices of slices (or arrays of slices), the inner lengths may vary dynamically. Moreover, the inner slices must be initialized individually.</p>
+<h2 id="struct-types">Struct types
+</h2><p>A struct is a sequence of named elements, called fields, each of which has a name and a type. Field names may be specified explicitly (IdentifierList) or implicitly (EmbeddedField). Within a struct, non-<a class="link" href="https://golang.org/ref/spec#Blank_identifier"  target="_blank" rel="noopener"
+    >blank</a> field names must be <a class="link" href="https://golang.org/ref/spec#Uniqueness_of_identifiers"  target="_blank" rel="noopener"
+    >unique</a>.</p>
+<pre tabindex="0"><code>StructType    = &#34;struct&#34; &#34;{&#34; { FieldDecl &#34;;&#34; } &#34;}&#34; .
+FieldDecl     = (IdentifierList Type | EmbeddedField) [ Tag ] .
+EmbeddedField = [ &#34;*&#34; ] TypeName .
+Tag           = string_lit .
+</code></pre><pre tabindex="0"><code>// An empty struct.
+struct {}
+
+// A struct with 6 fields.
+struct {
+	x, y int
+	u float32
+	_ float32  // padding
+	A *[]int
+	F func()
+}
+</code></pre><p>A field declared with a type but no explicit field name is called an embedded field. An embedded field must be specified as a type name T or as a pointer to a non-interface type name *T, and T itself may not be a pointer type. The unqualified type name acts as the field name.</p>
+<pre tabindex="0"><code>// A struct with four embedded fields of types T1, *T2, P.T3 and *P.T4
+struct {
+	T1        // field name is T1
+	*T2       // field name is T2
+	P.T3      // field name is T3
+	*P.T4     // field name is T4
+	x, y int  // field names are x and y
+}
+</code></pre><p>The following declaration is illegal because field names must be unique in a struct type:</p>
+<pre tabindex="0"><code>struct {
+	T     // conflicts with embedded field *T and *P.T
+	*T    // conflicts with embedded field T and *P.T
+	*P.T  // conflicts with embedded field T and *T
+}
+</code></pre><p>A field or <a class="link" href="https://golang.org/ref/spec#Method_declarations"  target="_blank" rel="noopener"
+    >method</a> <code>f</code> of an embedded field in a struct <code>x</code> is called <em>promoted</em> if <code>x.f</code> is a legal <a class="link" href="https://golang.org/ref/spec#Selectors"  target="_blank" rel="noopener"
+    >selector</a> that denotes that field or method <code>f</code>.</p>
+<p>Promoted fields act like ordinary fields of a struct except that they cannot be used as field names in <a class="link" href="https://golang.org/ref/spec#Composite_literals"  target="_blank" rel="noopener"
+    >composite literals</a> of the struct.</p>
+<p>Given a struct type <code>S</code> and a <a class="link" href="https://golang.org/ref/spec#Type_definitions"  target="_blank" rel="noopener"
+    >defined type</a> <code>T</code>, promoted methods are included in the method set of the struct as follows:</p>
+<ul>
+<li>If <code>S</code> contains an embedded field <code>T</code>, the <a class="link" href="https://golang.org/ref/spec#Method_sets"  target="_blank" rel="noopener"
+    >method sets</a> of <code>S</code> and <code>*S</code> both include promoted methods with receiver <code>T</code>. The method set of <code>*S</code> also includes promoted methods with receiver <code>*T</code>.</li>
+<li>If <code>S</code> contains an embedded field <code>*T</code>, the method sets of <code>S</code> and <code>*S</code> both include promoted methods with receiver <code>T</code> or<code>*T</code>.</li>
+</ul>
+<p>A field declaration may be followed by an optional string literal <em>tag</em>, which becomes an attribute for all the fields in the corresponding field declaration. An empty tag string is equivalent to an absent tag. The tags are made visible through a <a class="link" href="https://golang.org/pkg/reflect/#StructTag"  target="_blank" rel="noopener"
+    >reflection interface</a> and take part in <a class="link" href="https://golang.org/ref/spec#Type_identity"  target="_blank" rel="noopener"
+    >type identity</a> for structs but are otherwise ignored.</p>
+<pre tabindex="0"><code>struct {
+	x, y float64 &#34;&#34;  // an empty tag string is like an absent tag
+	name string  &#34;any string is permitted as a tag&#34;
+	_    [4]byte &#34;ceci n&#39;est pas un champ de structure&#34;
+}
+
+// A struct corresponding to a TimeStamp protocol buffer.
+// The tag strings define the protocol buffer field numbers;
+// they follow the convention outlined by the reflect package.
+struct {
+	microsec  uint64 `protobuf:&#34;1&#34;`
+	serverIP6 uint64 `protobuf:&#34;2&#34;`
+}
+</code></pre><h2 id="pointer-types">Pointer types
+</h2><p>A pointer type denotes the set of all pointers to variables of a given type, called the base type of the pointer. The value of an uninitialized pointer is nil.</p>
+<pre tabindex="0"><code>PointerType = &#34;*&#34; BaseType .
+BaseType    = Type .
+
+*Point
+*[4]int
+</code></pre><h2 id="function-types">Function types
+</h2><p>A function type denotes the set of all functions with the same parameter and result types. The value of an uninitialized variable of function type is nil.</p>
+<pre tabindex="0"><code>FunctionType   = &#34;func&#34; Signature .
+Signature      = Parameters [ Result ] .
+Result         = Parameters | Type .
+Parameters     = &#34;(&#34; [ ParameterList [ &#34;,&#34; ] ] &#34;)&#34; .
+ParameterList  = ParameterDecl { &#34;,&#34; ParameterDecl } .
+ParameterDecl  = [ IdentifierList ] [ &#34;...&#34; ] Type .
+</code></pre><p>Within a list of parameters or results, the names (IdentifierList) must either all be present or all be absent. If present, each name stands for one item (parameter or result) of the specified type and all non-blank names in the signature must be unique. If absent, each type stands for one item of that type. Parameter and result lists are always parenthesized except that if there is exactly one unnamed result it may be written as an unparenthesized type.</p>
+<p>The final incoming parameter in a function signature may have a type prefixed with &hellip;. A function with such a parameter is called variadic and may be invoked with zero or more arguments for that parameter.</p>
+<pre tabindex="0"><code>func()
+func(x int) int
+func(a, _ int, z float32) bool
+func(a, b int, z float32) (bool)
+func(prefix string, values ...int)
+func(a, b int, z float64, opt ...interface{}) (success bool)
+func(int, int, float64) (float64, *[]int)
+func(n int) func(p *T)
+</code></pre><h2 id="interface-types">Interface types
+</h2><p>An interface type specifies a method set called its interface. A variable of interface type can store a value of any type with a method set that is any superset of the interface. Such a type is said to implement the interface. The value of an uninitialized variable of interface type is nil.</p>
+<pre tabindex="0"><code>InterfaceType      = &#34;interface&#34; &#34;{&#34; { MethodSpec &#34;;&#34; } &#34;}&#34; .
+MethodSpec         = MethodName Signature | InterfaceTypeName .
+MethodName         = identifier .
+InterfaceTypeName  = TypeName .
+</code></pre><p>As with all method sets, in an interface type, each method must have a unique non-blank name.</p>
+<pre tabindex="0"><code>// A simple File interface
+interface {
+	Read(b Buffer) bool
+	Write(b Buffer) bool
+	Close()
+}
+</code></pre><p>More than one type may implement an interface. For instance, if two types S1 and S2 have the method set</p>
+<pre tabindex="0"><code>func (p T) Read(b Buffer) bool { return … }
+func (p T) Write(b Buffer) bool { return … }
+func (p T) Close() { … }
+</code></pre><p>(where T stands for either S1 or S2) then the File interface is implemented by both S1 and S2, regardless of what other methods S1 and S2 may have or share.</p>
+<p>A type implements any interface comprising any subset of its methods and may therefore implement several distinct interfaces. For instance, all types implement the empty interface:</p>
+<p>interface{}
+Similarly, consider this interface specification, which appears within a type declaration to define an interface called Locker:</p>
+<pre tabindex="0"><code>type Locker interface {
+	Lock()
+	Unlock()
+}
+</code></pre><p>If S1 and S2 also implement</p>
+<pre tabindex="0"><code>func (p T) Lock() { … }
+func (p T) Unlock() { … }
+</code></pre><p>they implement the Locker interface as well as the File interface.</p>
+<p>An interface T may use a (possibly qualified) interface type name E in place of a method specification. This is called embedding interface E in T; it adds all (exported and non-exported) methods of E to the interface T.</p>
+<pre tabindex="0"><code>type ReadWriter interface {
+	Read(b Buffer) bool
+	Write(b Buffer) bool
+}
+
+type File interface {
+	ReadWriter  // same as adding the methods of ReadWriter
+	Locker      // same as adding the methods of Locker
+	Close()
+}
+
+type LockedFile interface {
+	Locker
+	File        // illegal: Lock, Unlock not unique
+	Lock()      // illegal: Lock not unique
+}
+</code></pre><p>An interface type T may not embed itself or any interface type that embeds T, recursively.</p>
+<pre tabindex="0"><code>// illegal: Bad cannot embed itself
+type Bad interface {
+	Bad
+}
+
+// illegal: Bad1 cannot embed itself using Bad2
+type Bad1 interface {
+	Bad2
+}
+type Bad2 interface {
+	Bad1
+}
+</code></pre><h2 id="map-types">Map types
+</h2><p>A map is an unordered group of elements of one type, called the element type, indexed by a set of unique keys of another type, called the key type. The value of an uninitialized map is nil.</p>
+<p>MapType     = &ldquo;map&rdquo; &ldquo;[&rdquo; KeyType &ldquo;]&rdquo; ElementType .
+KeyType     = Type .
+The comparison operators == and != must be fully defined for operands of the key type; thus the key type must not be a function, map, or slice. If the key type is an interface type, these comparison operators must be defined for the dynamic key values; failure will cause a run-time panic.</p>
+<p>map[string]int
+map[*T]struct{ x, y float64 }
+map[string]interface{}
+The number of map elements is called its length. For a map m, it can be discovered using the built-in function len and may change during execution. Elements may be added during execution using assignments and retrieved with index expressions; they may be removed with the delete built-in function.</p>
+<p>A new, empty map value is made using the built-in function make, which takes the map type and an optional capacity hint as arguments:</p>
+<p>make(map[string]int)
+make(map[string]int, 100)
+The initial capacity does not bound its size: maps grow to accommodate the number of items stored in them, with the exception of nil maps. A nil map is equivalent to an empty map except that no elements may be added.</p>
+<h2 id="channel-types">Channel types
+</h2><p>A channel provides a mechanism for concurrently executing functions to communicate by sending and receiving values of a specified element type. The value of an uninitialized channel is nil.</p>
+<p>ChannelType = ( &ldquo;chan&rdquo; | &ldquo;chan&rdquo; &ldquo;&lt;-&rdquo; | &ldquo;&lt;-&rdquo; &ldquo;chan&rdquo; ) ElementType .
+The optional &lt;- operator specifies the channel direction, send or receive. If no direction is given, the channel is bidirectional. A channel may be constrained only to send or only to receive by conversion or assignment.</p>
+<p>chan T          // can be used to send and receive values of type T
+chan&lt;- float64  // can only be used to send float64s
+&lt;-chan int      // can only be used to receive ints
+The &lt;- operator associates with the leftmost chan possible:</p>
+<p>chan&lt;- chan int    // same as chan&lt;- (chan int)
+chan&lt;- &lt;-chan int  // same as chan&lt;- (&lt;-chan int)
+&lt;-chan &lt;-chan int  // same as &lt;-chan (&lt;-chan int)
+chan (&lt;-chan int)
+A new, initialized channel value can be made using the built-in function make, which takes the channel type and an optional capacity as arguments:</p>
+<p>make(chan int, 100)
+The capacity, in number of elements, sets the size of the buffer in the channel. If the capacity is zero or absent, the channel is unbuffered and communication succeeds only when both a sender and receiver are ready. Otherwise, the channel is buffered and communication succeeds without blocking if the buffer is not full (sends) or not empty (receives). A nil channel is never ready for communication.</p>
+<p>A channel may be closed with the built-in function close. The multi-valued assignment form of the receive operator reports whether a received value was sent before the channel was closed.</p>
+<p>A single channel may be used in send statements, receive operations, and calls to the built-in functions cap and len by any number of goroutines without further synchronization. Channels act as first-in-first-out queues. For example, if one goroutine sends values on a channel and a second goroutine receives them, the values are received in the order sent.</p>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+
+    </footer>
+
+
+    
+</article>
+
+    
+
+    
+
+     
+    
+        
+    <div class="disqus-container">
+    <div id="disqus_thread"></div>
+<script>
+    window.disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "nansenli" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+<style>
+    .disqus-container {
+        background-color: var(--card-background);
+        border-radius: var(--card-border-radius);
+        box-shadow: var(--shadow-l1);
+        padding: var(--card-padding);
+    }
+</style>
+
+<script>
+    window.addEventListener('onColorSchemeChange', (e) => {
+        if (typeof DISQUS == 'object') {
+            DISQUS.reset({
+                reload: true
+            });
+        }
+    })
+</script>
+
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+        2025 Nansen Li（李楠森）
+    </section>
+    
+    <section class="powerby">
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.30.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.1e9a3bafd846ced4c345d084b355fb8c7bae75701c338f8a1f8a82c780137826.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>

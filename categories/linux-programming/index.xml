@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>Linux Programming on Nansen Li</title>
+        <link>https://nansenli.com/categories/linux-programming/</link>
+        <description>Recent content in Linux Programming on Nansen Li</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>en</language>
+        <copyright>Nansen Li（李楠森）</copyright>
+        <lastBuildDate>Thu, 18 Jan 2018 09:23:00 +0000</lastBuildDate><atom:link href="https://nansenli.com/categories/linux-programming/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>Bash Language Study Notes</title>
+        <link>https://nansenli.com/post/jianshu/linux%E7%BC%96%E7%A8%8B/bash-%E8%AF%AD%E8%A8%80-%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/</link>
+        <pubDate>Thu, 18 Jan 2018 09:23:00 +0000</pubDate>
+        
+        <guid>https://nansenli.com/post/jianshu/linux%E7%BC%96%E7%A8%8B/bash-%E8%AF%AD%E8%A8%80-%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/</guid>
+        <description>&lt;h2 id=&#34;introduction&#34;&gt;Introduction
+&lt;/h2&gt;&lt;p&gt;Most people have used terminal command lines. Sometimes we need to repeatedly enter the same commands, so we can write our own scripts to automate this work.&lt;/p&gt;
+&lt;h2 id=&#34;specifying-the-interpreter&#34;&gt;Specifying the Interpreter
+&lt;/h2&gt;&lt;p&gt;&lt;code&gt;#!/bin/bash&lt;/code&gt;
+This line specifies bash as the interpreter for our script. If we&amp;rsquo;re writing in Python syntax, we should change it to Python.&lt;/p&gt;
+&lt;h2 id=&#34;defining-variables&#34;&gt;Defining Variables
+&lt;/h2&gt;&lt;p&gt;variable_name=value
+For example: name=&amp;ldquo;hahaha&amp;rdquo;
+For ordinary characters, adding double quotes or single quotes doesn&amp;rsquo;t matter. name=hahaha also works.&lt;/p&gt;
+&lt;h2 id=&#34;using-variables&#34;&gt;Using Variables
+&lt;/h2&gt;&lt;p&gt;Add $ before a variable name to use its value. This means to evaluate the symbol&amp;rsquo;s value.&lt;/p&gt;
+&lt;h2 id=&#34;strings&#34;&gt;Strings
+&lt;/h2&gt;&lt;p&gt;Quotes have the following characteristics:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Spaces act as word separators&lt;/li&gt;
+&lt;li&gt;Words in single quotes&lt;/li&gt;
+&lt;li&gt;Character pattern matching&lt;/li&gt;
+&lt;li&gt;Pathname expansion&lt;/li&gt;
+&lt;li&gt;Process substitution (redirection)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Single quotes won&amp;rsquo;t process the content further, while double quotes will evaluate the content. You can see the difference between echo &amp;ldquo;$name&amp;rdquo; and echo &amp;lsquo;$name&amp;rsquo; to understand this.&lt;/p&gt;
+&lt;p&gt;String concatenation is just placing two strings together.
+${#string} is used to get the string length, ${string:1:4} is used for slicing.&lt;/p&gt;
+&lt;h2 id=&#34;getting-input&#34;&gt;Getting Input
+&lt;/h2&gt;&lt;p&gt;read inputstr
+read -p &amp;ldquo;please input : &amp;quot; inputstr
+The above two lines get input content from standard input.&lt;/p&gt;
+&lt;h3 id=&#34;getting-script-execution-results&#34;&gt;Getting Script Execution Results
+&lt;/h3&gt;&lt;p&gt;For example, to get the output of a Python script:
+into=$(&amp;lsquo;python3&amp;rsquo; &amp;lsquo;pyscript.py&amp;rsquo; &amp;lsquo;arg1&amp;rsquo; &amp;lsquo;arg2&amp;rsquo;)
+arg1 and arg2 are parameters&lt;/p&gt;
+</description>
+        </item>
+        <item>
+        <title>Linux: How to Use Terminal Background Tasks and Multiple Windows</title>
+        <link>https://nansenli.com/post/jianshu/linux%E7%BC%96%E7%A8%8B/linux-%E7%BB%88%E7%AB%AF%E5%90%8E%E5%8F%B0%E4%BB%BB%E5%8A%A1%E5%A4%9A%E7%AA%97%E5%8F%A3%E6%80%8E%E4%B9%88%E4%BD%BF%E7%94%A8/</link>
+        <pubDate>Thu, 11 Jan 2018 15:01:00 +0000</pubDate>
+        
+        <guid>https://nansenli.com/post/jianshu/linux%E7%BC%96%E7%A8%8B/linux-%E7%BB%88%E7%AB%AF%E5%90%8E%E5%8F%B0%E4%BB%BB%E5%8A%A1%E5%A4%9A%E7%AA%97%E5%8F%A3%E6%80%8E%E4%B9%88%E4%BD%BF%E7%94%A8/</guid>
+        <description>&lt;h2 id=&#34;byobu&#34;&gt;byobu
+&lt;/h2&gt;&lt;p&gt;byobu is a tool that replaces screen and tmux. You can install it using &lt;code&gt;apt install byobu&lt;/code&gt;. Running byobu is simple and its commands are straightforward:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;f2: Create a new window&lt;/li&gt;
+&lt;li&gt;f3: Return to the window on the left&lt;/li&gt;
+&lt;li&gt;f4: Return to the window on the right&lt;/li&gt;
+&lt;li&gt;f9: Exit byobu, commands running in open windows will not be interrupted&lt;/li&gt;
+&lt;/ul&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Strongly recommended for those who don&amp;rsquo;t want to use screen or tmux! You&amp;rsquo;ll be satisfied.&lt;/p&gt;
+&lt;/blockquote&gt;
+</description>
+        </item>
+        <item>
+        <title>Linux: Using popen to Execute Bash Commands and Get Return Strings</title>
+        <link>https://nansenli.com/post/jianshu/linux%E7%BC%96%E7%A8%8B/linux-popen%E6%89%A7%E8%A1%8Cbash%E5%91%BD%E4%BB%A4%E5%B9%B6%E8%8E%B7%E5%8F%96%E8%BF%94%E5%9B%9E%E5%AD%97%E7%AC%A6%E4%B8%B2/</link>
+        <pubDate>Wed, 08 Nov 2017 07:22:00 +0000</pubDate>
+        
+        <guid>https://nansenli.com/post/jianshu/linux%E7%BC%96%E7%A8%8B/linux-popen%E6%89%A7%E8%A1%8Cbash%E5%91%BD%E4%BB%A4%E5%B9%B6%E8%8E%B7%E5%8F%96%E8%BF%94%E5%9B%9E%E5%AD%97%E7%AC%A6%E4%B8%B2/</guid>
+        <description>&lt;p&gt;The system command returns an integer value, making it difficult to determine specific outcomes. You can use popen to execute bash commands and retrieve return values. Note that popen captures the standard output as the return string. If you need to get error output content, you must redirect stderr to stdout.&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;void system_cmd(const char * command, char * result)
+{
+    FILE *fpRead;
+    fpRead = popen(command, &amp;#34;r&amp;#34;);
+    char buf[1024] = {0};
+    memset(buf,&amp;#39;\0&amp;#39;,sizeof(buf));
+    while(fgets(buf,1024-1,fpRead)!=NULL)
+    { 
+        if (buf[strlen(buf) - 1] == &amp;#39;\n&amp;#39;) {
+            buf[strlen(buf) - 1] = &amp;#39;\0&amp;#39;; //remove newline character
+        }
+        strcpy(result, buf);
+    }
+    if(fpRead!=NULL)
+        pclose(fpRead);
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Usage example:&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;    char pid[10]={0};
+    system_cmd(&amp;#34;pgrep bash&amp;#34;, pid);
+&lt;/code&gt;&lt;/pre&gt;</description>
+        </item>
+        
+    </channel>
+</rss>

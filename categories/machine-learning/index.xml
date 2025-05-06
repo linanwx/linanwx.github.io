@@ -1,0 +1,1093 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>Machine Learning on Nansen Li</title>
+        <link>https://nansenli.com/categories/machine-learning/</link>
+        <description>Recent content in Machine Learning on Nansen Li</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>en</language>
+        <copyright>Nansen Li（李楠森）</copyright>
+        <lastBuildDate>Wed, 13 Sep 2017 10:44:00 +0000</lastBuildDate><atom:link href="https://nansenli.com/categories/machine-learning/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>Key Points for Installing GPU Version of TensorFlow on Deepin</title>
+        <link>https://nansenli.com/post/jianshu/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/deepin-%E5%AE%89%E8%A3%85-gpu%E7%89%88-tensorflow-%E8%A6%81%E7%82%B9/</link>
+        <pubDate>Wed, 13 Sep 2017 10:44:00 +0000</pubDate>
+        
+        <guid>https://nansenli.com/post/jianshu/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/deepin-%E5%AE%89%E8%A3%85-gpu%E7%89%88-tensorflow-%E8%A6%81%E7%82%B9/</guid>
+        <description>&lt;h2 id=&#34;introduction&#34;&gt;Introduction
+&lt;/h2&gt;&lt;p&gt;Although there are many tutorials on how to install TensorFlow on Ubuntu, there isn&amp;rsquo;t a single article explaining how to install TensorFlow on Deepin systems. Here I&amp;rsquo;ll explain the key points of the installation process.&lt;/p&gt;
+&lt;h2 id=&#34;process&#34;&gt;Process
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;First, download the Nvidia Linux driver from the official website. If you can&amp;rsquo;t run it, you&amp;rsquo;ll need to modify the driver&amp;rsquo;s execution permissions using chmod u+x. For information on installing graphics drivers on Deepin, refer to this article: &lt;a class=&#34;link&#34; href=&#34;https://wiki.deepin.org/index.php?title=%E6%98%BE%E5%8D%A1&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;https://wiki.deepin.org/index.php?title=%E6%98%BE%E5%8D%A1&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Install Docker-ce. You must follow the official installation guide; this is the only method to properly install the latest version of Docker: &lt;a class=&#34;link&#34; href=&#34;https://wiki.deepin.org/index.php?title=Docker&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;https://wiki.deepin.org/index.php?title=Docker&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Download Nvidia-docker. Find the Ubuntu installation package and installation steps on the Nvidia-Docker page on GitHub and follow them.&lt;/li&gt;
+&lt;li&gt;Next, run &lt;code&gt;docker run -it -p 8888:8888 tensorflow/tensorflow:latest-gpu&lt;/code&gt;. At this point, you can enter the official TensorFlow GPU version container. Open localhost:8888 to see the Jupyter page.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;pitfalls&#34;&gt;Pitfalls
+&lt;/h2&gt;&lt;p&gt;When installing the Nvidia graphics driver, according to the installation software&amp;rsquo;s instructions, you need to close the Linux desktop system X server. At this point, you can use tty1&lt;del&gt;6 for terminal operations. However, if Deepin has already installed its own Nvidia driver, when stopping the lightdm service, Deepin closes both the X server and the monitor, making it impossible to display the tty1&lt;/del&gt;6 screens. This issue prevents Nvidia driver installation. Even after manually uninstalling the official Deepin Nvidia driver through complex uninstallation commands, when switching to tty1~6 and closing the graphical interface, the tty screen still shuts down, resulting in a black screen and making it impossible to continue with driver uninstallation and reinstallation of the official Nvidia driver.&lt;/p&gt;
+&lt;h2 id=&#34;solution&#34;&gt;Solution
+&lt;/h2&gt;&lt;p&gt;To avoid problems with Nvidia driver installation while maintaining a clean and scientific operation, you must install the official Nvidia Linux driver during the first installation of the Deepin system, before any graphics drivers are installed. First, press the shortcut &amp;ldquo;Ctrl+Alt+F2&amp;rdquo; to enter tty2, then enter &lt;code&gt;sudo systemctl stop lightdm&lt;/code&gt; to stop the lightdm service. At this point, when the computer closes the X server, it won&amp;rsquo;t cause the monitor to shut down. Then run &lt;code&gt;chmod u+x NVIDIA-Linux-x86_64-352.55.run&lt;/code&gt; to grant executable permissions, followed by &lt;code&gt;sudo ./NVIDIA-Linux-x86_64-352.55.run&lt;/code&gt; to install the driver file. After restarting, you can use the official closed-source driver normally.&lt;/p&gt;
+&lt;h2 id=&#34;follow-up&#34;&gt;Follow-up
+&lt;/h2&gt;&lt;p&gt;Using a GPU to run TensorFlow programs is very fast. Normal programs can speed up by more than 10 times, and some programs can speed up by 50 to 100 times, so using a GPU for TensorFlow programming is essential.
+Additionally, I&amp;rsquo;m not sure if it&amp;rsquo;s an issue with Deepin, Nvidia-Docker, or the driver, but after the computer goes into standby mode, it causes errors in the TensorFlow container. Therefore, don&amp;rsquo;t let the machine enter standby mode during training.&lt;/p&gt;
+</description>
+        </item>
+        <item>
+        <title>TensorFlow: A Simple Introduction Case Study</title>
+        <link>https://nansenli.com/post/jianshu/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/tensorflow-%E4%B8%80%E4%B8%AA%E7%AE%80%E5%8D%95%E7%9A%84%E5%85%A5%E9%97%A8%E7%94%A8%E4%BE%8B/</link>
+        <pubDate>Wed, 09 Aug 2017 07:08:00 +0000</pubDate>
+        
+        <guid>https://nansenli.com/post/jianshu/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/tensorflow-%E4%B8%80%E4%B8%AA%E7%AE%80%E5%8D%95%E7%9A%84%E5%85%A5%E9%97%A8%E7%94%A8%E4%BE%8B/</guid>
+        <description>&lt;h2 id=&#34;case-study&#34;&gt;Case Study
+&lt;/h2&gt;&lt;p&gt;Suppose I have a series of x-y data points with a linear relationship between x and y. How would we fit a straight line to this data?&lt;/p&gt;
+&lt;p&gt;In the program below, train_x is a series of numbers between -1 and 1, and train_y is twice x plus 10, with a random number between 0 and 1 added.
+Next, we build the model. X and Y are tensor placeholders waiting to be initialized. During optimization, the XY values in the model will continuously change to data from train_x and train_y, and then the optimizer will optimize by changing the slope w and intercept b in a direction that reduces error. Through iteration, w and b will eventually make the model fit the data.&lt;/p&gt;
+&lt;p&gt;After the model is built, we start running it. First, we open a session, and we must remember to initialize all variables. Next, we iterate through all the data 10 times. In each iteration, we input a coordinate, calculate the error, and use gradient descent to correct w and b. Finally, we output the calculated values of w and b.&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;import tensorflow as tf
+import numpy as np
+
+train_x = np.linspace(-1, 1, 101)
+train_y = 2 * train_x + np.random.rand(train_x.shape[0])  + 10
+
+X = tf.placeholder(&amp;#34;float&amp;#34;)
+Y = tf.placeholder(&amp;#34;float&amp;#34;)
+w = tf.Variable(0.0, name = &amp;#34;w&amp;#34;)
+b = tf.Variable(0.0, name = &amp;#34;b&amp;#34;)
+loss = tf.square(Y - tf.multiply(X,w) - b)
+train_op = tf.train.GradientDescentOptimizer(0.01).minimize(loss)
+
+with tf.Session() as session:
+    session.run(tf.global_variables_initializer())
+    for i in range(10):
+        for x,y in zip(train_x, train_y):
+            session.run(train_op, feed_dict={X:x, Y:y})
+    print(&amp;#34;w: &amp;#34;, session.run(w))
+    print(&amp;#34;b: &amp;#34;, session.run(b))
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Running results:
+&lt;img src=&#34;http://otwwkzjm5.bkt.clouddn.com/17-8-9/99539186.jpg&#34;
+	
+	
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;Results&#34;
+	
+	
+&gt;&lt;/p&gt;
+</description>
+        </item>
+        <item>
+        <title>TensorFlow Hello World Introduction</title>
+        <link>https://nansenli.com/post/jianshu/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/tensorflow-hello-world-%E5%85%A5%E9%97%A8/</link>
+        <pubDate>Tue, 08 Aug 2017 09:58:00 +0000</pubDate>
+        
+        <guid>https://nansenli.com/post/jianshu/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/tensorflow-hello-world-%E5%85%A5%E9%97%A8/</guid>
+        <description>&lt;h2 id=&#34;quick-installation-guide&#34;&gt;Quick Installation Guide
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Step 1: Install Docker&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;https://www.docker-cn.com/community-edition#/download&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;https://www.docker-cn.com/community-edition#/download&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Then configure the official Chinese mirror.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;http://upload-images.jianshu.io/upload_images/4388248-74cf522af0bc0d30.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&#34;
+	
+	
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;image.png&#34;
+	
+	
+&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Step 2: Set up TensorFlow environment&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;code&gt;$ docker run -it -p 8888:8888 tensorflow/tensorflow&lt;/code&gt;
+Running this command will automatically download the TensorFlow image, provided that the repository mirror is set to a Chinese mirror; otherwise, the download will be very slow. After running the command, the terminal will display a URL that prompts you to open a web page. When you open this URL, you&amp;rsquo;ll see the TensorFlow Jupyter editing environment, where we&amp;rsquo;ll input all our code.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Mounting Docker file directory
+If we need to access local files, we need to mount a local folder to the container directory. Close the container, reopen it, and use &lt;code&gt;-v host_directory:container_directory&lt;/code&gt; for mounting.
+&lt;code&gt;docker run -v /Users/hahaha/tensorflow/:/notebooks -it -p 8888:8888 tensorflow/tensorflow&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Where /Users/hahaha/tensorflow/ is a folder on my Mac, and notebooks is the default Jupyter editing directory in the TensorFlow container.&lt;/p&gt;
+&lt;h2 id=&#34;running-hello-world-code&#34;&gt;Running Hello World Code
+&lt;/h2&gt;&lt;p&gt;&lt;img src=&#34;http://upload-images.jianshu.io/upload_images/4388248-37ff525dfa0133b7.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&#34;
+	
+	
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;image.png&#34;
+	
+	
+&gt;
+Create a new Python 2 Jupyter file, enter the following code, and then click the play button. At this point, a &amp;ldquo;Hello, TensorFlow!&amp;rdquo; string should appear below, indicating that the program has run successfully.&lt;/p&gt;
+&lt;h2 id=&#34;program-explanation&#34;&gt;Program Explanation
+&lt;/h2&gt;&lt;p&gt;From this simple code, we can see that TensorFlow is very easy to use. It&amp;rsquo;s imported as a standard Python library without requiring additional services to be started. For those new to TensorFlow, you might wonder why we need to use tf.constant() and tf.Session() to output a &amp;ldquo;Hello World&amp;rdquo; string when Python itself could do it. The reason is that TensorFlow defines and runs models and training through Graphs and Sessions, which provides significant benefits for complex models and distributed training.&lt;/p&gt;
+&lt;p&gt;First, in TensorFlow, there are two concepts: Graph and Operation. Operation represents what needs to be computed. A Graph contains many Operations. A Session is used to execute Operations in a Graph.&lt;/p&gt;
+&lt;h2 id=&#34;basic-usage&#34;&gt;Basic Usage
+&lt;/h2&gt;&lt;p&gt;When using TensorFlow, you must understand that TensorFlow:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Uses a &lt;code&gt;graph&lt;/code&gt; to represent computational tasks&lt;/li&gt;
+&lt;li&gt;Executes the graph in a &lt;code&gt;context&lt;/code&gt; called a &lt;code&gt;Session&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Represents data using &lt;code&gt;tensors&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Maintains state through &lt;code&gt;Variables&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Uses &lt;code&gt;feed&lt;/code&gt; and &lt;code&gt;fetch&lt;/code&gt; to assign values to or retrieve data from &lt;code&gt;arbitrary operations&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;overview&#34;&gt;Overview
+&lt;/h2&gt;&lt;p&gt;TensorFlow is a programming system that uses graphs to represent computational tasks. Nodes in the graph are called &lt;strong&gt;ops&lt;/strong&gt; (short for operations). An op takes 0 or more Tensors, performs computations, and produces 0 or more Tensors. Each Tensor is a typed multi-dimensional array. For example, you can represent a small batch of images as a four-dimensional floating-point array with dimensions [batch, height, width, channels].&lt;/p&gt;
+&lt;p&gt;A TensorFlow graph &lt;strong&gt;describes&lt;/strong&gt; the computation process. To perform computation, the graph must be launched in a &lt;code&gt;session&lt;/code&gt;. The &lt;code&gt;session&lt;/code&gt; distributes the graph&amp;rsquo;s ops to devices like CPUs or GPUs and provides methods to execute ops. After execution, these methods return the resulting tensors. In Python, the returned tensors are &lt;a class=&#34;link&#34; href=&#34;http://www.numpy.org/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;numpy&lt;/a&gt; &lt;code&gt;ndarray&lt;/code&gt; objects. In C and C++, the returned tensors are tensorflow::Tensor instances.&lt;/p&gt;
+</description>
+        </item>
+        <item>
+        <title>Using TensorFlow for a Kaggle Task — Titanic: Machine Learning from Disaster</title>
+        <link>https://nansenli.com/post/jianshu/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E4%BD%BF%E7%94%A8tensorflow%E5%AE%8C%E6%88%90kaggle%E4%BB%BB%E5%8A%A1%E6%B3%B0%E5%9D%A6%E5%B0%BC%E5%85%8B%E5%8F%B7titanic--machine-learning-from-disaster/</link>
+        <pubDate>Fri, 04 Aug 2017 10:08:00 +0000</pubDate>
+        
+        <guid>https://nansenli.com/post/jianshu/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E4%BD%BF%E7%94%A8tensorflow%E5%AE%8C%E6%88%90kaggle%E4%BB%BB%E5%8A%A1%E6%B3%B0%E5%9D%A6%E5%B0%BC%E5%85%8B%E5%8F%B7titanic--machine-learning-from-disaster/</guid>
+        <description>&lt;h2 id=&#34;import-necessary-libraries&#34;&gt;Import Necessary Libraries
+&lt;/h2&gt;&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;import csv
+import tensorflow as tf
+import numpy as np
+import random
+import sys
+import pandas as pd
+from pandas import DataFrame
+
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+&lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&#34;read-source-file-and-display&#34;&gt;Read Source File and Display
+&lt;/h2&gt;&lt;p&gt;In this section, we&amp;rsquo;ll work with basic CSV operations and display the results.
+We&amp;rsquo;ll read the train.csv file downloaded from Kaggle and show its contents.&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;trainFilePath = &amp;#39;./train.csv&amp;#39;
+
+trainSize = 0
+
+def testCSV(filePath):
+    with open(filePath, &amp;#39;rb&amp;#39;) as trainFile:
+        global trainSize
+        csvReader = csv.reader(trainFile)
+        dataList = [data for data in csvReader]
+        df = DataFrame(dataList[1:], columns=dataList[0])
+        trainSize = len(df)
+        print(df)
+        print(&amp;#34;trainSize&amp;#34;, trainSize)
+
+testCSV(trainFilePath)
+&lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&#34;read-source-file-extract-data-and-build-neural-network&#34;&gt;Read Source File, Extract Data, and Build Neural Network
+&lt;/h2&gt;&lt;p&gt;In this section, we&amp;rsquo;ll extract gender, class, ticket fare, and SibSp from the source file to fit the survival probability.
+Then we&amp;rsquo;ll build a 5-layer neural network with 3 hidden layers containing 4-10-20-10-2 neurons respectively.
+Finally, we&amp;rsquo;ll execute the reading function.&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;def readTrainDataCSV(filePath):
+    global trainData, targetData, classifier
+    with open(filePath, &amp;#39;rb&amp;#39;) as trainFile:
+        csvReader = csv.reader(trainFile)
+        dataList = [data for data in csvReader]
+        dataSize = len(dataList) - 1
+        trainData = np.ndarray((dataSize, 4), dtype=np.float32)
+        targetData = np.ndarray((dataSize, 1), dtype=np.int32)
+        trainDataFrame = DataFrame(dataList[1:], columns=dataList[0])
+        trainDataFrame_fliter = trainDataFrame.loc[:,[&amp;#39;Pclass&amp;#39;,&amp;#39;Sex&amp;#39;,&amp;#39;SibSp&amp;#39;,&amp;#39;Fare&amp;#39;,&amp;#39;Survived&amp;#39;]]
+        for i in range(dataSize):
+            thisData = np.array(trainDataFrame_fliter.iloc[i])
+            Pclass,Sex,SibSp,Fare,Survived = thisData
+            Pclass = float(Pclass)
+            Sex = 0 if Sex == &amp;#39;female&amp;#39; else 1
+            SibSp = float(SibSp)
+            Fare = float(Fare)
+            Survived = int(Survived)
+            print(Pclass,Sex,SibSp,Fare,Survived)
+            trainData[i,:] = [Pclass,Sex,SibSp,Fare]
+            targetData[i,:] = [Survived]
+            print(thisData)
+        print(trainData)
+        print(targetData)
+        feature_columns = [tf.contrib.layers.real_valued_column(&amp;#34;&amp;#34;, dimension=4)]
+        classifier = tf.contrib.learn.DNNClassifier(feature_columns=feature_columns,
+                                              hidden_units=[10, 20, 10],
+                                              n_classes=2)
+#                                               model_dir=&amp;#34;/tmp/titanic_model&amp;#34;)
+
+readTrainDataCSV(trainFilePath)
+&lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&#34;create-input-data&#34;&gt;Create Input Data
+&lt;/h2&gt;&lt;p&gt;We&amp;rsquo;ll wrap the training data and labels into a tuple and return it.&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;def get_train_inputs():
+    x = tf.constant(trainData)
+    y = tf.constant(targetData)
+    print(x)
+    print(y)
+    return x, y
+
+get_train_inputs()
+&lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&#34;train-the-model&#34;&gt;Train the Model
+&lt;/h2&gt;&lt;p&gt;Now we start training the neural network.&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;def train():
+    classifier.fit(input_fn=get_train_inputs, steps=2000)
+
+train()
+&lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&#34;check-accuracy&#34;&gt;Check Accuracy
+&lt;/h2&gt;&lt;p&gt;We use the entire dataset to check accuracy. Note that we should use a validation set for this task, but since this is just for demonstration purposes, we&amp;rsquo;ll skip that step.&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;accuracy_score = classifier.evaluate(input_fn=get_train_inputs,
+                                       steps=1)[&amp;#34;accuracy&amp;#34;]
+print(&amp;#34;accuracy:&amp;#34;,accuracy_score)
+&lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&#34;read-test-set-and-output-results&#34;&gt;Read Test Set and Output Results
+&lt;/h2&gt;&lt;p&gt;In this section, we&amp;rsquo;ll read the test data from Kaggle and output the results to a file, which will ultimately be submitted to the official website.&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;testFilePath = &amp;#39;./test.csv&amp;#39;
+
+def readTestDataCSV(filePath):
+    global testData, PassengerIdStart
+    with open(filePath, &amp;#39;rb&amp;#39;) as testFile:
+        csvReader = csv.reader(testFile)
+        dataList = [data for data in csvReader]
+        dataSize = len(dataList)-1
+        trainDataFrame = DataFrame(dataList[1:], columns=dataList[0])
+        trainDataFrame_fliter = trainDataFrame.loc[:,[&amp;#39;Pclass&amp;#39;,&amp;#39;Sex&amp;#39;,&amp;#39;SibSp&amp;#39;,&amp;#39;Fare&amp;#39;]]
+        testData = np.ndarray((dataSize, 4), dtype=np.float32)
+        PassengerIdStart = trainDataFrame[&amp;#39;PassengerId&amp;#39;][0]
+        PassengerIdStart = int(PassengerIdStart)
+        print(&amp;#39;PassengerId&amp;#39;,PassengerIdStart)
+        for i in range(dataSize):
+            thisData = np.array(trainDataFrame_fliter.iloc[i])
+            Pclass,Sex,SibSp,Fare = thisData
+            Pclass = float(Pclass)
+            Sex = 0 if Sex == &amp;#39;female&amp;#39; else 1
+            SibSp = float(SibSp)
+            Fare = 0 if Fare==&amp;#39;&amp;#39; else float(Fare)
+            print(Pclass,Sex,SibSp,Fare)
+            testData[i,:] = [Pclass,Sex,SibSp,Fare]
+            print(thisData)
+        print(testData)
+        
+def testData_samples():
+    return testData
+
+readTestDataCSV(testFilePath)
+predictions = list(classifier.predict(input_fn=testData_samples))
+print(predictions)
+
+
+with open(&amp;#39;predictions.csv&amp;#39;, &amp;#39;wb&amp;#39;) as csvfile:
+    writer = csv.writer(csvfile, dialect=&amp;#39;excel&amp;#39;)
+    writer.writerow([&amp;#39;PassengerId&amp;#39;,&amp;#39;Survived&amp;#39;])
+    PassengerId = PassengerIdStart 
+    for i in predictions:
+        writer.writerow([PassengerId, i])
+        PassengerId += 1
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Finally, using only 4 features, we achieved an accuracy of 75%. The next goal is to utilize the other available data.&lt;/p&gt;
+</description>
+        </item>
+        <item>
+        <title>Deep Learning Beginner&#39;s Study Notes One (Udacity)</title>
+        <link>https://nansenli.com/post/jianshu/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E9%9B%B6%E5%9F%BA%E7%A1%80%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%E4%B8%80%E4%BC%98%E8%BE%BE%E5%AD%A6%E5%9F%8E/</link>
+        <pubDate>Wed, 19 Jul 2017 07:42:00 +0000</pubDate>
+        
+        <guid>https://nansenli.com/post/jianshu/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E9%9B%B6%E5%9F%BA%E7%A1%80%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%E4%B8%80%E4%BC%98%E8%BE%BE%E5%AD%A6%E5%9F%8E/</guid>
+        <description>&lt;h2 id=&#34;introduction&#34;&gt;Introduction
+&lt;/h2&gt;&lt;p&gt;On a whim, I decided to learn machine learning. These are notes from my learning process.&lt;/p&gt;
+&lt;h2 id=&#34;preparation&#34;&gt;Preparation
+&lt;/h2&gt;&lt;p&gt;I made these preparations:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;A MacBook with Python environment set up, and numpy and matplotlib installed&lt;/li&gt;
+&lt;li&gt;Registered for Udacity&amp;rsquo;s free &amp;ldquo;Deep Learning&amp;rdquo; course (in collaboration with Google)&lt;/li&gt;
+&lt;li&gt;Studied Liao Xuefeng&amp;rsquo;s Python introductory tutorial&lt;/li&gt;
+&lt;li&gt;Spent two days roughly browsing through &amp;ldquo;Machine Learning in Action&amp;rdquo;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Learning these fundamentals should be sufficient for the upcoming Udacity course.&lt;/p&gt;
+&lt;h2 id=&#34;course-one-from-machine-learning-to-deep-learning&#34;&gt;Course One: From Machine Learning to Deep Learning
+&lt;/h2&gt;&lt;p&gt;&lt;img src=&#34;http://upload-images.jianshu.io/upload_images/4388248-deb922c5a6a30e32.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&#34;
+	
+	
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;Introduction&#34;
+	
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Sections 1-8 mainly introduce the current state of deep learning and related knowledge.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;http://upload-images.jianshu.io/upload_images/4388248-881aa1d922b7aadf.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&#34;
+	
+	
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;image.png&#34;
+	
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Sections 9-12 introduce the softmax model.&lt;/p&gt;
+&lt;p&gt;After a rough review of &amp;ldquo;Machine Learning in Action,&amp;rdquo; I learned that machine learning consists of several classification and clustering algorithms. On the surface, machine learning appears to be a collection of classification and clustering algorithms. Among these algorithms, one called logistic regression classification was introduced.&lt;/p&gt;
+&lt;p&gt;In sections 9-12, the focus is on the classifier model—logistic regression, using the softmax function as the classification function.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;What is the softmax function?&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img src=&#34;http://upload-images.jianshu.io/upload_images/4388248-81791b221c81e509.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&#34;
+	
+	
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;softmax&#34;
+	
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;This image illustrates what a softmax function is. For each number z in the original sequence, we calculate exp(z), and the proportion of each new number&amp;rsquo;s magnitude becomes the softmax probability for that number.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Properties&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;If the inputs are scaled up proportionally, the classifier&amp;rsquo;s results become more polarized and confident. If the inputs are scaled down proportionally, the classifier&amp;rsquo;s results tend toward the average and lack confidence.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Algorithm&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; numpy &lt;span style=&#34;color:#66d9ef&#34;&gt;as&lt;/span&gt; np
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;def&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;softmax&lt;/span&gt;(x):
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&amp;#34;&amp;#34;Compute softmax values for each sets of scores in x.&amp;#34;&amp;#34;&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    expList &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; [np&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;exp(i) &lt;span style=&#34;color:#66d9ef&#34;&gt;for&lt;/span&gt; i &lt;span style=&#34;color:#f92672&#34;&gt;in&lt;/span&gt; x]
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    expSum &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; sum(expList)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    x &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; [i&lt;span style=&#34;color:#f92672&#34;&gt;/&lt;/span&gt;expSum &lt;span style=&#34;color:#66d9ef&#34;&gt;for&lt;/span&gt; i &lt;span style=&#34;color:#f92672&#34;&gt;in&lt;/span&gt; expList]
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; np&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;array(x)
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;img src=&#34;http://upload-images.jianshu.io/upload_images/4388248-ee072532fdf320cf.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&#34;
+	
+	
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;image.png&#34;
+	
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Sections 13-14 mainly discuss One-Hot encoding. After the softmax function provides a sequence of probability values, how do we determine the classification? For example, a sequence where the highest probability is 1 and others are 0 is called One-Hot encoding. This type of encoding has already determined the classification.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;http://upload-images.jianshu.io/upload_images/4388248-d17a8063ae1224a0.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&#34;
+	
+	
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;Cross-entropy&#34;
+	
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Sections 15-16 cover cross-entropy. Softmax can calculate a probability sequence, and OneHot is a determined classification. So how do we calculate the distance from a probability sequence to a specific classification? We use cross-entropy to measure this distance.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;http://upload-images.jianshu.io/upload_images/4388248-17cca85ebc74d0ab.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&#34;
+	
+	
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;image.png&#34;
+	
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;http://upload-images.jianshu.io/upload_images/4388248-f28d86a84703d49e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&#34;
+	
+	
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;image.png&#34;
+	
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Sections 17-20 explain how to use this classifier. Section 18 specifically discusses why special initial data is needed.&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;sum = 1000000000
+
+for i in range(1000000):
+    sum += 0.000001
+
+sum -= 1000000000
+print(sum)
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;The result of running this code is not 1. If we change sum to a very small number, like 1, instead of 1000000000, we find that the error becomes smaller. Based on this reason, we want our initial data to always have a mean of 0 and consistent variance in all directions. For example, for a grayscale image with pixel values from 0-255, we need to subtract 128 and then divide by 128, so that each number is between -1 and 1. Such initial data is more suitable for training.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;http://upload-images.jianshu.io/upload_images/4388248-5e75673ff68468cb.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&#34;
+	
+	
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;image.png&#34;
+	
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;This way, we can proceed with training. Reviewing the video content: xi is the training data matrix, w is a random weight matrix. For performance reasons, random values are taken from a normal distribution with an axis of 0 and very small variance. Then we calculate the probability sequence and the distance to the target. Then we compute the average distance to all targets. Our goal is to make this distance smaller, so we optimize the weight matrix along the direction of gradient descent while optimizing the intercept b. We repeat this process continuously until we reach a local optimum.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Installing Docker&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;https://www.docker-cn.com/community-edition#/download&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;https://www.docker-cn.com/community-edition#/download&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Configure the official Chinese mirror.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;http://upload-images.jianshu.io/upload_images/4388248-5f5ea990dda40440.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&#34;
+	
+	
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;image.png&#34;
+	
+	
+&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Installing Jupyter Notebook&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;code&gt;$ pip3 install jupyter&lt;/code&gt;
+&lt;code&gt;$ jupyter notebook&lt;/code&gt;
+You can now use the jupyter notebook command to open a Jupyter editor.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Setting up TensorFlow environment&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;code&gt;$ docker run -it -p 8888:8888 tensorflow/tensorflow&lt;/code&gt;
+Running this command will automatically download the TensorFlow image, provided that the repository mirror is set to a Chinese mirror; otherwise, the download will be very slow. After running the command, you&amp;rsquo;ll be prompted to open a webpage. When you open this URL, you&amp;rsquo;ll see the TensorFlow Jupyter editing environment, assuming Jupyter Notebook is installed correctly.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Mounting Docker&amp;rsquo;s file directory
+We need to import the official assignments. Close the container, reopen it, and use &lt;code&gt;-v host_directory:container_directory&lt;/code&gt; for mounting.
+&lt;code&gt;docker run -v /Users/hahaha/tensorflow/:/notebooks -it -p 8888:8888 tensorflow/tensorflow&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Where /Users/hahaha/tensorflow/ is a folder on my Mac, and notebooks is the default Jupyter editing directory in TensorFlow.&lt;/p&gt;
+&lt;p&gt;Paste the first assignment file, 1_notmnist.ipynb, into the mounted directory on the host. This file can be found here: &lt;a class=&#34;link&#34; href=&#34;https://github.com/tensorflow/tensorflow/blob/master/tensorflow/examples/udacity/1_notmnist.ipynb&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;1_notmnist.ipynb&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;http://upload-images.jianshu.io/upload_images/4388248-1a87bebfcc977690.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&#34;
+	
+	
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;Assignment One Content&#34;
+	
+	
+&gt;&lt;/p&gt;
+&lt;h2 id=&#34;assignment-code-segment-one&#34;&gt;Assignment Code Segment One
+&lt;/h2&gt;&lt;p&gt;First, run the import statements in the first code segment. There should be no errors. If you see red error output, it means these imports were not successful.&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;# These are all the modules we&amp;#39;ll be using later. Make sure you can import them
+# before proceeding further.
+from __future__ import print_function
+# print function
+import matplotlib.pyplot as plt
+# plotting tool
+import numpy as np
+# matrix calculations
+import os
+# file paths
+import sys
+# file output
+import tarfile
+# decompression
+from IPython.display import display, Image
+# display images
+from scipy import ndimage
+# image processing
+from sklearn.linear_model import LogisticRegression
+# logistic regression module for linear models
+from six.moves.urllib.request import urlretrieve
+# url handling
+from six.moves import cPickle as pickle
+# data processing
+
+# Config the matplotlib backend as plotting inline in IPython
+%matplotlib inline
+# matplotlib is the most famous Python chart plotting extension library,
+# it supports outputting various formats of graphical images, and can use various GUI interface libraries to display charts interactively.
+# Using the %matplotlib command can embed matplotlib charts directly into the Notebook,
+# or display charts using a specified interface library, it has a parameter specifying how matplotlib charts are displayed.
+# inline indicates embedding charts in the Notebook.
+&lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&#34;assignment-code-segment-two&#34;&gt;Assignment Code Segment Two
+&lt;/h2&gt;&lt;p&gt;Next is the second code segment, which will download letter sets for training and testing, approximately 300MB in size. After successful download, you can see these two files in the mounted directory.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;http://upload-images.jianshu.io/upload_images/4388248-e1cc51d654c2800a.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&#34;
+	
+	
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;Assignment&#34;
+	
+	
+&gt;&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;url = &amp;#39;https://commondatastorage.googleapis.com/books1000/&amp;#39;
+last_percent_reported = None
+data_root = &amp;#39;.&amp;#39; # Change me to store data elsewhere
+
+def download_progress_hook(count, blockSize, totalSize):
+  &amp;#34;&amp;#34;&amp;#34;A hook to report the progress of a download. This is mostly intended for users with
+  slow internet connections. Reports every 5% change in download progress.
+  &amp;#34;&amp;#34;&amp;#34;
+# Hook function to display download progress in real-time
+  global last_percent_reported
+  percent = int(count * blockSize * 100 / totalSize)
+
+  if last_percent_reported != percent:
+    if percent % 5 == 0:
+      sys.stdout.write(&amp;#34;%s%%&amp;#34; % percent)
+      sys.stdout.flush()
+    else:
+      sys.stdout.write(&amp;#34;.&amp;#34;)
+      sys.stdout.flush()
+      
+    last_percent_reported = percent
+        
+def maybe_download(filename, expected_bytes, force=False):
+  &amp;#34;&amp;#34;&amp;#34;Download a file if not present, and make sure it&amp;#39;s the right size.&amp;#34;&amp;#34;&amp;#34;
+  dest_filename = os.path.join(data_root, filename)
+#   data_root is the current directory, add the filename to it, set as the location to save the file
+  if force or not os.path.exists(dest_filename):
+#         force is to force download, ignoring already downloaded files
+    print(&amp;#39;Attempting to download:&amp;#39;, filename) 
+    filename, _ = urlretrieve(url + filename, dest_filename, reporthook=download_progress_hook)
+#     Use urlretrieve to download the file, with the hook attached
+    print(&amp;#39;\nDownload Complete!&amp;#39;)
+  statinfo = os.stat(dest_filename)
+# Get information about the downloaded file
+  if statinfo.st_size == expected_bytes:
+#         Correct size
+    print(&amp;#39;Found and verified&amp;#39;, dest_filename)
+  else:
+#     Wrong size, prompt user to use a browser to download
+    raise Exception(
+      &amp;#39;Failed to verify &amp;#39; + dest_filename + &amp;#39;. Can you get to it with a browser?&amp;#39;)
+  return dest_filename
+
+train_filename = maybe_download(&amp;#39;notMNIST_large.tar.gz&amp;#39;, 247336696)
+test_filename = maybe_download(&amp;#39;notMNIST_small.tar.gz&amp;#39;, 8458043)
+&lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&#34;assignment-code-segment-three&#34;&gt;Assignment Code Segment Three
+&lt;/h2&gt;&lt;p&gt;Extracting use cases&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;num_classes = 10
+# Total number of digits
+np.random.seed(133)
+# Initialize random seed
+def maybe_extract(filename, force=False):
+#     Assuming already extracted
+  root = os.path.splitext(os.path.splitext(filename)[0])[0]  # remove .tar.gz
+#     splitext(filename)[0] removes one suffix, used twice to remove both suffixes, i.e., remove the .tar.gz suffix
+  if os.path.isdir(root) and not force:
+    # You may override by setting force=True.
+#     If already extracted, don&amp;#39;t extract again
+    print(&amp;#39;%s already present - Skipping extraction of %s.&amp;#39; % (root, filename))
+  else:
+    print(&amp;#39;Extracting data for %s. This may take a while. Please wait.&amp;#39; % root)
+    tar = tarfile.open(filename)
+    sys.stdout.flush()
+    tar.extractall(data_root)
+    tar.close()
+#     Extract to the current directory
+  data_folders = [
+    os.path.join(root, d) for d in sorted(os.listdir(root))
+    if os.path.isdir(os.path.join(root, d))]
+  if len(data_folders) != num_classes:
+    raise Exception(
+      &amp;#39;Expected %d folders, one per class. Found %d instead.&amp;#39; % (
+        num_classes, len(data_folders)))
+  print(data_folders)
+# Check if the number of extracted directories matches expectations, and print the extracted directories
+  return data_folders
+  
+train_folders = maybe_extract(train_filename)
+test_folders = maybe_extract(test_filename)
+&lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&#34;question-one&#34;&gt;Question One
+&lt;/h2&gt;&lt;p&gt;Write code to display information about the extracted file contents&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Reference answer&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;import random
+import matplotlib.image as mpimg
+
+
+def plot_samples(data_folders, sample_size, title=None):
+    fig = plt.figure()
+#     Create empty figure
+    if title: fig.suptitle(title, fontsize=16, fontweight=&amp;#39;bold&amp;#39;)
+#         Add title
+    for folder in data_folders:
+#         Loop through each letter
+        image_files = os.listdir(folder)
+        image_sample = random.sample(image_files, sample_size)
+#         Randomly select a certain number of images from that letter
+        for image in image_sample:
+            image_file = os.path.join(folder, image)
+            ax = fig.add_subplot(len(data_folders), sample_size, sample_size * data_folders.index(folder) +
+                                 image_sample.index(image) + 1)
+#             Create a subplot
+            image = mpimg.imread(image_file)
+#     Load subplot image
+            ax.imshow(image)
+#     Display subplot image
+            ax.set_axis_off() 
+#     Turn off subplot coordinate lines
+
+    fig.set_size_inches(18.5, 10.5)
+#     Set the display size of the image
+    plt.show()
+
+
+plot_samples(train_folders, 20, &amp;#39;Train&amp;#39;)
+plot_samples(test_folders, 20, &amp;#39;Test&amp;#39;)
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Running results:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;http://upload-images.jianshu.io/upload_images/4388248-89f6aa390dfd06a3.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&#34;
+	
+	
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;Training.png&#34;
+	
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;http://upload-images.jianshu.io/upload_images/4388248-0dbfe7c00c15e9e8.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&#34;
+	
+	
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;Testing.png&#34;
+	
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;As we can see, some of the training data has issues.&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;
+## Assignment Code Segment Four
+
+After this, we need to normalize the data, which means transforming each image pixel from 0~255 to -1.0~1.0, and persisting it to a file.
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;image_size = 28  # Pixel width and height.
+pixel_depth = 255.0  # Number of levels per pixel.&lt;/p&gt;
+&lt;h1 id=&#34;image-width-height-and-pixel-depth&#34;&gt;Image width, height and pixel depth
+&lt;/h1&gt;&lt;p&gt;def load_letter(folder, min_num_images):
+&amp;ldquo;&amp;ldquo;&amp;ldquo;Load the data for a single letter label.&amp;rdquo;&amp;rdquo;&amp;rdquo;&lt;/p&gt;
+&lt;h1 id=&#34;process-files-in-a-folder-belonging-to-one-letter&#34;&gt;Process files in a folder belonging to one letter
+&lt;/h1&gt;&lt;p&gt;image_files = os.listdir(folder)&lt;/p&gt;
+&lt;h1 id=&#34;list-all-files-in-that-directory&#34;&gt;List all files in that directory
+&lt;/h1&gt;&lt;p&gt;dataset = np.ndarray(shape=(len(image_files), image_size, image_size),
+dtype=np.float32)&lt;/p&gt;
+&lt;h1 id=&#34;create-a-dataset-with-length-equal-to-number-of-files-width-and-height-of-28&#34;&gt;Create a dataset with length equal to number of files, width and height of 28
+&lt;/h1&gt;&lt;p&gt;print(folder)&lt;/p&gt;
+&lt;h1 id=&#34;print-directory&#34;&gt;Print directory
+&lt;/h1&gt;&lt;p&gt;num_images = 0&lt;/p&gt;
+&lt;h1 id=&#34;initialize-num_images&#34;&gt;Initialize num_images
+&lt;/h1&gt;&lt;p&gt;for image in image_files:&lt;/p&gt;
+&lt;h1 id=&#34;process-each-file&#34;&gt;Process each file
+&lt;/h1&gt;&lt;pre&gt;&lt;code&gt;image_file = os.path.join(folder, image)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1 id=&#34;get-complete-file-path&#34;&gt;Get complete file path
+&lt;/h1&gt;&lt;pre&gt;&lt;code&gt;try:
+  image_data = (ndimage.imread(image_file).astype(float) - 
+                pixel_depth / 2) / pixel_depth
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1 id=&#34;read-in-the-image-and-normalize-it&#34;&gt;Read in the image and normalize it
+&lt;/h1&gt;&lt;pre&gt;&lt;code&gt;  if image_data.shape != (image_size, image_size):
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1 id=&#34;check-image-width-and-height&#34;&gt;Check image width and height
+&lt;/h1&gt;&lt;pre&gt;&lt;code&gt;    raise Exception(&#39;Unexpected image shape: %s&#39; % str(image_data.shape))
+  dataset[num_images, :, :] = image_data
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1 id=&#34;read-into-the-dataset&#34;&gt;Read into the dataset
+&lt;/h1&gt;&lt;pre&gt;&lt;code&gt;  num_images = num_images + 1
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1 id=&#34;increment-image-number&#34;&gt;Increment image number
+&lt;/h1&gt;&lt;pre&gt;&lt;code&gt;except IOError as e:
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1 id=&#34;if-file-cant-be-read-skip-it&#34;&gt;If file can&amp;rsquo;t be read, skip it
+&lt;/h1&gt;&lt;pre&gt;&lt;code&gt;  print(&#39;Could not read:&#39;, image_file, &#39;:&#39;, e, &#39;- it\&#39;s ok, skipping.&#39;)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;dataset = dataset[0:num_images, :, :]&lt;/p&gt;
+&lt;h1 id=&#34;if-fewer-files-were-read-than-the-minimum-required&#34;&gt;If fewer files were read than the minimum required
+&lt;/h1&gt;&lt;p&gt;if num_images &amp;lt; min_num_images:
+raise Exception(&amp;lsquo;Many fewer images than expected: %d &amp;lt; %d&amp;rsquo; %
+(num_images, min_num_images))&lt;/p&gt;
+&lt;h1 id=&#34;display-number-of-missing-files&#34;&gt;Display number of missing files
+&lt;/h1&gt;&lt;p&gt;print(&amp;lsquo;Full dataset tensor:&amp;rsquo;, dataset.shape)&lt;/p&gt;
+&lt;h1 id=&#34;display-file-count-image-width-and-height&#34;&gt;Display file count, image width and height
+&lt;/h1&gt;&lt;p&gt;print(&amp;lsquo;Mean:&amp;rsquo;, np.mean(dataset))&lt;/p&gt;
+&lt;h1 id=&#34;mean-value&#34;&gt;Mean value
+&lt;/h1&gt;&lt;p&gt;print(&amp;lsquo;Standard deviation:&amp;rsquo;, np.std(dataset))&lt;/p&gt;
+&lt;h1 id=&#34;standard-deviation&#34;&gt;Standard deviation
+&lt;/h1&gt;&lt;p&gt;return dataset&lt;/p&gt;
+&lt;p&gt;def maybe_pickle(data_folders, min_num_images_per_class, force=False):
+dataset_names = []
+for folder in data_folders:&lt;/p&gt;
+&lt;h1 id=&#34;process-each-letter-folder&#34;&gt;Process each letter folder
+&lt;/h1&gt;&lt;pre&gt;&lt;code&gt;set_filename = folder + &#39;.pickle&#39;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1 id=&#34;set-output-file&#34;&gt;Set output file
+&lt;/h1&gt;&lt;pre&gt;&lt;code&gt;dataset_names.append(set_filename)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1 id=&#34;set-processed-folders&#34;&gt;Set processed folders
+&lt;/h1&gt;&lt;pre&gt;&lt;code&gt;if os.path.exists(set_filename) and not force:
+  # You may override by setting force=True.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1 id=&#34;check-if-processed-file-already-exists&#34;&gt;Check if processed file already exists
+&lt;/h1&gt;&lt;pre&gt;&lt;code&gt;  print(&#39;%s already present - Skipping pickling.&#39; % set_filename)
+else:
+  print(&#39;Pickling %s.&#39; % set_filename)
+  dataset = load_letter(folder, min_num_images_per_class)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1 id=&#34;normalize-all-images-in-this-folder&#34;&gt;Normalize all images in this folder
+&lt;/h1&gt;&lt;pre&gt;&lt;code&gt;  try:
+    with open(set_filename, &#39;wb&#39;) as f:
+      pickle.dump(dataset, f, pickle.HIGHEST_PROTOCOL)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1 id=&#34;persist-data-save-to-disk-instead-of-keeping-in-memory&#34;&gt;Persist data, save to disk instead of keeping in memory
+&lt;/h1&gt;&lt;pre&gt;&lt;code&gt;  except Exception as e:
+    print(&#39;Unable to save data to&#39;, set_filename, &#39;:&#39;, e)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;return dataset_names&lt;/p&gt;
+&lt;p&gt;train_datasets = maybe_pickle(train_folders, 45000)
+test_datasets = maybe_pickle(test_folders, 1800)&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;
+## Question Two
+
+Display processed images
+- Reference answer
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;def plot_samples_2(data_folders, sample_size, title=None):
+fig = plt.figure()&lt;/p&gt;
+&lt;h1 id=&#34;create-empty-figure&#34;&gt;Create empty figure
+&lt;/h1&gt;&lt;pre&gt;&lt;code&gt;if title: fig.suptitle(title, fontsize=16, fontweight=&#39;bold&#39;)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1 id=&#34;add-title&#34;&gt;Add title
+&lt;/h1&gt;&lt;pre&gt;&lt;code&gt;for folder in data_folders:
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1 id=&#34;loop-through-each-letter&#34;&gt;Loop through each letter
+&lt;/h1&gt;&lt;pre&gt;&lt;code&gt;    with open(folder, &#39;rb&#39;) as pk_f:
+        data = pickle.load(pk_f)
+        for index, image in enumerate(data):
+            if index &amp;lt; sample_size :
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1 id=&#34;randomly-select-a-certain-number-of-images-from-that-letter&#34;&gt;Randomly select a certain number of images from that letter
+&lt;/h1&gt;&lt;pre&gt;&lt;code&gt;                ax = fig.add_subplot(len(data_folders), sample_size, sample_size * data_folders.index(folder) +
+                             index + 1)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1 id=&#34;load-subplot-image&#34;&gt;Load subplot image
+&lt;/h1&gt;&lt;pre&gt;&lt;code&gt;                ax.imshow(image)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1 id=&#34;display-subplot-image&#34;&gt;Display subplot image
+&lt;/h1&gt;&lt;pre&gt;&lt;code&gt;                ax.set_axis_off() 
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1 id=&#34;turn-off-subplot-coordinate-lines&#34;&gt;Turn off subplot coordinate lines
+&lt;/h1&gt;&lt;pre&gt;&lt;code&gt;fig.set_size_inches(18.5, 10.5)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1 id=&#34;set-the-display-size-of-the-image&#34;&gt;Set the display size of the image
+&lt;/h1&gt;&lt;pre&gt;&lt;code&gt;plt.show()
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;plot_samples_2(train_datasets, 20, &amp;lsquo;Train&amp;rsquo;)
+plot_samples_2(test_datasets, 20, &amp;lsquo;Test&amp;rsquo;)&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;
+
+![image.png](http://upload-images.jianshu.io/upload_images/4388248-e3406390a28cd9b0.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
+
+![image.png](http://upload-images.jianshu.io/upload_images/4388248-135416c384df602a.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
+## Question Three 
+Check if the number of files under each letter is similar.
+
+- Reference answer
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;file_path = &amp;rsquo;notMNIST_large/{0}.pickle&amp;rsquo;
+for ele in &amp;lsquo;ABCDEFJHIJ&amp;rsquo;:
+with open(file_path.format(ele), &amp;lsquo;rb&amp;rsquo;) as pk_f:&lt;/p&gt;
+&lt;h1 id=&#34;loop-through-each-directory&#34;&gt;Loop through each directory
+&lt;/h1&gt;&lt;pre&gt;&lt;code&gt;    dat = pickle.load(pk_f)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1 id=&#34;load-the-persisted-file-in-this-directory&#34;&gt;Load the persisted file in this directory
+&lt;/h1&gt;&lt;pre&gt;&lt;code&gt;print(&#39;number of pictures in {}.pickle = &#39;.format(ele), dat.shape[0])
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1 id=&#34;print-relevant-information&#34;&gt;Print relevant information
+&lt;/h1&gt;&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;Results show that the numbers are basically consistent.
+![Question 3 Result](http://upload-images.jianshu.io/upload_images/4388248-dbeceed47af0c6d8.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
+## Code Segment—Data Splitting
+Data cannot be loaded all at once into memory. This code segment splits the data.
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;def make_arrays(nb_rows, img_size):
+if nb_rows:
+dataset = np.ndarray((nb_rows, img_size, img_size), dtype=np.float32)&lt;/p&gt;
+&lt;h1 id=&#34;create-an-empty-set-data-type-is-a-matrix-with-rows-length-img_size-width-img_size-height-data-type-is-32-bit-float&#34;&gt;Create an empty set, data type is a matrix with rows length, img_size width, img_size height, data type is 32-bit float
+&lt;/h1&gt;&lt;pre&gt;&lt;code&gt;labels = np.ndarray(nb_rows, dtype=np.int32)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1 id=&#34;create-a-label-data-type-is-32-bit-integer-length-is-rows&#34;&gt;Create a label, data type is 32-bit integer, length is rows
+&lt;/h1&gt;&lt;p&gt;else:
+dataset, labels = None, None
+return dataset, labels&lt;/p&gt;
+&lt;h1 id=&#34;return-created-data-type&#34;&gt;Return created data type
+&lt;/h1&gt;&lt;p&gt;def merge_datasets(pickle_files, train_size, valid_size=0):
+num_classes = len(pickle_files)&lt;/p&gt;
+&lt;h1 id=&#34;number-of-categories-to-process&#34;&gt;Number of categories to process
+&lt;/h1&gt;&lt;p&gt;valid_dataset, valid_labels = make_arrays(valid_size, image_size)&lt;/p&gt;
+&lt;h1 id=&#34;build-validation-dataset-length-is-validation-length&#34;&gt;Build validation dataset, length is validation length
+&lt;/h1&gt;&lt;p&gt;train_dataset, train_labels = make_arrays(train_size, image_size)&lt;/p&gt;
+&lt;h1 id=&#34;build-training-dataset-length-is-training-length&#34;&gt;Build training dataset, length is training length
+&lt;/h1&gt;&lt;p&gt;vsize_per_class = valid_size // num_classes
+tsize_per_class = train_size // num_classes&lt;/p&gt;
+&lt;h1 id=&#34;calculate-average-length-for-each-category-with-given-training-and-validation-lengths&#34;&gt;Calculate average length for each category with given training and validation lengths
+&lt;/h1&gt;&lt;p&gt;start_v, start_t = 0, 0&lt;/p&gt;
+&lt;h1 id=&#34;initialize-indices-start_v-is-the-start-of-validation-data-start_t-is-the-start-of-training-data&#34;&gt;Initialize indices, start_v is the start of validation data, start_t is the start of training data
+&lt;/h1&gt;&lt;p&gt;end_v, end_t = vsize_per_class, tsize_per_class&lt;/p&gt;
+&lt;h1 id=&#34;initialize-indices-end_v-is-the-end-of-validation-data-end_t-is-the-end-of-training-data&#34;&gt;Initialize indices, end_v is the end of validation data, end_t is the end of training data
+&lt;/h1&gt;&lt;p&gt;end_l = vsize_per_class + tsize_per_class&lt;/p&gt;
+&lt;h1 id=&#34;initialize-indices-end_l-is-the-end-of-the-letter-set-equal-to-length-of-validation-data-for-each-category--length-of-training-data&#34;&gt;Initialize indices, end_l is the end of the letter set, equal to length of validation data for each category + length of training data
+&lt;/h1&gt;&lt;p&gt;for label, pickle_file in enumerate(pickle_files):&lt;/p&gt;
+&lt;h1 id=&#34;loop-through-each-pickle_file&#34;&gt;Loop through each pickle_file
+&lt;/h1&gt;&lt;pre&gt;&lt;code&gt;try:
+  with open(pickle_file, &#39;rb&#39;) as f:
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1 id=&#34;open-this-persistence-file&#34;&gt;Open this persistence file
+&lt;/h1&gt;&lt;pre&gt;&lt;code&gt;    letter_set = pickle.load(f)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1 id=&#34;load-dataset&#34;&gt;Load dataset
+&lt;/h1&gt;&lt;pre&gt;&lt;code&gt;    # let&#39;s shuffle the letters to have random validation and training set
+    np.random.shuffle(letter_set)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1 id=&#34;shuffle-the-dataset&#34;&gt;Shuffle the dataset
+&lt;/h1&gt;&lt;pre&gt;&lt;code&gt;    if valid_dataset is not None:
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1 id=&#34;if-not-a-test-set-update-the-test-set-otherwise-valid_dataset-is-not-updated&#34;&gt;If not a test set, update the test set, otherwise valid_dataset is not updated
+&lt;/h1&gt;&lt;pre&gt;&lt;code&gt;      valid_letter = letter_set[:vsize_per_class, :, :]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1 id=&#34;numpy-slicing-----httpbrieflyxme2015python-modulenumpy-array-split&#34;&gt;numpy slicing     &lt;a class=&#34;link&#34; href=&#34;http://brieflyx.me/2015/python-module/numpy-array-split/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;http://brieflyx.me/2015/python-module/numpy-array-split/&lt;/a&gt;
+&lt;/h1&gt;&lt;h1 id=&#34;select-data-of-valid-data-per-class-count-from-shuffled-data-for-processing-put-into-valid_letter&#34;&gt;Select data of &amp;lsquo;valid data per class&amp;rsquo; count from shuffled data for processing, put into valid_letter
+&lt;/h1&gt;&lt;pre&gt;&lt;code&gt;      valid_dataset[start_v:end_v, :, :] = valid_letter
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1 id=&#34;put-this-data-into-valid_dataset&#34;&gt;Put this data into valid_dataset
+&lt;/h1&gt;&lt;pre&gt;&lt;code&gt;      valid_labels[start_v:end_v] = label
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1 id=&#34;mark-label-should-be-one-of-09&#34;&gt;Mark label should be one of 0~9
+&lt;/h1&gt;&lt;pre&gt;&lt;code&gt;      start_v += vsize_per_class
+      end_v += vsize_per_class
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1 id=&#34;update-indices&#34;&gt;Update indices
+&lt;/h1&gt;&lt;h1 id=&#34;at-the-end-of-the-loop-valid_dataset-should-be-data-with-total-length-valid_size-valid_labels-is-the-label-at-the-corresponding-position&#34;&gt;At the end of the loop, valid_dataset should be data with total length valid_size, valid_labels is the label at the corresponding position
+&lt;/h1&gt;&lt;pre&gt;&lt;code&gt;    train_letter = letter_set[vsize_per_class:end_l, :, :]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1 id=&#34;other-random-elements-except-valid-part-length-is-end_l---vsize_per_class--tsize_per_class&#34;&gt;Other random elements except valid part, length is end_l - vsize_per_class = tsize_per_class
+&lt;/h1&gt;&lt;pre&gt;&lt;code&gt;    train_dataset[start_t:end_t, :, :] = train_letter
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1 id=&#34;at-the-end-of-the-loop-train_dataset-should-be-data-with-total-length-train_size&#34;&gt;At the end of the loop, train_dataset should be data with total length train_size
+&lt;/h1&gt;&lt;h1 id=&#34;heading&#34;&gt;
+&lt;/h1&gt;&lt;pre&gt;&lt;code&gt;    train_labels[start_t:end_t] = label
+    start_t += tsize_per_class
+    end_t += tsize_per_class
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1 id=&#34;update-indices-1&#34;&gt;Update indices
+&lt;/h1&gt;&lt;pre&gt;&lt;code&gt;except Exception as e:
+  print(&#39;Unable to process data from&#39;, pickle_file, &#39;:&#39;, e)
+  raise
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;return valid_dataset, valid_labels, train_dataset, train_labels&lt;/p&gt;
+&lt;p&gt;train_size = 200000
+valid_size = 10000
+test_size = 10000&lt;/p&gt;
+&lt;p&gt;valid_dataset, valid_labels, train_dataset, train_labels = merge_datasets(
+train_datasets, train_size, valid_size)
+_, _, test_dataset, test_labels = merge_datasets(test_datasets, test_size)&lt;/p&gt;
+&lt;p&gt;print(&amp;lsquo;Training:&amp;rsquo;, train_dataset.shape, train_labels.shape)
+print(&amp;lsquo;Validation:&amp;rsquo;, valid_dataset.shape, valid_labels.shape)
+print(&amp;lsquo;Testing:&amp;rsquo;, test_dataset.shape, test_labels.shape)&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;
+## Code Segment—Shuffling Data
+Introduction to the permutation function: http://www.jianshu.com/p/f0eb10acaa2d
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;def randomize(dataset, labels):&lt;/p&gt;
+&lt;h1 id=&#34;labelsshape0-is-the-length-of-labels&#34;&gt;labels.shape[0] is the length of labels
+&lt;/h1&gt;&lt;p&gt;permutation = np.random.permutation(labels.shape[0])&lt;/p&gt;
+&lt;h1 id=&#34;randomly-select-a-shuffled-set-of-this-many-numbers&#34;&gt;Randomly select a shuffled set of this many numbers
+&lt;/h1&gt;&lt;p&gt;print(labels.shape[0])
+shuffled_dataset = dataset[permutation,:,:]&lt;/p&gt;
+&lt;h1 id=&#34;shuffle-data&#34;&gt;Shuffle data
+&lt;/h1&gt;&lt;p&gt;shuffled_labels = labels[permutation]&lt;/p&gt;
+&lt;h1 id=&#34;shuffle-labels&#34;&gt;Shuffle labels
+&lt;/h1&gt;&lt;p&gt;return shuffled_dataset, shuffled_labels
+train_dataset, train_labels = randomize(train_dataset, train_labels)
+test_dataset, test_labels = randomize(test_dataset, test_labels)
+valid_dataset, valid_labels = randomize(valid_dataset, valid_labels)&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;
+## Question Four
+Verify if the shuffled data is correct
+
+- Reference answer
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;import random
+def plot_sample_3(dataset, labels, title):
+fig = plt.figure()
+plt.suptitle(title, fontsize=16, fontweight=&amp;lsquo;bold&amp;rsquo;)&lt;/p&gt;
+&lt;h1 id=&#34;set-title-style&#34;&gt;Set title style
+&lt;/h1&gt;&lt;pre&gt;&lt;code&gt;items = random.sample(range(len(labels)), 200)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1 id=&#34;shuffle-the-sequential-sequence-of-labels-length&#34;&gt;Shuffle the sequential sequence of labels length
+&lt;/h1&gt;&lt;pre&gt;&lt;code&gt;for i, item in enumerate(items):
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1 id=&#34;randomly-pick-one&#34;&gt;Randomly pick one
+&lt;/h1&gt;&lt;pre&gt;&lt;code&gt;    plt.subplot(10, 20, i + 1)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1 id=&#34;draw-subplot&#34;&gt;Draw subplot
+&lt;/h1&gt;&lt;pre&gt;&lt;code&gt;    plt.axis(&#39;off&#39;)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1 id=&#34;turn-off-coordinate-axes&#34;&gt;Turn off coordinate axes
+&lt;/h1&gt;&lt;pre&gt;&lt;code&gt;    plt.title(chr(ord(&#39;A&#39;) + labels[item]))
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1 id=&#34;add-title-1&#34;&gt;Add title
+&lt;/h1&gt;&lt;pre&gt;&lt;code&gt;    plt.imshow(dataset[item])
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1 id=&#34;display-subplot-at-corresponding-position&#34;&gt;Display subplot at corresponding position
+&lt;/h1&gt;&lt;pre&gt;&lt;code&gt;fig.set_size_inches(18.5, 10.5)
+plt.show()
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1 id=&#34;display-image&#34;&gt;Display image
+&lt;/h1&gt;&lt;p&gt;plot_sample_3(train_dataset, train_labels, &amp;rsquo;train dataset suffled&amp;rsquo;)
+plot_sample_3(valid_dataset, valid_labels, &amp;lsquo;valid dataset suffled&amp;rsquo;)
+plot_sample_3(test_dataset, test_labels, &amp;rsquo;test dataset suffled&amp;rsquo;)&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;
+![Question 4](http://upload-images.jianshu.io/upload_images/4388248-c33532945864acd9.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
+Similar two figures omitted
+
+## Code Segment—Saving Data
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;pickle_file = os.path.join(data_root, &amp;rsquo;notMNIST.pickle&amp;rsquo;)&lt;/p&gt;
+&lt;h1 id=&#34;output-file-path&#34;&gt;Output file path
+&lt;/h1&gt;&lt;p&gt;try:
+f = open(pickle_file, &amp;lsquo;wb&amp;rsquo;)&lt;/p&gt;
+&lt;h1 id=&#34;open-this-file&#34;&gt;Open this file
+&lt;/h1&gt;&lt;p&gt;save = {
+&amp;rsquo;train_dataset&amp;rsquo;: train_dataset,
+&amp;rsquo;train_labels&amp;rsquo;: train_labels,
+&amp;lsquo;valid_dataset&amp;rsquo;: valid_dataset,
+&amp;lsquo;valid_labels&amp;rsquo;: valid_labels,
+&amp;rsquo;test_dataset&amp;rsquo;: test_dataset,
+&amp;rsquo;test_labels&amp;rsquo;: test_labels,
+}&lt;/p&gt;
+&lt;h1 id=&#34;write-a-dictionary-string-ndarray&#34;&gt;Write a dictionary string-ndarray
+&lt;/h1&gt;&lt;p&gt;pickle.dump(save, f, pickle.HIGHEST_PROTOCOL)
+f.close()
+except Exception as e:
+print(&amp;lsquo;Unable to save data to&amp;rsquo;, pickle_file, &amp;lsquo;:&amp;rsquo;, e)
+raise&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;
+## Code Segment—Displaying Saved Data Size
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;statinfo = os.stat(pickle_file)
+print(&amp;lsquo;Compressed pickle size:&amp;rsquo;, statinfo.st_size)&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;
+## Question Five
+Google translation of the question:
+
+By construction, this dataset may contain a lot of overlapping samples, including in the validation and test sets. Overlap between training and test can skew the results if you expect to use your model in an environment where there is never an overlap, but in practice this doesn&amp;#39;t usually matter. Measure how much overlap there is between training, validation, and test samples.
+Optional question:
+What about the duplicates between datasets? (For instance, the same letter images)
+Create a sanitized validation and test set, and compare your accuracy on those versus your accuracy on the original sets.
+
+The basic idea is that training data should not overlap with testing data, otherwise it leads to inaccurate accuracy.
+
+Reference code:
+- Just check the number of duplicate images
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;import hashlib&lt;/p&gt;
+&lt;p&gt;pickle_file = os.path.join(&amp;rsquo;.&amp;rsquo;, &amp;rsquo;notMNIST.pickle&amp;rsquo;)
+try:
+with open(pickle_file, &amp;lsquo;rb&amp;rsquo;) as f:
+data = pickle.load(f)
+except Exception as e:
+print(&amp;lsquo;Unable to open data from&amp;rsquo;, pickle_file, &amp;lsquo;:&amp;rsquo;, e)
+raise&lt;/p&gt;
+&lt;h1 id=&#34;after-saving-the-data-if-the-kernel-crashed-you-can-read-directly-from-local-without-rerunning-previous-code&#34;&gt;After saving the data, if the kernel crashed, you can read directly from local without rerunning previous code
+&lt;/h1&gt;&lt;h1 id=&#34;if-theres-an-error-you-can-search-for-the-exception-online&#34;&gt;If there&amp;rsquo;s an error, you can search for the exception online
+&lt;/h1&gt;&lt;p&gt;def calcOverlap(sourceSet, targetSet, description):
+sourceSetMd5 = np.array([hashlib.md5(img).hexdigest() for img in sourceSet])&lt;/p&gt;
+&lt;h1 id=&#34;build-an-md5-table&#34;&gt;Build an md5 table
+&lt;/h1&gt;&lt;pre&gt;&lt;code&gt;targetSetMd5 = np.array([hashlib.md5(img).hexdigest() for img in targetSet])
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1 id=&#34;build-an-md5-table-1&#34;&gt;Build an md5 table
+&lt;/h1&gt;&lt;pre&gt;&lt;code&gt;overlap = np.intersect1d(sourceSetMd5, targetSetMd5, assume_unique=False)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1 id=&#34;deduplicate&#34;&gt;Deduplicate
+&lt;/h1&gt;&lt;pre&gt;&lt;code&gt;print(description)
+print(&amp;quot;overlap&amp;quot;,overlap.shape[0], &amp;quot;from&amp;quot;,sourceSetMd5.shape[0],&amp;quot;to&amp;quot;, targetSetMd5.shape[0])
+print(&amp;quot;rate&amp;quot;,overlap.shape[0]*100.0/sourceSetMd5.shape[0],&amp;quot;% and&amp;quot;, overlap.shape[0]*100.0/targetSetMd5.shape[0],&amp;quot;%&amp;quot;)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1 id=&#34;print-overlap-count&#34;&gt;Print overlap count
+&lt;/h1&gt;&lt;p&gt;calcOverlap(data[&amp;rsquo;train_dataset&amp;rsquo;], data[&amp;lsquo;valid_dataset&amp;rsquo;], &amp;ldquo;train_dataset &amp;amp; valid_dataset&amp;rdquo;)
+calcOverlap(data[&amp;rsquo;train_dataset&amp;rsquo;], data[&amp;rsquo;test_dataset&amp;rsquo;], &amp;ldquo;train_dataset &amp;amp; test_dataset&amp;rdquo;)
+calcOverlap(data[&amp;rsquo;test_dataset&amp;rsquo;], data[&amp;lsquo;valid_dataset&amp;rsquo;], &amp;ldquo;test_dataset &amp;amp; valid_dataset&amp;rdquo;)&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;
+![Running result](http://upload-images.jianshu.io/upload_images/4388248-2882159fe68dc672.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
+- Remove duplicate image resources
+To be updated
+
+## Question Six
+Use logistic regression to train the model and test it
+
+- Reference code
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;import random
+def disp_sample_dataset(dataset, labels,trueLabels, title=None):&lt;/p&gt;
+&lt;h1 id=&#34;display-training-results&#34;&gt;Display training results
+&lt;/h1&gt;&lt;pre&gt;&lt;code&gt;fig = plt.figure()
+if title: fig.suptitle(title, fontsize=16, fontweight=&#39;bold&#39;)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1 id=&#34;set-title-style-1&#34;&gt;Set title style
+&lt;/h1&gt;&lt;pre&gt;&lt;code&gt;items = random.sample(range(len(labels)), 200)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1 id=&#34;randomly-select-a-series-of-images&#34;&gt;Randomly select a series of images
+&lt;/h1&gt;&lt;pre&gt;&lt;code&gt;for i, item in enumerate(items):
+    plt.subplot(10, 20, i + 1)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1 id=&#34;set-a-subplot&#34;&gt;Set a subplot
+&lt;/h1&gt;&lt;pre&gt;&lt;code&gt;    plt.axis(&#39;off&#39;)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1 id=&#34;turn-off-coordinate-lines&#34;&gt;Turn off coordinate lines
+&lt;/h1&gt;&lt;pre&gt;&lt;code&gt;    lab = str(chr(ord(&#39;A&#39;) + labels[item]))
+    trueLab = str(chr(ord(&#39;A&#39;) + trueLabels[item]))
+    if lab == trueLab:
+        plt.title( lab )
+    else:
+        plt.title(lab + &amp;quot; but &amp;quot; + trueLab)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1 id=&#34;add-title-2&#34;&gt;Add title
+&lt;/h1&gt;&lt;pre&gt;&lt;code&gt;    plt.imshow(dataset[item])
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1 id=&#34;display-this-image&#34;&gt;Display this image
+&lt;/h1&gt;&lt;pre&gt;&lt;code&gt;fig.set_size_inches(18.5, 10.5)
+plt.show()
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;def train_and_predict(train_dataset, train_labels, test_dataset, test_labels ,sample_size):
+regr = LogisticRegression()&lt;/p&gt;
+&lt;h1 id=&#34;generate-trainer&#34;&gt;Generate trainer
+&lt;/h1&gt;&lt;pre&gt;&lt;code&gt;X_train = train_dataset[:sample_size].reshape(sample_size, 784)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1 id=&#34;choose-amount-of-data-to-train-based-on-sample_size&#34;&gt;Choose amount of data to train based on sample_size
+&lt;/h1&gt;&lt;h1 id=&#34;compress-2d-vector-to-1d-vector&#34;&gt;Compress 2D vector to 1D vector
+&lt;/h1&gt;&lt;pre&gt;&lt;code&gt;y_train = train_labels[:sample_size]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1 id=&#34;extract-training-data&#34;&gt;Extract training data
+&lt;/h1&gt;&lt;pre&gt;&lt;code&gt;regr.fit(X_train, y_train)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1 id=&#34;train-data&#34;&gt;Train data
+&lt;/h1&gt;&lt;pre&gt;&lt;code&gt;X_test = test_dataset.reshape(test_dataset.shape[0], 28 * 28)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1 id=&#34;compress-test-data-to-1d-vector&#34;&gt;Compress test data to 1D vector
+&lt;/h1&gt;&lt;pre&gt;&lt;code&gt;y_test = test_labels
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1 id=&#34;true-labels-corresponding-to-test-data&#34;&gt;True labels corresponding to test data
+&lt;/h1&gt;&lt;pre&gt;&lt;code&gt;pred_labels = regr.predict(X_test)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1 id=&#34;generate-prediction-data&#34;&gt;Generate prediction data
+&lt;/h1&gt;&lt;pre&gt;&lt;code&gt;print(&#39;Accuracy:&#39;, regr.score(X_test, y_test), &#39;when sample_size=&#39;, sample_size)
+disp_sample_dataset(test_dataset, pred_labels, test_labels, &#39;sample_size=&#39; + str(sample_size))
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;train_and_predict(data[&amp;rsquo;train_dataset&amp;rsquo;],data[&amp;rsquo;train_labels&amp;rsquo;],data[&amp;rsquo;test_dataset&amp;rsquo;],data[&amp;rsquo;test_labels&amp;rsquo;], 1000)&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;
+![image.png](http://upload-images.jianshu.io/upload_images/4388248-6b3fb8a1d1b1ce34.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
+
+## Model Performance
+
+Sections 22~27 discuss model performance-related knowledge. We usually hope that the model&amp;#39;s performance can reach 100%, which is obviously impossible. Also, in order to improve the accuracy of the training set, the model may overfit. At this point, we should follow two points:
+- Don&amp;#39;t use all training data at once, but use it in blocks, train a portion each time
+- When model parameter changes cause 30 or more cases to change from error to correct, then this parameter change is effective.
+
+
+![Model Performance](http://upload-images.jianshu.io/upload_images/4388248-033910ba1d5c09e3.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
+## Stochastic Gradient Descent
+Sections 29~31 explain what stochastic gradient descent is.
+During training, to make the model move in the optimal direction, we need to calculate the derivative at that point. 1. The calculation of derivatives is quite large, so we need to randomly select a subset of samples to calculate derivatives, to substitute for the real derivative. This is stochastic gradient descent. 2. To reduce the randomness of random selection, we use momentum inertia to reduce randomness. 3. To make the model stable in later stages, we reduce the learning step size.
+
+End of Course One
+
+
+&amp;gt; Reference for assignment code
+&amp;gt; http://www.hankcs.com/ml/notmnist.html
+&lt;/code&gt;&lt;/pre&gt;</description>
+        </item>
+        
+    </channel>
+</rss>

@@ -1,0 +1,1159 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>C&#43;&#43; on Nansen Li</title>
+        <link>https://nansenli.com/categories/c&#43;&#43;/</link>
+        <description>Recent content in C&#43;&#43; on Nansen Li</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>en</language>
+        <copyright>Nansen Li（李楠森）</copyright>
+        <lastBuildDate>Fri, 02 Nov 2018 06:49:00 +0000</lastBuildDate><atom:link href="https://nansenli.com/categories/c++/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>Using OpenSSL AES Encryption Algorithm API</title>
+        <link>https://nansenli.com/post/jianshu/c&#43;&#43;/openssl-aes-%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95-api%E4%BD%BF%E7%94%A8/</link>
+        <pubDate>Fri, 02 Nov 2018 06:49:00 +0000</pubDate>
+        
+        <guid>https://nansenli.com/post/jianshu/c&#43;&#43;/openssl-aes-%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95-api%E4%BD%BF%E7%94%A8/</guid>
+        <description>&lt;h2 id=&#34;example-using-aes-128-cbc-encryption-algorithm&#34;&gt;Example: Using AES-128-CBC Encryption Algorithm
+&lt;/h2&gt;&lt;p&gt;This example uses pkcs5_encode padding method, which is also compatible with pkcs7_encode&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-c++&#34; data-lang=&#34;c++&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;#include&lt;/span&gt; &lt;span style=&#34;color:#75715e&#34;&gt;&amp;lt;stdio.h&amp;gt;&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;#include&lt;/span&gt; &lt;span style=&#34;color:#75715e&#34;&gt;&amp;lt;stdlib.h&amp;gt;&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;#include&lt;/span&gt; &lt;span style=&#34;color:#75715e&#34;&gt;&amp;lt;string.h&amp;gt;&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;#include&lt;/span&gt; &lt;span style=&#34;color:#75715e&#34;&gt;&amp;lt;openssl/aes.h&amp;gt;&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;#include&lt;/span&gt; &lt;span style=&#34;color:#75715e&#34;&gt;&amp;lt;openssl/rand.h&amp;gt;&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;// a simple hex-print routine. could be modified to print 16 bytes-per-line
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;static&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;void&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;hex_print&lt;/span&gt;(&lt;span style=&#34;color:#66d9ef&#34;&gt;const&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;void&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt; pv, size_t len)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;const&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;unsigned&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;char&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt; p &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; (&lt;span style=&#34;color:#66d9ef&#34;&gt;const&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;unsigned&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;char&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt;)pv;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (NULL &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; pv)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        printf(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;NULL&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;else&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        size_t i &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;for&lt;/span&gt; (; i&lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt;len;&lt;span style=&#34;color:#f92672&#34;&gt;++&lt;/span&gt;i)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            printf(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;%02X &amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt;p&lt;span style=&#34;color:#f92672&#34;&gt;++&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    printf(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;\n&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;void&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;pkcs7_encode&lt;/span&gt;(&lt;span style=&#34;color:#66d9ef&#34;&gt;uint8_t&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt;in, &lt;span style=&#34;color:#66d9ef&#34;&gt;uint8_t&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt;out, &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; inlen, &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt;outlen, &lt;span style=&#34;color:#66d9ef&#34;&gt;const&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; enc)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;// uint8_t padchr[16] = {0x10, 0x0f, 0x0e, 0x0d, 0x0c, 0x0b, 0x0a, 0x09, 0x08, 0x07, 0x06, 0x05, 0x04, 0x03, 0x02, 0x01};
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt;(inlen &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;=&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;) &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;// Add padding
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (enc &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; AES_ENCRYPT) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt;outlen &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; inlen &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;16&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt; inlen &lt;span style=&#34;color:#f92672&#34;&gt;%&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;16&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;for&lt;/span&gt; (&lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; i &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;; i &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt;outlen; i&lt;span style=&#34;color:#f92672&#34;&gt;++&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (i &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt; inlen)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                out[i] &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; in[i];
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#66d9ef&#34;&gt;else&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                out[i] &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;16&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt; inlen &lt;span style=&#34;color:#f92672&#34;&gt;%&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;16&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;// Remove padding
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;else&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (enc &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; AES_DECRYPT) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt;outlen &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; inlen &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt; (in[inlen&lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;]);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;for&lt;/span&gt; (&lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; i&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;; i&lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt;outlen; i&lt;span style=&#34;color:#f92672&#34;&gt;++&lt;/span&gt;) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            out[i] &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; in[i];
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;main&lt;/span&gt;(&lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; argc, &lt;span style=&#34;color:#66d9ef&#34;&gt;char&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;**&lt;/span&gt;argv)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; keylength;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    printf(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Give a key length [only 128 or 192 or 256!]:&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;\n&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    scanf(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;%d&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#f92672&#34;&gt;&amp;amp;&lt;/span&gt;keylength);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;/* generate a key with a given length */&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;unsigned&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;char&lt;/span&gt; aes_key[&lt;span style=&#34;color:#ae81ff&#34;&gt;16&lt;/span&gt;] &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; {&lt;span style=&#34;color:#ae81ff&#34;&gt;0x00&lt;/span&gt;,&lt;span style=&#34;color:#ae81ff&#34;&gt;0x01&lt;/span&gt;,&lt;span style=&#34;color:#ae81ff&#34;&gt;0x02&lt;/span&gt;,&lt;span style=&#34;color:#ae81ff&#34;&gt;0x03&lt;/span&gt;,&lt;span style=&#34;color:#ae81ff&#34;&gt;0x04&lt;/span&gt;,&lt;span style=&#34;color:#ae81ff&#34;&gt;0x05&lt;/span&gt;,&lt;span style=&#34;color:#ae81ff&#34;&gt;0x06&lt;/span&gt;,&lt;span style=&#34;color:#ae81ff&#34;&gt;0x07&lt;/span&gt;,&lt;span style=&#34;color:#ae81ff&#34;&gt;0x08&lt;/span&gt;,&lt;span style=&#34;color:#ae81ff&#34;&gt;0x09&lt;/span&gt;,&lt;span style=&#34;color:#ae81ff&#34;&gt;0x0a&lt;/span&gt;,&lt;span style=&#34;color:#ae81ff&#34;&gt;0x0b&lt;/span&gt;,&lt;span style=&#34;color:#ae81ff&#34;&gt;0x0c&lt;/span&gt;,&lt;span style=&#34;color:#ae81ff&#34;&gt;0x0d&lt;/span&gt;,&lt;span style=&#34;color:#ae81ff&#34;&gt;0x0e&lt;/span&gt;,&lt;span style=&#34;color:#ae81ff&#34;&gt;0x0f&lt;/span&gt;};
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    size_t inputslength &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    printf(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Give an input&amp;#39;s length:&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;\n&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    scanf(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;%lu&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#f92672&#34;&gt;&amp;amp;&lt;/span&gt;inputslength);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;/* generate input with a given length */&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;unsigned&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;char&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt; aes_input &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; malloc(inputslength);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;unsigned&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;char&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt; aes_out &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; malloc(inputslength);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    memset(aes_input, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;X&amp;#39;&lt;/span&gt;, inputslength);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;/* init vector */&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;unsigned&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;char&lt;/span&gt; iv_enc[AES_BLOCK_SIZE] &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; {&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;}, iv_dec[AES_BLOCK_SIZE]&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;{&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;};
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;const&lt;/span&gt; size_t encslength &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; ((inputslength &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; AES_BLOCK_SIZE) &lt;span style=&#34;color:#f92672&#34;&gt;/&lt;/span&gt; AES_BLOCK_SIZE) &lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt; AES_BLOCK_SIZE;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;unsigned&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;char&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt; enc_in &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; malloc(encslength);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    pkcs7_encode(aes_input, enc_in, inputslength, &lt;span style=&#34;color:#f92672&#34;&gt;&amp;amp;&lt;/span&gt;encslength, AES_ENCRYPT);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;unsigned&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;char&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt; enc_out &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; malloc(encslength);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    AES_KEY enc_key;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    AES_set_encrypt_key(aes_key, keylength, &lt;span style=&#34;color:#f92672&#34;&gt;&amp;amp;&lt;/span&gt;enc_key);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    AES_cbc_encrypt(enc_in, enc_out, encslength, &lt;span style=&#34;color:#f92672&#34;&gt;&amp;amp;&lt;/span&gt;enc_key, iv_enc, AES_ENCRYPT);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    printf(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;original:&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;\t&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    hex_print(aes_input, inputslength);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    printf(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;padding:&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;\t&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    hex_print(enc_in, encslength);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    printf(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;encrypt:&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;\t&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    hex_print(enc_out, encslength);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;unsigned&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;char&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt; dec_out &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; malloc(encslength);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    AES_KEY dec_key;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    AES_set_decrypt_key(aes_key, keylength, &lt;span style=&#34;color:#f92672&#34;&gt;&amp;amp;&lt;/span&gt;dec_key);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    AES_cbc_encrypt(enc_out, dec_out, encslength, &lt;span style=&#34;color:#f92672&#34;&gt;&amp;amp;&lt;/span&gt;dec_key, iv_dec, AES_DECRYPT);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    pkcs7_encode(dec_out, aes_out, encslength, &lt;span style=&#34;color:#f92672&#34;&gt;&amp;amp;&lt;/span&gt;inputslength, AES_DECRYPT);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    printf(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;decrypt:&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;\t&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    hex_print(dec_out, encslength);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    printf(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;depadding:&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;\t&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    hex_print(aes_out, inputslength);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;int8_t&lt;/span&gt; buff[&lt;span style=&#34;color:#ae81ff&#34;&gt;100&lt;/span&gt;];
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;long&lt;/span&gt; bufflen;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description>
+        </item>
+        <item>
+        <title>Learning GDB from Scratch</title>
+        <link>https://nansenli.com/post/jianshu/c&#43;&#43;/gdb-%E4%BB%8E%E9%9B%B6%E5%AD%A6%E4%B9%A0/</link>
+        <pubDate>Wed, 25 Apr 2018 16:45:00 +0000</pubDate>
+        
+        <guid>https://nansenli.com/post/jianshu/c&#43;&#43;/gdb-%E4%BB%8E%E9%9B%B6%E5%AD%A6%E4%B9%A0/</guid>
+        <description>&lt;p&gt;Let&amp;rsquo;s start with an example.&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;#include &amp;lt;stdio.h&amp;gt;
+void my_itoa(int n,char s[])  
+{  
+    int i,j,sign;  
+  
+    if((sign=n)&amp;lt;0)    // record sign  
+        n=-n;         // make n positive  
+    i=0;  
+    do{  
+        s[i++]=n%10+&amp;#39;0&amp;#39;;    // get the next digit  
+    }while((n/=10)&amp;gt;0);      // loop through division  
+  
+    if(sign&amp;lt;0)  
+        s[i++]=&amp;#39;-&amp;#39;;  
+    s[i]=&amp;#39;\0&amp;#39;;  
+    for(j=i-1;j&amp;gt;=0;j--)        // the generated numbers are in reverse order, so output them in reverse  
+        printf(&amp;#34;%c&amp;#34;,s[j]);  
+}  
+  
+  
+void main()  
+{  
+    int n;  
+    char str[100];  
+    my_itoa(-123,str);  
+    printf(&amp;#34;\n&amp;#34;);  
+    printf(&amp;#34;%d\n&amp;#34;,my_atoi(&amp;#34;123&amp;#34;));  
+    system(&amp;#34;pause&amp;#34;);  
+}  
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Save the above file to test.cpp, then compile and run it.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://upload-images.jianshu.io/upload_images/4388248-365b4bab0dedb77f.gif?imageMogr2/auto-orient/strip&#34;
+	
+	
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;Peek 2018-04-16 17-25.gif&#34;
+	
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Now let&amp;rsquo;s debug it and see how to debug specifically. Debug the code following the method below.&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;linan@linan-PC:~$ gdb test
+GNU gdb (Debian 7.12-6) 7.12.0.20161007-git
+Copyright (C) 2016 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later &amp;lt;http://gnu.org/licenses/gpl.html&amp;gt;
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.  Type &amp;#34;show copying&amp;#34;
+and &amp;#34;show warranty&amp;#34; for details.
+This GDB was configured as &amp;#34;x86_64-linux-gnu&amp;#34;.
+Type &amp;#34;show configuration&amp;#34; for configuration details.
+For bug reporting instructions, please see:
+&amp;lt;http://www.gnu.org/software/gdb/bugs/&amp;gt;.
+Find the GDB manual and other documentation resources online at:
+&amp;lt;http://www.gnu.org/software/gdb/documentation/&amp;gt;.
+For help, type &amp;#34;help&amp;#34;.
+Type &amp;#34;apropos word&amp;#34; to search for commands related to &amp;#34;word&amp;#34;...
+Reading symbols from test...done.
+(gdb) l
+2	
+3	int func(int n)
+4	{
+5	    int sum=0,i;
+6	    for(i=0; i&amp;lt;n; i++)
+7	    {
+8	        sum+=i;
+9	    }
+10	    return sum;
+11	}
+(gdb) 
+12	
+13	main()
+14	{
+15	    int i;
+16	    long result = 0;
+17	    for(i=1; i&amp;lt;=100; i++)
+18	    {
+19	        result += i;
+20	    }
+21	
+(gdb) 
+22	    printf(&amp;#34;result[1-100] = %d \n&amp;#34;, result );
+23	    printf(&amp;#34;result[1-250] = %d \n&amp;#34;, func(250) );
+24	}
+(gdb) 
+Line number 25 out of range; test.cpp has 24 lines.
+(gdb) break 15
+Breakpoint 1 at 0x706: file test.cpp, line 15.
+(gdb) break func
+Breakpoint 2 at 0x6d7: file test.cpp, line 5.
+(gdb) info break
+Num     Type           Disp Enb Address            What
+1       breakpoint     keep y   0x0000000000000706 in main() at test.cpp:15
+2       breakpoint     keep y   0x00000000000006d7 in func(int) at test.cpp:5
+(gdb) run
+Starting program: /home/linan/test 
+
+Breakpoint 1, main () at test.cpp:16
+16	    long result = 0;
+(gdb) next
+17	    for(i=1; i&amp;lt;=100; i++)
+(gdb) next
+19	        result += i;
+(gdb) next
+17	    for(i=1; i&amp;lt;=100; i++)
+(gdb) continue
+Continuing.
+result[1-100] = 5050 
+
+Breakpoint 2, func (n=250) at test.cpp:5
+5	    int sum=0,i;
+(gdb) p sum
+$1 = 32767
+(gdb) n
+6	    for(i=0; i&amp;lt;n; i++)
+(gdb) p sum
+$2 = 0
+(gdb) p i
+$3 = -134225552
+(gdb) print i
+$4 = -134225552
+(gdb) n
+8	        sum+=i;
+(gdb) print i
+$5 = 0
+(gdb) bt
+#0  func (n=250) at test.cpp:8
+#1  0x000055555555474c in main () at test.cpp:23
+(gdb) help bt
+Print backtrace of all stack frames, or innermost COUNT frames.
+With a negative argument, print outermost -COUNT frames.
+Use of the &amp;#39;full&amp;#39; qualifier also prints the values of the local variables.
+Use of the &amp;#39;no-filters&amp;#39; qualifier prohibits frame filters from executing
+on this backtrace.
+
+(gdb) bt
+#0  func (n=250) at test.cpp:8
+#1  0x000055555555474c in main () at test.cpp:23
+(gdb) finish
+Run till exit from #0  func (n=250) at test.cpp:8
+0x000055555555474c in main () at test.cpp:23
+23	    printf(&amp;#34;result[1-250] = %d \n&amp;#34;, func(250) );
+Value returned is $6 = 31125
+(gdb) c
+Continuing.
+result[1-250] = 31125 
+[Inferior 1 (process 11480) exited normally]
+(gdb) 
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;&lt;img src=&#34;https://upload-images.jianshu.io/upload_images/4388248-288cfdbb3c85ce2b.gif?imageMogr2/auto-orient/strip&#34;
+	
+	
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;Peek 2018-04-16 17-39.gif&#34;
+	
+	
+&gt;&lt;/p&gt;
+&lt;h2 id=&#34;before-using-gdb&#34;&gt;Before Using GDB
+&lt;/h2&gt;&lt;p&gt;First, make sure your program was compiled with the -g parameter. This will insert relevant information into the executable program. This information doesn&amp;rsquo;t help the program but assists with debugging.&lt;/p&gt;
+&lt;h2 id=&#34;starting-debugging-with-gdb&#34;&gt;Starting Debugging with GDB
+&lt;/h2&gt;&lt;p&gt;There are several ways to launch GDB:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;gdb &lt;!-- raw HTML omitted --&gt;
+program is your executable file, usually in the current directory.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;gdb &lt;!-- raw HTML omitted --&gt; core
+Use gdb to simultaneously debug a running program and core file. The core file is generated after a program illegally executes and core dumps.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;gdb &lt;!-- raw HTML omitted --&gt; &lt;!-- raw HTML omitted --&gt;
+If your program is a service program, you can specify the process ID of the running service program. gdb will automatically &lt;strong&gt;attach&lt;/strong&gt; to it and debug it. The program should be found in the PATH environment variable.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;notes-for-gdb-beginners&#34;&gt;Notes for GDB Beginners
+&lt;/h2&gt;&lt;p&gt;When debugging with GDB, you need to know where the source code files are located. In the example above, the source code and the running program are together. But this is not possible in practice. Add the source code directory using the -d parameter in the GDB command or using the directory command during runtime.&lt;/p&gt;
+&lt;p&gt;Other notes:&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;    -symbols &amp;lt;file&amp;gt; 
+    -s &amp;lt;file&amp;gt; 
+    Read symbols from the specified file.
+
+    -se file 
+    Read symbol table information from the specified file and use it in the executable file.
+
+    -core &amp;lt;file&amp;gt;
+    -c &amp;lt;file&amp;gt; 
+    The core file from a core dump during debugging.
+&lt;/code&gt;&lt;/pre&gt;</description>
+        </item>
+        <item>
+        <title>Effective C&#43;&#43; Notes</title>
+        <link>https://nansenli.com/post/jianshu/c&#43;&#43;/effective-c&#43;&#43;-%E7%AC%94%E8%AE%B0/</link>
+        <pubDate>Mon, 23 Apr 2018 10:40:00 +0000</pubDate>
+        
+        <guid>https://nansenli.com/post/jianshu/c&#43;&#43;/effective-c&#43;&#43;-%E7%AC%94%E8%AE%B0/</guid>
+        <description>&lt;h2 id=&#34;chapter-1-from-c-to-c&#34;&gt;Chapter 1: From C to C++
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Item 1: C++ is a federation of languages
+This means that C++ supports procedural, object-oriented, generic, functional, and meta-programming - five programming styles, which can be confusing. It is a comprehensive language.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Item 2: Prefer const, enum, inline to #define
+#define is not part of the language, but part of the preprocessor. const, enum, and inline allow the compiler to detect errors.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Item 3: Use const to restrict possible errors
+For example, return const reference objects to prevent users from modifying them. Use const member functions to prevent damage to classes.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Item 4: Make sure objects are initialized before use
+Mainly use initialization lists to initialize members or parent classes. Additionally, if a class uses global objects, it&amp;rsquo;s impossible to know when those objects are initialized. Therefore, use static variables inside the class (which also have only one copy).&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;chapter-2-constructors-destructors-and-assignment-operators&#34;&gt;Chapter 2: Constructors, Destructors, and Assignment Operators
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Item 5: Know what functions the compiler silently generates
+The compiler will generate default member functions as needed, including default constructor, copy constructor, destructor, and copy assignment operator.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;The default copy assignment operator may not be able to copy reference members.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Item 6: Use =delete to explicitly disallow auto-generated functions
+This can prevent a class from being copied, blocking copying.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Item 7: Declare virtual destructors for polymorphic base classes
+This is a basic function.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Item 8: Prevent exceptions from leaving destructors
+This can lead to incomplete memory release or cause multiple exceptions to be thrown.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Item 9: Never call virtual functions during construction or destruction
+This is also obvious - if a derived class constructor enters the base class constructor and calls a virtual function, the derived class&amp;rsquo;s virtual function isn&amp;rsquo;t ready yet.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Item 10: Have operator= return a reference to *this
+This allows for continuous assignment.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Item 11: Handle self-assignment in operator=
+It&amp;rsquo;s difficult to ensure your self-assignment code has no issues, and self-assignment is a time-wasting behavior.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Item 12: Copy all parts of an object when copying
+This is obvious. If you implement an assignment function, you must copy all contents.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;chapter-3-resource-management&#34;&gt;Chapter 3: Resource Management
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Item 13: Objects are the basic unit of resource management
+You need to be able to acquire resources and correctly release them. The key is to use shared_ptr to manage memory, which can automatically release held resources.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Item 14: Copying resource-managing objects
+Either prohibit copying, use shared_ptr members, perform deep copying, or make the copying process transfer the resource.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Item 15: Provide access to raw resources in resource-managing classes
+The world isn&amp;rsquo;t perfect, and many APIs require passing raw resource pointers. Using shared_ptr can interfere with how the object is used.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Item 16: Use delete[] for arrays allocated with new[]
+To avoid this error, you can use vector containers to operate, avoiding the need for new arrays.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Item 17: Store newed objects in smart pointers in standalone statements
+If an exception is thrown between creating a new object and passing it to a shared_ptr, it will lead to memory leaks.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;chapter-4-designs-and-declarations&#34;&gt;Chapter 4: Designs and Declarations
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Item 18: Make interfaces easy to use correctly
+Interfaces can sometimes be difficult to express clearly. For example, if you pass in three int values, you need to clearly remember what each one represents. What if the parameters are passed in the wrong order? The book mentions passing in specific objects and using explicit to constrain parameters. You could also build a date object and then specify members, which I think is a bit better. Additionally, interfaces should have reasonable parameter settings and reasonable return values (such as returning smart pointers instead of raw pointers to force proper usage).&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Item 19: Designing a class is a major project
+Object creation, destruction, initialization and assignment, whether passing objects by value causes exceptions, what are the legal values for the new type. Have type conversion functions been written? What about operators? Which functions should be deleted?&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Item 20: Prefer pass-by-reference-to-const to pass-by-value
+Passing by value brings the call of the object&amp;rsquo;s constructor, consuming time. Passing by reference is like passing a pointer.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Item 21: Don&amp;rsquo;t return a reference to a local object
+When returning an object created by a function, you cannot return a reference to that object. The compiler will make the correct optimization steps by itself.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Item 22: Declare data members private
+If declared public, deleting a variable will cause all programs to be rewritten. If declared private, deleting a variable will cause inherited class programs to be rewritten. So declare them as private.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Item 23: Prefer non-member non-friend functions to member functions
+If a method only calls a few other member functions, there&amp;rsquo;s no need to set it as a member function. Put it outside and wrap it with the same namespace.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Item 24: Declare non-member functions when type conversions should apply to all parameters
+This is because member functions may not work in some cases. For example, operator * can only support that type as the first parameter. It will fail when a built-in type is used as the first parameter.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Item 25: Consider support for a non-throwing swap
+Swap is a useful function. To implement an efficient swap, you need to design a swap member function to exchange with another object. Then design a non-member function in the namespace to call the above swap function. Finally, specialize std::swap to let the compiler choose your own swap.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;chapter-5-implementations&#34;&gt;Chapter 5: Implementations
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Item 26: Postpone variable definitions as long as possible
+C++ cannot arbitrarily change the order of different lines, which means it&amp;rsquo;s better to define something only when it&amp;rsquo;s used. If all definitions are placed at the beginning, but the program returns right away, this would bring unnecessary construction and destruction processes.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Item 27: Minimize casting
+Although the four types of C++ type conversions can be used, they all bring bigger problems. Old-style type conversions should be used even less.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Item 28: Avoid returning handles to object internals
+Try to avoid returning pointers to internal data of objects outside the object, as this can cause big problems. The vector [] operator is such a case. This is a special case.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Item 29: Strive for exception-safe code
+C++ exceptions are the most difficult thing to handle, but you still need to ensure exceptions.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Item 30: Understand the ins and outs of inlining
+Inline is to make the compiler try to avoid stack expansion, not definitely. The 80-20 rule tells us that a program will only spend time on 20% of the code, so not all functions need to use inline.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Item 31: Minimize compilation dependencies: Separate definitions from declarations
+Two ways to handle - implementation classes and interface classes. Implementation classes use another class to proxy the functionality of the class. Interface classes use object-oriented methods to design the class as an interface.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;chapter-6-inheritance-and-object-oriented-design&#34;&gt;Chapter 6: Inheritance and Object-Oriented Design
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Item 32: Make sure public inheritance models &amp;ldquo;is-a&amp;rdquo;
+This means that derived classes can do everything base classes can do. But what derived classes can do, base classes may not be able to do.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Item 33: Avoid hiding inherited names
+If you declare another overloaded version of a parent class function in a derived class, it will also override the original version of the parent class, making it impossible to correctly link to the parent class function. You can use &amp;ldquo;using&amp;rdquo; to indicate the use of the parent class&amp;rsquo;s function space.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Item 34: Differentiate between inheritance of interface and inheritance of implementation
+Pure virtual functions only inherit the interface, virtual functions inherit the interface and default implementation, and non-virtual functions inherit the interface and forced implementation.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Item 35: Consider alternatives to virtual functions
+Other design patterns can be used to replace the implementation of virtual functions, such as function objects.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Item 36: Never redefine an inherited non-virtual function
+Otherwise, you won&amp;rsquo;t know which one is being called. Yes, I&amp;rsquo;m talking about destructors.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Item 37: Never redefine a function&amp;rsquo;s inherited default parameter value
+This is because default parameters are statically determined, not dynamically determined. The one you define may not be useful.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Item 38: Model &amp;ldquo;has-a&amp;rdquo; or &amp;ldquo;is-implemented-in-terms-of&amp;rdquo; through composition
+Public inheritance is an &amp;ldquo;is-a&amp;rdquo; relationship. Composition is a &amp;ldquo;has-a&amp;rdquo; relationship. For example, in the implementation of a set, inheriting from list would have some problems. Set should compose list.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Item 39: Use private inheritance judiciously
+The frequency of using private inheritance is lower than composition. There are two cases where this implementation is needed: first, when the derived class needs to access the protected members of the base class; second, when virtual functions need to be redefined (shouldn&amp;rsquo;t a middle class be designed in this case?).&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Item 40: Use multiple inheritance judiciously
+Multiple inheritance is rarely used. It&amp;rsquo;s best not to include any members in virtual inheritance. This is because the initialization of members in virtual inheritance is done in the derived class.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;chapter-7-templates-and-generic-programming&#34;&gt;Chapter 7: Templates and Generic Programming
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Item 41: Understand implicit interfaces and compile-time polymorphism
+This is static polymorphism.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Item 42: Understand the two meanings of typename
+Typename appears not only in the template line of a template but also in template processing. When we use member variables or member types, the compiler doesn&amp;rsquo;t know which one is being used. By default, it uses member variables. Add typename to remind the compiler that it&amp;rsquo;s a member type.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Item 43: Know how to access names in templatized base classes
+This is because template classes can be specialized, and if specialized, some symbols may not exist. So you need to explicitly indicate symbols in the template class, such as using the this pointer or scope.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Item 44: Factor parameter-independent code out of templates
+When a template passes a non-type parameter, it generates multiple copies of code. There are some ways to avoid generating duplicate code, but they&amp;rsquo;re not as fast as the original.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Item 45: Use member function templates to accept all compatible types
+Classes can be templates, and member functions can also be templates.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Item 46: Define non-member functions inside templates when type conversions are desired
+Not only define it as a non-member function but also as a friend function.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Item 47: Use traits classes for information about types
+Traits use the properties of template programming and specialization to implement a traits class, through which you can get the data type you want in the generalized class.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Item 48: Be aware of template metaprogramming
+Metaprogramming refers to programming methods where results are known at compile time. For example, processing input at compile time. Similar to factorial, which is like the Hello World program of C++ metaprogramming.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;chapter-8-customizing-new-and-delete&#34;&gt;Chapter 8: Customizing new and delete
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Item 49: Understand the behavior of the new-handler
+It continuously tries to allocate memory. I&amp;rsquo;m curious if there will be a freeze if the new-handler keeps failing to allocate.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Item 50: Understand when it makes sense to replace new and delete
+It seems that the performance of new and delete is very high now. No need to replace them.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Item 51: Adhere to convention when writing new and delete
+Maintain compatibility when customizing new and delete.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Item 52: Write placement delete if you write placement new
+Placement delete will automatically run when placement new encounters an error.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;chapter-9-modern-c11&#34;&gt;Chapter 9: Modern C++11
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Item 53: Pay attention to compiler warnings
+Don&amp;rsquo;t ignore warnings.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Item 54: Familiarize yourself with the TR1 standard libraries&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Item 55: Familiarize yourself with Boost&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+        </item>
+        <item>
+        <title>C&#43;&#43; new and delete</title>
+        <link>https://nansenli.com/post/jianshu/c&#43;&#43;/c&#43;&#43;-new-%E4%B8%8E-delete/</link>
+        <pubDate>Wed, 14 Mar 2018 03:52:00 +0000</pubDate>
+        
+        <guid>https://nansenli.com/post/jianshu/c&#43;&#43;/c&#43;&#43;-new-%E4%B8%8E-delete/</guid>
+        <description>&lt;p&gt;Source:&lt;/p&gt;
+&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;https://kelvinh.github.io/blog/2014/04/19/research-on-operator-new-and-delete/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;https://kelvinh.github.io/blog/2014/04/19/research-on-operator-new-and-delete/&lt;/a&gt;&lt;/p&gt;
+&lt;h2 id=&#34;what-do-new-and-delete-code-mean&#34;&gt;What do new and delete code mean
+&lt;/h2&gt;&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;Class *pc = new Class;
+// ...
+delete pc;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;The first line above is the new operator, and the third line is the delete operator. The code is simple, but for the compiler, it needs to do additional work, translating the above code into something approximate to the following code:&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;void *p = operator new(sizeof(Class));
+// Call the constructor of Class on the memory pointed to by p, this can&amp;#39;t be shown with straightforward code
+Class *pc = static_cast&amp;lt;Class*&amp;gt;(p);
+// ...
+pc-&amp;gt;~Class();
+operator delete(pc);
+&lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&#34;what-does-the-operator-new-actually-do-and-what-does-the-operator-delete-do&#34;&gt;What does the operator new actually do, and what does the operator delete do?
+&lt;/h2&gt;&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;void * operator new(std::size_t size) throw(std::bad_alloc) {
+    if (size == 0)
+        size = 1;
+    void* p;
+    while ((p = ::malloc(size)) == 0) {
+        std::new_handler nh = std::get_new_handler();
+        if (nh)
+            nh();
+        else
+            throw std::bad_alloc();
+    }
+    return p;
+}
+
+void operator delete(void* ptr) {
+    if (ptr)
+        ::free(ptr);
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;It&amp;rsquo;s actually a wrapper for malloc, but it allocates at least one byte, and in case of memory failure, it attempts to get the user-set new_handler. If the user has previously set a new_handler, then it will call the new_handler; otherwise, it will throw a bad_alloc exception.&lt;/p&gt;
+&lt;h2 id=&#34;what-is-placement-new&#34;&gt;What is placement new
+&lt;/h2&gt;&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;inline _LIBCPP_INLINE_VISIBILITY void* operator new  (std::size_t, void* __p) _NOEXCEPT {return __p;}
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;This is an overload of operator new. It directly returns the value of the pointer. It seems quite useless. So how is it used?&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;void *buf = // Allocate memory for buf here
+Class *pc = new (buf) Class();
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;The above code assigns buf&amp;rsquo;s memory to the pc pointer. It&amp;rsquo;s actually equivalent to:&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;((* Class)buf)-&amp;gt;Class();
+Class *pc = buf;
+&lt;/code&gt;&lt;/pre&gt;</description>
+        </item>
+        <item>
+        <title>C&#43;&#43; Basics — Differences Between Pointers and References</title>
+        <link>https://nansenli.com/post/jianshu/c&#43;&#43;/c&#43;&#43;%E5%9F%BA%E6%9C%AC%E9%97%AE%E9%A2%98%E6%8C%87%E9%92%88%E4%B8%8E%E5%BC%95%E7%94%A8%E7%9A%84%E5%8C%BA%E5%88%AB/</link>
+        <pubDate>Wed, 10 Jan 2018 08:44:00 +0000</pubDate>
+        
+        <guid>https://nansenli.com/post/jianshu/c&#43;&#43;/c&#43;&#43;%E5%9F%BA%E6%9C%AC%E9%97%AE%E9%A2%98%E6%8C%87%E9%92%88%E4%B8%8E%E5%BC%95%E7%94%A8%E7%9A%84%E5%8C%BA%E5%88%AB/</guid>
+        <description>&lt;h3 id=&#34;differences-between-pointers-and-references&#34;&gt;Differences Between Pointers and References
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;Pointers can be null pointers, but references cannot be null references. This leads to the following distinction.&lt;/li&gt;
+&lt;li&gt;Pointers can be invalid, while references are always valid. If a pointer is a null pointer, it cannot be legally used. This requires checking the validity of a pointer each time it is used. In contrast, references don&amp;rsquo;t need to be checked.&lt;/li&gt;
+&lt;li&gt;Pointers can be modified, references cannot. A pointer is a variable that stores an address pointing to an object, and it can be changed to point to other addresses, no longer pointing to the original object. However, a reference is bound to an object during initialization, and while you can modify the contents of the object, the reference cannot be reassigned to refer to another object.&lt;/li&gt;
+&lt;li&gt;Based on the above situations, pointers and references have different applications. Pointers can be used in scenarios where you need to point to different objects at different times or where you might need to point to no object at all. If you always need to point to a single object and will not change what you&amp;rsquo;re pointing to after initialization, you should use a reference.&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+        </item>
+        <item>
+        <title>How to Implement STL Vector in C&#43;&#43;</title>
+        <link>https://nansenli.com/post/jianshu/c&#43;&#43;/c&#43;&#43;%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0-stl-%E4%B8%AD%E7%9A%84vector/</link>
+        <pubDate>Sat, 30 Dec 2017 08:49:00 +0000</pubDate>
+        
+        <guid>https://nansenli.com/post/jianshu/c&#43;&#43;/c&#43;&#43;%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0-stl-%E4%B8%AD%E7%9A%84vector/</guid>
+        <description>&lt;h2 id=&#34;introduction&#34;&gt;Introduction
+&lt;/h2&gt;&lt;p&gt;In interviews, you might be asked how to implement a vector. This requires understanding the underlying implementation of vector.
+Before that, you need to learn about dynamic memory management, especially allocators, which are explained in the C++ Primer book.&lt;/p&gt;
+&lt;h2 id=&#34;basic-contents-to-implement&#34;&gt;Basic Contents to Implement
+&lt;/h2&gt;&lt;p&gt;On the cplusplus website, common usages are as follows:
+Member functions
+(Constructor)
+Construct vector (public member function)
+(Destructor)
+Vector destructor (public member function)&lt;/p&gt;
+&lt;p&gt;Iterators:
+begin
+Return iterator to beginning (public member function)
+end
+Return iterator to end (public member function)&lt;/p&gt;
+&lt;p&gt;Capacity:
+size
+Return size (public member function)&lt;/p&gt;
+&lt;p&gt;Element access:
+operator[]
+Access element (public member function)
+at
+Access element (public member function)&lt;/p&gt;
+&lt;p&gt;Modifiers:
+push_back
+Add element at the end (public member function)
+pop_back
+Delete last element (public member function)&lt;/p&gt;
+&lt;h2 id=&#34;main-structure-of-a-basic-vector&#34;&gt;Main Structure of a Basic Vector
+&lt;/h2&gt;&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;#include &amp;lt;cstddef&amp;gt;
+#include &amp;lt;stdexcept&amp;gt;
+#include &amp;lt;memory&amp;gt;
+#include &amp;lt;iterator&amp;gt;
+
+template &amp;lt;typename T&amp;gt;
+class vector
+{
+  public:
+    using value_type = T;
+    using iterator = value_type *;
+    using size_type = std::size_t;
+
+  public:
+    vector() = default;
+    ~vector();
+    iterator begin() const;
+    iterator end() const;
+    size_type size() const;
+    value_type &amp;amp;operator[](size_type i) const;
+    value_type &amp;amp;at(size_type i) const;
+    void push_back(const value_type &amp;amp;new_elem);
+    void pop_back();
+
+  private:
+    iterator startptr = nullptr;
+    iterator endptr = nullptr;
+    iterator capptr = nullptr;
+    std::allocator&amp;lt;value_type&amp;gt; alloc;
+
+  private:
+    void check_cap();
+    void free();
+};
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;In our class, we&amp;rsquo;ve simply implemented iterators, push_back, pop_back, as well as the [] operator, at function, and size function. To implement memory management, we also need to implement constructors, destructors, and capacity checking functions.&lt;/p&gt;
+&lt;h2 id=&#34;internal-implementation-of-basic-functions&#34;&gt;Internal Implementation of Basic Functions
+&lt;/h2&gt;&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;template &amp;lt;typename T&amp;gt;
+typename vector&amp;lt;T&amp;gt;::iterator vector&amp;lt;T&amp;gt;::begin() const
+{
+    return startptr;
+}
+
+template &amp;lt;typename T&amp;gt;
+typename vector&amp;lt;T&amp;gt;::iterator vector&amp;lt;T&amp;gt;::end() const
+{
+    return endptr;
+}
+
+template &amp;lt;typename T&amp;gt;
+typename vector&amp;lt;T&amp;gt;::size_type vector&amp;lt;T&amp;gt;::size() const
+{
+    return endptr - startptr;
+}
+
+template &amp;lt;typename T&amp;gt;
+typename vector&amp;lt;T&amp;gt;::value_type &amp;amp;vector&amp;lt;T&amp;gt;::operator[](size_type i) const
+{
+    return *(startptr + i);
+}
+
+template &amp;lt;typename T&amp;gt;
+typename vector&amp;lt;T&amp;gt;::value_type &amp;amp;vector&amp;lt;T&amp;gt;::at(size_type i) const
+{
+    if (startptr + i &amp;gt;= endptr)
+    {
+        throw std::runtime_error(&amp;#34;out of range!&amp;#34;);
+    }
+    return *(startptr + i);
+}
+
+template &amp;lt;typename T&amp;gt;
+vector&amp;lt;T&amp;gt;::~vector()
+{
+    free();
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;The above are implementations of simple functions. They simply retrieve internal data.&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;template &amp;lt;typename T&amp;gt;
+void vector&amp;lt;T&amp;gt;::free()
+{
+    if (startptr)
+    {
+        for (auto p = startptr; p != endptr; p++)
+        {
+            alloc.destroy(p);
+        }
+        alloc.deallocate(startptr, endptr - startptr);
+    }
+}
+
+template &amp;lt;typename T&amp;gt;
+void vector&amp;lt;T&amp;gt;::check_cap()
+{
+    if (endptr == capptr)
+    {
+        int newsize = size() ? size() &amp;lt;&amp;lt; 1 : 1;
+        auto newstartptr = alloc.allocate(newsize);
+        auto newendptr = uninitialized_copy(std::make_move_iterator(startptr), std::make_move_iterator(endptr), newstartptr);
+        free();
+        startptr = newstartptr;
+        endptr = newendptr;
+        capptr = newstartptr + newsize;
+    }
+}
+
+template &amp;lt;typename T&amp;gt;
+void vector&amp;lt;T&amp;gt;::push_back(const value_type &amp;amp;new_elem)
+{
+    check_cap();
+    alloc.construct(endptr, new_elem);
+    endptr++;
+}
+
+template &amp;lt;typename T&amp;gt; 
+void vector&amp;lt;T&amp;gt;::pop_back()
+{
+    if(endptr-startptr&amp;gt;0){
+        alloc.destroy(endptr);
+        endptr--;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;This part deals with memory and uses allocator to manage memory. The constructor separates the allocation of space and construction, dividing the process into allocating space, reclaiming space, destruction, and construction. The capacity check involves these four scenarios: first allocate new space, then construct new elements in the new position, then destruct old elements, and release old space. The free function is used to destruct old elements and release old space. Here, uninitialized_copy function and make_move_iterator, move iterators, and uninitialized copy functions are used to construct new elements in new positions, aiming to speed up the construction of new elements.&lt;/p&gt;
+&lt;h2 id=&#34;advanced-functions-and-implementation&#34;&gt;Advanced Functions and Implementation
+&lt;/h2&gt;&lt;h3 id=&#34;erase&#34;&gt;erase
+&lt;/h3&gt;&lt;p&gt;Next, let&amp;rsquo;s implement some additional functions. Let&amp;rsquo;s start with erase.
+Erase deletes all content from the specified position to the specified position. The function prototype is as follows:&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;  public:
+    iterator erase(const_iterator position);
+    iterator erase(const_iterator first, const_iterator last);
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;The first function can also be seen as simply calling the second function. We implement the second function as follows:&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;template &amp;lt;typename T&amp;gt;
+typename vector&amp;lt;T&amp;gt;::iterator vector&amp;lt;T&amp;gt;::erase(const_iterator first, const_iterator last)
+{
+    if(last &amp;gt;= endptr || first &amp;lt; startptr) throw std::runtime_error(&amp;#34;out of range!&amp;#34;);
+    iterator newendptr = std::copy(last, static_cast&amp;lt;const_iterator&amp;gt;(endptr), first);
+    while(newendptr &amp;lt; endptr){
+        alloc.destroy(--endptr);
+    }
+    return endptr;
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;First, perform a validity check. Then, use std::copy to copy the later content to the part to be deleted. Note that the copy will automatically call the assignment function for the part being overwritten, and the assignment function should call the destructor internally. Then, if there is still content that needs to be destructed (this occurs only when the moved content is not as long as the deleted content), destruct that content. Then return the end pointer.&lt;/p&gt;
+&lt;p&gt;The other overloaded function is relatively simple to implement:&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;template&amp;lt;typename T&amp;gt;
+typename vector&amp;lt;T&amp;gt;::iterator vector&amp;lt;T&amp;gt;::erase(const_iterator position)
+{
+    return erase(position, position+1);
+}
+&lt;/code&gt;&lt;/pre&gt;</description>
+        </item>
+        <item>
+        <title>C&#43;&#43;11 Features - Simple Introduction</title>
+        <link>https://nansenli.com/post/jianshu/c&#43;&#43;/c&#43;&#43;11-%E7%89%B9%E6%80%A7-%E7%AE%80%E5%8D%95%E4%BB%8B%E7%BB%8D/</link>
+        <pubDate>Thu, 28 Dec 2017 07:31:00 +0000</pubDate>
+        
+        <guid>https://nansenli.com/post/jianshu/c&#43;&#43;/c&#43;&#43;11-%E7%89%B9%E6%80%A7-%E7%AE%80%E5%8D%95%E4%BB%8B%E7%BB%8D/</guid>
+        <description>&lt;h2 id=&#34;summarized-from-c-primer-5th-edition-as-a-quick-review-of-these-features&#34;&gt;Summarized from C++ Primer 5th Edition, as a quick review of these features
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;long long type
+Defined to be at least 32 bits in length. Generally not very useful.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;List initialization
+A list is a set of elements composed of braces and commas, for example {1,2,3}.
+We can use braces to initialize variables.
+int a{0};
+The equal sign in a declaration is not assignment but initialization, so the following form can also be used for initialization:
+int a = {0};
+This has the same effect as int a = 0;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;nullptr constant
+This is because before C++11, assigning a null pointer was done directly with 0. Now using nullptr is better. nullptr is essentially an object that can only have a right value and can only be type-converted to a pointer with a value of address 0, which solves some problems. Related information can be found in how to implement nullptr.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;constexpr variables
+Stands for &amp;ldquo;const expressions&amp;rdquo;. The difference from const is that const indicates that the variable name must be a constant when used later, while constexpr not only requires this but also requires that the expression used to initialize the variable must also be a constant.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Type aliases
+using uint = unsigned int
+typedef uint unsigned int
+These two statements are equivalent&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;auto type specifier
+When declaring and defining a variable, the compiler automatically deduces the type of the declared variable based on the definition type.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;decltype type indicator
+When declaring a variable, you can use decltype(expressions) to determine the type of an expression as the type of the declared variable&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;In-class initialization&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;    class A {
+    public:
+        int a = 7;
+    };
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;This is equivalent to the following in previous versions:&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;    class A {
+    public:
+        int a;
+        A() : a(7) {}
+    };
+&lt;/code&gt;&lt;/pre&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Using auto or decltype to deduce types
+auto len = line.size(); automatically deduces string::size_type which is better&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Range-based for statements
+Print characters in a string
+for(auto c:str) cout &amp;laquo; c &amp;laquo; endl;
+Similar to for in statements in Python&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Nested vectors
+vector&amp;lt;vector&lt;!-- raw HTML omitted --&gt; on older compilers, a space is needed, so the two angle brackets aren&amp;rsquo;t adjacent &amp;gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;List initialization of vector objects
+vector&lt;!-- raw HTML omitted --&gt; strs = {&amp;ldquo;a&amp;rdquo;, &amp;ldquo;bb&amp;rdquo;, &amp;ldquo;ccc&amp;rdquo;};&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;cbegin and cend
+Return iterators of type const_iterator&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Using auto in two-dimensional arrays&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;int mat[3][4];
+int main()
+{
+    for (int(*p)[4] = mat; p != mat + 3; p++)
+    {
+        /* ... */
+    }
+    for (auto p = mat; p != mat + 3; p++)
+    {
+        /* ... */
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Division rounding
+C++11 specifies that division always rounds toward zero&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;List assignment to vector objects
+vector&lt;!-- raw HTML omitted --&gt; strs;
+strs = {&amp;ldquo;a&amp;rdquo;, &amp;ldquo;bb&amp;rdquo;, &amp;ldquo;ccc&amp;rdquo;};&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;139 Using sizeof to get the size of class members
+Normally class members can only be accessed through objects. But sizeof can directly determine the size of members.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;168 Range-based for statements
+In range-based for statements, you cannot add elements to vector objects because it may cause the end element of the range-based for statement to become invalid. This is similar to issues in Python range loops.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;197 initializer_list
+initializer_list is a template type, the object elements are always constants, and the types must be the same. Lists in braces are objects of this type.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;203 List initialization of return values
+Returning an initializer_list can initialize temporary quantities for objects with a return type of vector.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;206 Defining trailing return types
+Declaring a function that returns an array pointer
+int * func(int i) this is not quite right, as it returns a pointer, not an array pointer
+int (* func(int i))[10] this would return a pointer to an array of size 10
+You can also write: auto func(int i) -&amp;gt; int(*)[10];&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;206 Using decltype to simplify return types
+decltype can be used to simplify return types, but this need is less common.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;214 constexpr functions
+A constexpr function is a function that returns a literal type and can only have one return statement.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;237 default default constructor
+You can assign an equal sign to a constructor to indicate using the compiler-provided default constructor.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;246 In-class initialization
+The new standard allows for initializing members with values directly within the class&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;261 Delegating constructors
+When initializing a constructor, use an initializer list to initialize members. In addition, you can use other constructors to help construct.
+For example, a constructor is func(int a,int b), and a delegating constructor func():func(0,0){} so it can be constructed with default values 0,0.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;268 constexpr constructors
+Used to generate constexpr objects&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;284 Using string type to represent file paths
+In stream types, previously only C character strings could be used, now strings of string type can be used&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;293 array and forward_list
+Very fast, comparable to handwritten lists, safer than arrays&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;300 Using list initialization for containers
+list&lt;!-- raw HTML omitted --&gt; authors = {&amp;ldquo;milton&amp;rdquo;, &amp;ldquo;shakespeare&amp;rdquo;, &amp;ldquo;austen&amp;rdquo;};
+vector&amp;lt;const char*&amp;gt; articles = {&amp;ldquo;a&amp;rdquo;, &amp;ldquo;b&amp;rdquo;, &amp;ldquo;cc&amp;rdquo;};&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;303 Non-member swap for containers
+Using swap can quickly exchange two content containers&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;308 Using the return value of insert
+The new standard&amp;rsquo;s insert returns an iterator after successful insertion, and the position of the iterator points to the newly inserted element. Using this feature, multiple elements can be repeatedly inserted at that position.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;308 Using emplace functions
+The emplace function can achieve construction rather than copying.
+This method can pass the parameters needed by the constructor without constructing the object and then making a copy.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;shrink_to_fit
+Calling this function on a container will release extra space occupied by a vector or string. Generally not very useful&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;String type numeric conversion functions
+to_string represents a group of overloaded functions that can convert data of int, double types to string type.
+stoi can convert string to int, similar to other functions, including different bases and floating-point numbers&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;346 lambda expressions
+Simple lambda expression
+auto f = []{return 42;};
+Here, a lambda expression is assigned to f. Later, f() can be called to get 42
+How to pass parameters to a lambda expression?
+[](int a, int b){return a&amp;gt;b;};
+But sometimes you don&amp;rsquo;t want to pass a parameter, yet still have the lambda expression use external variables?
+[&amp;amp;out](int a, int b){return a&amp;lt;out &amp;amp;&amp;amp; out &amp;lt; b;};
+But what if I don&amp;rsquo;t want the above expression to return int, but double?
+[&amp;amp;out](int a, int b)-&amp;gt;double{return a&amp;lt;out &amp;amp;&amp;amp; out &amp;lt; b;}&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;354 bind
+The bind function can change a function call to a simple call&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;377 List initialization of associative containers
+map&amp;lt;string, string&amp;gt; authors={ {&amp;ldquo;joncy&amp;rdquo;, &amp;ldquo;james&amp;rdquo;} };
+set&lt;!-- raw HTML omitted --&gt; exclude = {&amp;ldquo;the&amp;rdquo;, &amp;ldquo;but&amp;rdquo; };&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;380 List initialization of pair return types
+Returning a list represented by {} to a pair type automatically converts.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;384 List initialization of pairs
+When inserting pairs into a map, the simplest way is to insert a pair of key-values represented by braces. The inserted content will be initialized as a pair.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;394 Unordered containers
+Add unordered in front of map and set to get unordered containers. Implemented using hash underneath. Requires implementation of a hash template for stored elements.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;400 Smart pointers
+shared_ptr allows multiple pointers to point to the same object. unique_ptr exclusively owns the object it points to.
+Smart pointers are templates, and when declaring them, you need to explicitly provide the type, similar to using vector.
+shared_ptr&lt;!-- raw HTML omitted --&gt; p1;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+        </item>
+        <item>
+        <title>C&#43;&#43; Object-Oriented Programming Summary</title>
+        <link>https://nansenli.com/post/jianshu/c&#43;&#43;/c&#43;&#43;-%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1-%E6%80%BB%E7%BB%93/</link>
+        <pubDate>Thu, 14 Dec 2017 05:53:00 +0000</pubDate>
+        
+        <guid>https://nansenli.com/post/jianshu/c&#43;&#43;/c&#43;&#43;-%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1-%E6%80%BB%E7%BB%93/</guid>
+        <description>&lt;h3 id=&#34;introduction&#34;&gt;Introduction
+&lt;/h3&gt;&lt;p&gt;The biggest difference between C++ and C is object-oriented programming. Although I understand some concepts about object-oriented programming and have written some functions, I rarely use them in practice. This article is a quick summary of Chapter 15 of C++ Primer.&lt;/p&gt;
+&lt;h3 id=&#34;overview&#34;&gt;Overview
+&lt;/h3&gt;&lt;p&gt;Object-oriented programming, also known as OOP, has three core ideas: data abstraction, inheritance, and dynamic binding. Data abstraction refers to the separation of declaration and implementation, inheritance refers to the subclass obtaining all members of the parent class, and dynamic binding means calling different functions based on the class type when invoking class functions.&lt;/p&gt;
+&lt;h3 id=&#34;declaring-base-classes-and-derived-classes&#34;&gt;Declaring Base Classes and Derived Classes
+&lt;/h3&gt;&lt;p&gt;The following code provides a simple example, declaring a base class animal and a derived class cat.&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;#include &amp;lt;stdio.h&amp;gt;
+#include &amp;lt;iostream&amp;gt;
+
+class animal
+{
+  public:
+    virtual void eat(){};
+};
+
+class cat : public animal
+{
+  public:
+    void eat() { std::cout &amp;lt;&amp;lt; &amp;#34;eat fish&amp;#34; &amp;lt;&amp;lt; std::endl; }
+};
+
+int main()
+{
+    cat c;
+    c.eat();
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;type-conversion-and-inheritance&#34;&gt;Type Conversion and Inheritance
+&lt;/h3&gt;&lt;p&gt;Pointers and references of derived classes can be converted to pointers or references of base classes, but pointers or references of base classes cannot be converted to those of derived classes. This means that an object pointed to by a base class pointer could be a base class or a derived class, but definitely not a parent class of the base class.&lt;/p&gt;
+&lt;p&gt;A derived class object can be assigned to a base class, but only the base class portion will be copied.&lt;/p&gt;
+&lt;h3 id=&#34;virtual-functions&#34;&gt;Virtual Functions
+&lt;/h3&gt;&lt;p&gt;Virtual functions are resolved at runtime. Continuing with our example above, suppose we write a new function called doeat that internally calls the eat method of animal. For animal, eat is &amp;ldquo;eat meat or grass&amp;rdquo;, but the final displayed result is &amp;ldquo;eat fish&amp;rdquo;. This proves that at runtime, when the doeat function calls animal&amp;rsquo;s eat method, the eat method finds the real object cat&amp;rsquo;s eat method and calls it.&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;class animal
+{
+  public:
+    virtual void eat() { std::cout &amp;lt;&amp;lt; &amp;#34;eat meat or grass&amp;#34; &amp;lt;&amp;lt; std::endl; };
+};
+
+class cat : public animal
+{
+  public:
+    void eat() { std::cout &amp;lt;&amp;lt; &amp;#34;eat fish&amp;#34; &amp;lt;&amp;lt; std::endl; }
+};
+
+void doeat(animal &amp;amp;a) { a.eat(); }
+
+int main()
+{
+    cat c;
+    doeat(c);
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Additionally, to develop good habits, it&amp;rsquo;s best to use the override keyword in derived classes to explicitly declare overridden virtual functions.&lt;/p&gt;
+&lt;h3 id=&#34;pure-virtual-functions&#34;&gt;Pure Virtual Functions
+&lt;/h3&gt;&lt;p&gt;Assigning a value of 0 after defining a virtual function declares a pure virtual function. Pure virtual functions are equivalent to interfaces, and derived classes must implement these interfaces.&lt;/p&gt;
+&lt;h2 id=&#34;abstract-base-classes&#34;&gt;Abstract Base Classes
+&lt;/h2&gt;&lt;p&gt;Classes containing pure virtual functions are abstract base classes. Abstract base classes cannot be instantiated.&lt;/p&gt;
+&lt;h3 id=&#34;example-text-line-query-program&#34;&gt;Example: Text Line Query Program
+&lt;/h3&gt;&lt;p&gt;Given a text, we need to query its contents. Supporting word queries and logical queries.&lt;/p&gt;
+</description>
+        </item>
+        <item>
+        <title>C&#43;&#43; Virtual Functions Summary</title>
+        <link>https://nansenli.com/post/jianshu/c&#43;&#43;/c&#43;&#43;-%E8%99%9A%E5%87%BD%E6%95%B0-%E6%80%BB%E7%BB%93/</link>
+        <pubDate>Thu, 14 Dec 2017 05:53:00 +0000</pubDate>
+        
+        <guid>https://nansenli.com/post/jianshu/c&#43;&#43;/c&#43;&#43;-%E8%99%9A%E5%87%BD%E6%95%B0-%E6%80%BB%E7%BB%93/</guid>
+        <description>&lt;p&gt;Virtual functions are C++&amp;rsquo;s way of implementing polymorphism.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;What is polymorphism?
+Polymorphism is often viewed as the third pillar of object-oriented programming after encapsulation and inheritance.
+To give a simple example, if we have a class Animal, and classes like Chicken and Dog that inherit from Animal, and they respond differently to the same message derived from the parent class Animal. For instance, the Animal class has an action &amp;ldquo;makeSound()&amp;rdquo;, while the Chicken class would &amp;ldquo;crow()&amp;rdquo; and the Dog class would &amp;ldquo;bark()&amp;rdquo; - this is called polymorphism.
+According to Wikipedia, polymorphism can be defined as &amp;ldquo;the ability to associate different specific behaviors with a single generalized notation.&amp;rdquo; It refers to when a computer program runs, the same message may be sent to objects of different classes, and the system can trigger corresponding class methods based on the object&amp;rsquo;s class, resulting in different behaviors. Simply put, polymorphism means that the same message given to different objects triggers different actions.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Virtual functions enable dynamic polymorphism, which is determined at runtime. Only during program execution does the system decide whether to call the base class or child class function. The system determines which function to call based on the object that the base class pointer points to.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;How to declare a virtual function?
+Add the virtual keyword before the declaration to declare a virtual function. The function is declared in the parent class and implemented in the child class.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;What is a pure virtual function?
+A pure virtual function is a function that is assigned a value of 0 when declaring a virtual function. After using this declaration method, the inheriting class must implement this virtual function.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;How are virtual functions implemented?
+Through a virtual table (vtable). Each object has a virtual table pointer that points to the virtual table. The virtual table is essentially an array, not a linked list. The addresses of virtual functions are stored in the virtual table in the order of declaration.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;How is the virtual function table implemented?
+To accomplish the functionality of virtual functions, the compiler (note, this is why C++ is sometimes called compiler-oriented programming) creates a table for each class that declares internal virtual functions, called a vtable. In the vtable, the addresses of virtual functions of specific types are placed in the order of declaration. Each class with virtual functions contains a pointer, called a vpointer or vptr, pointing to this vtable. Whenever a call to a class&amp;rsquo;s virtual function occurs, the compiler redirects to call the function in the vtable pointed to by this vptr, rather than statically calling a specific function.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+        </item>
+        
+    </channel>
+</rss>

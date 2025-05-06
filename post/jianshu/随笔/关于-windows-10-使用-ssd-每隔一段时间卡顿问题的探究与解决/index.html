@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="Introduction I was originally using an Intel i5-6500 CPU, but after switching to an AMD Ryzen 2700, frequent system freezes started occurring. Symptoms During these freezes, I observed that the disk usage in Task Manager was at 100%, while both read and write rates were at 0. The SSD is a generic Lexar Hades 512 GB. In Event Viewer, there were numerous events with ID 129. Suspecting Hardware Issues After repeatedly changing SATA ports and reconnecting power cables, the freezes persisted.">
+<title>Investigation and Solution of Windows 10 SSD Periodic Stuttering Problems</title>
+
+<link rel='canonical' href='https://nansenli.com/post/jianshu/%E9%9A%8F%E7%AC%94/%E5%85%B3%E4%BA%8E-windows-10-%E4%BD%BF%E7%94%A8-ssd-%E6%AF%8F%E9%9A%94%E4%B8%80%E6%AE%B5%E6%97%B6%E9%97%B4%E5%8D%A1%E9%A1%BF%E9%97%AE%E9%A2%98%E7%9A%84%E6%8E%A2%E7%A9%B6%E4%B8%8E%E8%A7%A3%E5%86%B3/'>
+
+<link rel="stylesheet" href="/scss/style.min.1084ac713783b88e0bd9807a58068e10aae22e99420f94a9234654a4e199baa4.css"><meta property='og:title' content="Investigation and Solution of Windows 10 SSD Periodic Stuttering Problems">
+<meta property='og:description' content="Introduction I was originally using an Intel i5-6500 CPU, but after switching to an AMD Ryzen 2700, frequent system freezes started occurring. Symptoms During these freezes, I observed that the disk usage in Task Manager was at 100%, while both read and write rates were at 0. The SSD is a generic Lexar Hades 512 GB. In Event Viewer, there were numerous events with ID 129. Suspecting Hardware Issues After repeatedly changing SATA ports and reconnecting power cables, the freezes persisted.">
+<meta property='og:url' content='https://nansenli.com/post/jianshu/%E9%9A%8F%E7%AC%94/%E5%85%B3%E4%BA%8E-windows-10-%E4%BD%BF%E7%94%A8-ssd-%E6%AF%8F%E9%9A%94%E4%B8%80%E6%AE%B5%E6%97%B6%E9%97%B4%E5%8D%A1%E9%A1%BF%E9%97%AE%E9%A2%98%E7%9A%84%E6%8E%A2%E7%A9%B6%E4%B8%8E%E8%A7%A3%E5%86%B3/'>
+<meta property='og:site_name' content='Nansen Li'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2018-10-24T11:47:00&#43;00:00'/><meta property='article:modified_time' content='2018-10-24T11:47:00&#43;00:00'/>
+<meta name="twitter:title" content="Investigation and Solution of Windows 10 SSD Periodic Stuttering Problems">
+<meta name="twitter:description" content="Introduction I was originally using an Intel i5-6500 CPU, but after switching to an AMD Ryzen 2700, frequent system freezes started occurring. Symptoms During these freezes, I observed that the disk usage in Task Manager was at 100%, while both read and write rates were at 0. The SSD is a generic Lexar Hades 512 GB. In Event Viewer, there were numerous events with ID 129. Suspecting Hardware Issues After repeatedly changing SATA ports and reconnecting power cables, the freezes persisted.">
+    <link rel="shortcut icon" href="/favicon.ico" />
+
+  
+    
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-WC38C3XE3J"></script>
+      <script>
+        var doNotTrack = false;
+        if ( false ) {
+          var dnt = (navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack);
+          var doNotTrack = (dnt == "1" || dnt == "yes");
+        }
+        if (!doNotTrack) {
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-WC38C3XE3J');
+        }
+      </script>
+    
+  
+
+
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="Toggle Menu">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/avatar_hu96777ff80939aaa7d938dddcc232fcc6_1414962_300x0_resize_box_3.png" width="300"
+                            height="300" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+                    <span class="emoji">🌈</span>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">Nansen Li</a></h1>
+            <h2 class="site-description"></h2>
+        </div>
+    </header><ol class="menu-social">
+            
+                <li>
+                    <a 
+                        href='https://github.com/linanwx'
+                        target="_blank"
+                        title="GitHub"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://www.linkedin.com/in/nansen-li-3bb0a3146/'
+                        target="_blank"
+                        title="LinkedIn"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-brand-linkedin"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M8 11v5" /><path d="M8 8v.01" /><path d="M12 16v-5" /><path d="M16 16v-3a2 2 0 1 0 -4 0" /><path d="M3 7a4 4 0 0 1 4 -4h10a4 4 0 0 1 4 4v10a4 4 0 0 1 -4 4h-10a4 4 0 0 1 -4 -4z" /></svg>
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='index.xml'
+                        target="_blank"
+                        title="RSS"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-rss" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="5" cy="19" r="1" />
+  <path d="M4 4a16 16 0 0 1 16 16" />
+  <path d="M4 11a9 9 0 0 1 9 9" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+</svg>
+
+
+
+                
+                <span>Home</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/page/archives/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>Archives</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/page/search/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
+
+
+
+                
+                <span>Search</span>
+            </a>
+        </li>
+        
+        <li class="menu-bottom-section">
+            <ol class="menu">
+                    
+                        <li id="i18n-switch">  
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-language" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M4 5h7" />
+  <path d="M9 3v2c0 4.418 -2.239 8 -5 8" />
+  <path d="M5 9c-.003 2.144 2.952 3.908 6.7 4" />
+  <path d="M12 20l4 -9l4 9" />
+  <path d="M19.1 18h-6.2" />
+</svg>
+
+
+
+                            <select name="language" title="language" onchange="window.location.href = this.selectedOptions[0].value">
+                                
+                                    <option value="https://nansenli.com/" selected>English</option>
+                                
+                                    <option value="https://nansenli.com/zh-cn/" >中文</option>
+                                
+                            </select>
+                        </li>
+                    
+                
+
+                
+                    <li id="dark-mode-toggle">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <span>Dark Mode</span>
+                    </li>
+                
+            </ol>
+        </li>
+    </ol>
+</aside>
+
+    
+
+            <main class="main full-width">
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/essays/" >
+                Essays
+            </a>
+        
+    </header>
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/post/jianshu/%E9%9A%8F%E7%AC%94/%E5%85%B3%E4%BA%8E-windows-10-%E4%BD%BF%E7%94%A8-ssd-%E6%AF%8F%E9%9A%94%E4%B8%80%E6%AE%B5%E6%97%B6%E9%97%B4%E5%8D%A1%E9%A1%BF%E9%97%AE%E9%A2%98%E7%9A%84%E6%8E%A2%E7%A9%B6%E4%B8%8E%E8%A7%A3%E5%86%B3/">Investigation and Solution of Windows 10 SSD Periodic Stuttering Problems</a>
+        </h2>
+    
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">Oct 24, 2018</time>
+            </div>
+        
+
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+                <time class="article-time--reading">
+                    5 minute read
+                </time>
+            </div>
+        
+    </footer>
+    
+
+    
+        <footer class="article-translations">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-language" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M4 5h7" />
+  <path d="M9 3v2c0 4.418 -2.239 8 -5 8" />
+  <path d="M5 9c-.003 2.144 2.952 3.908 6.7 4" />
+  <path d="M12 20l4 -9l4 9" />
+  <path d="M19.1 18h-6.2" />
+</svg>
+
+
+
+            <div>
+                
+                    <a href="https://nansenli.com/zh-cn/post/jianshu/%E9%9A%8F%E7%AC%94/%E5%85%B3%E4%BA%8E-windows-10-%E4%BD%BF%E7%94%A8-ssd-%E6%AF%8F%E9%9A%94%E4%B8%80%E6%AE%B5%E6%97%B6%E9%97%B4%E5%8D%A1%E9%A1%BF%E9%97%AE%E9%A2%98%E7%9A%84%E6%8E%A2%E7%A9%B6%E4%B8%8E%E8%A7%A3%E5%86%B3/" class="link">中文</a>
+                
+            </div>
+        </footer>
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <h2 id="introduction">Introduction
+</h2><p>I was originally using an Intel i5-6500 CPU, but after switching to an AMD Ryzen 2700, frequent system freezes started occurring.</p>
+<h2 id="symptoms">Symptoms
+</h2><p>During these freezes, I observed that the disk usage in Task Manager was at 100%, while both read and write rates were at 0. The SSD is a generic Lexar Hades 512 GB. In Event Viewer, there were numerous events with ID 129.</p>
+<h2 id="suspecting-hardware-issues">Suspecting Hardware Issues
+</h2><p>After repeatedly changing SATA ports and reconnecting power cables, the freezes persisted.</p>
+<h2 id="searching-for-related-issues-online">Searching for Related Issues Online
+</h2><p>Online searches mostly pointed to the root cause being Windows 10&rsquo;s AHCI driver issues and SSD firmware problems.</p>
+<h2 id="solution-approach-1-replacing-the-ahci-driver---ineffective">Solution Approach 1: Replacing the AHCI Driver - Ineffective
+</h2><p>To replace the AHCI driver, I tried downloading chipset drivers from both AMD&rsquo;s official website and ASUS&rsquo;s official website, and manually replaced the driver in Device Manager so that it showed as an AMD SATA driver. I also tried various motherboard drivers, but testing proved ineffective, and the problem remained unsolved.</p>
+<h2 id="solution-approach-2-converting-the-drive-to-raid-format---ineffective">Solution Approach 2: Converting the Drive to RAID Format - Ineffective
+</h2><p>To convert to RAID format, I reinstalled Windows, but during the installation process, Windows could not recognize the SSD. According to AMD&rsquo;s official English manual and official RAID drivers, I manually loaded the RAID drivers, but Windows still couldn&rsquo;t see the SSD during installation. After multiple attempts, it remained undetected. This might be because volume mode RAID is not supported with only one drive. I abandoned this approach.</p>
+<h2 id="solution-approach-3-modifying-the-registry-disabling-msi---ineffective">Solution Approach 3: Modifying the Registry, Disabling MSI - Ineffective
+</h2><p><a class="link" href="https://www.pconline.com.cn/win10/739/7395324.html"  target="_blank" rel="noopener"
+    >https://www.pconline.com.cn/win10/739/7395324.html</a></p>
+<blockquote>
+<p>In essence, when using the StorAHCI.sys driver in certain AHCI modes, some SSDs may not be able to complete input/output operations correctly in &ldquo;Message Signaled Interrupt&rdquo; (MSI) mode, ultimately resulting in system freezes with disk usage showing 100% in Task Manager. Of course, the solution is simple: just disable it (MSI Mode) directly in regedit.</p>
+</blockquote>
+<blockquote>
+<p>　　4. Click Cortana, type &ldquo;regedit&rdquo; to launch the Registry Editor, navigate to &ldquo;HKEY_LOCAL_MACHINE\System\CurrentControlSet\Enum\PCI\xxxxx\Device Parameters\Interrupt Management\MessageSignaledInterruptProperties&rdquo; (where &ldquo;xxxxx&rdquo; is the &ldquo;device instance path&rdquo; you just recorded);</p>
+</blockquote>
+<blockquote>
+<p>　　5. Finally, change the &ldquo;MSISupported&rdquo; key value in the right pane from 1 to 0;</p>
+</blockquote>
+<p>Testing proved this ineffective.</p>
+<h2 id="solution-approach-4-changing-power-settings---ineffective">Solution Approach 4: Changing Power Settings - Ineffective
+</h2><p>Setting the PCI-Express setting to OFF, testing proved ineffective.</p>
+<h2 id="solution-approach-5-changing-lpm---effective">Solution Approach 5: Changing LPM - Effective
+</h2><p><a class="link" href="http://www.sohu.com/a/204645459_493865"  target="_blank" rel="noopener"
+    >http://www.sohu.com/a/204645459_493865</a></p>
+<p><a class="link" href="https://answers.microsoft.com/en-us/windows/forum/windows_10-hardware-winpc/event-id-129-storahci-resetting-raidport0/7b30c512-6597-438b-80cb-22fb2f85d62e"  target="_blank" rel="noopener"
+    >https://answers.microsoft.com/en-us/windows/forum/windows_10-hardware-winpc/event-id-129-storahci-resetting-raidport0/7b30c512-6597-438b-80cb-22fb2f85d62e</a></p>
+<p>The content is as follows:</p>
+<p>Most SSDs we use today support some power-saving features, such as DIPM/HIPM/Device Sleep.</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/4388248-c66b7d6caad481df.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240"
+	
+	
+	
+	loading="lazy"
+	
+		alt="image"
+	
+	
+></p>
+<p>When a state change request is initiated by the host, we call it HIPM (Host-Initiated LPM), and when it&rsquo;s directly initiated by the device, we call it DIPM (Device-Initiated LPM). What are they requesting? Requesting to slow down, save energy, or enter Device Sleep.</p>
+<p>Both HIPM and DIPM rely on the computer&rsquo;s LPM technology support. LPM, or Link Power Management, is a function at the physical layer of the SATA interface that can divide the link between the host and storage device into three states: Active state, Partial state, and Slumber state. The goal is to reduce the physical layer bus transmission speed, thus achieving power-saving effects.</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/4388248-e27d2b1539c83ea5.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240"
+	
+	
+	
+	loading="lazy"
+	
+		alt="image"
+	
+	
+></p>
+<p>LPM is generally enabled by default.</p>
+<p>So is enabling LPM good for SSDs?</p>
+<p>1. The host sends an HIPM state change command, but due to differing SSD device standards, it may not be well-supported, causing compatibility issues leading to stuttering or drive disconnection;</p>
+<p>2. The host sends HIPM state change commands too frequently, causing the SSD device to not respond in time, resulting in stuttering;</p>
+<p>3. After LPM is enabled, it increases SATA bus transmission delays, causing high-speed SSDs to become blocked and stutter;</p>
+<p>4. Conflicts between the SSD&rsquo;s internal DIPM and the host&rsquo;s requested HIPM cause stuttering.</p>
+<p>Often, SSD-induced computer stuttering and sudden drive disconnections are caused by LPM.</p>
+<p>LPM can help SATA devices achieve power-saving effects. However, it also affects SSD performance.</p>
+<p>So, for the sake of power saving, are you willing to pay the price of losing SSD performance?</p>
+<p>HDD power consumption is around 10-25W. Perhaps LPM was originally only intended for HDDs.</p>
+<p>SSD startup power consumption: 0.1W<del>1W (2W), maximum power consumption: 5</del>10W, average power consumption: around 4~5W.</p>
+<p>Does our power supply care about these few watts from the SSD? Do we care about this bit of electricity cost? Should we even care!</p>
+<p>If SSDs don&rsquo;t need LPM, which harms SSD performance, can we turn it off?</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/4388248-203ee8f11de7a542.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240"
+	
+	
+	
+	loading="lazy"
+	
+		alt="image"
+	
+	
+></p>
+<p>Save as &ldquo;.reg&rdquo; format.</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/4388248-c01d0e2b7805b56d.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240"
+	
+	
+	
+	loading="lazy"
+	
+		alt="image"
+	
+	
+></p>
+<p>Click to run. It will automatically write to the registry, changing the LPM power settings.</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/4388248-d3bd755ea853343f.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240"
+	
+	
+	
+	loading="lazy"
+	
+		alt="image"
+	
+	
+></p>
+<p><img src="http://upload-images.jianshu.io/upload_images/4388248-e7f9dba012dfc070.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240"
+	
+	
+	
+	loading="lazy"
+	
+		alt="image"
+	
+	
+></p>
+<p>If your SSD is experiencing severe stuttering or disconnections, you can try this method.</p>
+<p>The main reason for SSD stuttering and disconnections is that the SSD is too poor quality. Indeed, with SSD prices constantly rising today, it&rsquo;s very difficult to buy a good SSD at a relatively low price.</p>
+<p><strong>After testing, this was effective</strong></p>
+<h2 id="solution-approach-6-changing-bios-settings-enabling-sata-hot-plug-functionality---recommended">Solution Approach 6: Changing BIOS Settings, Enabling SATA Hot Plug Functionality - Recommended
+</h2><p><a class="link" href="https://www.aiweibk.com/5795.html"  target="_blank" rel="noopener"
+    >https://www.aiweibk.com/5795.html</a></p>
+<blockquote>
+<p>After enabling the Hot Plug attribute in the motherboard BIOS settings, there will be a side effect: the SSD&rsquo;s LPM power saving will be turned off as hot-plugging is enabled, thereby avoiding data loss during hot-plugging or loss of response when reconnecting.</p>
+</blockquote>
+<blockquote>
+<p>If your SSD and motherboard have compatibility issues causing intermittent stuttering, try enabling the Hot Plug option in the motherboard BIOS settings to disable LPM power saving, which might solve the problem.</p>
+</blockquote>
+<p><strong>After testing, this was effective</strong></p>
+<h2 id="conclusion">Conclusion
+</h2><p>Why was there no problem with Intel before, but problems arose after switching to AMD? I suspect it&rsquo;s because the original Intel motherboard was inferior and didn&rsquo;t support SATA LPM, while Windows 10 has LPM enabled by default. The generic SSD doesn&rsquo;t support LPM well, so even though its firmware supports LPM, serious issues can occur. Since the motherboard didn&rsquo;t support LPM, even with Windows enabling LPM, the problem didn&rsquo;t manifest.</p>
+<p>Now with a new motherboard that supports LPM, compatibility issues with the SSD have emerged under default settings. LPM functionality needs to be manually disabled.</p>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+
+    </footer>
+
+
+    
+</article>
+
+    
+
+    
+
+     
+    
+        
+    <div class="disqus-container">
+    <div id="disqus_thread"></div>
+<script>
+    window.disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "nansenli" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+<style>
+    .disqus-container {
+        background-color: var(--card-background);
+        border-radius: var(--card-border-radius);
+        box-shadow: var(--shadow-l1);
+        padding: var(--card-padding);
+    }
+</style>
+
+<script>
+    window.addEventListener('onColorSchemeChange', (e) => {
+        if (typeof DISQUS == 'object') {
+            DISQUS.reset({
+                reload: true
+            });
+        }
+    })
+</script>
+
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+        2025 Nansen Li（李楠森）
+    </section>
+    
+    <section class="powerby">
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.30.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.1e9a3bafd846ced4c345d084b355fb8c7bae75701c338f8a1f8a82c780137826.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>

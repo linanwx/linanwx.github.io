@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>Linux编程 on Nansen Li</title>
+        <link>http://localhost:1313/categories/linux%E7%BC%96%E7%A8%8B/</link>
+        <description>Recent content in Linux编程 on Nansen Li</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>en</language>
+        <copyright>Nansen Li（李楠森）</copyright><atom:link href="http://localhost:1313/categories/linux%E7%BC%96%E7%A8%8B/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>bash 语言 学习笔记</title>
+        <link>http://localhost:1313/post/jianshu/linux%E7%BC%96%E7%A8%8B/bash-%E8%AF%AD%E8%A8%80-%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/</link>
+        <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+        
+        <guid>http://localhost:1313/post/jianshu/linux%E7%BC%96%E7%A8%8B/bash-%E8%AF%AD%E8%A8%80-%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/</guid>
+        <description>&lt;h2 id=&#34;前言&#34;&gt;前言
+&lt;/h2&gt;&lt;p&gt;大部分人都用过终端命令行。有的时候需要繁琐的输入同样的命令，我们可以编写自己的脚本来完成这个工作。&lt;/p&gt;
+&lt;h2 id=&#34;指定解释器&#34;&gt;指定解释器
+&lt;/h2&gt;&lt;p&gt;&lt;code&gt;#!/bin/bash&lt;/code&gt;
+这句是指定bash作为我们脚本的解释器。如果我们写的语法是Python，那么应该换成Python。&lt;/p&gt;
+&lt;h2 id=&#34;定义变量&#34;&gt;定义变量
+&lt;/h2&gt;&lt;p&gt;变量名=变量值
+例如 name=&amp;ldquo;hahaha&amp;rdquo;
+对于普通的字符，加不加双引号，单引号都一样。name=hahaha也行。&lt;/p&gt;
+&lt;h2 id=&#34;使用变量&#34;&gt;使用变量
+&lt;/h2&gt;&lt;p&gt;在变量名前加上$表示使用变量。也就是说求这个符号的的值。&lt;/p&gt;
+&lt;h2 id=&#34;字符串&#34;&gt;字符串
+&lt;/h2&gt;&lt;p&gt;引号有如下特点：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;空格作为词的分割符&lt;/li&gt;
+&lt;li&gt;单引号中的词&lt;/li&gt;
+&lt;li&gt;字符模式匹配&lt;/li&gt;
+&lt;li&gt;路径名扩展&lt;/li&gt;
+&lt;li&gt;进程替换 (重定向）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;其中单引号不会对内容进行二次处理，而双引号会对内容做处理，例如双引号会对其中的内容进行求值。你可以看看echo &amp;ldquo;$name&amp;rdquo; 和 echo &amp;lsquo;$name&amp;rsquo;就明白了。&lt;/p&gt;
+&lt;p&gt;拼接字符串就是把两个字符串放在一起。
+${#string}用于获取字符串长度，${string:1:4}用于切片&lt;/p&gt;
+&lt;h2 id=&#34;获取输入内容&#34;&gt;获取输入内容
+&lt;/h2&gt;&lt;p&gt;read inputstr
+read -p &amp;ldquo;please input : &amp;quot; inputstr
+上面两句是从标准输入中获取输入内容。&lt;/p&gt;
+&lt;h3 id=&#34;获取脚本执行结果&#34;&gt;获取脚本执行结果
+&lt;/h3&gt;&lt;p&gt;例如获取Python脚本的执行输出
+into=$(&amp;lsquo;python3&amp;rsquo; &amp;lsquo;pyscript.py&amp;rsquo; &amp;lsquo;arg1&amp;rsquo; &amp;lsquo;arg2&amp;rsquo;)
+arg1 和arg2 是参数&lt;/p&gt;
+</description>
+        </item>
+        <item>
+        <title>Linux popen执行bash命令并获取返回字符串</title>
+        <link>http://localhost:1313/post/jianshu/linux%E7%BC%96%E7%A8%8B/linux-popen%E6%89%A7%E8%A1%8Cbash%E5%91%BD%E4%BB%A4%E5%B9%B6%E8%8E%B7%E5%8F%96%E8%BF%94%E5%9B%9E%E5%AD%97%E7%AC%A6%E4%B8%B2/</link>
+        <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+        
+        <guid>http://localhost:1313/post/jianshu/linux%E7%BC%96%E7%A8%8B/linux-popen%E6%89%A7%E8%A1%8Cbash%E5%91%BD%E4%BB%A4%E5%B9%B6%E8%8E%B7%E5%8F%96%E8%BF%94%E5%9B%9E%E5%AD%97%E7%AC%A6%E4%B8%B2/</guid>
+        <description>&lt;p&gt;system命令返回值是个整型，很难判断具体情况是否正确。可以通过popen来执行bash命令，并获取返回值。注意popen获取的字符串返回值是标准输出，如需获取错误输出内容需要将错误输出重定向至标准输出中。&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;void system_cmd(const char * command, char * result)
+{
+    FILE *fpRead;
+    fpRead = popen(command, &amp;#34;r&amp;#34;);
+    char buf[1024] = {0};
+    memset(buf,&amp;#39;\0&amp;#39;,sizeof(buf));
+    while(fgets(buf,1024-1,fpRead)!=NULL)
+    { 
+        if (buf[strlen(buf) - 1] == &amp;#39;\n&amp;#39;) {
+            buf[strlen(buf) - 1] = &amp;#39;\0&amp;#39;; //去除换行符
+        }
+        strcpy(result, buf);
+    }
+    if(fpRead!=NULL)
+        pclose(fpRead);
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;调用示例：&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;    char pid[10]={0};
+    system_cmd(&amp;#34;pgrep bash&amp;#34;, pid);
+&lt;/code&gt;&lt;/pre&gt;</description>
+        </item>
+        <item>
+        <title>Linux 终端后台任务、多窗口怎么使用</title>
+        <link>http://localhost:1313/post/jianshu/linux%E7%BC%96%E7%A8%8B/linux-%E7%BB%88%E7%AB%AF%E5%90%8E%E5%8F%B0%E4%BB%BB%E5%8A%A1%E5%A4%9A%E7%AA%97%E5%8F%A3%E6%80%8E%E4%B9%88%E4%BD%BF%E7%94%A8/</link>
+        <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+        
+        <guid>http://localhost:1313/post/jianshu/linux%E7%BC%96%E7%A8%8B/linux-%E7%BB%88%E7%AB%AF%E5%90%8E%E5%8F%B0%E4%BB%BB%E5%8A%A1%E5%A4%9A%E7%AA%97%E5%8F%A3%E6%80%8E%E4%B9%88%E4%BD%BF%E7%94%A8/</guid>
+        <description>&lt;h2 id=&#34;byobu&#34;&gt;byobu
+&lt;/h2&gt;&lt;p&gt;byobu是代替screen以及tmux的一款工具。使用apt install byobu就可以安装好。运行byobu就可以查看他的命令很简单：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;f2 创建新窗口&lt;/li&gt;
+&lt;li&gt;f3 返回左侧的窗口&lt;/li&gt;
+&lt;li&gt;f4 返回右侧的窗口&lt;/li&gt;
+&lt;li&gt;f9 离开byobu，打开的窗口所运行的命令不会因此中断。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;blockquote&gt;
+&lt;p&gt;强烈推荐不想使用screen和tmux的人试一下！包你满意。&lt;/p&gt;
+&lt;/blockquote&gt;
+</description>
+        </item>
+        
+    </channel>
+</rss>

@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="链接：https://www.nowcoder.com/questionTerminal/504ad6420b314e5bb614e1684ad46d4d 来源：牛客网 一个合法的括号匹配序列被定义为: 1. 空串&quot;&ldquo;是合法的括号序列 2. 如果&quot;X&quot;和&quot;Y&quot;是合法的序列,那么&quot;XY&quot;也是一个合法的括号序列 3. 如果&quot;X&quot;是一个合法的序列,那么&rdquo;(X)&ldquo;也是一个合法的括号序列 4. 每个合法的括号序列都可以由上面的规则生成 例如&rdquo;&quot;, &ldquo;()&rdquo;, &ldquo;()()()&rdquo;, &ldquo;(()())&rdquo;, &ldquo;(((()))&ldquo;都是合法的。 从一个字符串S中移除零个或者多个字符得到的序列称为S的子序列。 例如&quot;abcde&quot;的子序列有&quot;abe&rdquo;,&rdquo;&quot;,&ldquo;abcde&quot;等。 定义LCS(S,T)为字符串S和字符串T最长公共子序列的长度,即一个最长的序列W既是S的子序列也是T的子序列的长度。 小易给出一个合法的括号匹配序列s,小易希望你能找出具有以下特征的括号序列t: 1、t跟s不同,但是长度相同 2、t也是一个合法的括号匹配序列 3、LCS(s, t)是满足上述两个条件的t中最大的 因为这样的t可能存在多个,小易需要你计算出满足条件的t有多少个。 如样例所示: s = &ldquo;(())()&quot;,跟字符串s长度相同的合法括号匹配序列有: &ldquo;()(())&rdquo;, &ldquo;((()))&rdquo;, &ldquo;()()()&rdquo;, &ldquo;(()())&quot;,其中LCS( &ldquo;(())()&rdquo;, &ldquo;()(())&rdquo; )为4,其他三个都为5,所以输出3. 输入描述: 输出描述: 输出一个正整数,满足条件的t的个数。 示例1 输入 (())() 输出 3 分析 题目要求对所有的相同长度的括号序列进行遍历，并计算每一个括号序列与题目中给定的字符串的最长公共子序列的长度。然后，计算长度最大的值出现了多少次。 如果真的按照题目的描述去做，显然是不可能做出来的。光是生成长达50个字符串的括号序列可能花的时间就超了。 既然要搜索最长的出现了多少次，不如假设出现了最长的子串是原串长度-1，然后求所有由这个子串所构成的括号序列。如果不存在，则求子串长是原串长度-2的串所能构成的括号序列。依次递减这个子串的长度，直到能求出来为止。 其实，一定存在子串长度为原串长度-1的串通过添加新的括号所构成的另一个和原串不同的括号序列。这是因为，任何一个括号序列都可以只移动一个括号构成另外一个和原来不同的括号序列(思考为什么)。如果可以这样，那么新串和原串的最长公共括号子序列就是n-1个。因为你只移动了一个括号并插入到其他地方。那么除了这个括号外，其他的顺序都没有变。那么，每次将其中一个括号拿掉，然后插入到新的地方。我们统计一下总共能构成多少个合法的括号序列，将这个数字减去原来的那个串，也就是减去1，就是题目的答案。 #include &lt;vector&gt; #include &lt;iostream&gt; #include &lt;algorithm&gt; #include &lt;set&gt; using namespace std; bool isKuohao(const string &amp; str) { int count=0; for(auto c:str) { if(c == &#39;(&#39;) count ++; if(c == &#39;)&#39;) count --; if(count&lt;0) return false; } return count == 0; } int main() { int ret=0; string input; cin &gt;&gt; input; set&lt;string&gt; haveChose; set&lt;string&gt; haveBuild; /* 选出其中任意一个括号 */ for (int i = 0; i &lt; input.">
+<title>算法题目——最长公共子括号序列</title>
+
+<link rel='canonical' href='https://nansenli.com/zh-cn/post/jianshu/%E7%AE%97%E6%B3%95/%E7%AE%97%E6%B3%95%E9%A2%98%E7%9B%AE%E6%9C%80%E9%95%BF%E5%85%AC%E5%85%B1%E5%AD%90%E6%8B%AC%E5%8F%B7%E5%BA%8F%E5%88%97/'>
+
+<link rel="stylesheet" href="/scss/style.min.1084ac713783b88e0bd9807a58068e10aae22e99420f94a9234654a4e199baa4.css"><meta property='og:title' content="算法题目——最长公共子括号序列">
+<meta property='og:description' content="链接：https://www.nowcoder.com/questionTerminal/504ad6420b314e5bb614e1684ad46d4d 来源：牛客网 一个合法的括号匹配序列被定义为: 1. 空串&quot;&ldquo;是合法的括号序列 2. 如果&quot;X&quot;和&quot;Y&quot;是合法的序列,那么&quot;XY&quot;也是一个合法的括号序列 3. 如果&quot;X&quot;是一个合法的序列,那么&rdquo;(X)&ldquo;也是一个合法的括号序列 4. 每个合法的括号序列都可以由上面的规则生成 例如&rdquo;&quot;, &ldquo;()&rdquo;, &ldquo;()()()&rdquo;, &ldquo;(()())&rdquo;, &ldquo;(((()))&ldquo;都是合法的。 从一个字符串S中移除零个或者多个字符得到的序列称为S的子序列。 例如&quot;abcde&quot;的子序列有&quot;abe&rdquo;,&rdquo;&quot;,&ldquo;abcde&quot;等。 定义LCS(S,T)为字符串S和字符串T最长公共子序列的长度,即一个最长的序列W既是S的子序列也是T的子序列的长度。 小易给出一个合法的括号匹配序列s,小易希望你能找出具有以下特征的括号序列t: 1、t跟s不同,但是长度相同 2、t也是一个合法的括号匹配序列 3、LCS(s, t)是满足上述两个条件的t中最大的 因为这样的t可能存在多个,小易需要你计算出满足条件的t有多少个。 如样例所示: s = &ldquo;(())()&quot;,跟字符串s长度相同的合法括号匹配序列有: &ldquo;()(())&rdquo;, &ldquo;((()))&rdquo;, &ldquo;()()()&rdquo;, &ldquo;(()())&quot;,其中LCS( &ldquo;(())()&rdquo;, &ldquo;()(())&rdquo; )为4,其他三个都为5,所以输出3. 输入描述: 输出描述: 输出一个正整数,满足条件的t的个数。 示例1 输入 (())() 输出 3 分析 题目要求对所有的相同长度的括号序列进行遍历，并计算每一个括号序列与题目中给定的字符串的最长公共子序列的长度。然后，计算长度最大的值出现了多少次。 如果真的按照题目的描述去做，显然是不可能做出来的。光是生成长达50个字符串的括号序列可能花的时间就超了。 既然要搜索最长的出现了多少次，不如假设出现了最长的子串是原串长度-1，然后求所有由这个子串所构成的括号序列。如果不存在，则求子串长是原串长度-2的串所能构成的括号序列。依次递减这个子串的长度，直到能求出来为止。 其实，一定存在子串长度为原串长度-1的串通过添加新的括号所构成的另一个和原串不同的括号序列。这是因为，任何一个括号序列都可以只移动一个括号构成另外一个和原来不同的括号序列(思考为什么)。如果可以这样，那么新串和原串的最长公共括号子序列就是n-1个。因为你只移动了一个括号并插入到其他地方。那么除了这个括号外，其他的顺序都没有变。那么，每次将其中一个括号拿掉，然后插入到新的地方。我们统计一下总共能构成多少个合法的括号序列，将这个数字减去原来的那个串，也就是减去1，就是题目的答案。 #include &lt;vector&gt; #include &lt;iostream&gt; #include &lt;algorithm&gt; #include &lt;set&gt; using namespace std; bool isKuohao(const string &amp; str) { int count=0; for(auto c:str) { if(c == &#39;(&#39;) count ++; if(c == &#39;)&#39;) count --; if(count&lt;0) return false; } return count == 0; } int main() { int ret=0; string input; cin &gt;&gt; input; set&lt;string&gt; haveChose; set&lt;string&gt; haveBuild; /* 选出其中任意一个括号 */ for (int i = 0; i &lt; input.">
+<meta property='og:url' content='https://nansenli.com/zh-cn/post/jianshu/%E7%AE%97%E6%B3%95/%E7%AE%97%E6%B3%95%E9%A2%98%E7%9B%AE%E6%9C%80%E9%95%BF%E5%85%AC%E5%85%B1%E5%AD%90%E6%8B%AC%E5%8F%B7%E5%BA%8F%E5%88%97/'>
+<meta property='og:site_name' content='Nansen Li'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2018-01-21T14:05:00&#43;00:00'/><meta property='article:modified_time' content='2018-01-21T14:05:00&#43;00:00'/>
+<meta name="twitter:title" content="算法题目——最长公共子括号序列">
+<meta name="twitter:description" content="链接：https://www.nowcoder.com/questionTerminal/504ad6420b314e5bb614e1684ad46d4d 来源：牛客网 一个合法的括号匹配序列被定义为: 1. 空串&quot;&ldquo;是合法的括号序列 2. 如果&quot;X&quot;和&quot;Y&quot;是合法的序列,那么&quot;XY&quot;也是一个合法的括号序列 3. 如果&quot;X&quot;是一个合法的序列,那么&rdquo;(X)&ldquo;也是一个合法的括号序列 4. 每个合法的括号序列都可以由上面的规则生成 例如&rdquo;&quot;, &ldquo;()&rdquo;, &ldquo;()()()&rdquo;, &ldquo;(()())&rdquo;, &ldquo;(((()))&ldquo;都是合法的。 从一个字符串S中移除零个或者多个字符得到的序列称为S的子序列。 例如&quot;abcde&quot;的子序列有&quot;abe&rdquo;,&rdquo;&quot;,&ldquo;abcde&quot;等。 定义LCS(S,T)为字符串S和字符串T最长公共子序列的长度,即一个最长的序列W既是S的子序列也是T的子序列的长度。 小易给出一个合法的括号匹配序列s,小易希望你能找出具有以下特征的括号序列t: 1、t跟s不同,但是长度相同 2、t也是一个合法的括号匹配序列 3、LCS(s, t)是满足上述两个条件的t中最大的 因为这样的t可能存在多个,小易需要你计算出满足条件的t有多少个。 如样例所示: s = &ldquo;(())()&quot;,跟字符串s长度相同的合法括号匹配序列有: &ldquo;()(())&rdquo;, &ldquo;((()))&rdquo;, &ldquo;()()()&rdquo;, &ldquo;(()())&quot;,其中LCS( &ldquo;(())()&rdquo;, &ldquo;()(())&rdquo; )为4,其他三个都为5,所以输出3. 输入描述: 输出描述: 输出一个正整数,满足条件的t的个数。 示例1 输入 (())() 输出 3 分析 题目要求对所有的相同长度的括号序列进行遍历，并计算每一个括号序列与题目中给定的字符串的最长公共子序列的长度。然后，计算长度最大的值出现了多少次。 如果真的按照题目的描述去做，显然是不可能做出来的。光是生成长达50个字符串的括号序列可能花的时间就超了。 既然要搜索最长的出现了多少次，不如假设出现了最长的子串是原串长度-1，然后求所有由这个子串所构成的括号序列。如果不存在，则求子串长是原串长度-2的串所能构成的括号序列。依次递减这个子串的长度，直到能求出来为止。 其实，一定存在子串长度为原串长度-1的串通过添加新的括号所构成的另一个和原串不同的括号序列。这是因为，任何一个括号序列都可以只移动一个括号构成另外一个和原来不同的括号序列(思考为什么)。如果可以这样，那么新串和原串的最长公共括号子序列就是n-1个。因为你只移动了一个括号并插入到其他地方。那么除了这个括号外，其他的顺序都没有变。那么，每次将其中一个括号拿掉，然后插入到新的地方。我们统计一下总共能构成多少个合法的括号序列，将这个数字减去原来的那个串，也就是减去1，就是题目的答案。 #include &lt;vector&gt; #include &lt;iostream&gt; #include &lt;algorithm&gt; #include &lt;set&gt; using namespace std; bool isKuohao(const string &amp; str) { int count=0; for(auto c:str) { if(c == &#39;(&#39;) count ++; if(c == &#39;)&#39;) count --; if(count&lt;0) return false; } return count == 0; } int main() { int ret=0; string input; cin &gt;&gt; input; set&lt;string&gt; haveChose; set&lt;string&gt; haveBuild; /* 选出其中任意一个括号 */ for (int i = 0; i &lt; input.">
+    <link rel="shortcut icon" href="/favicon.ico" />
+
+  
+    
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-WC38C3XE3J"></script>
+      <script>
+        var doNotTrack = false;
+        if ( false ) {
+          var dnt = (navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack);
+          var doNotTrack = (dnt == "1" || dnt == "yes");
+        }
+        if (!doNotTrack) {
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-WC38C3XE3J');
+        }
+      </script>
+    
+  
+
+
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="切换菜单">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/zh-cn/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/avatar_hu96777ff80939aaa7d938dddcc232fcc6_1414962_300x0_resize_box_3.png" width="300"
+                            height="300" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+                    <span class="emoji">🌈</span>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/zh-cn">Nansen Li</a></h1>
+            <h2 class="site-description"></h2>
+        </div>
+    </header><ol class="menu-social">
+            
+                <li>
+                    <a 
+                        href='https://github.com/linanwx'
+                        target="_blank"
+                        title="GitHub"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://www.linkedin.com/in/nansen-li-3bb0a3146/'
+                        target="_blank"
+                        title="LinkedIn"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-brand-linkedin"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M8 11v5" /><path d="M8 8v.01" /><path d="M12 16v-5" /><path d="M16 16v-3a2 2 0 1 0 -4 0" /><path d="M3 7a4 4 0 0 1 4 -4h10a4 4 0 0 1 4 4v10a4 4 0 0 1 -4 4h-10a4 4 0 0 1 -4 -4z" /></svg>
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='index.xml'
+                        target="_blank"
+                        title="RSS"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-rss" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="5" cy="19" r="1" />
+  <path d="M4 4a16 16 0 0 1 16 16" />
+  <path d="M4 11a9 9 0 0 1 9 9" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/zh-cn/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+</svg>
+
+
+
+                
+                <span>主页</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/zh-cn/page/archives/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>归档</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/zh-cn/page/search/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
+
+
+
+                
+                <span>搜索</span>
+            </a>
+        </li>
+        
+        <li class="menu-bottom-section">
+            <ol class="menu">
+                    
+                        <li id="i18n-switch">  
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-language" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M4 5h7" />
+  <path d="M9 3v2c0 4.418 -2.239 8 -5 8" />
+  <path d="M5 9c-.003 2.144 2.952 3.908 6.7 4" />
+  <path d="M12 20l4 -9l4 9" />
+  <path d="M19.1 18h-6.2" />
+</svg>
+
+
+
+                            <select name="language" title="language" onchange="window.location.href = this.selectedOptions[0].value">
+                                
+                                    <option value="https://nansenli.com/" >English</option>
+                                
+                                    <option value="https://nansenli.com/zh-cn/" selected>中文</option>
+                                
+                            </select>
+                        </li>
+                    
+                
+
+                
+                    <li id="dark-mode-toggle">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <span>暗色模式</span>
+                    </li>
+                
+            </ol>
+        </li>
+    </ol>
+</aside>
+
+    
+
+            <main class="main full-width">
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/zh-cn/categories/%E7%AE%97%E6%B3%95/" >
+                算法
+            </a>
+        
+    </header>
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/zh-cn/post/jianshu/%E7%AE%97%E6%B3%95/%E7%AE%97%E6%B3%95%E9%A2%98%E7%9B%AE%E6%9C%80%E9%95%BF%E5%85%AC%E5%85%B1%E5%AD%90%E6%8B%AC%E5%8F%B7%E5%BA%8F%E5%88%97/">算法题目——最长公共子括号序列</a>
+        </h2>
+    
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">Jan 21, 2018</time>
+            </div>
+        
+
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+                <time class="article-time--reading">
+                    阅读时长: 1 分钟
+                </time>
+            </div>
+        
+    </footer>
+    
+
+    
+        <footer class="article-translations">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-language" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M4 5h7" />
+  <path d="M9 3v2c0 4.418 -2.239 8 -5 8" />
+  <path d="M5 9c-.003 2.144 2.952 3.908 6.7 4" />
+  <path d="M12 20l4 -9l4 9" />
+  <path d="M19.1 18h-6.2" />
+</svg>
+
+
+
+            <div>
+                
+                    <a href="https://nansenli.com/post/jianshu/%E7%AE%97%E6%B3%95/%E7%AE%97%E6%B3%95%E9%A2%98%E7%9B%AE%E6%9C%80%E9%95%BF%E5%85%AC%E5%85%B1%E5%AD%90%E6%8B%AC%E5%8F%B7%E5%BA%8F%E5%88%97/" class="link">English</a>
+                
+            </div>
+        </footer>
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <p>链接：<a class="link" href="https://www.nowcoder.com/questionTerminal/504ad6420b314e5bb614e1684ad46d4d"  target="_blank" rel="noopener"
+    >https://www.nowcoder.com/questionTerminal/504ad6420b314e5bb614e1684ad46d4d</a>
+来源：牛客网</p>
+<p>一个合法的括号匹配序列被定义为:
+1. 空串&quot;&ldquo;是合法的括号序列
+2. 如果&quot;X&quot;和&quot;Y&quot;是合法的序列,那么&quot;XY&quot;也是一个合法的括号序列
+3. 如果&quot;X&quot;是一个合法的序列,那么&rdquo;(X)&ldquo;也是一个合法的括号序列
+4. 每个合法的括号序列都可以由上面的规则生成
+例如&rdquo;&quot;, &ldquo;()&rdquo;, &ldquo;()()()&rdquo;, &ldquo;(()())&rdquo;, &ldquo;(((()))&ldquo;都是合法的。
+从一个字符串S中移除零个或者多个字符得到的序列称为S的子序列。
+例如&quot;abcde&quot;的子序列有&quot;abe&rdquo;,&rdquo;&quot;,&ldquo;abcde&quot;等。
+定义LCS(S,T)为字符串S和字符串T最长公共子序列的长度,即一个最长的序列W既是S的子序列也是T的子序列的长度。
+小易给出一个合法的括号匹配序列s,小易希望你能找出具有以下特征的括号序列t:
+1、t跟s不同,但是长度相同
+2、t也是一个合法的括号匹配序列
+3、LCS(s, t)是满足上述两个条件的t中最大的
+因为这样的t可能存在多个,小易需要你计算出满足条件的t有多少个。</p>
+<p>如样例所示: s = &ldquo;(())()&quot;,跟字符串s长度相同的合法括号匹配序列有:
+&ldquo;()(())&rdquo;, &ldquo;((()))&rdquo;, &ldquo;()()()&rdquo;, &ldquo;(()())&quot;,其中LCS( &ldquo;(())()&rdquo;, &ldquo;()(())&rdquo; )为4,其他三个都为5,所以输出3.</p>
+<h5 id="输入描述"><strong>输入描述:</strong>
+</h5><!-- raw HTML omitted -->
+<h5 id="输出描述"><strong>输出描述:</strong>
+</h5><p>输出一个正整数,满足条件的t的个数。</p>
+<p>示例1</p>
+<h2 id="输入">输入
+</h2><p>(())()</p>
+<h2 id="输出">输出
+</h2><p>3</p>
+<h2 id="分析">分析
+</h2><p>题目要求对所有的相同长度的括号序列进行遍历，并计算每一个括号序列与题目中给定的字符串的最长公共子序列的长度。然后，计算长度最大的值出现了多少次。</p>
+<p>如果真的按照题目的描述去做，显然是不可能做出来的。光是生成长达50个字符串的括号序列可能花的时间就超了。</p>
+<p>既然要搜索最长的出现了多少次，不如假设出现了最长的子串是原串长度-1，然后求所有由这个子串所构成的括号序列。如果不存在，则求子串长是原串长度-2的串所能构成的括号序列。依次递减这个子串的长度，直到能求出来为止。</p>
+<p>其实，一定存在子串长度为原串长度-1的串通过添加新的括号所构成的另一个和原串不同的括号序列。这是因为，任何一个括号序列都可以只移动一个括号构成另外一个和原来不同的括号序列(思考为什么)。如果可以这样，那么新串和原串的最长公共括号子序列就是n-1个。因为你只移动了一个括号并插入到其他地方。那么除了这个括号外，其他的顺序都没有变。那么，每次将其中一个括号拿掉，然后插入到新的地方。我们统计一下总共能构成多少个合法的括号序列，将这个数字减去原来的那个串，也就是减去1，就是题目的答案。</p>
+<pre tabindex="0"><code>#include &lt;vector&gt;
+#include &lt;iostream&gt;
+#include &lt;algorithm&gt;
+#include &lt;set&gt;
+
+using namespace std;
+
+bool isKuohao(const string &amp; str)
+{
+    int count=0;
+    for(auto c:str)
+    {
+        if(c == &#39;(&#39;)
+            count ++;
+        if(c == &#39;)&#39;)
+            count --;
+        if(count&lt;0)
+            return false;
+    }
+    return count == 0;
+}
+
+int main()
+{
+    int ret=0;
+    string input;
+    cin &gt;&gt; input;
+    set&lt;string&gt; haveChose;
+    set&lt;string&gt; haveBuild;
+    /* 选出其中任意一个括号 */
+    for (int i = 0; i &lt; input.size(); i++)
+    {
+        char q[] = {input[i], &#39;\0&#39;};
+        /* 删除该括号 */
+        string delete_char(input);
+        delete_char.erase(delete_char.begin() + i);
+        if (haveChose.count(delete_char))
+            continue;
+        else
+            haveChose.insert(delete_char);
+        /* 将原来的括号插入新的数组中 */
+        for (int j = 0; j &lt; delete_char.size() + 1; j++)
+        {
+            string add_delete_char(delete_char);
+            add_delete_char.insert(j, q);
+            if (haveBuild.count(add_delete_char))
+                continue;
+            else
+                haveBuild.insert(add_delete_char);
+            if(isKuohao(add_delete_char)){
+                ret ++;
+            }
+        }
+    }
+    cout &lt;&lt; ret-1 &lt;&lt; endl;
+}
+</code></pre>
+</section>
+
+
+    <footer class="article-footer">
+    
+
+    </footer>
+
+
+    
+</article>
+
+    
+
+    
+
+     
+    
+        
+    <div class="disqus-container">
+    <div id="disqus_thread"></div>
+<script>
+    window.disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "nansenli" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+<style>
+    .disqus-container {
+        background-color: var(--card-background);
+        border-radius: var(--card-border-radius);
+        box-shadow: var(--shadow-l1);
+        padding: var(--card-padding);
+    }
+</style>
+
+<script>
+    window.addEventListener('onColorSchemeChange', (e) => {
+        if (typeof DISQUS == 'object') {
+            DISQUS.reset({
+                reload: true
+            });
+        }
+    })
+</script>
+
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+        2025 Nansen Li（李楠森）
+    </section>
+    
+    <section class="powerby">
+        使用 <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> 构建 <br />
+        主题 <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.30.0">Stack</a></b> 由 <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a> 设计
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.1e9a3bafd846ced4c345d084b355fb8c7bae75701c338f8a1f8a82c780137826.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>

@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="前言 本来是使用 Intel 的 i5-6500 CPU，在更换为 AMD 的 Ryzen 2700 后，频繁出现卡机现象。 现象 在卡机时，观测到任务管理器的硬盘占用率为100%，同时写入与写出量为0。硬盘位光威 悍将 512 GB杂牌。在事件管理器中有大量编号为129的事件。 怀疑硬件问题 在重复更换了SATA接口，重复拔插了电源，尝试无效，仍然卡机 网上搜索相关问题 在网上搜索到，大部分都指向了问题的根源，是WIN10的AHCI驱动问题，以及SSD固件的问题。 解决途径一 更换AHCI驱动 无效 为了更换AHCI驱动，尝试在AMD官网，在华硕官网下载了芯片组驱动，并手动在设备管理器中更换了驱动，使得显示为AMD SATA驱动。后又反复试过各种主板驱动，最终，测试无效，不能解决问题 解决途径二 更换硬盘为raid格式 无效 为了更换raid格式，重新安装Windows，但是在安装过程中，Windows无法识别ssd。根据amd官方英文手册，以及官方raid驱动，手动载入raid驱动，仍然在Windows安装过程中无法看到ssd。重复多次无法看到。可能是因为只有一块硬盘，使用volume模式的raid不被支持吧。放弃该方式 解决途径三 更改注册表，关闭MSI 无效 https://www.pconline.com.cn/win10/739/7395324.html 大意就是在某些AHCI模式下使用StorAHCI.sys驱动时，可能导致个别SSD无法在“信息信号中断”（MSI）模式下完成正确的输入/输出操作，最终表现就是系统停滞，同时任务管理器中磁盘占用率显示为100%。当然解决的方法也简单，直接在regedit里关闭它（MSI Mode）就成。 4. 点击Contana，输入“regedit”启动注册表编辑器，导航到“HKEY_LOCAL_MACHINE\\System\\CurrentControlSet\\Enum\\PCI\\xxxxx \\Device Parameters\\Interrupt Management\\MessageSignaledInterruptProperties”（”xxxxx”是你刚刚记录的“设备实例路径”）； 5. 最后更改右窗格中的“MSISupported”键值，由1改为0； 经过测试无效 解决途径四 更改电源设置 无效 PCIE-Express中的设置置为关闭，测试无效 解决途径五 更改LPM 有用 http://www.sohu.com/a/204645459_493865 https://answers.microsoft.com/en-us/windows/forum/windows_10-hardware-winpc/event-id-129-storahci-resetting-raidport0/7b30c512-6597-438b-80cb-22fb2f85d62e 其内容如下： 我们现在用的大多数SSD都支持一些省电的功能，DIPM/HIPM/Device Sleep。 由主机 （Host）发出改变形态请求的我们叫做HIPM(Host-Initiated LPM, HIPM)，而直接由设备(Device)发出形态请求的叫(Device-Initiated LPM,DIPM)。请求什么，请求变慢，请求节能，请求Device Sleep。 而HIPM，DIPM都离不开电脑LPM技术的支持。LPM，Link Power Management (LPM)，链接电源管理。LPM是SATA接口物理层上的一个功能，它能够将主机（Host）和存储设备（Device）的链接分成3种形态：Active形态，Partial形态和Slumber形态，目的是降低物理层总线传输速度，这样达到省电效果。 LPM一般是默认打开的。 那么打开这个LPM对于SSD好么？ 1. 主机发送HIPM形态改变指令，而SSD设备标准不同，不能很好的支持，出现兼容问题导致卡顿，或者掉盘； 2. 主机发送HIPM形态改变指令太频繁，导致SSD设备不能及时反应，出现卡顿。">
+<title>关于 Windows 10 使用 SSD 每隔一段时间卡顿问题的探究与解决</title>
+
+<link rel='canonical' href='https://nansenli.com/zh-cn/post/jianshu/%E9%9A%8F%E7%AC%94/%E5%85%B3%E4%BA%8E-windows-10-%E4%BD%BF%E7%94%A8-ssd-%E6%AF%8F%E9%9A%94%E4%B8%80%E6%AE%B5%E6%97%B6%E9%97%B4%E5%8D%A1%E9%A1%BF%E9%97%AE%E9%A2%98%E7%9A%84%E6%8E%A2%E7%A9%B6%E4%B8%8E%E8%A7%A3%E5%86%B3/'>
+
+<link rel="stylesheet" href="/scss/style.min.1084ac713783b88e0bd9807a58068e10aae22e99420f94a9234654a4e199baa4.css"><meta property='og:title' content="关于 Windows 10 使用 SSD 每隔一段时间卡顿问题的探究与解决">
+<meta property='og:description' content="前言 本来是使用 Intel 的 i5-6500 CPU，在更换为 AMD 的 Ryzen 2700 后，频繁出现卡机现象。 现象 在卡机时，观测到任务管理器的硬盘占用率为100%，同时写入与写出量为0。硬盘位光威 悍将 512 GB杂牌。在事件管理器中有大量编号为129的事件。 怀疑硬件问题 在重复更换了SATA接口，重复拔插了电源，尝试无效，仍然卡机 网上搜索相关问题 在网上搜索到，大部分都指向了问题的根源，是WIN10的AHCI驱动问题，以及SSD固件的问题。 解决途径一 更换AHCI驱动 无效 为了更换AHCI驱动，尝试在AMD官网，在华硕官网下载了芯片组驱动，并手动在设备管理器中更换了驱动，使得显示为AMD SATA驱动。后又反复试过各种主板驱动，最终，测试无效，不能解决问题 解决途径二 更换硬盘为raid格式 无效 为了更换raid格式，重新安装Windows，但是在安装过程中，Windows无法识别ssd。根据amd官方英文手册，以及官方raid驱动，手动载入raid驱动，仍然在Windows安装过程中无法看到ssd。重复多次无法看到。可能是因为只有一块硬盘，使用volume模式的raid不被支持吧。放弃该方式 解决途径三 更改注册表，关闭MSI 无效 https://www.pconline.com.cn/win10/739/7395324.html 大意就是在某些AHCI模式下使用StorAHCI.sys驱动时，可能导致个别SSD无法在“信息信号中断”（MSI）模式下完成正确的输入/输出操作，最终表现就是系统停滞，同时任务管理器中磁盘占用率显示为100%。当然解决的方法也简单，直接在regedit里关闭它（MSI Mode）就成。 4. 点击Contana，输入“regedit”启动注册表编辑器，导航到“HKEY_LOCAL_MACHINE\\System\\CurrentControlSet\\Enum\\PCI\\xxxxx \\Device Parameters\\Interrupt Management\\MessageSignaledInterruptProperties”（”xxxxx”是你刚刚记录的“设备实例路径”）； 5. 最后更改右窗格中的“MSISupported”键值，由1改为0； 经过测试无效 解决途径四 更改电源设置 无效 PCIE-Express中的设置置为关闭，测试无效 解决途径五 更改LPM 有用 http://www.sohu.com/a/204645459_493865 https://answers.microsoft.com/en-us/windows/forum/windows_10-hardware-winpc/event-id-129-storahci-resetting-raidport0/7b30c512-6597-438b-80cb-22fb2f85d62e 其内容如下： 我们现在用的大多数SSD都支持一些省电的功能，DIPM/HIPM/Device Sleep。 由主机 （Host）发出改变形态请求的我们叫做HIPM(Host-Initiated LPM, HIPM)，而直接由设备(Device)发出形态请求的叫(Device-Initiated LPM,DIPM)。请求什么，请求变慢，请求节能，请求Device Sleep。 而HIPM，DIPM都离不开电脑LPM技术的支持。LPM，Link Power Management (LPM)，链接电源管理。LPM是SATA接口物理层上的一个功能，它能够将主机（Host）和存储设备（Device）的链接分成3种形态：Active形态，Partial形态和Slumber形态，目的是降低物理层总线传输速度，这样达到省电效果。 LPM一般是默认打开的。 那么打开这个LPM对于SSD好么？ 1. 主机发送HIPM形态改变指令，而SSD设备标准不同，不能很好的支持，出现兼容问题导致卡顿，或者掉盘； 2. 主机发送HIPM形态改变指令太频繁，导致SSD设备不能及时反应，出现卡顿。">
+<meta property='og:url' content='https://nansenli.com/zh-cn/post/jianshu/%E9%9A%8F%E7%AC%94/%E5%85%B3%E4%BA%8E-windows-10-%E4%BD%BF%E7%94%A8-ssd-%E6%AF%8F%E9%9A%94%E4%B8%80%E6%AE%B5%E6%97%B6%E9%97%B4%E5%8D%A1%E9%A1%BF%E9%97%AE%E9%A2%98%E7%9A%84%E6%8E%A2%E7%A9%B6%E4%B8%8E%E8%A7%A3%E5%86%B3/'>
+<meta property='og:site_name' content='Nansen Li'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2018-10-24T11:47:00&#43;00:00'/><meta property='article:modified_time' content='2018-10-24T11:47:00&#43;00:00'/>
+<meta name="twitter:title" content="关于 Windows 10 使用 SSD 每隔一段时间卡顿问题的探究与解决">
+<meta name="twitter:description" content="前言 本来是使用 Intel 的 i5-6500 CPU，在更换为 AMD 的 Ryzen 2700 后，频繁出现卡机现象。 现象 在卡机时，观测到任务管理器的硬盘占用率为100%，同时写入与写出量为0。硬盘位光威 悍将 512 GB杂牌。在事件管理器中有大量编号为129的事件。 怀疑硬件问题 在重复更换了SATA接口，重复拔插了电源，尝试无效，仍然卡机 网上搜索相关问题 在网上搜索到，大部分都指向了问题的根源，是WIN10的AHCI驱动问题，以及SSD固件的问题。 解决途径一 更换AHCI驱动 无效 为了更换AHCI驱动，尝试在AMD官网，在华硕官网下载了芯片组驱动，并手动在设备管理器中更换了驱动，使得显示为AMD SATA驱动。后又反复试过各种主板驱动，最终，测试无效，不能解决问题 解决途径二 更换硬盘为raid格式 无效 为了更换raid格式，重新安装Windows，但是在安装过程中，Windows无法识别ssd。根据amd官方英文手册，以及官方raid驱动，手动载入raid驱动，仍然在Windows安装过程中无法看到ssd。重复多次无法看到。可能是因为只有一块硬盘，使用volume模式的raid不被支持吧。放弃该方式 解决途径三 更改注册表，关闭MSI 无效 https://www.pconline.com.cn/win10/739/7395324.html 大意就是在某些AHCI模式下使用StorAHCI.sys驱动时，可能导致个别SSD无法在“信息信号中断”（MSI）模式下完成正确的输入/输出操作，最终表现就是系统停滞，同时任务管理器中磁盘占用率显示为100%。当然解决的方法也简单，直接在regedit里关闭它（MSI Mode）就成。 4. 点击Contana，输入“regedit”启动注册表编辑器，导航到“HKEY_LOCAL_MACHINE\\System\\CurrentControlSet\\Enum\\PCI\\xxxxx \\Device Parameters\\Interrupt Management\\MessageSignaledInterruptProperties”（”xxxxx”是你刚刚记录的“设备实例路径”）； 5. 最后更改右窗格中的“MSISupported”键值，由1改为0； 经过测试无效 解决途径四 更改电源设置 无效 PCIE-Express中的设置置为关闭，测试无效 解决途径五 更改LPM 有用 http://www.sohu.com/a/204645459_493865 https://answers.microsoft.com/en-us/windows/forum/windows_10-hardware-winpc/event-id-129-storahci-resetting-raidport0/7b30c512-6597-438b-80cb-22fb2f85d62e 其内容如下： 我们现在用的大多数SSD都支持一些省电的功能，DIPM/HIPM/Device Sleep。 由主机 （Host）发出改变形态请求的我们叫做HIPM(Host-Initiated LPM, HIPM)，而直接由设备(Device)发出形态请求的叫(Device-Initiated LPM,DIPM)。请求什么，请求变慢，请求节能，请求Device Sleep。 而HIPM，DIPM都离不开电脑LPM技术的支持。LPM，Link Power Management (LPM)，链接电源管理。LPM是SATA接口物理层上的一个功能，它能够将主机（Host）和存储设备（Device）的链接分成3种形态：Active形态，Partial形态和Slumber形态，目的是降低物理层总线传输速度，这样达到省电效果。 LPM一般是默认打开的。 那么打开这个LPM对于SSD好么？ 1. 主机发送HIPM形态改变指令，而SSD设备标准不同，不能很好的支持，出现兼容问题导致卡顿，或者掉盘； 2. 主机发送HIPM形态改变指令太频繁，导致SSD设备不能及时反应，出现卡顿。">
+    <link rel="shortcut icon" href="/favicon.ico" />
+
+  
+    
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-WC38C3XE3J"></script>
+      <script>
+        var doNotTrack = false;
+        if ( false ) {
+          var dnt = (navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack);
+          var doNotTrack = (dnt == "1" || dnt == "yes");
+        }
+        if (!doNotTrack) {
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-WC38C3XE3J');
+        }
+      </script>
+    
+  
+
+
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="切换菜单">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/zh-cn/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/avatar_hu96777ff80939aaa7d938dddcc232fcc6_1414962_300x0_resize_box_3.png" width="300"
+                            height="300" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+                    <span class="emoji">🌈</span>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/zh-cn">Nansen Li</a></h1>
+            <h2 class="site-description"></h2>
+        </div>
+    </header><ol class="menu-social">
+            
+                <li>
+                    <a 
+                        href='https://github.com/linanwx'
+                        target="_blank"
+                        title="GitHub"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://www.linkedin.com/in/nansen-li-3bb0a3146/'
+                        target="_blank"
+                        title="LinkedIn"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-brand-linkedin"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M8 11v5" /><path d="M8 8v.01" /><path d="M12 16v-5" /><path d="M16 16v-3a2 2 0 1 0 -4 0" /><path d="M3 7a4 4 0 0 1 4 -4h10a4 4 0 0 1 4 4v10a4 4 0 0 1 -4 4h-10a4 4 0 0 1 -4 -4z" /></svg>
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='index.xml'
+                        target="_blank"
+                        title="RSS"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-rss" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="5" cy="19" r="1" />
+  <path d="M4 4a16 16 0 0 1 16 16" />
+  <path d="M4 11a9 9 0 0 1 9 9" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/zh-cn/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+</svg>
+
+
+
+                
+                <span>主页</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/zh-cn/page/archives/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>归档</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/zh-cn/page/search/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
+
+
+
+                
+                <span>搜索</span>
+            </a>
+        </li>
+        
+        <li class="menu-bottom-section">
+            <ol class="menu">
+                    
+                        <li id="i18n-switch">  
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-language" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M4 5h7" />
+  <path d="M9 3v2c0 4.418 -2.239 8 -5 8" />
+  <path d="M5 9c-.003 2.144 2.952 3.908 6.7 4" />
+  <path d="M12 20l4 -9l4 9" />
+  <path d="M19.1 18h-6.2" />
+</svg>
+
+
+
+                            <select name="language" title="language" onchange="window.location.href = this.selectedOptions[0].value">
+                                
+                                    <option value="https://nansenli.com/" >English</option>
+                                
+                                    <option value="https://nansenli.com/zh-cn/" selected>中文</option>
+                                
+                            </select>
+                        </li>
+                    
+                
+
+                
+                    <li id="dark-mode-toggle">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <span>暗色模式</span>
+                    </li>
+                
+            </ol>
+        </li>
+    </ol>
+</aside>
+
+    
+
+            <main class="main full-width">
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/zh-cn/categories/%E9%9A%8F%E7%AC%94/" >
+                随笔
+            </a>
+        
+    </header>
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/zh-cn/post/jianshu/%E9%9A%8F%E7%AC%94/%E5%85%B3%E4%BA%8E-windows-10-%E4%BD%BF%E7%94%A8-ssd-%E6%AF%8F%E9%9A%94%E4%B8%80%E6%AE%B5%E6%97%B6%E9%97%B4%E5%8D%A1%E9%A1%BF%E9%97%AE%E9%A2%98%E7%9A%84%E6%8E%A2%E7%A9%B6%E4%B8%8E%E8%A7%A3%E5%86%B3/">关于 Windows 10 使用 SSD 每隔一段时间卡顿问题的探究与解决</a>
+        </h2>
+    
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">Oct 24, 2018</time>
+            </div>
+        
+
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+                <time class="article-time--reading">
+                    阅读时长: 1 分钟
+                </time>
+            </div>
+        
+    </footer>
+    
+
+    
+        <footer class="article-translations">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-language" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M4 5h7" />
+  <path d="M9 3v2c0 4.418 -2.239 8 -5 8" />
+  <path d="M5 9c-.003 2.144 2.952 3.908 6.7 4" />
+  <path d="M12 20l4 -9l4 9" />
+  <path d="M19.1 18h-6.2" />
+</svg>
+
+
+
+            <div>
+                
+                    <a href="https://nansenli.com/post/jianshu/%E9%9A%8F%E7%AC%94/%E5%85%B3%E4%BA%8E-windows-10-%E4%BD%BF%E7%94%A8-ssd-%E6%AF%8F%E9%9A%94%E4%B8%80%E6%AE%B5%E6%97%B6%E9%97%B4%E5%8D%A1%E9%A1%BF%E9%97%AE%E9%A2%98%E7%9A%84%E6%8E%A2%E7%A9%B6%E4%B8%8E%E8%A7%A3%E5%86%B3/" class="link">English</a>
+                
+            </div>
+        </footer>
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <h2 id="前言">前言
+</h2><p>本来是使用 Intel 的 i5-6500 CPU，在更换为 AMD 的 Ryzen 2700 后，频繁出现卡机现象。</p>
+<h2 id="现象">现象
+</h2><p>在卡机时，观测到任务管理器的硬盘占用率为100%，同时写入与写出量为0。硬盘位光威 悍将 512 GB杂牌。在事件管理器中有大量编号为129的事件。</p>
+<h2 id="怀疑硬件问题">怀疑硬件问题
+</h2><p>在重复更换了SATA接口，重复拔插了电源，尝试无效，仍然卡机</p>
+<h2 id="网上搜索相关问题">网上搜索相关问题
+</h2><p>在网上搜索到，大部分都指向了问题的根源，是WIN10的AHCI驱动问题，以及SSD固件的问题。</p>
+<h2 id="解决途径一-更换ahci驱动-无效">解决途径一 更换AHCI驱动 无效
+</h2><p>为了更换AHCI驱动，尝试在AMD官网，在华硕官网下载了芯片组驱动，并手动在设备管理器中更换了驱动，使得显示为AMD SATA驱动。后又反复试过各种主板驱动，最终，测试无效，不能解决问题</p>
+<h2 id="解决途径二-更换硬盘为raid格式-无效">解决途径二 更换硬盘为raid格式 无效
+</h2><p>为了更换raid格式，重新安装Windows，但是在安装过程中，Windows无法识别ssd。根据amd官方英文手册，以及官方raid驱动，手动载入raid驱动，仍然在Windows安装过程中无法看到ssd。重复多次无法看到。可能是因为只有一块硬盘，使用volume模式的raid不被支持吧。放弃该方式</p>
+<h2 id="解决途径三-更改注册表关闭msi-无效">解决途径三 更改注册表，关闭MSI 无效
+</h2><p><a class="link" href="https://www.pconline.com.cn/win10/739/7395324.html"  target="_blank" rel="noopener"
+    >https://www.pconline.com.cn/win10/739/7395324.html</a></p>
+<blockquote>
+<p>大意就是在某些AHCI模式下使用StorAHCI.sys驱动时，可能导致个别SSD无法在“信息信号中断”（MSI）模式下完成正确的输入/输出操作，最终表现就是系统停滞，同时任务管理器中磁盘占用率显示为100%。当然解决的方法也简单，直接在regedit里关闭它（MSI Mode）就成。</p>
+</blockquote>
+<blockquote>
+<p>　　4. 点击Contana，输入“regedit”启动注册表编辑器，导航到“HKEY_LOCAL_MACHINE\System\CurrentControlSet\Enum\PCI\xxxxx \Device Parameters\Interrupt Management\MessageSignaledInterruptProperties”（”xxxxx”是你刚刚记录的“设备实例路径”）；</p>
+</blockquote>
+<blockquote>
+<p>　　5. 最后更改右窗格中的“MSISupported”键值，由1改为0；</p>
+</blockquote>
+<p>经过测试无效</p>
+<h2 id="解决途径四--更改电源设置-无效">解决途径四  更改电源设置 无效
+</h2><p>PCIE-Express中的设置置为关闭，测试无效</p>
+<h2 id="解决途径五-更改lpm-有用">解决途径五 更改LPM 有用
+</h2><p><a class="link" href="http://www.sohu.com/a/204645459_493865"  target="_blank" rel="noopener"
+    >http://www.sohu.com/a/204645459_493865</a></p>
+<p><a class="link" href="https://answers.microsoft.com/en-us/windows/forum/windows_10-hardware-winpc/event-id-129-storahci-resetting-raidport0/7b30c512-6597-438b-80cb-22fb2f85d62e"  target="_blank" rel="noopener"
+    >https://answers.microsoft.com/en-us/windows/forum/windows_10-hardware-winpc/event-id-129-storahci-resetting-raidport0/7b30c512-6597-438b-80cb-22fb2f85d62e</a></p>
+<p>其内容如下：</p>
+<p>我们现在用的大多数SSD都支持一些省电的功能，DIPM/HIPM/Device Sleep。</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/4388248-c66b7d6caad481df.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240"
+	
+	
+	
+	loading="lazy"
+	
+		alt="image"
+	
+	
+></p>
+<p>由主机 （Host）发出改变形态请求的我们叫做HIPM(Host-Initiated LPM, HIPM)，而直接由设备(Device)发出形态请求的叫(Device-Initiated LPM,DIPM)。请求什么，请求变慢，请求节能，请求Device Sleep。</p>
+<p>而HIPM，DIPM都离不开电脑LPM技术的支持。LPM，Link Power Management (LPM)，链接电源管理。LPM是SATA接口物理层上的一个功能，它能够将主机（Host）和存储设备（Device）的链接分成3种形态：Active形态，Partial形态和Slumber形态，目的是降低物理层总线传输速度，这样达到省电效果。</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/4388248-e27d2b1539c83ea5.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240"
+	
+	
+	
+	loading="lazy"
+	
+		alt="image"
+	
+	
+></p>
+<p>LPM一般是默认打开的。</p>
+<p>那么打开这个LPM对于SSD好么？</p>
+<p>1. 主机发送HIPM形态改变指令，而SSD设备标准不同，不能很好的支持，出现兼容问题导致卡顿，或者掉盘；</p>
+<p>2. 主机发送HIPM形态改变指令太频繁，导致SSD设备不能及时反应，出现卡顿。</p>
+<p>3. LPM开启后造成SATA总线传输延迟增加，导致高速SSD的传输受到阻塞而卡顿；</p>
+<p>4. SSD内部的DIPM和主机请求的HIPM发生冲突导致卡顿。</p>
+<p>很多时候，SSD导致电脑出现卡顿，突然掉盘，都是LPM引起的。</p>
+<p>LPM是能够让SATA设备到达节能的效果。但是，也同样对SSD性能产生了影响。</p>
+<p>那么为了节能，你愿意付出损失SSD性能的代价吗？</p>
+<p>HDD的功耗大概在10-25W。也许LPM曾经仅仅是为HDD而来的。</p>
+<p>SSD启动功耗：0.1W<del>1W（2W），最高功耗：5</del>10W，平均功耗：4~5W左右。</p>
+<p>我们的电源缺SSD这几W么？我们在乎这点电费么？好意思在乎么！</p>
+<p>既然SSD用不着LPM，这样损害SSD性能的节能功能，那么我们可不可以给它关掉呢？</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/4388248-203ee8f11de7a542.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240"
+	
+	
+	
+	loading="lazy"
+	
+		alt="image"
+	
+	
+></p>
+<p>保存为“.reg”格式。</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/4388248-c01d0e2b7805b56d.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240"
+	
+	
+	
+	loading="lazy"
+	
+		alt="image"
+	
+	
+></p>
+<p>点击运行。自动写入注册表，更改LPM电源设置。</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/4388248-d3bd755ea853343f.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240"
+	
+	
+	
+	loading="lazy"
+	
+		alt="image"
+	
+	
+></p>
+<p><img src="http://upload-images.jianshu.io/upload_images/4388248-e7f9dba012dfc070.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240"
+	
+	
+	
+	loading="lazy"
+	
+		alt="image"
+	
+	
+></p>
+<p>如果你的SSD出现严重卡顿，掉盘等现象，你可以试试这个方法。</p>
+<p>SSD卡顿、掉盘的主要原因还是，SSD太差劲。确实，在SSD价格不断上涨的今天，要想花较少的钱买到好的SSD是非常难的。</p>
+<p><strong>经过测试，有效</strong></p>
+<h2 id="解决途径六-更改bios设置开启sata热拔插功能-推荐">解决途径六 更改BIOS设置，开启sata热拔插功能 推荐
+</h2><p><a class="link" href="https://www.aiweibk.com/5795.html"  target="_blank" rel="noopener"
+    >https://www.aiweibk.com/5795.html</a></p>
+<blockquote>
+<p>在主板BIOS设置中开启Hot Plug热插拔属性之后还会带来一个副作用，那就是固态硬盘的LPM节能将会随热插拔的开启而关闭，从而避免热插拔时数据丢失或重新连接时失去响应。</p>
+</blockquote>
+<blockquote>
+<p>如果你的固态硬盘与主板搭配存在兼容性问题而有间歇性的卡顿现象，不妨在主板BIOS设置当中开启Hot Plug选项来禁用LPM节能，或许就能解决故障。</p>
+</blockquote>
+<p><strong>经测试，有效</strong></p>
+<h2 id="总结">总结
+</h2><p>为什么之前用Intel就没问题用了AMD就有问题，我猜测是因为原来的Intel主板比较差，不支持SATA LPM，然后win10默认是开启了LPM，但是SSD因为杂牌，所以支持不好，虽然固件支持LPM，但是会出现严重问题。由于主板不支持LPM，就算Windows开启了LPM，问题也显现不出来。</p>
+<p>现在换了新的主板，支持LPM，在默认情况下，与SSD出现兼容问题。需要手动关闭LPM功能。</p>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+
+    </footer>
+
+
+    
+</article>
+
+    
+
+    
+
+     
+    
+        
+    <div class="disqus-container">
+    <div id="disqus_thread"></div>
+<script>
+    window.disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "nansenli" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+<style>
+    .disqus-container {
+        background-color: var(--card-background);
+        border-radius: var(--card-border-radius);
+        box-shadow: var(--shadow-l1);
+        padding: var(--card-padding);
+    }
+</style>
+
+<script>
+    window.addEventListener('onColorSchemeChange', (e) => {
+        if (typeof DISQUS == 'object') {
+            DISQUS.reset({
+                reload: true
+            });
+        }
+    })
+</script>
+
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+        2025 Nansen Li（李楠森）
+    </section>
+    
+    <section class="powerby">
+        使用 <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> 构建 <br />
+        主题 <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.30.0">Stack</a></b> 由 <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a> 设计
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.1e9a3bafd846ced4c345d084b355fb8c7bae75701c338f8a1f8a82c780137826.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>

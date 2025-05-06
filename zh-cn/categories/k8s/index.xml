@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>K8s on Nansen Li</title>
+        <link>https://nansenli.com/zh-cn/categories/k8s/</link>
+        <description>Recent content in K8s on Nansen Li</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>zh-cn</language>
+        <copyright>Nansen Li（李楠森）</copyright>
+        <lastBuildDate>Sun, 20 Jun 2021 12:21:00 +0000</lastBuildDate><atom:link href="https://nansenli.com/zh-cn/categories/k8s/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>K8S经典安装流程</title>
+        <link>https://nansenli.com/zh-cn/post/jianshu/k8s/k8s%E7%BB%8F%E5%85%B8%E5%AE%89%E8%A3%85%E6%B5%81%E7%A8%8B/</link>
+        <pubDate>Sun, 20 Jun 2021 12:21:00 +0000</pubDate>
+        
+        <guid>https://nansenli.com/zh-cn/post/jianshu/k8s/k8s%E7%BB%8F%E5%85%B8%E5%AE%89%E8%A3%85%E6%B5%81%E7%A8%8B/</guid>
+        <description>&lt;h1 id=&#34;在所有机器上运行&#34;&gt;在所有机器上运行
+&lt;/h1&gt;&lt;p&gt;机器均为debian
+首先安装docker&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt; sudo apt-get update
+ sudo apt-get install -y \
+    apt-transport-https \
+    ca-certificates \
+    curl \
+    gnupg \
+    lsb-release
+
+curl -fsSL https://download.docker.com/linux/debian/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+
+echo \
+  &amp;#34;deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/debian \
+  $(lsb_release -cs) stable&amp;#34; | sudo tee /etc/apt/sources.list.d/docker.list &amp;gt; /dev/null
+
+sudo apt-get update
+sudo apt-get install -y docker-ce docker-ce-cli containerd.io
+
+sudo mkdir /etc/docker
+cat &amp;lt;&amp;lt;EOF | sudo tee /etc/docker/daemon.json
+{
+  &amp;#34;exec-opts&amp;#34;: [&amp;#34;native.cgroupdriver=systemd&amp;#34;],
+  &amp;#34;log-driver&amp;#34;: &amp;#34;json-file&amp;#34;,
+  &amp;#34;log-opts&amp;#34;: {
+    &amp;#34;max-size&amp;#34;: &amp;#34;100m&amp;#34;
+  },
+  &amp;#34;storage-driver&amp;#34;: &amp;#34;overlay2&amp;#34;
+}
+EOF
+
+
+sudo usermod -aG docker ${USER}
+
+sudo systemctl restart docker
+
+sudo su ${USER}
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;此时运行 docker ps -a 无异常，docker安装成功&lt;/p&gt;
+&lt;p&gt;接下来安装k8s组件&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;cat &amp;lt;&amp;lt;EOF | sudo tee /etc/modules-load.d/k8s.conf
+br_netfilter
+EOF
+
+cat &amp;lt;&amp;lt;EOF | sudo tee /etc/sysctl.d/k8s.conf
+net.bridge.bridge-nf-call-ip6tables = 1
+net.bridge.bridge-nf-call-iptables = 1
+EOF
+sudo sysctl --system
+
+sudo apt-get update
+sudo apt-get install -y apt-transport-https ca-certificates curl
+
+sudo curl -fsSLo /usr/share/keyrings/kubernetes-archive-keyring.gpg https://packages.cloud.google.com/apt/doc/apt-key.gpg
+
+echo &amp;#34;deb [signed-by=/usr/share/keyrings/kubernetes-archive-keyring.gpg] https://apt.kubernetes.io/ kubernetes-xenial main&amp;#34; | sudo tee /etc/apt/sources.list.d/kubernetes.list
+
+sudo apt-get update
+sudo apt-get install -y kubelet kubeadm kubectl
+sudo apt-mark hold kubelet kubeadm kubectl
+&lt;/code&gt;&lt;/pre&gt;&lt;h1 id=&#34;在主节点上运行&#34;&gt;在主节点上运行
+&lt;/h1&gt;&lt;p&gt;接下来初始化控制平面&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;sudo kubeadm init --apiserver-advertise-address masterip --control-plane-endpoint masterdns --pod-network-cidr 10.244.0.0/16
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;将输出内容的最后部分保存备用，包括如何配置.kube以及节点的加入命令，并按照提示配置.kube文件&lt;/p&gt;
+&lt;p&gt;然后初始化网络插件&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;wget https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
+kubectl apply -f kube-flannel.yml
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;检查pods运行状况是否正常&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;kubectl get pods -A
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;在另外一个节点安装k8s组件，然后运行加入节点join命令，该命令在kubeadm init结束时会打印出来&lt;/p&gt;
+&lt;p&gt;之后检查pods运行状态是否正常&lt;/p&gt;
+&lt;p&gt;下载dashboad&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;wget https://raw.githubusercontent.com/kubernetes/dashboard/v2.2.0/aio/deploy/recommended.yaml -o dashboard.yaml
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;编辑dashboard.yaml
+在第一处8843下面添加nodePort: 31001，并在上方修改type:NodePort，找到namespace=处在下面添加一行 - &amp;ndash;token-ttl=43200
+具体可以参见
+&lt;a class=&#34;link&#34; href=&#34;https://www.huaweicloud.com/articles/dc1dcb0c48cc785a9193c9ce709c8b35.html&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;https://www.huaweicloud.com/articles/dc1dcb0c48cc785a9193c9ce709c8b35.html&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;创建管理员角色&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;kubectl create -f https://raw.githubusercontent.com/rootsongjc/kubernetes-handbook/master/manifests/dashboard-1.7.1/admin-role.yaml
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;应用pod&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;kubectl apply -f dashboard.yaml
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;检查端口&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;sudo lsof -i:31001 
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;获得token&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;kubectl -n kube-system describe secret $(kubectl -n kube-system get secret | grep admin-token | awk &amp;#39;{print $1}&amp;#39;)
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;访问 https://masterip:31001 并在chrome输入 thisisunsafe，然后输入token&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://upload-images.jianshu.io/upload_images/4388248-218ae55dccdf4314.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&#34;
+	
+	
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;dashboard&#34;
+	
+	
+&gt;&lt;/p&gt;
+</description>
+        </item>
+        <item>
+        <title>解决腾讯云服务器跨运营商搭建k8s集群网卡ip不正确的问题</title>
+        <link>https://nansenli.com/zh-cn/post/jianshu/k8s/%E8%A7%A3%E5%86%B3%E8%85%BE%E8%AE%AF%E4%BA%91%E6%9C%8D%E5%8A%A1%E5%99%A8%E8%B7%A8%E8%BF%90%E8%90%A5%E5%95%86%E6%90%AD%E5%BB%BAk8s%E9%9B%86%E7%BE%A4%E7%BD%91%E5%8D%A1ip%E4%B8%8D%E6%AD%A3%E7%A1%AE%E7%9A%84%E9%97%AE%E9%A2%98/</link>
+        <pubDate>Sun, 22 Jul 2018 13:40:00 +0000</pubDate>
+        
+        <guid>https://nansenli.com/zh-cn/post/jianshu/k8s/%E8%A7%A3%E5%86%B3%E8%85%BE%E8%AE%AF%E4%BA%91%E6%9C%8D%E5%8A%A1%E5%99%A8%E8%B7%A8%E8%BF%90%E8%90%A5%E5%95%86%E6%90%AD%E5%BB%BAk8s%E9%9B%86%E7%BE%A4%E7%BD%91%E5%8D%A1ip%E4%B8%8D%E6%AD%A3%E7%A1%AE%E7%9A%84%E9%97%AE%E9%A2%98/</guid>
+        <description>&lt;p&gt;K8S要求所有节点具有完全互联的网络，因此所有节点应该具有平等的ip，虽然每个节点都有公网ip，但是由于腾讯云的机器在网卡上看不到ip，因此在加入集群时会使用网卡的ip，其他节点无法通过该ip找到这个机器。&lt;/p&gt;
+&lt;p&gt;想要在网卡上看到ip，需要开通腾讯云eip直通功能。需要注意的是，官方提供的脚本在debian 10上存在问题，无法正确的自启动，需要做如下更改：&lt;/p&gt;
+&lt;p&gt;将/etc/rc.loacl最终行添加 /etc/rc.d/rc.local&lt;/p&gt;
+&lt;p&gt;虽然腾讯云的debian 10还是会开机启动/etc/rc.local，但是不会启动/etc/rc.d/rc.local，而提供的脚本是写入到后者的。&lt;/p&gt;
+&lt;p&gt;参考文档 &lt;a class=&#34;link&#34; href=&#34;https://cloud.tencent.com/document/product/1199/41709&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;https://cloud.tencent.com/document/product/1199/41709&lt;/a&gt;&lt;/p&gt;
+</description>
+        </item>
+        
+    </channel>
+</rss>

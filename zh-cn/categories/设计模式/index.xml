@@ -1,0 +1,344 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>设计模式 on Nansen Li</title>
+        <link>https://nansenli.com/zh-cn/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/</link>
+        <description>Recent content in 设计模式 on Nansen Li</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>zh-cn</language>
+        <copyright>Nansen Li（李楠森）</copyright>
+        <lastBuildDate>Mon, 07 May 2018 06:15:00 +0000</lastBuildDate><atom:link href="https://nansenli.com/zh-cn/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>C&#43;&#43;完美单例模式</title>
+        <link>https://nansenli.com/zh-cn/post/jianshu/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/c&#43;&#43;%E5%AE%8C%E7%BE%8E%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/</link>
+        <pubDate>Mon, 07 May 2018 06:15:00 +0000</pubDate>
+        
+        <guid>https://nansenli.com/zh-cn/post/jianshu/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/c&#43;&#43;%E5%AE%8C%E7%BE%8E%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/</guid>
+        <description>&lt;h2 id=&#34;原始的单例模式&#34;&gt;原始的单例模式
+&lt;/h2&gt;&lt;p&gt;单例模式要做如下事情：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;不能通过构造函数构造，否则就能够实例化多个。构造函数需要私有声明&lt;/li&gt;
+&lt;li&gt;保证只能产生一个实例&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;下面是一个简单的实现：&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;class Singleton
+{
+  private:
+    static Singleton *local_instance;
+    Singleton(){};
+
+  public:
+    static Singleton *getInstance()
+    {
+        if (local_instance == nullptr)
+        {
+            local_instance = new Singleton();
+        }
+        return local_instance;
+    }
+};
+
+Singleton * Singleton::local_instance = nullptr;
+
+int main()
+{
+    Singleton * s = Singleton::getInstance();
+    return 0;
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&#34;使用局部静态对象来解决存在的两个问题&#34;&gt;使用局部静态对象来解决存在的两个问题
+&lt;/h2&gt;&lt;p&gt;刚刚的代码中有两个问题，一个是多线程的情况下可能会出现new两次的情况。另外一个是程序退出后没有运行析构函数。
+下面采用了静态对象来解决。&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;class Singleton
+{
+  private:
+    static Singleton *local_instance;
+    Singleton(){
+        cout &amp;lt;&amp;lt; &amp;#34;构造&amp;#34; &amp;lt;&amp;lt; endl;
+    };
+    ~Singleton(){
+        cout &amp;lt;&amp;lt; &amp;#34;析构&amp;#34; &amp;lt;&amp;lt; endl;
+    }
+
+  public:
+    static Singleton *getInstance()
+    {
+        static Singleton locla_s;
+        return &amp;amp;locla_s;
+    }
+};
+
+
+int main()
+{
+    cout &amp;lt;&amp;lt; &amp;#34;单例模式访问第一次前&amp;#34; &amp;lt;&amp;lt; endl;
+    Singleton * s = Singleton::getInstance();
+    cout &amp;lt;&amp;lt; &amp;#34;单例模式访问第一次后&amp;#34; &amp;lt;&amp;lt; endl;
+    cout &amp;lt;&amp;lt; &amp;#34;单例模式访问第二次前&amp;#34; &amp;lt;&amp;lt; endl;
+    Singleton * s2 = Singleton::getInstance();
+    cout &amp;lt;&amp;lt; &amp;#34;单例模式访问第二次后&amp;#34; &amp;lt;&amp;lt; endl;
+    return 0;
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;&lt;img src=&#34;https://upload-images.jianshu.io/upload_images/4388248-dc4641f02558d6b3.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&#34;
+	
+	
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;输出结果&#34;
+	
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;该代码可能在c++11之前的版本导致多次构造函数的调用，所以只能在较新的编译器上使用。&lt;/p&gt;
+&lt;h2 id=&#34;如果是c11之前的版本静态对象线程会不安全&#34;&gt;如果是c++11之前的版本，静态对象线程会不安全
+&lt;/h2&gt;&lt;p&gt;下面这个版本使用了mutex以及静态成员来析构单例。该方案的劣处在于锁导致速度慢，效率低。但是至少是正确的，也能在c++11之前的版本使用，代码的示例如下：&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;class Singleton
+{
+  private:
+    static Singleton *local_instance;
+    static pthread_mutex_t mutex;
+    Singleton(){
+        cout &amp;lt;&amp;lt; &amp;#34;构造&amp;#34; &amp;lt;&amp;lt; endl;
+    };
+    ~Singleton(){
+        cout &amp;lt;&amp;lt; &amp;#34;析构&amp;#34; &amp;lt;&amp;lt; endl;
+    }
+    class rememberFree{
+        public:
+        rememberFree(){
+            cout &amp;lt;&amp;lt; &amp;#34;成员构造&amp;#34; &amp;lt;&amp;lt; endl;
+        }
+        ~rememberFree(){
+            if(Singleton::local_instance != nullptr){
+                delete Singleton::local_instance;
+            }
+        }
+    };
+    static rememberFree remember;
+
+  public:
+    static Singleton *getInstance()
+    {
+        pthread_mutex_lock(&amp;amp;mutex);
+        if (local_instance == nullptr)
+        {
+            local_instance = new Singleton();
+        }
+        pthread_mutex_unlock(&amp;amp;mutex);
+        return local_instance;
+    }
+};
+
+Singleton * Singleton::local_instance = nullptr;
+pthread_mutex_t Singleton::mutex = PTHREAD_MUTEX_INITIALIZER;
+Singleton::rememberFree Singleton::remember;
+&lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&#34;使用双锁检查导致未初始化的内存访问&#34;&gt;使用双锁检查导致未初始化的内存访问
+&lt;/h2&gt;&lt;p&gt;使用如下的代码来实现已经初始化的对象的直接返回。可以使上述代码性能会大大加快。但是相同的代码在Java下面有很明显的问题，由于CPU乱序执行，可能导致访问到未经初始化的对象的引用。
+C++是否有同样的问题呢？看下文: &lt;a class=&#34;link&#34; href=&#34;http://www.aristeia.com/Papers/DDJ_Jul_Aug_2004_revised.pdf&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;http://www.aristeia.com/Papers/DDJ_Jul_Aug_2004_revised.pdf&lt;/a&gt;
+结论是一样的，c++也存在相同的问题，可能导致未定义行为导致段错误。双锁检查代码的例子如下：&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;static Singleton *getInstance()
+    {
+        if(local_instance == nullptr){
+            pthread_mutex_lock(&amp;amp;mutex);
+            if (local_instance == nullptr)
+            {
+                local_instance = new Singleton();
+            }
+            pthread_mutex_unlock(&amp;amp;mutex);
+        }
+        return local_instance;
+    }
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;假如线程A进入锁内并分配对象的空间，但是由于指令可能乱序，实际上导致local_instance被先指向一块未被分配的内存，然后再在这块内存上进程初始化。但是在指向后，未初始化前，另一线程B可能通过getInstance获取到这个指针。&lt;/p&gt;
+&lt;h2 id=&#34;尝试使用局部变量并不能保证指令执行顺序&#34;&gt;尝试使用局部变量并不能保证指令执行顺序
+&lt;/h2&gt;&lt;p&gt;尝试使用临时变量强制指定指令运行顺序时，仍然会被编译器认为是无用的变量，然后被优化掉。下述代码是一个想法很好但是无法实现目的代码：&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;        if(local_instance == nullptr){
+            static mutex mtx;
+            lock_guard&amp;lt;mutex&amp;gt; lock(mtx);
+            if (local_instance == nullptr)
+            {
+                auto tmp = new Singleton()
+                local_instance = tmp;            }
+        }
+        return local_instance;
+&lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&#34;不优雅的使用volatile来解决指令乱序在双检查锁中出现的问题&#34;&gt;不优雅的使用volatile来解决指令乱序在双检查锁中出现的问题
+&lt;/h2&gt;&lt;p&gt;尝试使用volatile声明内部的指针，代码如下：&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;class Singleton
+{
+  private:
+    static Singleton * volatile local_instance;
+    Singleton(){
+        cout &amp;lt;&amp;lt; &amp;#34;构造&amp;#34; &amp;lt;&amp;lt; endl;
+    };
+    ~Singleton(){
+        cout &amp;lt;&amp;lt; &amp;#34;析构&amp;#34; &amp;lt;&amp;lt; endl;
+    }
+    class rememberFree{
+        public:
+        rememberFree(){
+            cout &amp;lt;&amp;lt; &amp;#34;成员构造&amp;#34; &amp;lt;&amp;lt; endl;
+        }
+        ~rememberFree(){
+            if(Singleton::local_instance != nullptr){
+                delete Singleton::local_instance;
+            }
+        }
+    };
+    static rememberFree remember;
+    
+
+  public:
+    static Singleton *getInstance()
+    {
+        if(local_instance == nullptr){
+            static mutex mtx;
+            lock_guard&amp;lt;mutex&amp;gt; lock(mtx);
+            if (local_instance == nullptr)
+            {
+                auto tmp = new Singleton();
+                local_instance = tmp;
+            }
+        }
+        return local_instance;
+    }
+};
+
+Singleton * volatile Singleton::local_instance = nullptr;
+Singleton::rememberFree Singleton::remember;
+
+int main()
+{
+    cout &amp;lt;&amp;lt; &amp;#34;单例模式访问第一次前&amp;#34; &amp;lt;&amp;lt; endl;
+    Singleton * s = Singleton::getInstance();
+    cout &amp;lt;&amp;lt; &amp;#34;单例模式访问第一次后&amp;#34; &amp;lt;&amp;lt; endl;
+    cout &amp;lt;&amp;lt; &amp;#34;单例模式访问第二次前&amp;#34; &amp;lt;&amp;lt; endl;
+    Singleton * s2 = Singleton::getInstance();
+    cout &amp;lt;&amp;lt; &amp;#34;单例模式访问第二次后&amp;#34; &amp;lt;&amp;lt; endl;
+    return 0;
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;在这份代码中，虽然temp是volatile，但是*temp不是，其成员也不是。所以仍然可能被优化。尝试将其*temp也声明为volatile，你会发现的的代码充满了volatile。但是至少是正确的：&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;class Singleton
+{
+  private:
+    static volatile Singleton * volatile local_instance;
+    Singleton(){
+        cout &amp;lt;&amp;lt; &amp;#34;构造&amp;#34; &amp;lt;&amp;lt; endl;
+    };
+    ~Singleton(){
+        cout &amp;lt;&amp;lt; &amp;#34;析构&amp;#34; &amp;lt;&amp;lt; endl;
+    }
+    class rememberFree{
+        public:
+        rememberFree(){
+            cout &amp;lt;&amp;lt; &amp;#34;成员构造&amp;#34; &amp;lt;&amp;lt; endl;
+        }
+        ~rememberFree(){
+            if(Singleton::local_instance != nullptr){
+                delete Singleton::local_instance;
+            }
+        }
+    };
+    static rememberFree remember;
+    
+
+  public:
+    static volatile Singleton *getInstance()
+    {
+        if(local_instance == nullptr){
+            static mutex mtx;
+            lock_guard&amp;lt;mutex&amp;gt; lock(mtx);
+            if (local_instance == nullptr)
+            {
+                auto tmp = new Singleton();
+                local_instance = tmp;
+            }
+        }
+        return local_instance;
+    }
+};
+
+volatile Singleton * volatile Singleton::local_instance = nullptr;
+Singleton::rememberFree Singleton::remember;
+
+int main()
+{
+    cout &amp;lt;&amp;lt; &amp;#34;单例模式访问第一次前&amp;#34; &amp;lt;&amp;lt; endl;
+    volatile Singleton * s = Singleton::getInstance();
+    cout &amp;lt;&amp;lt; &amp;#34;单例模式访问第一次后&amp;#34; &amp;lt;&amp;lt; endl;
+    cout &amp;lt;&amp;lt; &amp;#34;单例模式访问第二次前&amp;#34; &amp;lt;&amp;lt; endl;
+    volatile Singleton * s2 = Singleton::getInstance();
+    cout &amp;lt;&amp;lt; &amp;#34;单例模式访问第二次后&amp;#34; &amp;lt;&amp;lt; endl;
+    return 0;
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&#34;大杀器内存栅栏&#34;&gt;大杀器——内存栅栏
+&lt;/h2&gt;&lt;p&gt;在新的标准中，atomic类实现了内存栅栏，使得多个核心访问内存时可控。这利用了c++11的内存访问顺序可控。下面是代码实现：&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;class Singleton
+{
+  private:
+    // static volatile Singleton * volatile local_instance;
+    static atomic&amp;lt;Singleton*&amp;gt; instance;
+    Singleton(){
+        cout &amp;lt;&amp;lt; &amp;#34;构造&amp;#34; &amp;lt;&amp;lt; endl;
+    };
+    ~Singleton(){
+        cout &amp;lt;&amp;lt; &amp;#34;析构&amp;#34; &amp;lt;&amp;lt; endl;
+    }
+    class rememberFree{
+        public:
+        rememberFree(){
+            cout &amp;lt;&amp;lt; &amp;#34;成员构造&amp;#34; &amp;lt;&amp;lt; endl;
+        }
+        ~rememberFree(){
+            Singleton* local_instance = instance.load(std::memory_order_relaxed);
+            if(local_instance != nullptr){
+                delete local_instance;
+            }
+        }
+    };
+    static rememberFree remember;
+    
+
+  public:
+    static Singleton *getInstance()
+    {
+        Singleton* tmp = instance.load(std::memory_order_relaxed);
+        atomic_thread_fence(memory_order_acquire);
+        if(tmp == nullptr){
+            static mutex mtx;
+            lock_guard&amp;lt;mutex&amp;gt; lock(mtx);
+            tmp = instance.load(memory_order_relaxed);
+            if (tmp == nullptr)
+            {
+                tmp = new Singleton();
+                atomic_thread_fence(memory_order_release);
+                instance.store(tmp, memory_order_relaxed);
+            }
+        }
+        return tmp;
+    }
+};
+
+atomic&amp;lt;Singleton*&amp;gt; Singleton::instance;
+Singleton::rememberFree Singleton::remember;
+
+int main()
+{
+    cout &amp;lt;&amp;lt; &amp;#34;单例模式访问第一次前&amp;#34; &amp;lt;&amp;lt; endl;
+    Singleton * s = Singleton::getInstance();
+    cout &amp;lt;&amp;lt; &amp;#34;单例模式访问第一次后&amp;#34; &amp;lt;&amp;lt; endl;
+    cout &amp;lt;&amp;lt; &amp;#34;单例模式访问第二次前&amp;#34; &amp;lt;&amp;lt; endl;
+    Singleton * s2 = Singleton::getInstance();
+    cout &amp;lt;&amp;lt; &amp;#34;单例模式访问第二次后&amp;#34; &amp;lt;&amp;lt; endl;
+    return 0;
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;上述代码可能难以阅读，instance的两次加载可以被乱序执行。但是在此期间内的改动被其他CPU核心观察不到。在muduo一书上，内存栅栏也被评价为大杀器。&lt;/p&gt;
+&lt;h2 id=&#34;使用原子操作的内存顺序&#34;&gt;使用原子操作的内存顺序
+&lt;/h2&gt;&lt;p&gt;这里有六个内存序列选项可应用于对原子类型的操作：memory_order_relaxed, memory_order_consume, memory_order_acquire, memory_order_release, memory_order_acq_rel, 以及memory_order_seq_cst。除非你为特定的操作指定一个序列选项，要不内存序列选项对于所有原子类型默认都是memory_order_seq_cst。虽然有六个选项，但是它们仅代表三种内存模型：排序一致序列(sequentially consistent)，获取-释放序列(memory_order_consume, memory_order_acquire, memory_order_release和memory_order_acq_rel)，和自由序列(memory_order_relaxed)。&lt;/p&gt;
+&lt;p&gt;这里可以采用的模型有：默认的memory_order_seq_cst即顺序一致与memory_order_acquire、memory_order_release即获取释放序列。后者性能可能更好。&lt;/p&gt;
+&lt;p&gt;待完善&lt;/p&gt;
+&lt;h2 id=&#34;使用pthread_once-或者call_once&#34;&gt;使用pthread_once 或者call_once
+&lt;/h2&gt;&lt;p&gt;前者来自pthread库。后者来自std::atomic。&lt;/p&gt;
+&lt;p&gt;待完善&lt;/p&gt;
+</description>
+        </item>
+        
+    </channel>
+</rss>

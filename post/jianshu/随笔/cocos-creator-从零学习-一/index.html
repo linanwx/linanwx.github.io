@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="Introduction Despite the prejudice against Cocos2dx on Zhihu, it&rsquo;s better to try different game engines rather than hesitating about which one to use. Moreover, this software was developed by Chinese developers, so it shouldn&rsquo;t be too difficult to learn. Although I haven&rsquo;t learned JavaScript before, it seems possible to look up references while writing. JavaScript tutorial: http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000 The current version of Cocos Creator is 1.5.1, and there&rsquo;s a detailed manual on the official website at http://www.">
+<title>Learning Cocos Creator from Zero - Part One</title>
+
+<link rel='canonical' href='https://nansenli.com/post/jianshu/%E9%9A%8F%E7%AC%94/cocos-creator-%E4%BB%8E%E9%9B%B6%E5%AD%A6%E4%B9%A0-%E4%B8%80/'>
+
+<link rel="stylesheet" href="/scss/style.min.1084ac713783b88e0bd9807a58068e10aae22e99420f94a9234654a4e199baa4.css"><meta property='og:title' content="Learning Cocos Creator from Zero - Part One">
+<meta property='og:description' content="Introduction Despite the prejudice against Cocos2dx on Zhihu, it&rsquo;s better to try different game engines rather than hesitating about which one to use. Moreover, this software was developed by Chinese developers, so it shouldn&rsquo;t be too difficult to learn. Although I haven&rsquo;t learned JavaScript before, it seems possible to look up references while writing. JavaScript tutorial: http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000 The current version of Cocos Creator is 1.5.1, and there&rsquo;s a detailed manual on the official website at http://www.">
+<meta property='og:url' content='https://nansenli.com/post/jianshu/%E9%9A%8F%E7%AC%94/cocos-creator-%E4%BB%8E%E9%9B%B6%E5%AD%A6%E4%B9%A0-%E4%B8%80/'>
+<meta property='og:site_name' content='Nansen Li'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2017-06-27T09:31:00&#43;00:00'/><meta property='article:modified_time' content='2017-06-27T09:31:00&#43;00:00'/>
+<meta name="twitter:title" content="Learning Cocos Creator from Zero - Part One">
+<meta name="twitter:description" content="Introduction Despite the prejudice against Cocos2dx on Zhihu, it&rsquo;s better to try different game engines rather than hesitating about which one to use. Moreover, this software was developed by Chinese developers, so it shouldn&rsquo;t be too difficult to learn. Although I haven&rsquo;t learned JavaScript before, it seems possible to look up references while writing. JavaScript tutorial: http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000 The current version of Cocos Creator is 1.5.1, and there&rsquo;s a detailed manual on the official website at http://www.">
+    <link rel="shortcut icon" href="/favicon.ico" />
+
+  
+    
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-WC38C3XE3J"></script>
+      <script>
+        var doNotTrack = false;
+        if ( false ) {
+          var dnt = (navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack);
+          var doNotTrack = (dnt == "1" || dnt == "yes");
+        }
+        if (!doNotTrack) {
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-WC38C3XE3J');
+        }
+      </script>
+    
+  
+
+
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="Toggle Menu">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/avatar_hu96777ff80939aaa7d938dddcc232fcc6_1414962_300x0_resize_box_3.png" width="300"
+                            height="300" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+                    <span class="emoji">🌈</span>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">Nansen Li</a></h1>
+            <h2 class="site-description"></h2>
+        </div>
+    </header><ol class="menu-social">
+            
+                <li>
+                    <a 
+                        href='https://github.com/linanwx'
+                        target="_blank"
+                        title="GitHub"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://www.linkedin.com/in/nansen-li-3bb0a3146/'
+                        target="_blank"
+                        title="LinkedIn"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-brand-linkedin"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M8 11v5" /><path d="M8 8v.01" /><path d="M12 16v-5" /><path d="M16 16v-3a2 2 0 1 0 -4 0" /><path d="M3 7a4 4 0 0 1 4 -4h10a4 4 0 0 1 4 4v10a4 4 0 0 1 -4 4h-10a4 4 0 0 1 -4 -4z" /></svg>
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='index.xml'
+                        target="_blank"
+                        title="RSS"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-rss" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="5" cy="19" r="1" />
+  <path d="M4 4a16 16 0 0 1 16 16" />
+  <path d="M4 11a9 9 0 0 1 9 9" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+</svg>
+
+
+
+                
+                <span>Home</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/page/archives/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>Archives</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/page/search/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
+
+
+
+                
+                <span>Search</span>
+            </a>
+        </li>
+        
+        <li class="menu-bottom-section">
+            <ol class="menu">
+                    
+                        <li id="i18n-switch">  
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-language" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M4 5h7" />
+  <path d="M9 3v2c0 4.418 -2.239 8 -5 8" />
+  <path d="M5 9c-.003 2.144 2.952 3.908 6.7 4" />
+  <path d="M12 20l4 -9l4 9" />
+  <path d="M19.1 18h-6.2" />
+</svg>
+
+
+
+                            <select name="language" title="language" onchange="window.location.href = this.selectedOptions[0].value">
+                                
+                                    <option value="https://nansenli.com/" selected>English</option>
+                                
+                                    <option value="https://nansenli.com/zh-cn/" >中文</option>
+                                
+                            </select>
+                        </li>
+                    
+                
+
+                
+                    <li id="dark-mode-toggle">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <span>Dark Mode</span>
+                    </li>
+                
+            </ol>
+        </li>
+    </ol>
+</aside>
+
+    
+
+            <main class="main full-width">
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/essays/" >
+                Essays
+            </a>
+        
+    </header>
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/post/jianshu/%E9%9A%8F%E7%AC%94/cocos-creator-%E4%BB%8E%E9%9B%B6%E5%AD%A6%E4%B9%A0-%E4%B8%80/">Learning Cocos Creator from Zero - Part One</a>
+        </h2>
+    
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">Jun 27, 2017</time>
+            </div>
+        
+
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+                <time class="article-time--reading">
+                    4 minute read
+                </time>
+            </div>
+        
+    </footer>
+    
+
+    
+        <footer class="article-translations">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-language" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M4 5h7" />
+  <path d="M9 3v2c0 4.418 -2.239 8 -5 8" />
+  <path d="M5 9c-.003 2.144 2.952 3.908 6.7 4" />
+  <path d="M12 20l4 -9l4 9" />
+  <path d="M19.1 18h-6.2" />
+</svg>
+
+
+
+            <div>
+                
+                    <a href="https://nansenli.com/zh-cn/post/jianshu/%E9%9A%8F%E7%AC%94/cocos-creator-%E4%BB%8E%E9%9B%B6%E5%AD%A6%E4%B9%A0-%E4%B8%80/" class="link">中文</a>
+                
+            </div>
+        </footer>
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <h2 id="introduction">Introduction
+</h2><p>Despite the prejudice against Cocos2dx on Zhihu, it&rsquo;s better to try different game engines rather than hesitating about which one to use. Moreover, this software was developed by Chinese developers, so it shouldn&rsquo;t be too difficult to learn.</p>
+<p>Although I haven&rsquo;t learned JavaScript before, it seems possible to look up references while writing. JavaScript tutorial: <a class="link" href="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000"  target="_blank" rel="noopener"
+    >http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000</a></p>
+<p>The current version of Cocos Creator is 1.5.1, and there&rsquo;s a detailed manual on the official website at <a class="link" href="http://www.cocos.com/docs/creator/"  target="_blank" rel="noopener"
+    >http://www.cocos.com/docs/creator/</a>. This article is a simplified version of the &ldquo;Quick Start&rdquo; chapter, with improved gameplay elements.</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/4388248-97260c179cc5ff7e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240"
+	
+	
+	
+	loading="lazy"
+	
+		alt="Zhihu user expression.png"
+	
+	
+></p>
+<h2 id="installation">Installation
+</h2><p>Installation on Windows is straightforward. For Mac installation, there are a few things to note.
+After downloading the installation package from the official website and dragging it to Applications, when you open it, you&rsquo;ll see a warning that the application is from an untrusted developer. In this case, open System Preferences &gt; Security &amp; Privacy &gt; General, where you&rsquo;ll see an &ldquo;Open&rdquo; button. After opening it this way, you won&rsquo;t be reminded again.</p>
+<h2 id="quick-start">Quick Start
+</h2><p><img src="http://upload-images.jianshu.io/upload_images/4388248-d9d3f43b9e1e4063.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240"
+	
+	
+	
+	loading="lazy"
+	
+		alt="dashboard"
+	
+	
+></p>
+<p>From the dashboard, you can create a new project or open an existing one. According to the tutorial&rsquo;s quick start section, we can download an initial project from this address: <a class="link" href="https://github.com/cocos-creator/tutorial-first-game/releases/download/v1.2/start_project.zip"  target="_blank" rel="noopener"
+    >Download Initial Project</a>.
+Or click here to download: <a class="link" href="https://github.com/cocos-creator/tutorial-first-game/releases/download/v1.2/start_project.zip"  target="_blank" rel="noopener"
+    >https://github.com/cocos-creator/tutorial-first-game/releases/download/v1.2/start_project.zip</a></p>
+<p>The final game effect of this quick start is like this: <a class="link" href="http://fbdemos.avosapps.com/star-catcher/"  target="_blank" rel="noopener"
+    >http://fbdemos.avosapps.com/star-catcher/</a>.
+This game is somewhat similar to coin-catching games, but more difficult. The game has a very steep learning curve. Due to the monster&rsquo;s horizontal acceleration being difficult to control and its jumping up and down, it&rsquo;s almost impossible to catch the stars. There&rsquo;s also no storyline. We should make it more fun.</p>
+<p>After opening the project, let&rsquo;s learn about the interface. The resource panel is in the bottom left. In the initial project, a project directory has already been established with the most basic resources and directory organization. &ldquo;Assets&rdquo; means assets, and under this main directory, there are three subdirectories containing fonts, audio, and image resources.</p>
+<h2 id="creating-a-scene">Creating a Scene
+</h2><p>Scenes are crucial because they contain game scripts, and scenes are automatically loaded when the game starts. Click the plus sign under assets in the resource panel to create a scene, rename it to &ldquo;game&rdquo;, and double-click to open it.</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/4388248-3d7fb1d661e357d0.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240"
+	
+	
+	
+	loading="lazy"
+	
+		alt="Screenshot 2017-06-20 11.01.53.png"
+	
+	
+></p>
+<p>The hierarchy manager in the upper left shows the relationships between nodes in the current scene.
+In this game scene, there is only one root node, canvas. Currently, this node is empty, meaning nothing will be loaded.</p>
+<p>Click the root node in the right data panel to set the resolution of the root node. The height of the resolution is set to adaptive, always 960x640, consistent with the aspect ratio of the first-generation iPhone. I guess this resolution should be dp rather than pixel.</p>
+<h2 id="scene-graphics">Scene Graphics
+</h2><p>Drag the background resource onto the canvas, making the background a child node of the canvas. Be careful not to make the background another root node.
+Use Cmd+S to save the changes.
+Select the background image in the scene, then find the fourth button of the transform tools in the upper left, which are translation, rotation, scaling, and rectangular transformation. Select rectangular transformation and transform the background into a size that can cover the scene, as shown below.</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/4388248-8e82dacdb3280ea5.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240"
+	
+	
+	
+	loading="lazy"
+	
+		alt="Scene graphics"
+	
+	
+></p>
+<p>The above steps can also be done by directly setting the properties of the background, setting the position to 0, 0, and the width and height to 1600 and 800.</p>
+<p>Use the same method to add the ground.
+Use the same method to insert the little monster and rename it to &ldquo;player&rdquo;. The default anchor point of the image is the center position. Here, set the y value of the anchor to 0.</p>
+<h2 id="creating-scripts">Creating Scripts
+</h2><p>Then comes an amazing moment: the tutorial actually says it doesn&rsquo;t matter if you don&rsquo;t know programming, <strong>you can let your programmer friend solve it</strong>. Indeed, all I&rsquo;m missing now is a programmer.</p>
+<p>Create a JavaScript script file at the location of the player resource in the image below, and open it.
+<img src="http://upload-images.jianshu.io/upload_images/4388248-f9e3103c2df38876.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240"
+	
+	
+	
+	loading="lazy"
+	
+		alt="Script"
+	
+	
+></p>
+<p>Insert the following content in properties, which are the physical properties of the little monster:</p>
+<pre tabindex="0"><code>        jumpHeight:0,
+        jumpDuration:0,
+        maxMoveSpeed:0,
+        accel:0,
+</code></pre><p>Select the little monster image, find &ldquo;Add Component&rdquo; in the property box, add the player script to the player image, and set the relevant parameters.</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/4388248-177701eab4de6cc6.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240"
+	
+	
+	
+	loading="lazy"
+	
+		alt="Parameter setting"
+	
+	
+></p>
+<h2 id="improving-the-script">Improving the Script
+</h2><p>Let&rsquo;s continue to add other functions to the script. First is the jumping action.</p>
+<p>Add this section below properties:</p>
+<pre tabindex="0"><code>    setJumpAction: function(){
+        var jumpUp = cc.moveBy(this.jumpDuration, cc.p(0,this.jumpHeight)).easing(cc.easeQuadraticActionOut());
+        var jumpDown = cc.moveBy(this.jumpDuration, cc.p(0,-this.jumpHeight)).easing(cc.easeQuadraticActionIn());
+        return cc.repeatForever(cc.sequence(jumpUp, jumpDown));
+    },
+</code></pre><p>moveBy is an official API. Looking up its usage in the official API, the first parameter is the movement duration, and the second parameter is the movement position. Obviously, it moves up a certain distance. The easing that follows generates a gradual motion, producing easeQuadraticActionIn and Out, which are quadratic curves. The original tutorial used cubic curves, which differ too much from physical movement in the real world.</p>
+<p>Add the following code to the onLoad method to start the animation:</p>
+<pre tabindex="0"><code>    onLoad: function () {
+        this.jumpAction = this.setJumpAction();
+        this.node.runAction(this.jumpAction);
+    },
+</code></pre><p>Now click the play button to view the initial effect.</p>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+
+    </footer>
+
+
+    
+</article>
+
+    
+
+    
+
+     
+    
+        
+    <div class="disqus-container">
+    <div id="disqus_thread"></div>
+<script>
+    window.disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "nansenli" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+<style>
+    .disqus-container {
+        background-color: var(--card-background);
+        border-radius: var(--card-border-radius);
+        box-shadow: var(--shadow-l1);
+        padding: var(--card-padding);
+    }
+</style>
+
+<script>
+    window.addEventListener('onColorSchemeChange', (e) => {
+        if (typeof DISQUS == 'object') {
+            DISQUS.reset({
+                reload: true
+            });
+        }
+    })
+</script>
+
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+        2025 Nansen Li（李楠森）
+    </section>
+    
+    <section class="powerby">
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.30.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.1e9a3bafd846ced4c345d084b355fb8c7bae75701c338f8a1f8a82c780137826.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>

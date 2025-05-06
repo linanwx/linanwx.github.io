@@ -1,0 +1,942 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="Introduction There are many C++ network libraries. Handy is a network library with C++11 style that is very helpful for in-depth learning of C++. Code Analysis Below is the epoll.cc file from handy/raw_examples. It&rsquo;s an example of level triggering. This HTTP server returns a static resource &ldquo;123456&rdquo; regardless of what kind of request it receives. Compilation: c++ -o epoll epoll.cc, execution: sudo ./epoll. The if (con.writeEnabled) statement in sendRes of the source code seems to have some issues, causing problems when sending large resources.">
+<title>Epoll Code Example - Analysis of Handy Library&#39;s Built-in epoll.cc</title>
+
+<link rel='canonical' href='https://nansenli.com/post/jianshu/%E7%BD%91%E7%BB%9C/epoll%E4%BB%A3%E7%A0%81%E7%A4%BA%E4%BE%8Bhandy%E5%BA%93%E8%87%AA%E5%B8%A6epoll-cc%E5%88%86%E6%9E%90/'>
+
+<link rel="stylesheet" href="/scss/style.min.1084ac713783b88e0bd9807a58068e10aae22e99420f94a9234654a4e199baa4.css"><meta property='og:title' content="Epoll Code Example - Analysis of Handy Library's Built-in epoll.cc">
+<meta property='og:description' content="Introduction There are many C++ network libraries. Handy is a network library with C++11 style that is very helpful for in-depth learning of C++. Code Analysis Below is the epoll.cc file from handy/raw_examples. It&rsquo;s an example of level triggering. This HTTP server returns a static resource &ldquo;123456&rdquo; regardless of what kind of request it receives. Compilation: c++ -o epoll epoll.cc, execution: sudo ./epoll. The if (con.writeEnabled) statement in sendRes of the source code seems to have some issues, causing problems when sending large resources.">
+<meta property='og:url' content='https://nansenli.com/post/jianshu/%E7%BD%91%E7%BB%9C/epoll%E4%BB%A3%E7%A0%81%E7%A4%BA%E4%BE%8Bhandy%E5%BA%93%E8%87%AA%E5%B8%A6epoll-cc%E5%88%86%E6%9E%90/'>
+<meta property='og:site_name' content='Nansen Li'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2018-05-16T07:43:00&#43;00:00'/><meta property='article:modified_time' content='2018-05-16T07:43:00&#43;00:00'/>
+<meta name="twitter:title" content="Epoll Code Example - Analysis of Handy Library's Built-in epoll.cc">
+<meta name="twitter:description" content="Introduction There are many C++ network libraries. Handy is a network library with C++11 style that is very helpful for in-depth learning of C++. Code Analysis Below is the epoll.cc file from handy/raw_examples. It&rsquo;s an example of level triggering. This HTTP server returns a static resource &ldquo;123456&rdquo; regardless of what kind of request it receives. Compilation: c++ -o epoll epoll.cc, execution: sudo ./epoll. The if (con.writeEnabled) statement in sendRes of the source code seems to have some issues, causing problems when sending large resources.">
+    <link rel="shortcut icon" href="/favicon.ico" />
+
+  
+    
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-WC38C3XE3J"></script>
+      <script>
+        var doNotTrack = false;
+        if ( false ) {
+          var dnt = (navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack);
+          var doNotTrack = (dnt == "1" || dnt == "yes");
+        }
+        if (!doNotTrack) {
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-WC38C3XE3J');
+        }
+      </script>
+    
+  
+
+
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="Toggle Menu">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/avatar_hu96777ff80939aaa7d938dddcc232fcc6_1414962_300x0_resize_box_3.png" width="300"
+                            height="300" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+                    <span class="emoji">🌈</span>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">Nansen Li</a></h1>
+            <h2 class="site-description"></h2>
+        </div>
+    </header><ol class="menu-social">
+            
+                <li>
+                    <a 
+                        href='https://github.com/linanwx'
+                        target="_blank"
+                        title="GitHub"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://www.linkedin.com/in/nansen-li-3bb0a3146/'
+                        target="_blank"
+                        title="LinkedIn"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-brand-linkedin"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M8 11v5" /><path d="M8 8v.01" /><path d="M12 16v-5" /><path d="M16 16v-3a2 2 0 1 0 -4 0" /><path d="M3 7a4 4 0 0 1 4 -4h10a4 4 0 0 1 4 4v10a4 4 0 0 1 -4 4h-10a4 4 0 0 1 -4 -4z" /></svg>
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='index.xml'
+                        target="_blank"
+                        title="RSS"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-rss" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="5" cy="19" r="1" />
+  <path d="M4 4a16 16 0 0 1 16 16" />
+  <path d="M4 11a9 9 0 0 1 9 9" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+</svg>
+
+
+
+                
+                <span>Home</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/page/archives/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>Archives</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/page/search/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
+
+
+
+                
+                <span>Search</span>
+            </a>
+        </li>
+        
+        <li class="menu-bottom-section">
+            <ol class="menu">
+                    
+                        <li id="i18n-switch">  
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-language" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M4 5h7" />
+  <path d="M9 3v2c0 4.418 -2.239 8 -5 8" />
+  <path d="M5 9c-.003 2.144 2.952 3.908 6.7 4" />
+  <path d="M12 20l4 -9l4 9" />
+  <path d="M19.1 18h-6.2" />
+</svg>
+
+
+
+                            <select name="language" title="language" onchange="window.location.href = this.selectedOptions[0].value">
+                                
+                                    <option value="https://nansenli.com/" selected>English</option>
+                                
+                                    <option value="https://nansenli.com/zh-cn/" >中文</option>
+                                
+                            </select>
+                        </li>
+                    
+                
+
+                
+                    <li id="dark-mode-toggle">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <span>Dark Mode</span>
+                    </li>
+                
+            </ol>
+        </li>
+    </ol>
+</aside>
+
+    
+
+            <main class="main full-width">
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/networking/" >
+                Networking
+            </a>
+        
+    </header>
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/post/jianshu/%E7%BD%91%E7%BB%9C/epoll%E4%BB%A3%E7%A0%81%E7%A4%BA%E4%BE%8Bhandy%E5%BA%93%E8%87%AA%E5%B8%A6epoll-cc%E5%88%86%E6%9E%90/">Epoll Code Example - Analysis of Handy Library&#39;s Built-in epoll.cc</a>
+        </h2>
+    
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">May 16, 2018</time>
+            </div>
+        
+
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+                <time class="article-time--reading">
+                    13 minute read
+                </time>
+            </div>
+        
+    </footer>
+    
+
+    
+        <footer class="article-translations">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-language" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M4 5h7" />
+  <path d="M9 3v2c0 4.418 -2.239 8 -5 8" />
+  <path d="M5 9c-.003 2.144 2.952 3.908 6.7 4" />
+  <path d="M12 20l4 -9l4 9" />
+  <path d="M19.1 18h-6.2" />
+</svg>
+
+
+
+            <div>
+                
+                    <a href="https://nansenli.com/zh-cn/post/jianshu/%E7%BD%91%E7%BB%9C/epoll%E4%BB%A3%E7%A0%81%E7%A4%BA%E4%BE%8Bhandy%E5%BA%93%E8%87%AA%E5%B8%A6epoll-cc%E5%88%86%E6%9E%90/" class="link">中文</a>
+                
+            </div>
+        </footer>
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <h2 id="introduction">Introduction
+</h2><p>There are many C++ network libraries. Handy is a network library with C++11 style that is very helpful for in-depth learning of C++.</p>
+<h2 id="code-analysis">Code Analysis
+</h2><p>Below is the epoll.cc file from handy/raw_examples. It&rsquo;s an example of level triggering. This HTTP server returns a static resource &ldquo;123456&rdquo; regardless of what kind of request it receives. Compilation: c++ -o epoll epoll.cc, execution: sudo ./epoll. The if (con.writeEnabled) statement in sendRes of the source code seems to have some issues, causing problems when sending large resources. I have modified it to correctly send large files.</p>
+<pre tabindex="0"><code>/*
+ * Compilation: c++ -o epoll epoll.cc
+ * Execution: ./epoll
+ * Testing: curl -v localhost
+ */
+
+
+/* 
+    Running Effect
+    Run the epoll program with sudo. This program listens on port 80 at 0.0.0.0 on the local machine, running as an HTTP server
+    Whenever a connection accesses, it returns the static resource httpRes
+    LT is the default mode
+
+ */
+
+#include &lt;sys/socket.h&gt;
+#include &lt;sys/epoll.h&gt;
+#include &lt;netinet/in.h&gt;
+#include &lt;arpa/inet.h&gt;
+#include &lt;fcntl.h&gt;
+#include &lt;unistd.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;errno.h&gt;
+#include &lt;string.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;map&gt;
+#include &lt;string&gt;
+#include &lt;signal.h&gt;
+#include &lt;iostream&gt;
+using namespace std;
+
+
+bool output_log = true;
+// A macro for printing errors and exiting
+#define exit_if(r, ...) if(r) {printf(__VA_ARGS__); printf(&#34;%s:%d error no: %d error msg %s\n&#34;, __FILE__, __LINE__, errno, strerror(errno)); exit(1);}
+// This function is used to set the specified fd to non-blocking status
+void setNonBlock(int fd) {
+    // First, we get the original flags of the file descriptor
+    int flags = fcntl(fd, F_GETFL, 0);
+    exit_if(flags&lt;0, &#34;fcntl failed&#34;);
+    // Then add O_NONBLOCK and set it back
+    int r = fcntl(fd, F_SETFL, flags | O_NONBLOCK);
+    exit_if(r&lt;0, &#34;fcntl failed&#34;);
+}
+// A wrapper for epoll_ctl, putting events and fd into ev.
+// And setting events to trigger when readable and writable
+void updateEvents(int efd, int fd, int events, int op) {
+    struct epoll_event ev = {0};
+    ev.events = events;
+    ev.data.fd = fd;
+    printf(&#34;%s fd %d events read %d write %d\n&#34;,
+           op==EPOLL_CTL_MOD?&#34;mod&#34;:&#34;add&#34;, fd, ev.events &amp; EPOLLIN, ev.events &amp; EPOLLOUT);
+    int r = epoll_ctl(efd, op, fd, &amp;ev);
+    exit_if(r, &#34;epoll_ctl failed&#34;);
+}
+// Try to perform accept operation on fd. If successful, add it to the monitoring list of epoll fd. Set epoll events to trigger when data is written.
+void handleAccept(int efd, int fd) {
+    struct sockaddr_in raddr;
+    socklen_t rsz = sizeof(raddr);
+    int cfd = accept(fd,(struct sockaddr *)&amp;raddr,&amp;rsz);
+    exit_if(cfd&lt;0, &#34;accept failed&#34;);
+    sockaddr_in peer, local;
+    socklen_t alen = sizeof(peer);
+    int r = getpeername(cfd, (sockaddr*)&amp;peer, &amp;alen);
+    exit_if(r&lt;0, &#34;getpeername failed&#34;);
+    printf(&#34;accept a connection from %s\n&#34;, inet_ntoa(raddr.sin_addr));
+    setNonBlock(cfd);
+    updateEvents(efd, cfd, EPOLLIN, EPOLL_CTL_ADD);
+}
+// Represents a connection. Members include data read from the connection, data written
+// Is it okay to use string to store binary content, what happens if \0 is encountered?
+// No problem, see https://www.zhihu.com/question/33104941
+struct Con {
+    string readed;
+    size_t written;
+    bool writeEnabled;
+    Con(): written(0), writeEnabled(false) {}
+};
+// Data structure used to map fd to con
+map&lt;int, Con&gt; cons;
+
+string httpRes;
+// Send resources
+void sendRes(int efd, int fd) {
+    // First get the connection information
+    Con&amp; con = cons[fd];
+    // Request to write when no data is received
+    // This means that data sent last time might have been sent completely
+    // Its corresponding file descriptor has been deleted in cons
+    // Then the epoll signal was triggered
+    // At this time, close its last send flag
+    // Then close the buffer send trigger epoll flag
+    // Only keep it triggered when there is data to read
+    // Why not do this step when all data is written?
+    // if (!con.readed.length()) {
+    //     if (con.writeEnabled) {
+    //         updateEvents(efd, fd, EPOLLIN, EPOLL_CTL_MOD);
+    //         con.writeEnabled = false;
+    //     }
+    //     return;
+    // }
+    // Calculate the length of data that still needs to be written
+    size_t left = httpRes.length() - con.written;
+    int wd = 0;
+    // Continuously write data until the kernel buffer can&#39;t accept any more
+    while((wd=::write(fd, httpRes.data()+con.written, left))&gt;0) {
+        con.written += wd;
+        left -= wd;
+        if(output_log) printf(&#34;write %d bytes left: %lu\n&#34;, wd, left);
+    };
+    // If there is no data to write, delete this connection. But don&#39;t disconnect, just empty the connection information
+    if (left == 0) {
+//        close(fd); // Keepalive is used in testing, so don&#39;t close the connection. The connection will be closed in the read event
+        if (con.writeEnabled) {
+            updateEvents(efd, fd, EPOLLIN, EPOLL_CTL_MOD);
+            con.writeEnabled = false;
+        }
+        cons.erase(fd);
+        return;
+    }
+    // If the kernel buffer is full, can&#39;t write anymore
+    if (wd &lt; 0 &amp;&amp;  (errno == EAGAIN || errno == EWOULDBLOCK)) {
+        // Mark it as can continue writing
+        if (!con.writeEnabled) {
+            // Wait for it to be able to continue writing, or be readable
+            // Avoid repeated system calls, use con.writeEnabled flag
+            printf(&#34;update it to EPOLLIN|EPOLLOUT\n&#34;);
+            updateEvents(efd, fd, EPOLLIN|EPOLLOUT, EPOLL_CTL_MOD);
+            con.writeEnabled = true;
+        }
+        return;
+    }
+    // If it&#39;s other situations, such as returning 0 without completing data writing, or returning other errors
+    // It means an error occurred
+    if (wd&lt;=0) {
+        printf(&#34;write error for %d: %d %s\n&#34;, fd, errno, strerror(errno));
+        close(fd);
+        cons.erase(fd);
+    }
+}
+// When loop_once processes read data, call this function
+void handleRead(int efd, int fd) {
+    char buf[4096];
+    int n = 0;
+    // Read 4k bytes each time, loop to read out all the data already in the kernel (information may be incomplete due to packet splitting)
+    while ((n=::read(fd, buf, sizeof buf)) &gt; 0) {
+        if(output_log) printf(&#34;read %d bytes\n&#34;, n);
+        // Here, use a map to get the connection information corresponding to the previous fd.
+        // When the index corresponding to fd does not exist, it will call the default constructor of con: Con(): written(0), writeEnabled(false) {}
+        string&amp; readed = cons[fd].readed;
+        // Call the append method of the string class to add data to the connection information
+        // Note that parameter n needs to be passed to ensure binary safety
+        readed.append(buf, n);
+        std::cout  &lt;&lt; &#34;now info is&#34; &lt;&lt; std::endl &lt;&lt; &#34;---&#34; &lt;&lt;  readed &lt;&lt; endl &lt;&lt; &#34;---&#34; &lt;&lt;  std::endl;
+        // Determine when an HTTP request is complete.
+        // Don&#39;t judge the content of the HTTP request, just send static resources
+        if (readed.length()&gt;4) {
+            if (readed.substr(readed.length()-2, 2) == &#34;\n\n&#34; || readed.substr(readed.length()-4, 4) == &#34;\r\n\r\n&#34;) {
+                // When a complete HTTP request is read, test sending a response
+                // After the TCP connection is established, the client starts transmitting the header, then uses \r\n\r\n to mark the end of the header and the beginning of the entity (of course, there will be the beginning of the entity only if the request contains an entity),
+                // Then the entity is transmitted, when the entity is transmitted, the client starts receiving data, the server knows, this request has ended,
+                // Then the entity is that segment of data from \r\n\r\n to stopping reception. Correspondingly, the client receives the response in the same way.
+                // If there is no entity, then \r\n\r\n is the end of http
+                // Start writing data. Note that it may fill the buffer, if it&#39;s full, continue writing later
+                sendRes(efd, fd);
+            }
+        }
+    }
+    // If read cannot read, it will return -1. At this time, errno (errno belongs to the thread, it is thread-safe) is EAGAIN, which means it&#39;s not all read. EWOULDBLOCK and EAGAIN are the same.
+    // Then return, and wait for the next read
+    if (n&lt;0 &amp;&amp; (errno == EAGAIN || errno == EWOULDBLOCK)){
+        printf(&#34;nothing to read from %d, return. \n&#34;, fd);
+        return;
+    }
+    // In actual applications, n&lt;0 should check various errors, such as EINTR
+    if (n &lt; 0) {
+        printf(&#34;read %d error: %d %s\n&#34;, fd, errno, strerror(errno));
+    }
+    // Executing here, n is 0, indicating that the peer has closed the connection. At this time, we also close the connection
+    printf(&#34;%d close the connection\n&#34;, fd);
+    close(fd);
+    cons.erase(fd);
+}
+// When the buffer can be written in loop_once, simply write our prepared static resources
+void handleWrite(int efd, int fd) {
+    sendRes(efd, fd);
+}
+// Perform one operation in a loop on an epoll handle
+// Where l is the LISTEN fd
+void loop_once(int efd, int lfd, int waitms) {
+    // At most copy 20 events out from the kernel
+    const int kMaxEvents = 20;
+    struct epoll_event activeEvs[100];
+    int n = epoll_wait(efd, activeEvs, kMaxEvents, waitms);
+    // n is how many events were returned
+    if(output_log) printf(&#34;epoll_wait return %d\n&#34;, n);
+    for (int i = 0; i &lt; n; i ++) {
+        int fd = activeEvs[i].data.fd;
+        int events = activeEvs[i].events;
+        // EPOLLIN event or EPOLLERR event. EPOLLERR also means the pipe write ended.
+        // See: http://man7.org/linux/man-pages/man2/epoll_ctl.2.html
+        if (events &amp; (EPOLLIN | EPOLLERR)) {
+            // The EPOLLIN event is only triggered when the peer has data written, so after triggering once, you need to keep reading all the data until you finish reading EAGAIN. Otherwise, the remaining data will only be taken out together the next time the peer writes.
+            // When the other party closes the connection, it is an EPOLLERR event
+            if (fd == lfd) {
+                printf(&#34;this is accept\n&#34;);
+                handleAccept(efd, fd); 
+            } else {
+                printf(&#34;this can read\n&#34;);
+                handleRead(efd, fd);
+            }
+        } else if (events &amp; EPOLLOUT) {
+            // This handles events if the file descriptor can be written
+            // The EPOLLOUT event is only triggered once during connection, indicating it can be written
+            // Afterwards, it indicates that the data in the buffer has been sent out and can continue to be written
+            // See https://www.zhihu.com/question/22840801
+            if(output_log) printf(&#34;handling epollout\n&#34;);
+            handleWrite(efd, fd);
+        } else {
+            exit_if(1, &#34;unknown event&#34;);
+        }
+    }
+}
+
+int main(int argc, const char* argv[]) {
+    if (argc &gt; 1) { output_log = false; }
+    /* 
+Small Knowledge
+signal (parameter 1, parameter 2);
+Parameter 1: The signal we want to process. We can view the system signals (64 in total) by typing kill -l in the terminal. In fact, these signals are macros defined by the system.
+Parameter 2: The way we handle it (system default, ignore, or capture). SIG_IGN: If the func parameter is set to SIG_IGN, the signal will be ignored.
+     */
+    ::signal(SIGPIPE, SIG_IGN);
+    // Set the content of the HTTP response
+    httpRes = &#34;HTTP/1.1 200 OK\r\nConnection: Keep-Alive\r\nContent-Type: text/html; charset=UTF-8\r\nContent-Length: 19048576\r\n\r\n123456&#34;;
+    // Fill the rest of the content with 0. The final length of content is about 1024*1024
+    for(int i=0;i&lt;19048570;i++) {
+        httpRes+=&#39;\0&#39;;
+    }
+    // Set the port to 80
+    short port = 80;
+    // Create an epoll handle
+    int epollfd = epoll_create(1);
+    exit_if(epollfd &lt; 0, &#34;epoll_create failed&#34;);
+    // Create a socket
+    int listenfd = socket(AF_INET, SOCK_STREAM, 0);
+    exit_if(listenfd &lt; 0, &#34;socket failed&#34;);
+    struct sockaddr_in addr;
+    memset(&amp;addr, 0, sizeof addr);
+    addr.sin_family = AF_INET;
+    addr.sin_port = htons(port);
+    addr.sin_addr.s_addr = INADDR_ANY;
+    // First bind the socket to the port
+    int r = ::bind(listenfd,(struct sockaddr *)&amp;addr, sizeof(struct sockaddr));
+    // This step will report an error if you don&#39;t have superuser permissions. Linux doesn&#39;t allow non-root users to use ports below 1024
+    exit_if(r, &#34;bind to 0.0.0.0:%d failed %d %s&#34;, port, errno, strerror(errno));
+    /* 
+    #include&lt;sys/socket.h&gt;
+int listen(int sockfd, int backlog)
+Return: 0──success, -1──failure
+Parameter sockfd
+The socket that the listen function acts on, sockfd was previously returned by the socket function. At the time when the socket function returns the socket fd, it is an active connection socket,
+which means the system assumes the user will call the connect function on this socket, expecting it to actively connect with other processes, then in server programming, the user wants this socket to accept external connection requests,
+that is, passively wait for users to connect. Since the system assumes by default that a socket is actively connected, it needs to be told in some way, and the user process completes this by making the system call listen.
+Parameter backlog
+This parameter involves some network details. While a process is handling one connection request, there may be other connection requests.
+Because TCP connection is a process, there may be a half-connected state, and sometimes due to too many users trying to connect simultaneously, the server process cannot quickly complete the connection request.
+If this situation occurs, how does the server process want the kernel to handle it?
+The kernel will maintain a queue in its own process space to track these completed connections that the server process has not yet handled or is processing. Such a queue cannot be arbitrarily large in the kernel,
+so there must be an upper limit to its size. This backlog tells the kernel to use this value as the upper limit.
+Without a doubt, the server process cannot arbitrarily specify a value, the kernel has a permissible range. This range is implementation-related. It&#39;s hard to have some standardization, usually this value will be less than 30.
+The length of the queue used by the kernel to track these completed connections but not yet accepted by user code is set to 20 here. When the queue length is less than 20, the kernel will immediately complete the connection establishment.
+But if the queue length is greater than 20, the connection will not be established before the user code calls accept, and the other party will be in a blocked state.
+     */
+    r = listen(listenfd, 20);
+    exit_if(r, &#34;listen failed %d %s&#34;, errno, strerror(errno));
+    printf(&#34;fd %d listening at %d\n&#34;, listenfd, port);
+    // Next, set the file descriptor to non-blocking.
+    // Why set it to non-blocking? https://www.zhihu.com/question/23614342
+    setNonBlock(listenfd);
+    // Set it to trigger when readable, add to the epoll file descriptor pool
+    updateEvents(epollfd, listenfd, EPOLLIN, EPOLL_CTL_ADD);
+    for (;;) { // Actual applications should register signal handling functions and clean up resources when exiting
+        loop_once(epollfd, listenfd, 10000);
+    }
+    return 0;
+}
+</code></pre><h2 id="running-effect">Running Effect
+</h2><p><img src="https://upload-images.jianshu.io/upload_images/4388248-57aa370a0545fdb4.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240"
+	
+	
+	
+	loading="lazy"
+	
+		alt="image.png"
+	
+	
+></p>
+<pre tabindex="0"><code>sudo ./epoll
+fd 4 listening at 80
+add fd 4 events read 1 write 0
+epoll_wait return 1
+this is accept
+accept a connection from 127.0.0.1
+add fd 5 events read 1 write 0
+epoll_wait return 1
+this can read
+read 412 bytes
+now info is
+---GET / HTTP/1.1
+Host: 127.0.0.1
+Connection: keep-alive
+User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36
+Upgrade-Insecure-Requests: 1
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8
+Accept-Encoding: gzip, deflate, br
+Accept-Language: zh-CN,zh;q=0.9,und;q=0.8,zh-TW;q=0.7,en;q=0.6,pl;q=0.5
+
+
+---
+write 4081834 bytes left: 14966851
+update it to EPOLLIN|EPOLLOUT
+mod fd 5 events read 1 write 4
+nothing to read from 5, return.
+epoll_wait return 1
+handling epollout
+write 2226422 bytes left: 12740429
+epoll_wait return 1
+handling epollout
+write 2095456 bytes left: 10644973
+epoll_wait return 1
+handling epollout
+write 1964490 bytes left: 8680483
+epoll_wait return 1
+handling epollout
+write 1506109 bytes left: 7174374
+epoll_wait return 1
+handling epollout
+write 1833524 bytes left: 5340850
+epoll_wait return 1
+handling epollout
+write 1637075 bytes left: 3703775
+write 130966 bytes left: 3572809
+epoll_wait return 1
+handling epollout
+write 1571592 bytes left: 2001217
+epoll_wait return 1
+handling epollout
+write 1440626 bytes left: 560591
+epoll_wait return 1
+handling epollout
+write 560591 bytes left: 0
+mod fd 5 events read 1 write 0
+epoll_wait return 1
+this can read
+read 375 bytes
+now info is
+---GET /favicon.ico HTTP/1.1
+Host: 127.0.0.1
+Connection: keep-alive
+User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36
+Accept: image/webp,image/apng,image/*,*/*;q=0.8
+Referer: http://127.0.0.1/
+Accept-Encoding: gzip, deflate, br
+Accept-Language: zh-CN,zh;q=0.9,und;q=0.8,zh-TW;q=0.7,en;q=0.6,pl;q=0.5
+
+
+---
+write 10477280 bytes left: 8571405
+update it to EPOLLIN|EPOLLOUT
+mod fd 5 events read 1 write 4
+nothing to read from 5, return.
+epoll_wait return 1
+handling epollout
+write 1440626 bytes left: 7130779
+epoll_wait return 1
+handling epollout
+write 1768041 bytes left: 5362738
+epoll_wait return 1
+handling epollout
+write 1571592 bytes left: 3791146
+epoll_wait return 1
+handling epollout
+write 1637075 bytes left: 2154071
+epoll_wait return 1
+handling epollout
+write 1702558 bytes left: 451513
+epoll_wait return 1
+handling epollout
+write 451513 bytes left: 0
+mod fd 5 events read 1 write 0
+epoll_wait return 0
+epoll_wait return 0
+epoll_wait return 0
+</code></pre><p>Here I increased the size of the resource, changing it to the following value:</p>
+<pre tabindex="0"><code>    httpRes = &#34;HTTP/1.1 200 OK\r\nConnection: Keep-Alive\r\nContent-Type: text/html; charset=UTF-8\r\nContent-Length: 19048576\r\n\r\n123456&#34;;
+    // Fill the rest of the content with 0. The final length of content is about 1024*1024
+    for(int i=0;i&lt;19048570;i++) {
+        httpRes+=&#39;\0&#39;;
+    }
+</code></pre><p>You can see it was transmitted in multiple parts. Finally, the terminal page displays 123456, with \0 after it, which won&rsquo;t be displayed.
+You can see that the browser made two requests, one for the root directory and one for the page icon favicon.ico
+&lt;/rewritten_file&gt;</p>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+
+    </footer>
+
+
+    
+</article>
+
+    
+
+    
+
+     
+    
+        
+    <div class="disqus-container">
+    <div id="disqus_thread"></div>
+<script>
+    window.disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "nansenli" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+<style>
+    .disqus-container {
+        background-color: var(--card-background);
+        border-radius: var(--card-border-radius);
+        box-shadow: var(--shadow-l1);
+        padding: var(--card-padding);
+    }
+</style>
+
+<script>
+    window.addEventListener('onColorSchemeChange', (e) => {
+        if (typeof DISQUS == 'object') {
+            DISQUS.reset({
+                reload: true
+            });
+        }
+    })
+</script>
+
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+        2025 Nansen Li（李楠森）
+    </section>
+    
+    <section class="powerby">
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.30.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.1e9a3bafd846ced4c345d084b355fb8c7bae75701c338f8a1f8a82c780137826.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>

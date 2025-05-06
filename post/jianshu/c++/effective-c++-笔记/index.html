@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="Chapter 1: From C to C++ Item 1: C++ is a federation of languages This means that C++ supports procedural, object-oriented, generic, functional, and meta-programming - five programming styles, which can be confusing. It is a comprehensive language. Item 2: Prefer const, enum, inline to #define #define is not part of the language, but part of the preprocessor. const, enum, and inline allow the compiler to detect errors. Item 3: Use const to restrict possible errors For example, return const reference objects to prevent users from modifying them.">
+<title>Effective C&#43;&#43; Notes</title>
+
+<link rel='canonical' href='https://nansenli.com/post/jianshu/c&#43;&#43;/effective-c&#43;&#43;-%E7%AC%94%E8%AE%B0/'>
+
+<link rel="stylesheet" href="/scss/style.min.1084ac713783b88e0bd9807a58068e10aae22e99420f94a9234654a4e199baa4.css"><meta property='og:title' content="Effective C++ Notes">
+<meta property='og:description' content="Chapter 1: From C to C++ Item 1: C++ is a federation of languages This means that C++ supports procedural, object-oriented, generic, functional, and meta-programming - five programming styles, which can be confusing. It is a comprehensive language. Item 2: Prefer const, enum, inline to #define #define is not part of the language, but part of the preprocessor. const, enum, and inline allow the compiler to detect errors. Item 3: Use const to restrict possible errors For example, return const reference objects to prevent users from modifying them.">
+<meta property='og:url' content='https://nansenli.com/post/jianshu/c&#43;&#43;/effective-c&#43;&#43;-%E7%AC%94%E8%AE%B0/'>
+<meta property='og:site_name' content='Nansen Li'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2018-04-23T10:40:00&#43;00:00'/><meta property='article:modified_time' content='2018-04-23T10:40:00&#43;00:00'/>
+<meta name="twitter:title" content="Effective C++ Notes">
+<meta name="twitter:description" content="Chapter 1: From C to C++ Item 1: C++ is a federation of languages This means that C++ supports procedural, object-oriented, generic, functional, and meta-programming - five programming styles, which can be confusing. It is a comprehensive language. Item 2: Prefer const, enum, inline to #define #define is not part of the language, but part of the preprocessor. const, enum, and inline allow the compiler to detect errors. Item 3: Use const to restrict possible errors For example, return const reference objects to prevent users from modifying them.">
+    <link rel="shortcut icon" href="/favicon.ico" />
+
+  
+    
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-WC38C3XE3J"></script>
+      <script>
+        var doNotTrack = false;
+        if ( false ) {
+          var dnt = (navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack);
+          var doNotTrack = (dnt == "1" || dnt == "yes");
+        }
+        if (!doNotTrack) {
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-WC38C3XE3J');
+        }
+      </script>
+    
+  
+
+
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="Toggle Menu">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/avatar_hu96777ff80939aaa7d938dddcc232fcc6_1414962_300x0_resize_box_3.png" width="300"
+                            height="300" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+                    <span class="emoji">🌈</span>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">Nansen Li</a></h1>
+            <h2 class="site-description"></h2>
+        </div>
+    </header><ol class="menu-social">
+            
+                <li>
+                    <a 
+                        href='https://github.com/linanwx'
+                        target="_blank"
+                        title="GitHub"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://www.linkedin.com/in/nansen-li-3bb0a3146/'
+                        target="_blank"
+                        title="LinkedIn"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-brand-linkedin"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M8 11v5" /><path d="M8 8v.01" /><path d="M12 16v-5" /><path d="M16 16v-3a2 2 0 1 0 -4 0" /><path d="M3 7a4 4 0 0 1 4 -4h10a4 4 0 0 1 4 4v10a4 4 0 0 1 -4 4h-10a4 4 0 0 1 -4 -4z" /></svg>
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='index.xml'
+                        target="_blank"
+                        title="RSS"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-rss" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="5" cy="19" r="1" />
+  <path d="M4 4a16 16 0 0 1 16 16" />
+  <path d="M4 11a9 9 0 0 1 9 9" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+</svg>
+
+
+
+                
+                <span>Home</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/page/archives/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>Archives</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/page/search/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
+
+
+
+                
+                <span>Search</span>
+            </a>
+        </li>
+        
+        <li class="menu-bottom-section">
+            <ol class="menu">
+                    
+                        <li id="i18n-switch">  
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-language" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M4 5h7" />
+  <path d="M9 3v2c0 4.418 -2.239 8 -5 8" />
+  <path d="M5 9c-.003 2.144 2.952 3.908 6.7 4" />
+  <path d="M12 20l4 -9l4 9" />
+  <path d="M19.1 18h-6.2" />
+</svg>
+
+
+
+                            <select name="language" title="language" onchange="window.location.href = this.selectedOptions[0].value">
+                                
+                                    <option value="https://nansenli.com/" selected>English</option>
+                                
+                                    <option value="https://nansenli.com/zh-cn/" >中文</option>
+                                
+                            </select>
+                        </li>
+                    
+                
+
+                
+                    <li id="dark-mode-toggle">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <span>Dark Mode</span>
+                    </li>
+                
+            </ol>
+        </li>
+    </ol>
+</aside>
+
+    
+
+            <main class="main full-width">
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/c&#43;&#43;/" >
+                C&#43;&#43;
+            </a>
+        
+    </header>
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/post/jianshu/c&#43;&#43;/effective-c&#43;&#43;-%E7%AC%94%E8%AE%B0/">Effective C&#43;&#43; Notes</a>
+        </h2>
+    
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">Apr 23, 2018</time>
+            </div>
+        
+
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+                <time class="article-time--reading">
+                    9 minute read
+                </time>
+            </div>
+        
+    </footer>
+    
+
+    
+        <footer class="article-translations">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-language" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M4 5h7" />
+  <path d="M9 3v2c0 4.418 -2.239 8 -5 8" />
+  <path d="M5 9c-.003 2.144 2.952 3.908 6.7 4" />
+  <path d="M12 20l4 -9l4 9" />
+  <path d="M19.1 18h-6.2" />
+</svg>
+
+
+
+            <div>
+                
+                    <a href="https://nansenli.com/zh-cn/post/jianshu/c&#43;&#43;/effective-c&#43;&#43;-%E7%AC%94%E8%AE%B0/" class="link">中文</a>
+                
+            </div>
+        </footer>
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <h2 id="chapter-1-from-c-to-c">Chapter 1: From C to C++
+</h2><ul>
+<li>
+<p>Item 1: C++ is a federation of languages
+This means that C++ supports procedural, object-oriented, generic, functional, and meta-programming - five programming styles, which can be confusing. It is a comprehensive language.</p>
+</li>
+<li>
+<p>Item 2: Prefer const, enum, inline to #define
+#define is not part of the language, but part of the preprocessor. const, enum, and inline allow the compiler to detect errors.</p>
+</li>
+<li>
+<p>Item 3: Use const to restrict possible errors
+For example, return const reference objects to prevent users from modifying them. Use const member functions to prevent damage to classes.</p>
+</li>
+<li>
+<p>Item 4: Make sure objects are initialized before use
+Mainly use initialization lists to initialize members or parent classes. Additionally, if a class uses global objects, it&rsquo;s impossible to know when those objects are initialized. Therefore, use static variables inside the class (which also have only one copy).</p>
+</li>
+</ul>
+<h2 id="chapter-2-constructors-destructors-and-assignment-operators">Chapter 2: Constructors, Destructors, and Assignment Operators
+</h2><ul>
+<li>Item 5: Know what functions the compiler silently generates
+The compiler will generate default member functions as needed, including default constructor, copy constructor, destructor, and copy assignment operator.</li>
+</ul>
+<p>The default copy assignment operator may not be able to copy reference members.</p>
+<ul>
+<li>
+<p>Item 6: Use =delete to explicitly disallow auto-generated functions
+This can prevent a class from being copied, blocking copying.</p>
+</li>
+<li>
+<p>Item 7: Declare virtual destructors for polymorphic base classes
+This is a basic function.</p>
+</li>
+<li>
+<p>Item 8: Prevent exceptions from leaving destructors
+This can lead to incomplete memory release or cause multiple exceptions to be thrown.</p>
+</li>
+<li>
+<p>Item 9: Never call virtual functions during construction or destruction
+This is also obvious - if a derived class constructor enters the base class constructor and calls a virtual function, the derived class&rsquo;s virtual function isn&rsquo;t ready yet.</p>
+</li>
+<li>
+<p>Item 10: Have operator= return a reference to *this
+This allows for continuous assignment.</p>
+</li>
+<li>
+<p>Item 11: Handle self-assignment in operator=
+It&rsquo;s difficult to ensure your self-assignment code has no issues, and self-assignment is a time-wasting behavior.</p>
+</li>
+<li>
+<p>Item 12: Copy all parts of an object when copying
+This is obvious. If you implement an assignment function, you must copy all contents.</p>
+</li>
+</ul>
+<h2 id="chapter-3-resource-management">Chapter 3: Resource Management
+</h2><ul>
+<li>
+<p>Item 13: Objects are the basic unit of resource management
+You need to be able to acquire resources and correctly release them. The key is to use shared_ptr to manage memory, which can automatically release held resources.</p>
+</li>
+<li>
+<p>Item 14: Copying resource-managing objects
+Either prohibit copying, use shared_ptr members, perform deep copying, or make the copying process transfer the resource.</p>
+</li>
+<li>
+<p>Item 15: Provide access to raw resources in resource-managing classes
+The world isn&rsquo;t perfect, and many APIs require passing raw resource pointers. Using shared_ptr can interfere with how the object is used.</p>
+</li>
+<li>
+<p>Item 16: Use delete[] for arrays allocated with new[]
+To avoid this error, you can use vector containers to operate, avoiding the need for new arrays.</p>
+</li>
+<li>
+<p>Item 17: Store newed objects in smart pointers in standalone statements
+If an exception is thrown between creating a new object and passing it to a shared_ptr, it will lead to memory leaks.</p>
+</li>
+</ul>
+<h2 id="chapter-4-designs-and-declarations">Chapter 4: Designs and Declarations
+</h2><ul>
+<li>
+<p>Item 18: Make interfaces easy to use correctly
+Interfaces can sometimes be difficult to express clearly. For example, if you pass in three int values, you need to clearly remember what each one represents. What if the parameters are passed in the wrong order? The book mentions passing in specific objects and using explicit to constrain parameters. You could also build a date object and then specify members, which I think is a bit better. Additionally, interfaces should have reasonable parameter settings and reasonable return values (such as returning smart pointers instead of raw pointers to force proper usage).</p>
+</li>
+<li>
+<p>Item 19: Designing a class is a major project
+Object creation, destruction, initialization and assignment, whether passing objects by value causes exceptions, what are the legal values for the new type. Have type conversion functions been written? What about operators? Which functions should be deleted?</p>
+</li>
+<li>
+<p>Item 20: Prefer pass-by-reference-to-const to pass-by-value
+Passing by value brings the call of the object&rsquo;s constructor, consuming time. Passing by reference is like passing a pointer.</p>
+</li>
+<li>
+<p>Item 21: Don&rsquo;t return a reference to a local object
+When returning an object created by a function, you cannot return a reference to that object. The compiler will make the correct optimization steps by itself.</p>
+</li>
+<li>
+<p>Item 22: Declare data members private
+If declared public, deleting a variable will cause all programs to be rewritten. If declared private, deleting a variable will cause inherited class programs to be rewritten. So declare them as private.</p>
+</li>
+<li>
+<p>Item 23: Prefer non-member non-friend functions to member functions
+If a method only calls a few other member functions, there&rsquo;s no need to set it as a member function. Put it outside and wrap it with the same namespace.</p>
+</li>
+<li>
+<p>Item 24: Declare non-member functions when type conversions should apply to all parameters
+This is because member functions may not work in some cases. For example, operator * can only support that type as the first parameter. It will fail when a built-in type is used as the first parameter.</p>
+</li>
+<li>
+<p>Item 25: Consider support for a non-throwing swap
+Swap is a useful function. To implement an efficient swap, you need to design a swap member function to exchange with another object. Then design a non-member function in the namespace to call the above swap function. Finally, specialize std::swap to let the compiler choose your own swap.</p>
+</li>
+</ul>
+<h2 id="chapter-5-implementations">Chapter 5: Implementations
+</h2><ul>
+<li>
+<p>Item 26: Postpone variable definitions as long as possible
+C++ cannot arbitrarily change the order of different lines, which means it&rsquo;s better to define something only when it&rsquo;s used. If all definitions are placed at the beginning, but the program returns right away, this would bring unnecessary construction and destruction processes.</p>
+</li>
+<li>
+<p>Item 27: Minimize casting
+Although the four types of C++ type conversions can be used, they all bring bigger problems. Old-style type conversions should be used even less.</p>
+</li>
+<li>
+<p>Item 28: Avoid returning handles to object internals
+Try to avoid returning pointers to internal data of objects outside the object, as this can cause big problems. The vector [] operator is such a case. This is a special case.</p>
+</li>
+<li>
+<p>Item 29: Strive for exception-safe code
+C++ exceptions are the most difficult thing to handle, but you still need to ensure exceptions.</p>
+</li>
+<li>
+<p>Item 30: Understand the ins and outs of inlining
+Inline is to make the compiler try to avoid stack expansion, not definitely. The 80-20 rule tells us that a program will only spend time on 20% of the code, so not all functions need to use inline.</p>
+</li>
+<li>
+<p>Item 31: Minimize compilation dependencies: Separate definitions from declarations
+Two ways to handle - implementation classes and interface classes. Implementation classes use another class to proxy the functionality of the class. Interface classes use object-oriented methods to design the class as an interface.</p>
+</li>
+</ul>
+<h2 id="chapter-6-inheritance-and-object-oriented-design">Chapter 6: Inheritance and Object-Oriented Design
+</h2><ul>
+<li>
+<p>Item 32: Make sure public inheritance models &ldquo;is-a&rdquo;
+This means that derived classes can do everything base classes can do. But what derived classes can do, base classes may not be able to do.</p>
+</li>
+<li>
+<p>Item 33: Avoid hiding inherited names
+If you declare another overloaded version of a parent class function in a derived class, it will also override the original version of the parent class, making it impossible to correctly link to the parent class function. You can use &ldquo;using&rdquo; to indicate the use of the parent class&rsquo;s function space.</p>
+</li>
+<li>
+<p>Item 34: Differentiate between inheritance of interface and inheritance of implementation
+Pure virtual functions only inherit the interface, virtual functions inherit the interface and default implementation, and non-virtual functions inherit the interface and forced implementation.</p>
+</li>
+<li>
+<p>Item 35: Consider alternatives to virtual functions
+Other design patterns can be used to replace the implementation of virtual functions, such as function objects.</p>
+</li>
+<li>
+<p>Item 36: Never redefine an inherited non-virtual function
+Otherwise, you won&rsquo;t know which one is being called. Yes, I&rsquo;m talking about destructors.</p>
+</li>
+<li>
+<p>Item 37: Never redefine a function&rsquo;s inherited default parameter value
+This is because default parameters are statically determined, not dynamically determined. The one you define may not be useful.</p>
+</li>
+<li>
+<p>Item 38: Model &ldquo;has-a&rdquo; or &ldquo;is-implemented-in-terms-of&rdquo; through composition
+Public inheritance is an &ldquo;is-a&rdquo; relationship. Composition is a &ldquo;has-a&rdquo; relationship. For example, in the implementation of a set, inheriting from list would have some problems. Set should compose list.</p>
+</li>
+<li>
+<p>Item 39: Use private inheritance judiciously
+The frequency of using private inheritance is lower than composition. There are two cases where this implementation is needed: first, when the derived class needs to access the protected members of the base class; second, when virtual functions need to be redefined (shouldn&rsquo;t a middle class be designed in this case?).</p>
+</li>
+<li>
+<p>Item 40: Use multiple inheritance judiciously
+Multiple inheritance is rarely used. It&rsquo;s best not to include any members in virtual inheritance. This is because the initialization of members in virtual inheritance is done in the derived class.</p>
+</li>
+</ul>
+<h2 id="chapter-7-templates-and-generic-programming">Chapter 7: Templates and Generic Programming
+</h2><ul>
+<li>
+<p>Item 41: Understand implicit interfaces and compile-time polymorphism
+This is static polymorphism.</p>
+</li>
+<li>
+<p>Item 42: Understand the two meanings of typename
+Typename appears not only in the template line of a template but also in template processing. When we use member variables or member types, the compiler doesn&rsquo;t know which one is being used. By default, it uses member variables. Add typename to remind the compiler that it&rsquo;s a member type.</p>
+</li>
+<li>
+<p>Item 43: Know how to access names in templatized base classes
+This is because template classes can be specialized, and if specialized, some symbols may not exist. So you need to explicitly indicate symbols in the template class, such as using the this pointer or scope.</p>
+</li>
+<li>
+<p>Item 44: Factor parameter-independent code out of templates
+When a template passes a non-type parameter, it generates multiple copies of code. There are some ways to avoid generating duplicate code, but they&rsquo;re not as fast as the original.</p>
+</li>
+<li>
+<p>Item 45: Use member function templates to accept all compatible types
+Classes can be templates, and member functions can also be templates.</p>
+</li>
+<li>
+<p>Item 46: Define non-member functions inside templates when type conversions are desired
+Not only define it as a non-member function but also as a friend function.</p>
+</li>
+<li>
+<p>Item 47: Use traits classes for information about types
+Traits use the properties of template programming and specialization to implement a traits class, through which you can get the data type you want in the generalized class.</p>
+</li>
+<li>
+<p>Item 48: Be aware of template metaprogramming
+Metaprogramming refers to programming methods where results are known at compile time. For example, processing input at compile time. Similar to factorial, which is like the Hello World program of C++ metaprogramming.</p>
+</li>
+</ul>
+<h2 id="chapter-8-customizing-new-and-delete">Chapter 8: Customizing new and delete
+</h2><ul>
+<li>
+<p>Item 49: Understand the behavior of the new-handler
+It continuously tries to allocate memory. I&rsquo;m curious if there will be a freeze if the new-handler keeps failing to allocate.</p>
+</li>
+<li>
+<p>Item 50: Understand when it makes sense to replace new and delete
+It seems that the performance of new and delete is very high now. No need to replace them.</p>
+</li>
+<li>
+<p>Item 51: Adhere to convention when writing new and delete
+Maintain compatibility when customizing new and delete.</p>
+</li>
+<li>
+<p>Item 52: Write placement delete if you write placement new
+Placement delete will automatically run when placement new encounters an error.</p>
+</li>
+</ul>
+<h2 id="chapter-9-modern-c11">Chapter 9: Modern C++11
+</h2><ul>
+<li>
+<p>Item 53: Pay attention to compiler warnings
+Don&rsquo;t ignore warnings.</p>
+</li>
+<li>
+<p>Item 54: Familiarize yourself with the TR1 standard libraries</p>
+</li>
+<li>
+<p>Item 55: Familiarize yourself with Boost</p>
+</li>
+</ul>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+
+    </footer>
+
+
+    
+</article>
+
+    
+
+    
+
+     
+    
+        
+    <div class="disqus-container">
+    <div id="disqus_thread"></div>
+<script>
+    window.disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "nansenli" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+<style>
+    .disqus-container {
+        background-color: var(--card-background);
+        border-radius: var(--card-border-radius);
+        box-shadow: var(--shadow-l1);
+        padding: var(--card-padding);
+    }
+</style>
+
+<script>
+    window.addEventListener('onColorSchemeChange', (e) => {
+        if (typeof DISQUS == 'object') {
+            DISQUS.reset({
+                reload: true
+            });
+        }
+    })
+</script>
+
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+        2025 Nansen Li（李楠森）
+    </section>
+    
+    <section class="powerby">
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.30.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.1e9a3bafd846ced4c345d084b355fb8c7bae75701c338f8a1f8a82c780137826.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>

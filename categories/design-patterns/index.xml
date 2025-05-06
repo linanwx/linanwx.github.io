@@ -1,0 +1,345 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>Design Patterns on Nansen Li</title>
+        <link>https://nansenli.com/categories/design-patterns/</link>
+        <description>Recent content in Design Patterns on Nansen Li</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>en</language>
+        <copyright>Nansen Li（李楠森）</copyright>
+        <lastBuildDate>Mon, 07 May 2018 06:15:00 +0000</lastBuildDate><atom:link href="https://nansenli.com/categories/design-patterns/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>C&#43;&#43; Perfect Singleton Pattern</title>
+        <link>https://nansenli.com/post/jianshu/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/c&#43;&#43;%E5%AE%8C%E7%BE%8E%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/</link>
+        <pubDate>Mon, 07 May 2018 06:15:00 +0000</pubDate>
+        
+        <guid>https://nansenli.com/post/jianshu/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/c&#43;&#43;%E5%AE%8C%E7%BE%8E%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/</guid>
+        <description>&lt;h2 id=&#34;original-singleton-pattern&#34;&gt;Original Singleton Pattern
+&lt;/h2&gt;&lt;p&gt;The singleton pattern needs to do the following:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Cannot be constructed through a constructor, otherwise multiple instances could be created. The constructor needs to be declared private.&lt;/li&gt;
+&lt;li&gt;Ensure only one instance can be produced.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Here is a simple implementation:&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;class Singleton
+{
+  private:
+    static Singleton *local_instance;
+    Singleton(){};
+
+  public:
+    static Singleton *getInstance()
+    {
+        if (local_instance == nullptr)
+        {
+            local_instance = new Singleton();
+        }
+        return local_instance;
+    }
+};
+
+Singleton * Singleton::local_instance = nullptr;
+
+int main()
+{
+    Singleton * s = Singleton::getInstance();
+    return 0;
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&#34;using-local-static-objects-to-solve-two-existing-problems&#34;&gt;Using Local Static Objects to Solve Two Existing Problems
+&lt;/h2&gt;&lt;p&gt;There are two problems in the code above. One is that in a multi-threaded situation, the new operation might be executed twice. The other is that the destructor is not called when the program exits.
+The following solution uses a static object to solve these problems.&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;class Singleton
+{
+  private:
+    static Singleton *local_instance;
+    Singleton(){
+        cout &amp;lt;&amp;lt; &amp;#34;Constructor&amp;#34; &amp;lt;&amp;lt; endl;
+    };
+    ~Singleton(){
+        cout &amp;lt;&amp;lt; &amp;#34;Destructor&amp;#34; &amp;lt;&amp;lt; endl;
+    }
+
+  public:
+    static Singleton *getInstance()
+    {
+        static Singleton locla_s;
+        return &amp;amp;locla_s;
+    }
+};
+
+
+int main()
+{
+    cout &amp;lt;&amp;lt; &amp;#34;Before first access to singleton&amp;#34; &amp;lt;&amp;lt; endl;
+    Singleton * s = Singleton::getInstance();
+    cout &amp;lt;&amp;lt; &amp;#34;After first access to singleton&amp;#34; &amp;lt;&amp;lt; endl;
+    cout &amp;lt;&amp;lt; &amp;#34;Before second access to singleton&amp;#34; &amp;lt;&amp;lt; endl;
+    Singleton * s2 = Singleton::getInstance();
+    cout &amp;lt;&amp;lt; &amp;#34;After second access to singleton&amp;#34; &amp;lt;&amp;lt; endl;
+    return 0;
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;&lt;img src=&#34;https://upload-images.jianshu.io/upload_images/4388248-dc4641f02558d6b3.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&#34;
+	
+	
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;Output results&#34;
+	
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;This code might cause multiple constructor calls in versions before C++11, so it can only be used with newer compilers.&lt;/p&gt;
+&lt;h2 id=&#34;if-using-pre-c11-versions-static-objects-will-not-be-thread-safe&#34;&gt;If Using Pre-C++11 Versions, Static Objects Will Not Be Thread-Safe
+&lt;/h2&gt;&lt;p&gt;The version below uses mutex and a static member to destruct the singleton. The disadvantage of this approach is that the lock causes slow speed and low efficiency. But at least it&amp;rsquo;s correct and can be used in versions before C++11. Sample code is as follows:&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;class Singleton
+{
+  private:
+    static Singleton *local_instance;
+    static pthread_mutex_t mutex;
+    Singleton(){
+        cout &amp;lt;&amp;lt; &amp;#34;Constructor&amp;#34; &amp;lt;&amp;lt; endl;
+    };
+    ~Singleton(){
+        cout &amp;lt;&amp;lt; &amp;#34;Destructor&amp;#34; &amp;lt;&amp;lt; endl;
+    }
+    class rememberFree{
+        public:
+        rememberFree(){
+            cout &amp;lt;&amp;lt; &amp;#34;Member constructor&amp;#34; &amp;lt;&amp;lt; endl;
+        }
+        ~rememberFree(){
+            if(Singleton::local_instance != nullptr){
+                delete Singleton::local_instance;
+            }
+        }
+    };
+    static rememberFree remember;
+
+  public:
+    static Singleton *getInstance()
+    {
+        pthread_mutex_lock(&amp;amp;mutex);
+        if (local_instance == nullptr)
+        {
+            local_instance = new Singleton();
+        }
+        pthread_mutex_unlock(&amp;amp;mutex);
+        return local_instance;
+    }
+};
+
+Singleton * Singleton::local_instance = nullptr;
+pthread_mutex_t Singleton::mutex = PTHREAD_MUTEX_INITIALIZER;
+Singleton::rememberFree Singleton::remember;
+&lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&#34;double-checked-locking-causes-uninitialized-memory-access&#34;&gt;Double-Checked Locking Causes Uninitialized Memory Access
+&lt;/h2&gt;&lt;p&gt;Using the following code to implement direct return of an already initialized object will greatly improve the performance of the above code. But the same code has obvious problems in Java, where CPU out-of-order execution may lead to accessing a reference to an uninitialized object.
+Does C++ have the same problem? See the following article: &lt;a class=&#34;link&#34; href=&#34;http://www.aristeia.com/Papers/DDJ_Jul_Aug_2004_revised.pdf&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;http://www.aristeia.com/Papers/DDJ_Jul_Aug_2004_revised.pdf&lt;/a&gt;
+The conclusion is the same - C++ has the same issue and may lead to undefined behavior causing segmentation faults. An example of double-checked locking code is as follows:&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;static Singleton *getInstance()
+    {
+        if(local_instance == nullptr){
+            pthread_mutex_lock(&amp;amp;mutex);
+            if (local_instance == nullptr)
+            {
+                local_instance = new Singleton();
+            }
+            pthread_mutex_unlock(&amp;amp;mutex);
+        }
+        return local_instance;
+    }
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;If thread A enters the lock and allocates space for the object, but due to possible instruction reordering, local_instance is actually pointed to a block of unallocated memory first, and then initialization occurs on this memory block. But after pointing and before initialization, another thread B might get this pointer through getInstance.&lt;/p&gt;
+&lt;h2 id=&#34;attempting-to-use-local-variables-cannot-guarantee-instruction-execution-order&#34;&gt;Attempting to Use Local Variables Cannot Guarantee Instruction Execution Order
+&lt;/h2&gt;&lt;p&gt;When trying to use temporary variables to force the order of instruction execution, they may still be considered useless variables by the compiler and optimized away. The following code is a good idea but fails to achieve its purpose:&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;        if(local_instance == nullptr){
+            static mutex mtx;
+            lock_guard&amp;lt;mutex&amp;gt; lock(mtx);
+            if (local_instance == nullptr)
+            {
+                auto tmp = new Singleton()
+                local_instance = tmp;            
+            }
+        }
+        return local_instance;
+&lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&#34;inelegant-use-of-volatile-to-solve-instruction-reordering-problems-in-double-checked-locking&#34;&gt;Inelegant Use of volatile to Solve Instruction Reordering Problems in Double-Checked Locking
+&lt;/h2&gt;&lt;p&gt;Trying to use volatile to declare the internal pointer, the code is as follows:&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;class Singleton
+{
+  private:
+    static Singleton * volatile local_instance;
+    Singleton(){
+        cout &amp;lt;&amp;lt; &amp;#34;Constructor&amp;#34; &amp;lt;&amp;lt; endl;
+    };
+    ~Singleton(){
+        cout &amp;lt;&amp;lt; &amp;#34;Destructor&amp;#34; &amp;lt;&amp;lt; endl;
+    }
+    class rememberFree{
+        public:
+        rememberFree(){
+            cout &amp;lt;&amp;lt; &amp;#34;Member constructor&amp;#34; &amp;lt;&amp;lt; endl;
+        }
+        ~rememberFree(){
+            if(Singleton::local_instance != nullptr){
+                delete Singleton::local_instance;
+            }
+        }
+    };
+    static rememberFree remember;
+    
+
+  public:
+    static Singleton *getInstance()
+    {
+        if(local_instance == nullptr){
+            static mutex mtx;
+            lock_guard&amp;lt;mutex&amp;gt; lock(mtx);
+            if (local_instance == nullptr)
+            {
+                auto tmp = new Singleton();
+                local_instance = tmp;
+            }
+        }
+        return local_instance;
+    }
+};
+
+Singleton * volatile Singleton::local_instance = nullptr;
+Singleton::rememberFree Singleton::remember;
+
+int main()
+{
+    cout &amp;lt;&amp;lt; &amp;#34;Before first access to singleton&amp;#34; &amp;lt;&amp;lt; endl;
+    Singleton * s = Singleton::getInstance();
+    cout &amp;lt;&amp;lt; &amp;#34;After first access to singleton&amp;#34; &amp;lt;&amp;lt; endl;
+    cout &amp;lt;&amp;lt; &amp;#34;Before second access to singleton&amp;#34; &amp;lt;&amp;lt; endl;
+    Singleton * s2 = Singleton::getInstance();
+    cout &amp;lt;&amp;lt; &amp;#34;After second access to singleton&amp;#34; &amp;lt;&amp;lt; endl;
+    return 0;
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;In this code, although temp is volatile, *temp is not, nor are its members. So it may still be optimized. Try to declare *temp as volatile as well, and you&amp;rsquo;ll find that your code is full of volatile. But at least it&amp;rsquo;s correct:&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;class Singleton
+{
+  private:
+    static volatile Singleton * volatile local_instance;
+    Singleton(){
+        cout &amp;lt;&amp;lt; &amp;#34;Constructor&amp;#34; &amp;lt;&amp;lt; endl;
+    };
+    ~Singleton(){
+        cout &amp;lt;&amp;lt; &amp;#34;Destructor&amp;#34; &amp;lt;&amp;lt; endl;
+    }
+    class rememberFree{
+        public:
+        rememberFree(){
+            cout &amp;lt;&amp;lt; &amp;#34;Member constructor&amp;#34; &amp;lt;&amp;lt; endl;
+        }
+        ~rememberFree(){
+            if(Singleton::local_instance != nullptr){
+                delete Singleton::local_instance;
+            }
+        }
+    };
+    static rememberFree remember;
+    
+
+  public:
+    static volatile Singleton *getInstance()
+    {
+        if(local_instance == nullptr){
+            static mutex mtx;
+            lock_guard&amp;lt;mutex&amp;gt; lock(mtx);
+            if (local_instance == nullptr)
+            {
+                auto tmp = new Singleton();
+                local_instance = tmp;
+            }
+        }
+        return local_instance;
+    }
+};
+
+volatile Singleton * volatile Singleton::local_instance = nullptr;
+Singleton::rememberFree Singleton::remember;
+
+int main()
+{
+    cout &amp;lt;&amp;lt; &amp;#34;Before first access to singleton&amp;#34; &amp;lt;&amp;lt; endl;
+    volatile Singleton * s = Singleton::getInstance();
+    cout &amp;lt;&amp;lt; &amp;#34;After first access to singleton&amp;#34; &amp;lt;&amp;lt; endl;
+    cout &amp;lt;&amp;lt; &amp;#34;Before second access to singleton&amp;#34; &amp;lt;&amp;lt; endl;
+    volatile Singleton * s2 = Singleton::getInstance();
+    cout &amp;lt;&amp;lt; &amp;#34;After second access to singleton&amp;#34; &amp;lt;&amp;lt; endl;
+    return 0;
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&#34;the-ultimate-weapon--memory-barrier&#34;&gt;The Ultimate Weapon — Memory Barrier
+&lt;/h2&gt;&lt;p&gt;In the new standard, the atomic class implements memory barriers, making memory access controllable across multiple cores. This utilizes the controllable memory access order in C++11. Here is the code implementation:&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;class Singleton
+{
+  private:
+    // static volatile Singleton * volatile local_instance;
+    static atomic&amp;lt;Singleton*&amp;gt; instance;
+    Singleton(){
+        cout &amp;lt;&amp;lt; &amp;#34;Constructor&amp;#34; &amp;lt;&amp;lt; endl;
+    };
+    ~Singleton(){
+        cout &amp;lt;&amp;lt; &amp;#34;Destructor&amp;#34; &amp;lt;&amp;lt; endl;
+    }
+    class rememberFree{
+        public:
+        rememberFree(){
+            cout &amp;lt;&amp;lt; &amp;#34;Member constructor&amp;#34; &amp;lt;&amp;lt; endl;
+        }
+        ~rememberFree(){
+            Singleton* local_instance = instance.load(std::memory_order_relaxed);
+            if(local_instance != nullptr){
+                delete local_instance;
+            }
+        }
+    };
+    static rememberFree remember;
+    
+
+  public:
+    static Singleton *getInstance()
+    {
+        Singleton* tmp = instance.load(std::memory_order_relaxed);
+        atomic_thread_fence(memory_order_acquire);
+        if(tmp == nullptr){
+            static mutex mtx;
+            lock_guard&amp;lt;mutex&amp;gt; lock(mtx);
+            tmp = instance.load(memory_order_relaxed);
+            if (tmp == nullptr)
+            {
+                tmp = new Singleton();
+                atomic_thread_fence(memory_order_release);
+                instance.store(tmp, memory_order_relaxed);
+            }
+        }
+        return tmp;
+    }
+};
+
+atomic&amp;lt;Singleton*&amp;gt; Singleton::instance;
+Singleton::rememberFree Singleton::remember;
+
+int main()
+{
+    cout &amp;lt;&amp;lt; &amp;#34;Before first access to singleton&amp;#34; &amp;lt;&amp;lt; endl;
+    Singleton * s = Singleton::getInstance();
+    cout &amp;lt;&amp;lt; &amp;#34;After first access to singleton&amp;#34; &amp;lt;&amp;lt; endl;
+    cout &amp;lt;&amp;lt; &amp;#34;Before second access to singleton&amp;#34; &amp;lt;&amp;lt; endl;
+    Singleton * s2 = Singleton::getInstance();
+    cout &amp;lt;&amp;lt; &amp;#34;After second access to singleton&amp;#34; &amp;lt;&amp;lt; endl;
+    return 0;
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;The above code may be difficult to read. The two loads of instance can be executed out of order. But changes during this period cannot be observed by other CPU cores. In the Muduo book, memory barriers are also rated as the ultimate weapon.&lt;/p&gt;
+&lt;h2 id=&#34;using-atomic-operation-memory-order&#34;&gt;Using Atomic Operation Memory Order
+&lt;/h2&gt;&lt;p&gt;There are six memory sequence options that can be applied to operations on atomic types: memory_order_relaxed, memory_order_consume, memory_order_acquire, memory_order_release, memory_order_acq_rel, and memory_order_seq_cst. Unless you specify a sequence option for a specific operation, the memory sequence option for all atomic types defaults to memory_order_seq_cst. Although there are six options, they only represent three memory models: sequentially consistent, acquire-release sequence (memory_order_consume, memory_order_acquire, memory_order_release and memory_order_acq_rel), and relaxed sequence (memory_order_relaxed).&lt;/p&gt;
+&lt;p&gt;The models that can be adopted here are: the default memory_order_seq_cst, which is sequentially consistent, and memory_order_acquire, memory_order_release, which is the acquire-release sequence. The latter may perform better.&lt;/p&gt;
+&lt;p&gt;To be improved&lt;/p&gt;
+&lt;h2 id=&#34;using-pthread_once-or-call_once&#34;&gt;Using pthread_once or call_once
+&lt;/h2&gt;&lt;p&gt;The former comes from the pthread library. The latter comes from std::atomic.&lt;/p&gt;
+&lt;p&gt;To be improved&lt;/p&gt;
+</description>
+        </item>
+        
+    </channel>
+</rss>

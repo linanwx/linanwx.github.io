@@ -1,0 +1,998 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>Algorithms on Nansen Li</title>
+        <link>https://nansenli.com/categories/algorithms/</link>
+        <description>Recent content in Algorithms on Nansen Li</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>en</language>
+        <copyright>Nansen Li（李楠森）</copyright>
+        <lastBuildDate>Mon, 26 Mar 2018 03:57:00 +0000</lastBuildDate><atom:link href="https://nansenli.com/categories/algorithms/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>Tencent Mock Exam: The Change-Making Problem</title>
+        <link>https://nansenli.com/post/jianshu/%E7%AE%97%E6%B3%95/%E8%85%BE%E8%AE%AF%E6%A8%A1%E6%8B%9F%E8%80%83%E8%AF%95%E4%B9%8B%E6%89%BE%E9%9B%B6%E9%97%AE%E9%A2%98/</link>
+        <pubDate>Mon, 26 Mar 2018 03:57:00 +0000</pubDate>
+        
+        <guid>https://nansenli.com/post/jianshu/%E7%AE%97%E6%B3%95/%E8%85%BE%E8%AE%AF%E6%A8%A1%E6%8B%9F%E8%80%83%E8%AF%95%E4%B9%8B%E6%89%BE%E9%9B%B6%E9%97%AE%E9%A2%98/</guid>
+        <description>&lt;blockquote&gt;
+&lt;p&gt;Little Q is very wealthy and owns many coins. Little Q&amp;rsquo;s coins follow a pattern: for all non-negative integers K, Little Q has exactly two coins with the value 2^k. So Little Q owns coins of values 1, 1, 2, 2, 4, 4, and so on. Little Q needs to pay n money for something and wants to know how many different combinations of coins he can use to make this payment.
+Input: An integer n (1&amp;lt;=n&amp;lt;=10^18), representing the amount to be paid.
+Output: The number of ways Little Q can make this payment.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Reference solution:&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;#coding=utf-8
+import math
+
+n = int(input())
+
+def getMaxCoin(n):
+    tmp = int(math.log(n,2))
+    return 2**tmp
+
+buff = {}
+
+def dp(n, coin):
+    if (n, coin) in buff:
+        return buff[(n,coin)]
+    if n == 0: # Making change for 0 money is always possible
+        return 1
+    if coin == 1: # Only using 1-value coins
+        if n == 1 or n == 2:
+            return 1
+        return 0 # No solution with current coin value
+    if n &amp;gt; coin * 4 -2:
+        return 0
+    ret = 0
+    # Using one coin of current value
+    if n &amp;gt;= coin:
+        ret += dp(n-coin, coin//2)
+    if n &amp;gt;= coin*2:
+    # Using two coins of current value
+        ret += dp(n-coin*2, coin//2)
+    # Not using any coin of current value
+    ret += dp(n, coin//2)
+    buff[(n,coin)] = ret
+    return ret
+
+print(dp(n,getMaxCoin(n)))
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Approach:
+For the current amount, the maximum possible coin value that can be used is calculated by the getMaxCoin function.
+For the problem amount n and the maximum coin value that can be used, we calculate dp(n, coin).
+The coin value will continuously decrease. For coin value 1, there&amp;rsquo;s only 1 way to make amounts 1 or 2. For amount 0, no coins are needed for a solution. For amounts greater than coin*4-2, it exceeds the maximum possible value, so there&amp;rsquo;s no solution. For other cases, we consider three situations: using one coin of the current value, using two coins of the current value, or using zero coins of the current value. We calculate the corresponding dp values for each case. We use the buff cache to store already calculated values.&lt;/p&gt;
+</description>
+        </item>
+        <item>
+        <title>Algorithm Problem — Shooting Game</title>
+        <link>https://nansenli.com/post/jianshu/%E7%AE%97%E6%B3%95/%E7%AE%97%E6%B3%95%E9%A2%98%E7%9B%AE%E5%B0%84%E5%87%BB%E6%B8%B8%E6%88%8F/</link>
+        <pubDate>Tue, 23 Jan 2018 01:39:00 +0000</pubDate>
+        
+        <guid>https://nansenli.com/post/jianshu/%E7%AE%97%E6%B3%95/%E7%AE%97%E6%B3%95%E9%A2%98%E7%9B%AE%E5%B0%84%E5%87%BB%E6%B8%B8%E6%88%8F/</guid>
+        <description>&lt;p&gt;Link: &lt;a class=&#34;link&#34; href=&#34;https://www.nowcoder.com/questionTerminal/d3f26db0325444078717cc802e0056d8&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;https://www.nowcoder.com/questionTerminal/d3f26db0325444078717cc802e0056d8&lt;/a&gt;
+Source: NowCoder&lt;/p&gt;
+&lt;p&gt;Xiayi is playing a new shooting game that takes place on a two-dimensional plane. Xiayi is at the origin (0,0), and there are n monsters on the plane, each with coordinates (x[i], y[i]). With one shot, Xiayi can eliminate all monsters that are on the x-axis and y-axis (including the origin) at once.
+Xiayi is a VIP player in this game and has two special privilege operations:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Make all monsters on the plane move simultaneously in any same direction for any same distance&lt;/li&gt;
+&lt;li&gt;Make all monsters on the plane rotate around Xiayi (0,0) by any same angle simultaneously
+Xiayi wants to take a shot. Before shooting, he can use these two privilege operations any number of times.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Xiayi wants to know the maximum number of monsters he can eliminate at once when he shoots. Please help Xiayi.&lt;/p&gt;
+&lt;p&gt;As shown in the example:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;http://upload-images.jianshu.io/upload_images/4388248-5380c067eb9eaa62?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&#34;
+	
+	
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;image&#34;
+	
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;All points can be rotated clockwise or counterclockwise by 45° with respect to the origin (0,0), which places all points on the coordinate axes, so all 5 monsters can be eliminated.&lt;/p&gt;
+&lt;h5 id=&#34;input-description&#34;&gt;&lt;strong&gt;Input Description:&lt;/strong&gt;
+&lt;/h5&gt;&lt;p&gt;The input consists of three lines.
+The first line contains a positive integer n (1 ≤ n ≤ 50), representing the number of monsters on the plane.
+The second line includes n integers x[i] (-1,000,000 ≤ x[i] ≤ 1,000,000), representing the x-coordinate of each monster, separated by spaces.
+The third line includes n integers y[i] (-1,000,000 ≤ y[i] ≤ 1,000,000), representing the y-coordinate of each monster, separated by spaces.&lt;/p&gt;
+&lt;h5 id=&#34;output-description&#34;&gt;&lt;strong&gt;Output Description:&lt;/strong&gt;
+&lt;/h5&gt;&lt;p&gt;Output an integer representing the maximum number of monsters Xiayi can eliminate.&lt;/p&gt;
+&lt;p&gt;Example 1&lt;/p&gt;
+&lt;h2 id=&#34;input&#34;&gt;Input
+&lt;/h2&gt;&lt;p&gt;5
+0 -1 1 1 -1
+0 -1 -1 1 1&lt;/p&gt;
+&lt;h2 id=&#34;output&#34;&gt;Output
+&lt;/h2&gt;&lt;p&gt;5&lt;/p&gt;
+&lt;h2 id=&#34;analysis&#34;&gt;Analysis
+&lt;/h2&gt;&lt;p&gt;The problem is equivalent to finding a cross shape that covers as many points as possible.
+Considering that one line can cover at least two points, and adding a perpendicular line can cover at least 3 points, we can iterate based on this. For any three points, we select two of them to form a line (three possible combinations), and for the third point, we create a perpendicular line to this line. This cross shape already passes through three points. For the remaining points, we check if they are on this cross shape. To determine if a point is on the cross shape, first check if it&amp;rsquo;s on the same line as the first line. Otherwise, determine if the line formed by this point and the third point is perpendicular to the second line.
+When there are three or fewer points, we can cover all of them.&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;#include &amp;lt;vector&amp;gt;
+#include &amp;lt;iostream&amp;gt;
+#include &amp;lt;algorithm&amp;gt;
+
+using namespace std;
+
+struct point{
+    int x = 0;
+    int y = 0;
+};
+
+bool is_sameline(point p1, point p2, point p3){
+    return ((p1.x - p2.x) * (p2.y - p3.y) - (p2.x - p3.x) * (p1.y - p2.y)) == 0;
+}
+
+bool is_vertical(point p1, point p2){
+    return (p1.x * p2.x + p1.y * p2.y) == 0;
+}
+
+bool is_vertical(point p1, point p2, point p3, point p4){
+    point v1, v2;
+    v1.x = p1.x - p2.x;
+    v1.y = p1.y - p2.y;
+    v2.x = p3.x - p4.x;
+    v2.y = p3.y - p4.y;
+    return is_vertical(v1, v2);
+}
+
+int main()
+{
+    int n, ret = 0;
+    cin &amp;gt;&amp;gt; n;
+    point inputs[n];
+    for (int i = 0; i &amp;lt; n; i++)
+        cin &amp;gt;&amp;gt; inputs[i].x;
+    for (int i = 0; i &amp;lt; n; i++)
+        cin &amp;gt;&amp;gt; inputs[i].y;
+    if (n &amp;lt; 4)
+    {
+        cout &amp;lt;&amp;lt; n &amp;lt;&amp;lt; endl;
+        return 0;
+    };
+    vector&amp;lt;int&amp;gt; select = {1, 1, 1};
+    for (int i = 0; i &amp;lt; n - 3; i++)
+        select.push_back(0);
+    do
+    {
+        vector&amp;lt;point&amp;gt; shizi;
+        for (int i = 0; i &amp;lt; n; i++)
+        {
+            if (select[i])
+            {
+                shizi.push_back(inputs[i]);
+            }
+        }
+        vector&amp;lt;vector&amp;lt;point&amp;gt;&amp;gt; status;
+        status.push_back({shizi[0], shizi[1], shizi[2]});
+        status.push_back({shizi[0], shizi[2], shizi[1]});
+        status.push_back({shizi[1], shizi[2], shizi[0]});
+        for (auto points : status)
+        {
+            int count = 0;
+            for (int i = 0; i &amp;lt; n; i++)
+            {
+                if (!select[i])
+                {
+                    if (is_sameline(points[0], points[1], inputs[i]))
+                        count++;
+                    if (is_vertical(points[0], points[1], points[2], inputs[i]))
+                        count++;
+                }
+            }
+            ret = max(ret, count);
+    
+        }
+    } while (prev_permutation(select.begin(), select.end()));
+    cout &amp;lt;&amp;lt; ret + 3 &amp;lt;&amp;lt; endl;
+    return 0;
+} 
+&lt;/code&gt;&lt;/pre&gt;</description>
+        </item>
+        <item>
+        <title>Algorithm Problem — Longest Common Bracket Sequence</title>
+        <link>https://nansenli.com/post/jianshu/%E7%AE%97%E6%B3%95/%E7%AE%97%E6%B3%95%E9%A2%98%E7%9B%AE%E6%9C%80%E9%95%BF%E5%85%AC%E5%85%B1%E5%AD%90%E6%8B%AC%E5%8F%B7%E5%BA%8F%E5%88%97/</link>
+        <pubDate>Sun, 21 Jan 2018 14:05:00 +0000</pubDate>
+        
+        <guid>https://nansenli.com/post/jianshu/%E7%AE%97%E6%B3%95/%E7%AE%97%E6%B3%95%E9%A2%98%E7%9B%AE%E6%9C%80%E9%95%BF%E5%85%AC%E5%85%B1%E5%AD%90%E6%8B%AC%E5%8F%B7%E5%BA%8F%E5%88%97/</guid>
+        <description>&lt;p&gt;Link: &lt;a class=&#34;link&#34; href=&#34;https://www.nowcoder.com/questionTerminal/504ad6420b314e5bb614e1684ad46d4d&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;https://www.nowcoder.com/questionTerminal/504ad6420b314e5bb614e1684ad46d4d&lt;/a&gt;
+Source: NowCoder&lt;/p&gt;
+&lt;p&gt;A valid bracket matching sequence is defined as:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;An empty string &amp;quot;&amp;quot; is a valid bracket sequence&lt;/li&gt;
+&lt;li&gt;If &amp;ldquo;X&amp;rdquo; and &amp;ldquo;Y&amp;rdquo; are valid sequences, then &amp;ldquo;XY&amp;rdquo; is also a valid bracket sequence&lt;/li&gt;
+&lt;li&gt;If &amp;ldquo;X&amp;rdquo; is a valid sequence, then &amp;ldquo;(X)&amp;rdquo; is also a valid bracket sequence&lt;/li&gt;
+&lt;li&gt;Every valid bracket sequence can be generated using the above rules
+For example, &amp;ldquo;&amp;rdquo;, &amp;ldquo;()&amp;rdquo;, &amp;ldquo;()()()&amp;rdquo;, &amp;ldquo;(()())&amp;rdquo;, &amp;ldquo;(((())))&amp;rdquo; are all valid.
+A sequence obtained by removing zero or more characters from a string S is called a subsequence of S.
+For example, the subsequences of &amp;ldquo;abcde&amp;rdquo; include &amp;ldquo;abe&amp;rdquo;, &amp;ldquo;&amp;rdquo;, &amp;ldquo;abcde&amp;rdquo;, etc.
+Define LCS(S,T) as the length of the longest common subsequence between string S and string T, which is the length of the longest sequence W that is both a subsequence of S and a subsequence of T.
+Xiaoyi gives you a valid bracket matching sequence s, and he hopes you can find a bracket sequence t with the following characteristics:&lt;/li&gt;
+&lt;li&gt;t is different from s but has the same length&lt;/li&gt;
+&lt;li&gt;t is also a valid bracket matching sequence&lt;/li&gt;
+&lt;li&gt;LCS(s, t) is the largest among all t that satisfy the above two conditions
+Since there may be multiple such t, Xiaoyi needs you to calculate how many such t exist.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;As shown in the example: s = &amp;ldquo;(())()&amp;rdquo;, valid bracket matching sequences with the same length as s include:
+&amp;ldquo;()(())&amp;rdquo;, &amp;ldquo;((()))&amp;rdquo;, &amp;ldquo;()()()&amp;rdquo;, &amp;ldquo;(()())&amp;rdquo;, where LCS(&amp;quot;(())()&amp;quot;, &amp;ldquo;()(()))&amp;rdquo;) is 4, and the others are all 5, so the output is 3.&lt;/p&gt;
+&lt;h5 id=&#34;input-description&#34;&gt;&lt;strong&gt;Input Description:&lt;/strong&gt;
+&lt;/h5&gt;&lt;!-- raw HTML omitted --&gt;
+&lt;h5 id=&#34;output-description&#34;&gt;&lt;strong&gt;Output Description:&lt;/strong&gt;
+&lt;/h5&gt;&lt;p&gt;Output a positive integer, the number of t that satisfy the conditions.&lt;/p&gt;
+&lt;p&gt;Example 1&lt;/p&gt;
+&lt;h2 id=&#34;input&#34;&gt;Input
+&lt;/h2&gt;&lt;p&gt;(())()&lt;/p&gt;
+&lt;h2 id=&#34;output&#34;&gt;Output
+&lt;/h2&gt;&lt;p&gt;3&lt;/p&gt;
+&lt;h2 id=&#34;analysis&#34;&gt;Analysis
+&lt;/h2&gt;&lt;p&gt;The problem requires iterating through all bracket sequences of the same length and calculating the length of the longest common subsequence between each bracket sequence and the given string. Then, count how many times the maximum length occurs.&lt;/p&gt;
+&lt;p&gt;If we were to follow the problem description exactly, it would be impossible to solve. Just generating bracket sequences of up to 50 characters would likely exceed the time limit.&lt;/p&gt;
+&lt;p&gt;Since we&amp;rsquo;re searching for how many times the longest subsequence occurs, we can assume that the longest subsequence is the original string length - 1, and then find all bracket sequences that can be formed from this subsequence. If none exist, we try subsequences of length original length - 2, and so on, decreasing the subsequence length until we find a solution.&lt;/p&gt;
+&lt;p&gt;In fact, there always exists a subsequence of length original length - 1 that can form another valid bracket sequence different from the original. This is because any bracket sequence can be modified by moving just one bracket to form another different valid bracket sequence (think about why). If this is possible, then the longest common subsequence between the new string and the original string would be n-1, since you only moved one bracket to a new position. The order of all other brackets remains unchanged. So, each time we remove one bracket and insert it in a new position. We count how many valid bracket sequences can be formed this way, subtract the original string (i.e., subtract 1), and that&amp;rsquo;s the answer to the problem.&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;#include &amp;lt;vector&amp;gt;
+#include &amp;lt;iostream&amp;gt;
+#include &amp;lt;algorithm&amp;gt;
+#include &amp;lt;set&amp;gt;
+
+using namespace std;
+
+bool isKuohao(const string &amp;amp; str)
+{
+    int count=0;
+    for(auto c:str)
+    {
+        if(c == &amp;#39;(&amp;#39;)
+            count ++;
+        if(c == &amp;#39;)&amp;#39;)
+            count --;
+        if(count&amp;lt;0)
+            return false;
+    }
+    return count == 0;
+}
+
+int main()
+{
+    int ret=0;
+    string input;
+    cin &amp;gt;&amp;gt; input;
+    set&amp;lt;string&amp;gt; haveChose;
+    set&amp;lt;string&amp;gt; haveBuild;
+    /* Select any one bracket */
+    for (int i = 0; i &amp;lt; input.size(); i++)
+    {
+        char q[] = {input[i], &amp;#39;\0&amp;#39;};
+        /* Delete that bracket */
+        string delete_char(input);
+        delete_char.erase(delete_char.begin() + i);
+        if (haveChose.count(delete_char))
+            continue;
+        else
+            haveChose.insert(delete_char);
+        /* Insert the original bracket into a new array */
+        for (int j = 0; j &amp;lt; delete_char.size() + 1; j++)
+        {
+            string add_delete_char(delete_char);
+            add_delete_char.insert(j, q);
+            if (haveBuild.count(add_delete_char))
+                continue;
+            else
+                haveBuild.insert(add_delete_char);
+            if(isKuohao(add_delete_char)){
+                ret ++;
+            }
+        }
+    }
+    cout &amp;lt;&amp;lt; ret-1 &amp;lt;&amp;lt; endl;
+} 
+&lt;/code&gt;&lt;/pre&gt;</description>
+        </item>
+        <item>
+        <title>Algorithm Problem — Touring the Magic Kingdom</title>
+        <link>https://nansenli.com/post/jianshu/%E7%AE%97%E6%B3%95/%E7%AE%97%E6%B3%95%E9%A2%98%E7%9B%AE%E6%B8%B8%E5%8E%86%E9%AD%94%E6%B3%95%E7%8E%8B%E5%9B%BD/</link>
+        <pubDate>Fri, 19 Jan 2018 10:05:00 +0000</pubDate>
+        
+        <guid>https://nansenli.com/post/jianshu/%E7%AE%97%E6%B3%95/%E7%AE%97%E6%B3%95%E9%A2%98%E7%9B%AE%E6%B8%B8%E5%8E%86%E9%AD%94%E6%B3%95%E7%8E%8B%E5%9B%BD/</guid>
+        <description>&lt;p&gt;Link: &lt;a class=&#34;link&#34; href=&#34;https://www.nowcoder.com/questionTerminal/f58859adc39f4edc9cd8e40ba4160339&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;https://www.nowcoder.com/questionTerminal/f58859adc39f4edc9cd8e40ba4160339&lt;/a&gt;
+Source: NowCoder&lt;/p&gt;
+&lt;p&gt;The Magic Kingdom has a total of n cities, numbered from 0 to n-1. The roads between the n cities form exactly a tree.
+Xiaoyi is currently in city 0. Each move, Xiaoyi will walk from his current city to an adjacent city. Xiaoyi can move at most L times.
+If Xiaoyi has reached a city, he is considered to have toured that city. Xiaoyi now wants to make a good travel plan so that he can tour as many cities as possible. Please help him calculate the maximum number of cities he can tour (note that city 0 is already toured, and cities already toured are not counted again).&lt;/p&gt;
+&lt;h5 id=&#34;input-description&#34;&gt;&lt;strong&gt;Input Description:&lt;/strong&gt;
+&lt;/h5&gt;&lt;p&gt;The input consists of two lines. The first line includes two positive integers &lt;code&gt;n (2 ≤ n ≤ 50)&lt;/code&gt; and &lt;code&gt;L (1 ≤ L ≤ 100)&lt;/code&gt;, representing the number of cities and the number of moves Xiaoyi can make.
+The second line includes &lt;code&gt;n-1&lt;/code&gt; integers &lt;code&gt;parent[i] (0 ≤ parent[i] ≤ i)&lt;/code&gt;. For each valid &lt;code&gt;i (0 ≤ i ≤ n - 2)&lt;/code&gt;, there is a road connecting city &lt;code&gt;(i+1)&lt;/code&gt; and city &lt;code&gt;parent[i]&lt;/code&gt;.&lt;/p&gt;
+&lt;h5 id=&#34;output-description&#34;&gt;&lt;strong&gt;Output Description:&lt;/strong&gt;
+&lt;/h5&gt;&lt;p&gt;Output an integer representing the maximum number of cities Xiaoyi can tour.&lt;/p&gt;
+&lt;h2 id=&#34;analysis&#34;&gt;Analysis
+&lt;/h2&gt;&lt;p&gt;After abstracting the problem, it means traversing a tree, and after a specified number of steps, finding the path that passes through the maximum number of nodes. It might be easier to understand if we hang this tree from the root node. Although some solutions grow from bottom to top, I rebuilt the tree and used a hanging tree approach.&lt;/p&gt;
+&lt;p&gt;Starting from the root node, first determine whether the left subtree or the right subtree has a greater depth, and traverse the deeper subtree first. Continue until all steps are used up.&lt;/p&gt;
+&lt;p&gt;The depth of the tree can be easily calculated through post-order traversal, but it turns out this solution only passes 60% of the test cases.&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;45 73
+0 0 0 1 0 0 3 5 6 8 7 9 1 10 1 2 15 6 8 11 14 17 8 14 3 21 23 3 21 15 12 5 21 31 11 13 7 17 20 26 28 16 36 26
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;The error is in this test case. The correct answer is 41, but using a simple greedy algorithm only yields 39 cities.&lt;/p&gt;
+&lt;p&gt;Later, looking at the explanation, I still couldn&amp;rsquo;t fully understand it. In any case, I saw that in the correct solution, the final answer is obtained directly after calculating the depth.&lt;/p&gt;
+&lt;p&gt;Suppose we have already calculated the maximum depth of each node, represented by deep[i], with the depth of the bottom layer of the tree being 1.&lt;/p&gt;
+&lt;p&gt;Obviously, the longest path from the root node to any node = deep[0] - 1.&lt;/p&gt;
+&lt;p&gt;Based on this path, we can visit some additional nodes. However, each time after visiting these nodes, we must return to this path. This round trip requires an extra two steps for each node visited, and visiting two nodes requires four extra steps.&lt;/p&gt;
+&lt;p&gt;Looking at the diagram makes it easier to understand:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;http://upload-images.jianshu.io/upload_images/4388248-7f071c51246c0d0e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&#34;
+	
+	
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;image.png&#34;
+	
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Reference code:&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;#include &amp;lt;vector&amp;gt;
+#include &amp;lt;iostream&amp;gt;
+using namespace std;
+
+vector&amp;lt;vector&amp;lt;int&amp;gt; &amp;gt; tree;
+vector&amp;lt;int&amp;gt; deep;
+
+void calc_deep(int i)
+{
+    int max_deep = 0;
+    for(auto j:tree[i])
+    {
+        calc_deep(j);
+        max_deep = max(deep[j], max_deep);
+    }
+    deep[i] = max_deep + 1;
+}
+
+
+int main()
+{
+    int n, L;
+    cin &amp;gt;&amp;gt; n &amp;gt;&amp;gt; L;
+    /* Build the tree */
+    tree.resize(n);
+    deep.resize(n);
+    for(int i=0;i&amp;lt;n-1;i++)
+    {
+        int num;
+        cin &amp;gt;&amp;gt; num;
+        tree[num].push_back(i+1);
+    }
+    /* Calculate depth */
+    calc_deep(0);
+    // int validpath = min(deep[0] -1,L);
+    // cout &amp;lt;&amp;lt; min(n, 1 + validpath + (L - validpath)/2) &amp;lt;&amp;lt; endl;
+    int long_path = deep[0] - 1;
+    if(long_path &amp;gt; L)  cout &amp;lt;&amp;lt; L + 1;
+    else cout &amp;lt;&amp;lt; 1 + long_path + (L - long_path)/2;
+    
+} 
+&lt;/code&gt;&lt;/pre&gt;</description>
+        </item>
+        <item>
+        <title>Learning and Thinking About Dynamic Programming Algorithms</title>
+        <link>https://nansenli.com/post/jianshu/%E7%AE%97%E6%B3%95/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92%E7%AE%97%E6%B3%95%E5%AD%A6%E4%B9%A0%E4%B8%8E%E6%80%9D%E8%80%83/</link>
+        <pubDate>Thu, 18 Jan 2018 08:52:00 +0000</pubDate>
+        
+        <guid>https://nansenli.com/post/jianshu/%E7%AE%97%E6%B3%95/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92%E7%AE%97%E6%B3%95%E5%AD%A6%E4%B9%A0%E4%B8%8E%E6%80%9D%E8%80%83/</guid>
+        <description>&lt;h2 id=&#34;introduction&#34;&gt;Introduction
+&lt;/h2&gt;&lt;p&gt;Dynamic programming is a common type of problem in coding interviews. Mastering it is crucial.&lt;/p&gt;
+&lt;h2 id=&#34;netease-problem&#34;&gt;NetEase Problem
+&lt;/h2&gt;&lt;p&gt;Little Q and Dr. Niu are singing a song together. This song consists of n notes, each represented by a positive integer.
+Each note must be sung by either Little Q or Dr. Niu. The difficulty of singing a series of notes equals the sum of the absolute differences between all adjacent notes. For example, if a sequence of notes is 8, 8, 13, 12, then its difficulty is |8 - 8| + |13 - 8| + |12 - 13| = 6 (where || represents absolute value).
+Now we need to distribute these n notes between Little Q and Dr. Niu to minimize the sum of their singing difficulties. Calculate the minimum possible total difficulty.
+As shown in the example: Little Q chooses to sing {5, 6} with difficulty 1, Dr. Niu chooses to sing {1, 2, 1} with difficulty 2, the sum of difficulties is 3, which is the minimum possible difficulty.&lt;/p&gt;
+&lt;h2 id=&#34;greedy-approach-incorrect&#34;&gt;Greedy Approach (Incorrect)
+&lt;/h2&gt;&lt;p&gt;Sort all the numbers and use the largest difference between two numbers as a dividing point. Assign the lower half to Little Q and the upper half to Dr. Niu, then calculate the result. This approach passes 60% of the test cases.
+If time is limited or you don&amp;rsquo;t know how to solve it optimally, you can use this approach.&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;#include &amp;lt;vector&amp;gt;
+#include &amp;lt;iostream&amp;gt;
+#include &amp;lt;algorithm&amp;gt;
+#include &amp;lt;cmath&amp;gt;
+ 
+using namespace std;
+ 
+int main(){
+    int n;
+    cin &amp;gt;&amp;gt; n;
+    vector&amp;lt;int&amp;gt; nums;
+    for(int i=0;i&amp;lt;n;i++)
+    {
+        int num;
+        cin &amp;gt;&amp;gt; num;
+        nums.push_back(num);
+    }
+    vector&amp;lt;int&amp;gt; nums_sort(nums.begin(), nums.end());
+    sort(nums_sort.begin(), nums_sort.end());
+    int max_gap = 0;
+    auto max_gap_it = nums_sort.begin();
+    for(auto it=nums_sort.begin(); it!=nums_sort.end()-1; it++){
+        if(*(it+1) - *it &amp;gt; max_gap){
+            max_gap = *(it+1) - *it;
+            max_gap_it = it;
+        }
+    }
+    int max_gap_num = *max_gap_it;
+     
+    int ret = 0;
+    int last_1 = -1;
+    int last_2 = -1;
+    for(auto it = nums.begin(); it!=nums.end(); it++){
+         
+        if(*it &amp;lt;= max_gap_num){
+            if(last_1 != -1){
+                ret += abs(*it - last_1);
+            }
+            last_1 = *it;
+        }
+        else{
+            if(last_2 != -1){
+                ret += abs(*it - last_2);
+            }
+            last_2 = *it;
+        }
+    }
+    cout &amp;lt;&amp;lt; ret;
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&#34;thinking-about-dynamic-programming&#34;&gt;Thinking About Dynamic Programming
+&lt;/h2&gt;&lt;p&gt;Since I don&amp;rsquo;t know much about dynamic programming, let&amp;rsquo;s start with the coin change problem.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Coin Change Problem&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;The core of dynamic programming lies in breaking down the problem and recursively combining subproblems to solve the original problem.&lt;/p&gt;
+&lt;p&gt;For example, suppose we have coins with denominations of 1, 3, and 5, and we want to make change for 11 using the minimum number of coins.
+If you&amp;rsquo;re human, you might say, &amp;ldquo;I can easily see that two 5-coins and one 1-coin, for a total of 3 coins, is optimal.&amp;rdquo; Let&amp;rsquo;s try a different example: what about making change for 237? You might say, &amp;ldquo;I&amp;rsquo;ll first use 5-value coins to make 200, then find the optimal combination for the remaining 37.&amp;rdquo; This method assumes that splitting 237 into two parts and finding the optimal solution for each part will yield the global optimal solution. If that were always true, there would be no problem. But the issue is with splitting into 200 and 37 - there&amp;rsquo;s no proof that this is an effective split. Dynamic programming is built on effective partitioning.&lt;/p&gt;
+&lt;p&gt;Both divide-and-conquer algorithms and dynamic programming are based on partitioning. The difference is that dynamic programming involves state transitions, while divide-and-conquer doesn&amp;rsquo;t. Divide-and-conquer can decompose from top to bottom, while dynamic programming usually builds from bottom to top.&lt;/p&gt;
+&lt;p&gt;Dynamic programming involves two dimensions. The first dimension is usually related to the scale of the problem, and the second dimension needs to be extracted from the problem. In this coin change problem, the second dimension is the allowed coins: for example, allowing only 1-value coins, allowing 1 and 3-value coins, or allowing 1, 3, and 5-value coins. We denote this with index 1, 2, 3, and use j to represent this variable. If we use i to represent the current problem scale (237), then we want to find c[i][j], which is c[237][3]. For this problem, we can make two assumptions: first, the optimal solution uses at least one 5-value coin; second, the optimal solution uses no 5-value coins. For the second assumption, c[237][3] = c[237][2], because if we don&amp;rsquo;t use any 5-value coins, then the optimal solution should be the same as using only 1 and 3-value coins. For the first assumption, since the solution must contain at least one 5-value coin, after removing this 5-value coin, we have 232 left. Since c[237][3] is the optimal value for making change for 237 using coins of values 1, 3, and 5, and it must contain at least one 5-value coin, the remaining coins that make up 232 must also be in an optimal state (if the subproblem weren&amp;rsquo;t optimal, that is, if there were a better solution for making 232 within the solution for 237, then the solution for 237 wouldn&amp;rsquo;t be optimal, contradicting our assumption). So c[232][3] = c[237][3] - 1.&lt;/p&gt;
+&lt;p&gt;This allows us to derive:
+c[i][j] = c[i][j-1] (Assumption 1)
+c[i][j] = c[i-value of denomination j][j] + 1 (Assumption 2)
+When written in the form of min(), this becomes the familiar state transition equation.&lt;/p&gt;
+&lt;p&gt;We ultimately want to find c[11][5], and we work from the c[0][0] state towards the bottom right corner of the table to derive the answer.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Two-Person Singing Difficulty Problem
+&lt;a class=&#34;link&#34; href=&#34;https://www.nowcoder.com/questionTerminal/fddf64d5757e41ec93f3ef0c0a10b891&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;https://www.nowcoder.com/questionTerminal/fddf64d5757e41ec93f3ef0c0a10b891&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;We must remember:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;The optimal solution to the problem is not necessarily the value in the bottom-right corner of the state matrix&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;We must always remember that the bottom-right cell of the state matrix is not necessarily the direct optimal solution. Thinking this way often leads to confusion. Instead, we should think that the matrix indices i and j are definitely related to the two dimensions of the problem, but dp[i][j] does not necessarily represent the value of the optimal solution.&lt;/p&gt;
+&lt;p&gt;For example, in this problem, we need to find the optimal difficulty coefficient. If dp[i_max][j_max] were the optimal difficulty coefficient, what would i and j index? This is unsolvable. Looking at it differently, what exactly is the optimal difficulty coefficient? Since state transitions exist, the optimal state must be the minimum value obtained from multiple states. What does i represent? If i represents the current note being sung, what does j represent? J can only represent the note sung by the other person. Then, in the optimal state, how many situations are there? We calculate the optimal value from these situations. In the optimal state, one person must be singing the last note, while the other person might not be singing any note, might be singing the first note, might be singing the second note&amp;hellip; might be singing the second-to-last note. We calculate the minimum value of all these situations to find the optimal solution.&lt;/p&gt;
+&lt;p&gt;Another question is whether i and j should be assigned to specific people. If i represents Little Q&amp;rsquo;s notes and j represents Dr. Niu&amp;rsquo;s notes, then the matrix would be symmetric, and we&amp;rsquo;d be calculating half of the content redundantly. Actually, we don&amp;rsquo;t care who is singing what, because they are equivalent. We can only think of it as one person currently singing up to position i, and the other person last sang up to position j.&lt;/p&gt;
+&lt;p&gt;What states can c[i][j] transition from?
+For example, if one person has sung up to the 6th note, and the other person last sang up to the 3rd note, if the current total difficulty is minimal, then:
+The 6th, 5th, and 4th notes are all sung by the first person. This is because the second person has only sung up to the 3rd note and cannot sing later notes.
+So c[6][3] = c[5][3] + difficulty difference between notes 5 and 6 = c[4][3] + difficulty difference between notes 4 and 5.
+But how is c[4][3] transitioned? If the first person has sung up to the 4th note, and the other person has sung up to the 3rd note, this means the first person interrupted the second person&amp;rsquo;s singing. Since we don&amp;rsquo;t know from where the first person jumped to the 4th note, we assume all possible notes. If they jumped from the 2nd note, then it&amp;rsquo;s c[3][2] + difference between notes 3 and 4. If they jumped from the 1st note, then it&amp;rsquo;s c[3][1] + difference between notes 1 and 4. If they didn&amp;rsquo;t jump, then it&amp;rsquo;s c[3][0] + difference between notes 0 and 4. Since the last note sung by the second person is always less than the note being sung by the first person, we don&amp;rsquo;t need to consider the case where j &amp;gt;= i.&lt;/p&gt;
+&lt;p&gt;Based on this, here&amp;rsquo;s the code:&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;#include &amp;lt;vector&amp;gt;
+#include &amp;lt;iostream&amp;gt;
+#include &amp;lt;algorithm&amp;gt;
+#include &amp;lt;cmath&amp;gt;
+#include &amp;lt;array&amp;gt;
+
+using namespace std;
+
+vector&amp;lt;int&amp;gt; nums;
+array&amp;lt;array&amp;lt;int, 2100&amp;gt;, 2100&amp;gt; dp;
+
+/* Calculate the difficulty between two notes. Note that the index of the first note in the input data is 0, so there&amp;#39;s a difference of 1. If the starting note is 0, it means it&amp;#39;s the first time singing, so no additional difficulty */
+int diffcult(int s, int e)
+{
+    if(s == 0) return 0;
+    // printf(&amp;#34;diffcult %d %d to %d %d is %d \n&amp;#34;, s,nums[s-1], e,nums[e-1], abs(nums[e-1] - nums[s-1]));
+    return abs(nums[e-1] - nums[s-1]);
+}
+
+int main()
+{
+    int n;
+    cin &amp;gt;&amp;gt; n;
+
+    for (int i = 0; i &amp;lt; n; i++)
+    {
+        int num;
+        cin &amp;gt;&amp;gt; num;
+        nums.push_back(num);
+    }
+
+    /* Start from 0 and consider all notes. The worst case for the first person is not singing at all, in which case j also doesn&amp;#39;t sing, and we continue */
+    for (int i = 0; i &amp;lt;= n; i++)
+    {
+        /* Also start from 0 here, because in the worst case, the first person doesn&amp;#39;t sing at all, which is position 0 */
+        for (int j = 0; j &amp;lt;= n; j++)
+        {
+            /* Don&amp;#39;t consider later cases. This could also be incorporated into the range limitation above */
+            if (j &amp;gt;= i)
+                continue;
+            /* In the general case, for example, if the first person is singing the 6th note and the second person is singing the 3rd note, it clearly transitions from dp[5][3] */
+            if (j + 1 &amp;lt; i)
+            {
+                dp[i][j] = dp[i - 1][j] + diffcult(i - 1, i);
+            }
+            /* Otherwise, if the second person just finished singing and the first person took over, the first person&amp;#39;s note could be jumped from earlier */
+            if (j + 1 == i)
+            {
+                /* k represents which note i jumped from */
+                int min_cost = -1;
+                for (int k = 0; k &amp;lt; j; k++)
+                {
+                    int cost = dp[j][k] + diffcult(k, j + 1);
+                    /* Only record the minimum jump difficulty */
+                    if(min_cost == -1 || min_cost &amp;gt; cost){
+                        min_cost = cost;
+                    }
+                }
+                if(min_cost == -1) min_cost = 0;
+                dp[i][j] = min_cost;
+            }
+            // for(int a=0;a&amp;lt;=n;a++){
+            //     for(int b=0;b&amp;lt;=n;b++){
+            //         if(a==i &amp;amp;&amp;amp; b == j){
+            //             printf(&amp;#34;\t【%d】&amp;#34;, dp[a][b]);
+            //         }
+            //         else printf(&amp;#34;\t%d&amp;#34;, dp[a][b]);
+            //     }
+            //     // printf(&amp;#34;\n&amp;#34;);
+            // }
+            // printf(&amp;#34;\n&amp;#34;);
+        }
+    }
+    int min_cost = -1;
+    for(int j=0;j&amp;lt;n;j++){
+        if(min_cost == -1 || min_cost &amp;gt; dp[n][j]){
+            min_cost = dp[n][j];
+        }
+    }
+    printf(&amp;#34;%d&amp;#34;, min_cost);
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;ul&gt;
+&lt;li&gt;Longest Palindromic Substring Problem
+&lt;a class=&#34;link&#34; href=&#34;https://leetcode.com/problems/longest-palindromic-substring/description/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;https://leetcode.com/problems/longest-palindromic-substring/description/&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;I now understand why dynamic programming is presented in this way. The key point of two-dimensional dynamic programming problems is:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;The planar expansion of linear growth problems&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;For example, in the coin change problem, expanding the second dimension represents making change with the current coin type. In the singing problem, it&amp;rsquo;s the minimum difficulty when singing up to the current position while the other person last sang at a certain position. For the longest palindromic substring, it becomes the starting position.&lt;/p&gt;
+&lt;p&gt;In the longest palindromic substring, i represents the starting character, and j represents the ending character of the substring. When i is the starting character and j is the ending character, we have the answer to the problem.&lt;/p&gt;
+&lt;p&gt;For the smallest subproblem, which is a single character, its length is 1. For longer strings, if the characters at both ends are different, then it equals the smaller value of removing either the right or left character. If the characters at both ends are the same, then it equals the value of the substring with both ends removed plus 2.&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;#include &amp;lt;vector&amp;gt;
+#include &amp;lt;string&amp;gt;
+
+using namespace std;
+
+class Solution {
+public:
+    int longestPalindromeSubseq(string s) {
+        vector&amp;lt;vector&amp;lt;int&amp;gt;&amp;gt; dp;
+        dp.resize(s.size() + 1);
+        for (int i = 0; i &amp;lt; s.size() + 1; i++)
+        {
+            dp[i].resize(s.size() + 1);
+        }
+        int len = s.size();
+        for(int t=0;t&amp;lt;len;t++){
+            for(int j=t; j&amp;lt;len;j++){
+                int i = j-t;
+                if(i==j){
+                    dp[i][j] = 1;
+                    
+                }
+                else if(s[i] == s[j]){
+                    dp[i][j] = dp[i+1][j-1] + 2;
+                    
+                }
+                else{
+                    if(dp[i+1][j]&amp;gt; dp[i][j-1]){
+                        
+                        dp[i][j] = dp[i+1][j];
+                    }
+                    else{
+                        
+                        dp[i][j] = dp[i][j-1];
+                    }
+                }
+            }
+        }
+        return dp[0][len-1];
+    }
+}; 
+&lt;/code&gt;&lt;/pre&gt;</description>
+        </item>
+        <item>
+        <title>Red-Black Tree Implementation Principles</title>
+        <link>https://nansenli.com/post/jianshu/%E7%AE%97%E6%B3%95/%E7%BA%A2%E9%BB%91%E6%A0%91%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86/</link>
+        <pubDate>Mon, 15 Jan 2018 10:00:00 +0000</pubDate>
+        
+        <guid>https://nansenli.com/post/jianshu/%E7%AE%97%E6%B3%95/%E7%BA%A2%E9%BB%91%E6%A0%91%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86/</guid>
+        <description>&lt;h2 id=&#34;introduction&#34;&gt;Introduction
+&lt;/h2&gt;&lt;p&gt;Binary search trees can degrade in performance
+Balanced binary trees require too much overhead during insertion and deletion to maintain search performance
+This is where red-black trees come in. Unlike balanced binary trees, red-black trees don&amp;rsquo;t require the height difference between two subtrees to be at most 1 at all times
+Reference: &lt;a class=&#34;link&#34; href=&#34;http://www.sohu.com/a/201923614_466939&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;http://www.sohu.com/a/201923614_466939&lt;/a&gt;&lt;/p&gt;
+&lt;h2 id=&#34;properties&#34;&gt;Properties
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Nodes consist of red and black colors, with the root node being black&lt;/li&gt;
+&lt;li&gt;Leaf nodes are made up of black NIL nodes&lt;/li&gt;
+&lt;li&gt;A red node&amp;rsquo;s children must be black nodes, and must contain two leaf nodes. This means there cannot be two consecutive red nodes.&lt;/li&gt;
+&lt;li&gt;Starting from any node, any path to any NIL node must pass through the same number of black nodes&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img src=&#34;https://upload-images.jianshu.io/upload_images/4388248-765b0b4cf292df8b.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&#34;
+	
+	
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;image.png&#34;
+	
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;This means that starting from the root node to any leaf node, the difference between the longest path and the shortest path is no more than half of the longest path. In this case, the longest and shortest paths have the same number of black nodes, and the longest path can have at most one additional red node for each black node.&lt;/p&gt;
+&lt;h2 id=&#34;recoloring-and-rotation&#34;&gt;Recoloring and Rotation
+&lt;/h2&gt;&lt;p&gt;When a node is inserted (or deleted), the properties of the red-black tree may be violated. Recoloring and rotation are used to restore these properties.&lt;/p&gt;
+&lt;h3 id=&#34;recoloring&#34;&gt;Recoloring
+&lt;/h3&gt;&lt;p&gt;If two consecutive nodes are red, recoloring is needed&lt;/p&gt;
+&lt;h3 id=&#34;rotation&#34;&gt;Rotation
+&lt;/h3&gt;&lt;p&gt;If a path has too many black nodes, rotation is needed&lt;/p&gt;
+&lt;h2 id=&#34;conditions-for-recoloring-and-rotation&#34;&gt;Conditions for Recoloring and Rotation
+&lt;/h2&gt;&lt;p&gt;This will be summarized later&lt;/p&gt;
+</description>
+        </item>
+        <item>
+        <title>Weekly LeetCode — 501. Find Mode in Binary Search Tree</title>
+        <link>https://nansenli.com/post/jianshu/%E7%AE%97%E6%B3%95/%E6%AF%8F%E5%91%A8%E4%B8%80%E9%81%93leetcode-501--find-mode-in-binary-search-tree/</link>
+        <pubDate>Mon, 26 Jun 2017 10:54:00 +0000</pubDate>
+        
+        <guid>https://nansenli.com/post/jianshu/%E7%AE%97%E6%B3%95/%E6%AF%8F%E5%91%A8%E4%B8%80%E9%81%93leetcode-501--find-mode-in-binary-search-tree/</guid>
+        <description>&lt;h2 id=&#34;problem&#34;&gt;Problem
+&lt;/h2&gt;&lt;p&gt;Given a Binary Search Tree (BST), find the mode (most frequently occurring value).
+Requirement: Apart from the recursion stack space, the space complexity should be O(1).&lt;/p&gt;
+&lt;h2 id=&#34;analysis&#34;&gt;Analysis
+&lt;/h2&gt;&lt;p&gt;Clearly, an in-order traversal of a binary search tree produces a sorted array.
+Finding the mode in a sorted array means looking for the longest sequence of consecutive repeated numbers. Note that the problem requires returning all modes if there are multiple values with the same highest frequency. Additionally, the space complexity must be O(1). Writing code that meets these requirements is not difficult.&lt;/p&gt;
+&lt;p&gt;Runtime: 16ms, beats 62% of submissions&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+
+
+class Solution {
+private:
+    vector&amp;lt;int&amp;gt; mode;
+    int last;
+    int lastCount;
+    int modeCount;
+public:
+    vector&amp;lt;int&amp;gt; findMode(TreeNode* root) {
+        last = 0;
+        lastCount = 0;
+        modeCount = 0;
+        mode.clear();
+        runMode(root);
+        return mode;
+    }
+
+    void runMode(TreeNode* root){
+        if(root != NULL){
+            runMode(root -&amp;gt; left);
+            int nowValue = root-&amp;gt;val;
+            int nowCount = nowValue != last? 1 : lastCount + 1;
+            if(modeCount == nowCount){
+                mode.push_back(nowValue);
+            }
+            if(modeCount &amp;lt; nowCount){
+                modeCount = nowCount;
+                mode.clear();
+                mode.push_back(nowValue);
+            }
+            last = nowValue;
+            lastCount = nowCount;
+            runMode(root -&amp;gt; right);
+        }
+    }
+    
+}; 
+&lt;/code&gt;&lt;/pre&gt;</description>
+        </item>
+        <item>
+        <title>Weekly LeetCode — 3. Longest Substring Without Repeating Characters</title>
+        <link>https://nansenli.com/post/jianshu/%E7%AE%97%E6%B3%95/%E6%AF%8F%E5%91%A8%E4%B8%80%E9%81%93leetcode-3--longest-substring-without-repeating-characters/</link>
+        <pubDate>Sat, 24 Jun 2017 08:21:00 +0000</pubDate>
+        
+        <guid>https://nansenli.com/post/jianshu/%E7%AE%97%E6%B3%95/%E6%AF%8F%E5%91%A8%E4%B8%80%E9%81%93leetcode-3--longest-substring-without-repeating-characters/</guid>
+        <description>&lt;h2 id=&#34;problem&#34;&gt;Problem
+&lt;/h2&gt;&lt;p&gt;Find the longest substring in a given string that doesn&amp;rsquo;t contain any repeating characters, and return the length of this substring.&lt;/p&gt;
+&lt;h2 id=&#34;approach&#34;&gt;Approach
+&lt;/h2&gt;&lt;p&gt;It&amp;rsquo;s easy to come up with an algorithm with &lt;code&gt;O(n^2)&lt;/code&gt; time complexity. Iterate through each character, and for each character as a starting point, determine the length of the longest substring without repeating characters. Then output the maximum length among all substrings.&lt;/p&gt;
+&lt;p&gt;Runtime: 600ms, beats 0% of submissions&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;class Solution {
+public:
+    int lengthOfLongestSubstring(string s) {
+        int ret = 0;
+        for(int i=0; i&amp;lt;s.size(); i++){
+            unordered_set&amp;lt;char&amp;gt; buff;
+            for(int j=i; j&amp;lt;s.size(); j++){
+                if(buff.count(s[j]) == 0) buff.insert(s[j]);
+                else break;
+            }
+            if(buff.size() &amp;gt; ret) ret = buff.size();
+        }
+        return ret;
+    }
+};
+&lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&#34;improvement&#34;&gt;Improvement
+&lt;/h2&gt;&lt;p&gt;As we can see, the algorithm above is quite inefficient and is one of the slowest algorithms in the world. When searching for substrings, we need to set a starting point. This starting point is the position where, up to the current iteration, we have the longest substring without repeating characters. By subtracting this position from the current iteration position, we can get the length of the longest substring.&lt;/p&gt;
+&lt;p&gt;Runtime: 15ms, beats 96% of submissions&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;class Solution {
+public:
+    int lengthOfLongestSubstring(string s) {
+        vector&amp;lt;int&amp;gt; lastPos(260, -1);
+        int length = s.size();
+        int ret = 0;
+        int start = 0;
+        for(int i=0; i&amp;lt;length; i++)
+        {
+            char c = s[i];
+            if(lastPos[c]+1 &amp;gt; start) start = lastPos[c] + 1;
+            if(i-start+1 &amp;gt; ret) ret = i-start+1;
+            lastPos[c] = i;
+        }
+        
+        return ret;
+    }
+};
+&lt;/code&gt;&lt;/pre&gt;</description>
+        </item>
+        <item>
+        <title>Weekly LeetCode — 260. Single Number III</title>
+        <link>https://nansenli.com/post/jianshu/%E7%AE%97%E6%B3%95/%E6%AF%8F%E5%91%A8%E4%B8%80%E9%81%93leetcode-260--single-number-iii/</link>
+        <pubDate>Thu, 22 Jun 2017 03:49:00 +0000</pubDate>
+        
+        <guid>https://nansenli.com/post/jianshu/%E7%AE%97%E6%B3%95/%E6%AF%8F%E5%91%A8%E4%B8%80%E9%81%93leetcode-260--single-number-iii/</guid>
+        <description>&lt;h2 id=&#34;problem&#34;&gt;Problem
+&lt;/h2&gt;&lt;p&gt;Given an array of numbers, where all numbers appear twice except for two numbers that appear only once. Find these two numbers. Try to achieve O(1) space complexity.&lt;/p&gt;
+&lt;h2 id=&#34;analysis&#34;&gt;Analysis
+&lt;/h2&gt;&lt;p&gt;Although the solution requires O(1) space complexity, this approach is quite complex and difficult to conceive, and it&amp;rsquo;s challenging to write an algorithm with a small constant factor.
+&lt;a class=&#34;link&#34; href=&#34;https://www.lijinma.com/blog/2014/05/29/amazing-xor/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Feel the magic of XOR&lt;/a&gt;
+The link above provides the standard approach for this problem. In this method, first XOR all the numbers, and the result will be the XOR of the two numbers that appear only once. Each bit 1 in this result indicates which bits differ between these two numbers. Pick any one of these bits, and divide the array into two groups based on this bit: one group where this bit is 1, and another where this bit is 0. Then, XORing each group separately will give the two numbers we&amp;rsquo;re looking for.&lt;/p&gt;
+&lt;p&gt;This leverages the properties of XOR:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;a ^ b ^ c = a ^ c ^ b
+a ^ a = 0
+0 ^ a = a
+a ^ b = c =&amp;gt; a ^ c = b&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Runtime: 13ms, beats 68% of submissions.&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;class Solution {
+public:
+    vector&amp;lt;int&amp;gt; singleNumber(vector&amp;lt;int&amp;gt;&amp;amp; nums) {
+        int axorb = 0, last = 0;
+        vector&amp;lt;int&amp;gt; ret(2, 0);
+        
+        for(auto it = nums.begin(); it!=nums.end() ; it++)
+        {
+            axorb ^= *it;
+        }
+        
+        last = axorb &amp;amp; (~(axorb - 1));
+        
+        for(auto it = nums.begin(); it!=nums.end() ; it++)
+        {
+            if ((last &amp;amp; *it) != 0)
+                ret[0] ^= *it;
+        }
+        
+        ret[1] = axorb ^ ret[0];
+        
+        return ret;
+    }
+};
+&lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&#34;alternative-method&#34;&gt;Alternative Method
+&lt;/h2&gt;&lt;p&gt;If we&amp;rsquo;re not restricted to constant space complexity, we can also use a hash table. This approach has good extensibility and is less obscure.&lt;/p&gt;
+&lt;p&gt;Runtime: 16ms, beats 34% of submissions.&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;class Solution {
+public:
+    vector&amp;lt;int&amp;gt; singleNumber(vector&amp;lt;int&amp;gt;&amp;amp; nums) {
+        unordered_set&amp;lt;int&amp;gt; buff(nums.size());
+        for(auto i = nums.begin(); i!=nums.end() ; i++)
+        {
+            auto it = buff.find(*i);
+            if(it == buff.end()){
+                buff.insert(*i);
+            }
+            else{
+                buff.erase(it);
+            }
+        }
+        vector&amp;lt;int&amp;gt; ret;
+        for(const int &amp;amp; i : buff){
+            ret.push_back(i);
+        }
+        return ret;
+    }
+};
+&lt;/code&gt;&lt;/pre&gt;</description>
+        </item>
+        <item>
+        <title>Weekly LeetCode — 43. Multiply Strings</title>
+        <link>https://nansenli.com/post/jianshu/%E7%AE%97%E6%B3%95/%E6%AF%8F%E5%91%A8%E4%B8%80%E9%81%93leetcode-43--multiply-strings-/</link>
+        <pubDate>Mon, 19 Jun 2017 06:39:00 +0000</pubDate>
+        
+        <guid>https://nansenli.com/post/jianshu/%E7%AE%97%E6%B3%95/%E6%AF%8F%E5%91%A8%E4%B8%80%E9%81%93leetcode-43--multiply-strings-/</guid>
+        <description>&lt;h2 id=&#34;problem&#34;&gt;Problem:
+&lt;/h2&gt;&lt;p&gt;Given two decimal numbers as strings, return their product as a string. Requirements:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Do not use built-in big number arithmetic.&lt;/li&gt;
+&lt;li&gt;String length ≤ 110&lt;/li&gt;
+&lt;li&gt;Inputs have no leading zeros&lt;/li&gt;
+&lt;li&gt;Strings contain only digits&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id=&#34;thoughts&#34;&gt;Thoughts
+&lt;/h2&gt;&lt;p&gt;Initially, I didn&amp;rsquo;t notice the prohibition on using built-in functions, so I directly used Python&amp;rsquo;s &lt;code&gt;str&lt;/code&gt; and &lt;code&gt;int&lt;/code&gt; functions, which ranked in the top 10%&amp;hellip; Later, I realized the problem doesn&amp;rsquo;t allow built-in functions. I&amp;rsquo;m not sure if this Python feature counts as built-in big number arithmetic. This is a big number multiplication problem, and there are many established algorithms for this.&lt;/p&gt;
+&lt;p&gt;My initial Python submission, which beat 88% of submissions:&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;class Solution(object):
+    def multiply(self, num1, num2):
+        return str(int(num1)*int(num2))
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;The most basic algorithm would be to simulate manual multiplication. First, you need to implement &lt;strong&gt;string addition&lt;/strong&gt; and &lt;strong&gt;multi-digit multiplication by a single digit&lt;/strong&gt;. With these, you can calculate multi-digit by multi-digit multiplication. For example, to calculate &lt;code&gt;12345*67890&lt;/code&gt;, you compute &lt;code&gt;12345*6 + 12345*7 + 12345*8 + 12345*9 + 12345*0&lt;/code&gt;, then add trailing zeros to each result and sum them. However, this approach would be relatively slow.&lt;/p&gt;
+&lt;p&gt;Moreover, CPUs can already handle additions that don&amp;rsquo;t overflow, so we should leverage this. We can improve the above algorithm by calculating &lt;code&gt;12345*67890&lt;/code&gt; as &lt;code&gt;(12300 + 45)*(67800 + 90)&lt;/code&gt;. This breaks down into 4 multiplication operations. For numbers with trailing zeros, we can remove them and add them back to the result later. If none of these four multiplications overflow, there&amp;rsquo;s no problem. Otherwise, we can continue decomposing.&lt;/p&gt;
+&lt;p&gt;The Karatsuba algorithm can further improve this approach.
+We notice that in the addition, there&amp;rsquo;s &lt;code&gt;12300*90+45*67800&lt;/code&gt;. We can use previously calculated results, namely &lt;code&gt;12300*67800&lt;/code&gt; and &lt;code&gt;45*90&lt;/code&gt;, and then calculate &lt;code&gt;(12300+45)*(67800+90) - 12300*67800 - 45*90&lt;/code&gt; to get &lt;code&gt;12300*90 + 45*67800&lt;/code&gt;. This reduces the number of multiplication operations by one.&lt;/p&gt;
+&lt;p&gt;Implementing the Karatsuba algorithm would be a bit more complex, so I&amp;rsquo;ll first submit an O(n²) algorithm (the basic version) to see its performance, and then improve it. (Results show that the manual calculation method is already quite fast.)&lt;/p&gt;
+&lt;h2 id=&#34;first-version&#34;&gt;First Version
+&lt;/h2&gt;&lt;p&gt;First, we need to write a string addition algorithm. Looking at the input and output data types, they&amp;rsquo;re strings. So we can add them digit by digit. We can use two integer arrays to store each digit, then add them to create a third array. Some digits in this third array will exceed 10, so we carry over from the lower digits to the higher ones. Finally, we convert this array back to a string.&lt;/p&gt;
+&lt;p&gt;Although local testing was fine, the submission was very slow, ranking only at the 10th percentile.&lt;/p&gt;
+&lt;h2 id=&#34;improvement&#34;&gt;Improvement
+&lt;/h2&gt;&lt;p&gt;Theoretically, this algorithm shouldn&amp;rsquo;t be slow, but in practice it is. The issue might be with unnecessary conversions between integers and strings. In the above algorithm, when calculating multiplication, we converted strings to numbers and then back to strings, which might be causing the extra time. So, we should directly add the results to the final result.&lt;/p&gt;
+&lt;p&gt;After submission, the runtime was 9ms, beating 50% of submissions.&lt;/p&gt;
+&lt;h2 id=&#34;further-improvement&#34;&gt;Further Improvement
+&lt;/h2&gt;&lt;p&gt;Repeatedly converting the same strings might be consuming time.
+We can cache string conversions - convert once and store the result, then retrieve directly without additional calculations when needed.&lt;/p&gt;
+&lt;p&gt;The final code, ready for compilation and execution. Runtime: 6ms, beating 76% of submissions. It seems string conversion was indeed the performance bottleneck.&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;#include &amp;lt;stdio.h&amp;gt;
+#include &amp;lt;string&amp;gt;
+#include &amp;lt;stdlib.h&amp;gt;
+#include &amp;lt;iostream&amp;gt;
+#include &amp;lt;vector&amp;gt;
+
+
+using namespace std;
+
+const int BINARY = 10;
+
+class Solution
+{
+  private:
+    vector&amp;lt;int&amp;gt; result;
+    string _num1, _num2;
+    long num1buff[120];
+    long num2buff[120];
+
+  public:
+    string multiply(string num1, string num2)
+    {
+        result.clear();
+        result.resize(num1.length() + num2.length() + 1);
+        memset(num1buff, -1 , sizeof(long)*120);
+        memset(num2buff, -1 , sizeof(long)*120);
+        _num1 = num1;
+        _num2 = num2;
+        for(auto &amp;amp;c : _num1){
+            c-=&amp;#39;0&amp;#39;;
+        }
+        for(auto &amp;amp;c : _num2){
+            c-=&amp;#39;0&amp;#39;;
+        }
+        // This is a recursive process. Let&amp;#39;s see when it terminates.
+        // It terminates when two numbers multiplied don&amp;#39;t overflow.
+        // Assuming int is 30 bits in binary (for multiplication, we need 30 bits), 
+        // the original two numbers must be 15 bits, which is about 32768.
+        // So two 4-digit numbers multiplied shouldn&amp;#39;t overflow.
+
+        // Using recursion to calculate the product
+        addMultiply(0,num1.length(), 0, num2.length());
+
+        string ret;
+        int i = result.size() -1;
+        for(; i&amp;gt;0; i--)
+        {
+            if(result[i] != 0) break;
+        }
+        for(; i&amp;gt;=0; i--)
+        {
+            ret.push_back(result[i] + &amp;#39;0&amp;#39;);
+        }
+        return ret;
+    }
+
+    void addMultiply(int a1, int a2, int b1, int b2 )
+    {;
+        // Check if direct calculation is possible
+        if (a1 == a2 || b1 == b2)
+            return;
+        if (a2 - a1 &amp;lt; 10 &amp;amp;&amp;amp; b2 - b1 &amp;lt; 10)
+        {
+            long int_num1 = getLong1(a1, a2);
+            long int_num2 = getLong2(b1, b2);
+            long output = int_num1 * int_num2;
+            int pos = _num1.length() + _num2.length() - a2 - b2;
+            while (output != 0 || result[pos] &amp;gt;= BINARY)
+            {
+                long a = output % BINARY;
+                result[pos] += a;
+                result[pos + 1] += result[pos] / BINARY;
+                result[pos] %= BINARY;
+                output /= BINARY;
+                pos++;
+            }
+            return;
+        }
+        // Otherwise, split the longer number
+        if(a2 - a1 &amp;gt;= 10){
+            addMultiply(a1, (a2 + a1)/2, b1, b2);
+            addMultiply((a2 + a1)/2, a2, b1, b2);
+        }
+        else {
+            addMultiply(a1, a2, (b1+b2)/2, b2);
+            addMultiply(a1, a2, b1, (b1+b2)/2);
+        }
+    }
+    long getLong1(int a, int b){
+        long ret = 0;
+        if(num1buff[a] != -1) return num1buff[a];
+        for(int i=a; i!=b;i++){
+            ret *= BINARY;
+            ret += _num1[i] ;
+        }
+        num1buff[a] = ret;
+        return ret;
+    }
+    long getLong2(int a, int b){
+        long ret = 0;
+        if(num2buff[a] != -1) return num2buff[a];
+        for(int i=a; i!=b;i++){
+            ret *= BINARY;
+            ret += _num2[i] ;
+        }
+        num2buff[a] = ret;
+        return ret;
+    }
+};
+
+int main(void)
+{
+    Solution s;
+    for(int i=0;i&amp;lt;10000;i++){
+        cout &amp;lt;&amp;lt; s.multiply(&amp;#34;12345678901&amp;#34;, &amp;#34;100&amp;#34;) &amp;lt;&amp;lt; endl;
+        cout &amp;lt;&amp;lt; s.multiply(&amp;#34;100&amp;#34;, &amp;#34;100&amp;#34;) &amp;lt;&amp;lt; endl;
+    }
+    return 0;
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Final ranking: beats 70% of submissions&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;http://upload-images.jianshu.io/upload_images/4388248-a0745beb2a29152e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&#34;
+	
+	
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;Ranking&#34;
+	
+	
+&gt;&lt;/p&gt;
+</description>
+        </item>
+        
+    </channel>
+</rss>

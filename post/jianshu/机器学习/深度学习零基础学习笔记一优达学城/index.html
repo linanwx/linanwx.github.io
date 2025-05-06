@@ -1,0 +1,1336 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="Introduction On a whim, I decided to learn machine learning. These are notes from my learning process. Preparation I made these preparations: A MacBook with Python environment set up, and numpy and matplotlib installed Registered for Udacity&rsquo;s free &ldquo;Deep Learning&rdquo; course (in collaboration with Google) Studied Liao Xuefeng&rsquo;s Python introductory tutorial Spent two days roughly browsing through &ldquo;Machine Learning in Action&rdquo; Learning these fundamentals should be sufficient for the upcoming Udacity course.">
+<title>Deep Learning Beginner&#39;s Study Notes One (Udacity)</title>
+
+<link rel='canonical' href='https://nansenli.com/post/jianshu/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E9%9B%B6%E5%9F%BA%E7%A1%80%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%E4%B8%80%E4%BC%98%E8%BE%BE%E5%AD%A6%E5%9F%8E/'>
+
+<link rel="stylesheet" href="/scss/style.min.1084ac713783b88e0bd9807a58068e10aae22e99420f94a9234654a4e199baa4.css"><meta property='og:title' content="Deep Learning Beginner's Study Notes One (Udacity)">
+<meta property='og:description' content="Introduction On a whim, I decided to learn machine learning. These are notes from my learning process. Preparation I made these preparations: A MacBook with Python environment set up, and numpy and matplotlib installed Registered for Udacity&rsquo;s free &ldquo;Deep Learning&rdquo; course (in collaboration with Google) Studied Liao Xuefeng&rsquo;s Python introductory tutorial Spent two days roughly browsing through &ldquo;Machine Learning in Action&rdquo; Learning these fundamentals should be sufficient for the upcoming Udacity course.">
+<meta property='og:url' content='https://nansenli.com/post/jianshu/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E9%9B%B6%E5%9F%BA%E7%A1%80%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%E4%B8%80%E4%BC%98%E8%BE%BE%E5%AD%A6%E5%9F%8E/'>
+<meta property='og:site_name' content='Nansen Li'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2017-07-19T07:42:00&#43;00:00'/><meta property='article:modified_time' content='2017-07-19T07:42:00&#43;00:00'/>
+<meta name="twitter:title" content="Deep Learning Beginner's Study Notes One (Udacity)">
+<meta name="twitter:description" content="Introduction On a whim, I decided to learn machine learning. These are notes from my learning process. Preparation I made these preparations: A MacBook with Python environment set up, and numpy and matplotlib installed Registered for Udacity&rsquo;s free &ldquo;Deep Learning&rdquo; course (in collaboration with Google) Studied Liao Xuefeng&rsquo;s Python introductory tutorial Spent two days roughly browsing through &ldquo;Machine Learning in Action&rdquo; Learning these fundamentals should be sufficient for the upcoming Udacity course.">
+    <link rel="shortcut icon" href="/favicon.ico" />
+
+  
+    
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-WC38C3XE3J"></script>
+      <script>
+        var doNotTrack = false;
+        if ( false ) {
+          var dnt = (navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack);
+          var doNotTrack = (dnt == "1" || dnt == "yes");
+        }
+        if (!doNotTrack) {
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-WC38C3XE3J');
+        }
+      </script>
+    
+  
+
+
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="Toggle Menu">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/avatar_hu96777ff80939aaa7d938dddcc232fcc6_1414962_300x0_resize_box_3.png" width="300"
+                            height="300" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+                    <span class="emoji">🌈</span>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">Nansen Li</a></h1>
+            <h2 class="site-description"></h2>
+        </div>
+    </header><ol class="menu-social">
+            
+                <li>
+                    <a 
+                        href='https://github.com/linanwx'
+                        target="_blank"
+                        title="GitHub"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://www.linkedin.com/in/nansen-li-3bb0a3146/'
+                        target="_blank"
+                        title="LinkedIn"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-brand-linkedin"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M8 11v5" /><path d="M8 8v.01" /><path d="M12 16v-5" /><path d="M16 16v-3a2 2 0 1 0 -4 0" /><path d="M3 7a4 4 0 0 1 4 -4h10a4 4 0 0 1 4 4v10a4 4 0 0 1 -4 4h-10a4 4 0 0 1 -4 -4z" /></svg>
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='index.xml'
+                        target="_blank"
+                        title="RSS"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-rss" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="5" cy="19" r="1" />
+  <path d="M4 4a16 16 0 0 1 16 16" />
+  <path d="M4 11a9 9 0 0 1 9 9" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+</svg>
+
+
+
+                
+                <span>Home</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/page/archives/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>Archives</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/page/search/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
+
+
+
+                
+                <span>Search</span>
+            </a>
+        </li>
+        
+        <li class="menu-bottom-section">
+            <ol class="menu">
+                    
+                        <li id="i18n-switch">  
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-language" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M4 5h7" />
+  <path d="M9 3v2c0 4.418 -2.239 8 -5 8" />
+  <path d="M5 9c-.003 2.144 2.952 3.908 6.7 4" />
+  <path d="M12 20l4 -9l4 9" />
+  <path d="M19.1 18h-6.2" />
+</svg>
+
+
+
+                            <select name="language" title="language" onchange="window.location.href = this.selectedOptions[0].value">
+                                
+                                    <option value="https://nansenli.com/" selected>English</option>
+                                
+                                    <option value="https://nansenli.com/zh-cn/" >中文</option>
+                                
+                            </select>
+                        </li>
+                    
+                
+
+                
+                    <li id="dark-mode-toggle">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <span>Dark Mode</span>
+                    </li>
+                
+            </ol>
+        </li>
+    </ol>
+</aside>
+
+    
+
+            <main class="main full-width">
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/machine-learning/" >
+                Machine Learning
+            </a>
+        
+    </header>
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/post/jianshu/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E9%9B%B6%E5%9F%BA%E7%A1%80%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%E4%B8%80%E4%BC%98%E8%BE%BE%E5%AD%A6%E5%9F%8E/">Deep Learning Beginner&#39;s Study Notes One (Udacity)</a>
+        </h2>
+    
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">Jul 19, 2017</time>
+            </div>
+        
+
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+                <time class="article-time--reading">
+                    16 minute read
+                </time>
+            </div>
+        
+    </footer>
+    
+
+    
+        <footer class="article-translations">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-language" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M4 5h7" />
+  <path d="M9 3v2c0 4.418 -2.239 8 -5 8" />
+  <path d="M5 9c-.003 2.144 2.952 3.908 6.7 4" />
+  <path d="M12 20l4 -9l4 9" />
+  <path d="M19.1 18h-6.2" />
+</svg>
+
+
+
+            <div>
+                
+                    <a href="https://nansenli.com/zh-cn/post/jianshu/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E9%9B%B6%E5%9F%BA%E7%A1%80%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%E4%B8%80%E4%BC%98%E8%BE%BE%E5%AD%A6%E5%9F%8E/" class="link">中文</a>
+                
+            </div>
+        </footer>
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <h2 id="introduction">Introduction
+</h2><p>On a whim, I decided to learn machine learning. These are notes from my learning process.</p>
+<h2 id="preparation">Preparation
+</h2><p>I made these preparations:</p>
+<ul>
+<li>A MacBook with Python environment set up, and numpy and matplotlib installed</li>
+<li>Registered for Udacity&rsquo;s free &ldquo;Deep Learning&rdquo; course (in collaboration with Google)</li>
+<li>Studied Liao Xuefeng&rsquo;s Python introductory tutorial</li>
+<li>Spent two days roughly browsing through &ldquo;Machine Learning in Action&rdquo;</li>
+</ul>
+<p>Learning these fundamentals should be sufficient for the upcoming Udacity course.</p>
+<h2 id="course-one-from-machine-learning-to-deep-learning">Course One: From Machine Learning to Deep Learning
+</h2><p><img src="http://upload-images.jianshu.io/upload_images/4388248-deb922c5a6a30e32.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240"
+	
+	
+	
+	loading="lazy"
+	
+		alt="Introduction"
+	
+	
+></p>
+<p>Sections 1-8 mainly introduce the current state of deep learning and related knowledge.</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/4388248-881aa1d922b7aadf.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240"
+	
+	
+	
+	loading="lazy"
+	
+		alt="image.png"
+	
+	
+></p>
+<p>Sections 9-12 introduce the softmax model.</p>
+<p>After a rough review of &ldquo;Machine Learning in Action,&rdquo; I learned that machine learning consists of several classification and clustering algorithms. On the surface, machine learning appears to be a collection of classification and clustering algorithms. Among these algorithms, one called logistic regression classification was introduced.</p>
+<p>In sections 9-12, the focus is on the classifier model—logistic regression, using the softmax function as the classification function.</p>
+<ul>
+<li>What is the softmax function?</li>
+</ul>
+<p><img src="http://upload-images.jianshu.io/upload_images/4388248-81791b221c81e509.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240"
+	
+	
+	
+	loading="lazy"
+	
+		alt="softmax"
+	
+	
+></p>
+<p>This image illustrates what a softmax function is. For each number z in the original sequence, we calculate exp(z), and the proportion of each new number&rsquo;s magnitude becomes the softmax probability for that number.</p>
+<ul>
+<li>Properties</li>
+</ul>
+<p>If the inputs are scaled up proportionally, the classifier&rsquo;s results become more polarized and confident. If the inputs are scaled down proportionally, the classifier&rsquo;s results tend toward the average and lack confidence.</p>
+<ul>
+<li>Algorithm</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">import</span> numpy <span style="color:#66d9ef">as</span> np
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">softmax</span>(x):
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;&#34;&#34;Compute softmax values for each sets of scores in x.&#34;&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>    expList <span style="color:#f92672">=</span> [np<span style="color:#f92672">.</span>exp(i) <span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> x]
+</span></span><span style="display:flex;"><span>    expSum <span style="color:#f92672">=</span> sum(expList)
+</span></span><span style="display:flex;"><span>    x <span style="color:#f92672">=</span> [i<span style="color:#f92672">/</span>expSum <span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> expList]
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> np<span style="color:#f92672">.</span>array(x)
+</span></span></code></pre></div><p><img src="http://upload-images.jianshu.io/upload_images/4388248-ee072532fdf320cf.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240"
+	
+	
+	
+	loading="lazy"
+	
+		alt="image.png"
+	
+	
+></p>
+<p>Sections 13-14 mainly discuss One-Hot encoding. After the softmax function provides a sequence of probability values, how do we determine the classification? For example, a sequence where the highest probability is 1 and others are 0 is called One-Hot encoding. This type of encoding has already determined the classification.</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/4388248-d17a8063ae1224a0.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240"
+	
+	
+	
+	loading="lazy"
+	
+		alt="Cross-entropy"
+	
+	
+></p>
+<p>Sections 15-16 cover cross-entropy. Softmax can calculate a probability sequence, and OneHot is a determined classification. So how do we calculate the distance from a probability sequence to a specific classification? We use cross-entropy to measure this distance.</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/4388248-17cca85ebc74d0ab.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240"
+	
+	
+	
+	loading="lazy"
+	
+		alt="image.png"
+	
+	
+></p>
+<p><img src="http://upload-images.jianshu.io/upload_images/4388248-f28d86a84703d49e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240"
+	
+	
+	
+	loading="lazy"
+	
+		alt="image.png"
+	
+	
+></p>
+<p>Sections 17-20 explain how to use this classifier. Section 18 specifically discusses why special initial data is needed.</p>
+<pre tabindex="0"><code>sum = 1000000000
+
+for i in range(1000000):
+    sum += 0.000001
+
+sum -= 1000000000
+print(sum)
+</code></pre><p>The result of running this code is not 1. If we change sum to a very small number, like 1, instead of 1000000000, we find that the error becomes smaller. Based on this reason, we want our initial data to always have a mean of 0 and consistent variance in all directions. For example, for a grayscale image with pixel values from 0-255, we need to subtract 128 and then divide by 128, so that each number is between -1 and 1. Such initial data is more suitable for training.</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/4388248-5e75673ff68468cb.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240"
+	
+	
+	
+	loading="lazy"
+	
+		alt="image.png"
+	
+	
+></p>
+<p>This way, we can proceed with training. Reviewing the video content: xi is the training data matrix, w is a random weight matrix. For performance reasons, random values are taken from a normal distribution with an axis of 0 and very small variance. Then we calculate the probability sequence and the distance to the target. Then we compute the average distance to all targets. Our goal is to make this distance smaller, so we optimize the weight matrix along the direction of gradient descent while optimizing the intercept b. We repeat this process continuously until we reach a local optimum.</p>
+<ul>
+<li>Installing Docker</li>
+</ul>
+<p><a class="link" href="https://www.docker-cn.com/community-edition#/download"  target="_blank" rel="noopener"
+    >https://www.docker-cn.com/community-edition#/download</a></p>
+<p>Configure the official Chinese mirror.</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/4388248-5f5ea990dda40440.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240"
+	
+	
+	
+	loading="lazy"
+	
+		alt="image.png"
+	
+	
+></p>
+<ul>
+<li>Installing Jupyter Notebook</li>
+</ul>
+<p><code>$ pip3 install jupyter</code>
+<code>$ jupyter notebook</code>
+You can now use the jupyter notebook command to open a Jupyter editor.</p>
+<ul>
+<li>Setting up TensorFlow environment</li>
+</ul>
+<p><code>$ docker run -it -p 8888:8888 tensorflow/tensorflow</code>
+Running this command will automatically download the TensorFlow image, provided that the repository mirror is set to a Chinese mirror; otherwise, the download will be very slow. After running the command, you&rsquo;ll be prompted to open a webpage. When you open this URL, you&rsquo;ll see the TensorFlow Jupyter editing environment, assuming Jupyter Notebook is installed correctly.</p>
+<ul>
+<li>Mounting Docker&rsquo;s file directory
+We need to import the official assignments. Close the container, reopen it, and use <code>-v host_directory:container_directory</code> for mounting.
+<code>docker run -v /Users/hahaha/tensorflow/:/notebooks -it -p 8888:8888 tensorflow/tensorflow</code></li>
+</ul>
+<p>Where /Users/hahaha/tensorflow/ is a folder on my Mac, and notebooks is the default Jupyter editing directory in TensorFlow.</p>
+<p>Paste the first assignment file, 1_notmnist.ipynb, into the mounted directory on the host. This file can be found here: <a class="link" href="https://github.com/tensorflow/tensorflow/blob/master/tensorflow/examples/udacity/1_notmnist.ipynb"  target="_blank" rel="noopener"
+    >1_notmnist.ipynb</a></p>
+<p><img src="http://upload-images.jianshu.io/upload_images/4388248-1a87bebfcc977690.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240"
+	
+	
+	
+	loading="lazy"
+	
+		alt="Assignment One Content"
+	
+	
+></p>
+<h2 id="assignment-code-segment-one">Assignment Code Segment One
+</h2><p>First, run the import statements in the first code segment. There should be no errors. If you see red error output, it means these imports were not successful.</p>
+<pre tabindex="0"><code># These are all the modules we&#39;ll be using later. Make sure you can import them
+# before proceeding further.
+from __future__ import print_function
+# print function
+import matplotlib.pyplot as plt
+# plotting tool
+import numpy as np
+# matrix calculations
+import os
+# file paths
+import sys
+# file output
+import tarfile
+# decompression
+from IPython.display import display, Image
+# display images
+from scipy import ndimage
+# image processing
+from sklearn.linear_model import LogisticRegression
+# logistic regression module for linear models
+from six.moves.urllib.request import urlretrieve
+# url handling
+from six.moves import cPickle as pickle
+# data processing
+
+# Config the matplotlib backend as plotting inline in IPython
+%matplotlib inline
+# matplotlib is the most famous Python chart plotting extension library,
+# it supports outputting various formats of graphical images, and can use various GUI interface libraries to display charts interactively.
+# Using the %matplotlib command can embed matplotlib charts directly into the Notebook,
+# or display charts using a specified interface library, it has a parameter specifying how matplotlib charts are displayed.
+# inline indicates embedding charts in the Notebook.
+</code></pre><h2 id="assignment-code-segment-two">Assignment Code Segment Two
+</h2><p>Next is the second code segment, which will download letter sets for training and testing, approximately 300MB in size. After successful download, you can see these two files in the mounted directory.</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/4388248-e1cc51d654c2800a.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240"
+	
+	
+	
+	loading="lazy"
+	
+		alt="Assignment"
+	
+	
+></p>
+<pre tabindex="0"><code>url = &#39;https://commondatastorage.googleapis.com/books1000/&#39;
+last_percent_reported = None
+data_root = &#39;.&#39; # Change me to store data elsewhere
+
+def download_progress_hook(count, blockSize, totalSize):
+  &#34;&#34;&#34;A hook to report the progress of a download. This is mostly intended for users with
+  slow internet connections. Reports every 5% change in download progress.
+  &#34;&#34;&#34;
+# Hook function to display download progress in real-time
+  global last_percent_reported
+  percent = int(count * blockSize * 100 / totalSize)
+
+  if last_percent_reported != percent:
+    if percent % 5 == 0:
+      sys.stdout.write(&#34;%s%%&#34; % percent)
+      sys.stdout.flush()
+    else:
+      sys.stdout.write(&#34;.&#34;)
+      sys.stdout.flush()
+      
+    last_percent_reported = percent
+        
+def maybe_download(filename, expected_bytes, force=False):
+  &#34;&#34;&#34;Download a file if not present, and make sure it&#39;s the right size.&#34;&#34;&#34;
+  dest_filename = os.path.join(data_root, filename)
+#   data_root is the current directory, add the filename to it, set as the location to save the file
+  if force or not os.path.exists(dest_filename):
+#         force is to force download, ignoring already downloaded files
+    print(&#39;Attempting to download:&#39;, filename) 
+    filename, _ = urlretrieve(url + filename, dest_filename, reporthook=download_progress_hook)
+#     Use urlretrieve to download the file, with the hook attached
+    print(&#39;\nDownload Complete!&#39;)
+  statinfo = os.stat(dest_filename)
+# Get information about the downloaded file
+  if statinfo.st_size == expected_bytes:
+#         Correct size
+    print(&#39;Found and verified&#39;, dest_filename)
+  else:
+#     Wrong size, prompt user to use a browser to download
+    raise Exception(
+      &#39;Failed to verify &#39; + dest_filename + &#39;. Can you get to it with a browser?&#39;)
+  return dest_filename
+
+train_filename = maybe_download(&#39;notMNIST_large.tar.gz&#39;, 247336696)
+test_filename = maybe_download(&#39;notMNIST_small.tar.gz&#39;, 8458043)
+</code></pre><h2 id="assignment-code-segment-three">Assignment Code Segment Three
+</h2><p>Extracting use cases</p>
+<pre tabindex="0"><code>num_classes = 10
+# Total number of digits
+np.random.seed(133)
+# Initialize random seed
+def maybe_extract(filename, force=False):
+#     Assuming already extracted
+  root = os.path.splitext(os.path.splitext(filename)[0])[0]  # remove .tar.gz
+#     splitext(filename)[0] removes one suffix, used twice to remove both suffixes, i.e., remove the .tar.gz suffix
+  if os.path.isdir(root) and not force:
+    # You may override by setting force=True.
+#     If already extracted, don&#39;t extract again
+    print(&#39;%s already present - Skipping extraction of %s.&#39; % (root, filename))
+  else:
+    print(&#39;Extracting data for %s. This may take a while. Please wait.&#39; % root)
+    tar = tarfile.open(filename)
+    sys.stdout.flush()
+    tar.extractall(data_root)
+    tar.close()
+#     Extract to the current directory
+  data_folders = [
+    os.path.join(root, d) for d in sorted(os.listdir(root))
+    if os.path.isdir(os.path.join(root, d))]
+  if len(data_folders) != num_classes:
+    raise Exception(
+      &#39;Expected %d folders, one per class. Found %d instead.&#39; % (
+        num_classes, len(data_folders)))
+  print(data_folders)
+# Check if the number of extracted directories matches expectations, and print the extracted directories
+  return data_folders
+  
+train_folders = maybe_extract(train_filename)
+test_folders = maybe_extract(test_filename)
+</code></pre><h2 id="question-one">Question One
+</h2><p>Write code to display information about the extracted file contents</p>
+<ul>
+<li>Reference answer</li>
+</ul>
+<pre tabindex="0"><code>import random
+import matplotlib.image as mpimg
+
+
+def plot_samples(data_folders, sample_size, title=None):
+    fig = plt.figure()
+#     Create empty figure
+    if title: fig.suptitle(title, fontsize=16, fontweight=&#39;bold&#39;)
+#         Add title
+    for folder in data_folders:
+#         Loop through each letter
+        image_files = os.listdir(folder)
+        image_sample = random.sample(image_files, sample_size)
+#         Randomly select a certain number of images from that letter
+        for image in image_sample:
+            image_file = os.path.join(folder, image)
+            ax = fig.add_subplot(len(data_folders), sample_size, sample_size * data_folders.index(folder) +
+                                 image_sample.index(image) + 1)
+#             Create a subplot
+            image = mpimg.imread(image_file)
+#     Load subplot image
+            ax.imshow(image)
+#     Display subplot image
+            ax.set_axis_off() 
+#     Turn off subplot coordinate lines
+
+    fig.set_size_inches(18.5, 10.5)
+#     Set the display size of the image
+    plt.show()
+
+
+plot_samples(train_folders, 20, &#39;Train&#39;)
+plot_samples(test_folders, 20, &#39;Test&#39;)
+</code></pre><p>Running results:</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/4388248-89f6aa390dfd06a3.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240"
+	
+	
+	
+	loading="lazy"
+	
+		alt="Training.png"
+	
+	
+></p>
+<p><img src="http://upload-images.jianshu.io/upload_images/4388248-0dbfe7c00c15e9e8.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240"
+	
+	
+	
+	loading="lazy"
+	
+		alt="Testing.png"
+	
+	
+></p>
+<p>As we can see, some of the training data has issues.</p>
+<pre tabindex="0"><code>
+## Assignment Code Segment Four
+
+After this, we need to normalize the data, which means transforming each image pixel from 0~255 to -1.0~1.0, and persisting it to a file.
+</code></pre><p>image_size = 28  # Pixel width and height.
+pixel_depth = 255.0  # Number of levels per pixel.</p>
+<h1 id="image-width-height-and-pixel-depth">Image width, height and pixel depth
+</h1><p>def load_letter(folder, min_num_images):
+&ldquo;&ldquo;&ldquo;Load the data for a single letter label.&rdquo;&rdquo;&rdquo;</p>
+<h1 id="process-files-in-a-folder-belonging-to-one-letter">Process files in a folder belonging to one letter
+</h1><p>image_files = os.listdir(folder)</p>
+<h1 id="list-all-files-in-that-directory">List all files in that directory
+</h1><p>dataset = np.ndarray(shape=(len(image_files), image_size, image_size),
+dtype=np.float32)</p>
+<h1 id="create-a-dataset-with-length-equal-to-number-of-files-width-and-height-of-28">Create a dataset with length equal to number of files, width and height of 28
+</h1><p>print(folder)</p>
+<h1 id="print-directory">Print directory
+</h1><p>num_images = 0</p>
+<h1 id="initialize-num_images">Initialize num_images
+</h1><p>for image in image_files:</p>
+<h1 id="process-each-file">Process each file
+</h1><pre><code>image_file = os.path.join(folder, image)
+</code></pre>
+<h1 id="get-complete-file-path">Get complete file path
+</h1><pre><code>try:
+  image_data = (ndimage.imread(image_file).astype(float) - 
+                pixel_depth / 2) / pixel_depth
+</code></pre>
+<h1 id="read-in-the-image-and-normalize-it">Read in the image and normalize it
+</h1><pre><code>  if image_data.shape != (image_size, image_size):
+</code></pre>
+<h1 id="check-image-width-and-height">Check image width and height
+</h1><pre><code>    raise Exception('Unexpected image shape: %s' % str(image_data.shape))
+  dataset[num_images, :, :] = image_data
+</code></pre>
+<h1 id="read-into-the-dataset">Read into the dataset
+</h1><pre><code>  num_images = num_images + 1
+</code></pre>
+<h1 id="increment-image-number">Increment image number
+</h1><pre><code>except IOError as e:
+</code></pre>
+<h1 id="if-file-cant-be-read-skip-it">If file can&rsquo;t be read, skip it
+</h1><pre><code>  print('Could not read:', image_file, ':', e, '- it\'s ok, skipping.')
+</code></pre>
+<p>dataset = dataset[0:num_images, :, :]</p>
+<h1 id="if-fewer-files-were-read-than-the-minimum-required">If fewer files were read than the minimum required
+</h1><p>if num_images &lt; min_num_images:
+raise Exception(&lsquo;Many fewer images than expected: %d &lt; %d&rsquo; %
+(num_images, min_num_images))</p>
+<h1 id="display-number-of-missing-files">Display number of missing files
+</h1><p>print(&lsquo;Full dataset tensor:&rsquo;, dataset.shape)</p>
+<h1 id="display-file-count-image-width-and-height">Display file count, image width and height
+</h1><p>print(&lsquo;Mean:&rsquo;, np.mean(dataset))</p>
+<h1 id="mean-value">Mean value
+</h1><p>print(&lsquo;Standard deviation:&rsquo;, np.std(dataset))</p>
+<h1 id="standard-deviation">Standard deviation
+</h1><p>return dataset</p>
+<p>def maybe_pickle(data_folders, min_num_images_per_class, force=False):
+dataset_names = []
+for folder in data_folders:</p>
+<h1 id="process-each-letter-folder">Process each letter folder
+</h1><pre><code>set_filename = folder + '.pickle'
+</code></pre>
+<h1 id="set-output-file">Set output file
+</h1><pre><code>dataset_names.append(set_filename)
+</code></pre>
+<h1 id="set-processed-folders">Set processed folders
+</h1><pre><code>if os.path.exists(set_filename) and not force:
+  # You may override by setting force=True.
+</code></pre>
+<h1 id="check-if-processed-file-already-exists">Check if processed file already exists
+</h1><pre><code>  print('%s already present - Skipping pickling.' % set_filename)
+else:
+  print('Pickling %s.' % set_filename)
+  dataset = load_letter(folder, min_num_images_per_class)
+</code></pre>
+<h1 id="normalize-all-images-in-this-folder">Normalize all images in this folder
+</h1><pre><code>  try:
+    with open(set_filename, 'wb') as f:
+      pickle.dump(dataset, f, pickle.HIGHEST_PROTOCOL)
+</code></pre>
+<h1 id="persist-data-save-to-disk-instead-of-keeping-in-memory">Persist data, save to disk instead of keeping in memory
+</h1><pre><code>  except Exception as e:
+    print('Unable to save data to', set_filename, ':', e)
+</code></pre>
+<p>return dataset_names</p>
+<p>train_datasets = maybe_pickle(train_folders, 45000)
+test_datasets = maybe_pickle(test_folders, 1800)</p>
+<pre tabindex="0"><code>
+## Question Two
+
+Display processed images
+- Reference answer
+</code></pre><p>def plot_samples_2(data_folders, sample_size, title=None):
+fig = plt.figure()</p>
+<h1 id="create-empty-figure">Create empty figure
+</h1><pre><code>if title: fig.suptitle(title, fontsize=16, fontweight='bold')
+</code></pre>
+<h1 id="add-title">Add title
+</h1><pre><code>for folder in data_folders:
+</code></pre>
+<h1 id="loop-through-each-letter">Loop through each letter
+</h1><pre><code>    with open(folder, 'rb') as pk_f:
+        data = pickle.load(pk_f)
+        for index, image in enumerate(data):
+            if index &lt; sample_size :
+</code></pre>
+<h1 id="randomly-select-a-certain-number-of-images-from-that-letter">Randomly select a certain number of images from that letter
+</h1><pre><code>                ax = fig.add_subplot(len(data_folders), sample_size, sample_size * data_folders.index(folder) +
+                             index + 1)
+</code></pre>
+<h1 id="load-subplot-image">Load subplot image
+</h1><pre><code>                ax.imshow(image)
+</code></pre>
+<h1 id="display-subplot-image">Display subplot image
+</h1><pre><code>                ax.set_axis_off() 
+</code></pre>
+<h1 id="turn-off-subplot-coordinate-lines">Turn off subplot coordinate lines
+</h1><pre><code>fig.set_size_inches(18.5, 10.5)
+</code></pre>
+<h1 id="set-the-display-size-of-the-image">Set the display size of the image
+</h1><pre><code>plt.show()
+</code></pre>
+<p>plot_samples_2(train_datasets, 20, &lsquo;Train&rsquo;)
+plot_samples_2(test_datasets, 20, &lsquo;Test&rsquo;)</p>
+<pre tabindex="0"><code>
+
+![image.png](http://upload-images.jianshu.io/upload_images/4388248-e3406390a28cd9b0.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
+
+![image.png](http://upload-images.jianshu.io/upload_images/4388248-135416c384df602a.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
+## Question Three 
+Check if the number of files under each letter is similar.
+
+- Reference answer
+</code></pre><p>file_path = &rsquo;notMNIST_large/{0}.pickle&rsquo;
+for ele in &lsquo;ABCDEFJHIJ&rsquo;:
+with open(file_path.format(ele), &lsquo;rb&rsquo;) as pk_f:</p>
+<h1 id="loop-through-each-directory">Loop through each directory
+</h1><pre><code>    dat = pickle.load(pk_f)
+</code></pre>
+<h1 id="load-the-persisted-file-in-this-directory">Load the persisted file in this directory
+</h1><pre><code>print('number of pictures in {}.pickle = '.format(ele), dat.shape[0])
+</code></pre>
+<h1 id="print-relevant-information">Print relevant information
+</h1><pre tabindex="0"><code>Results show that the numbers are basically consistent.
+![Question 3 Result](http://upload-images.jianshu.io/upload_images/4388248-dbeceed47af0c6d8.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
+## Code Segment—Data Splitting
+Data cannot be loaded all at once into memory. This code segment splits the data.
+</code></pre><p>def make_arrays(nb_rows, img_size):
+if nb_rows:
+dataset = np.ndarray((nb_rows, img_size, img_size), dtype=np.float32)</p>
+<h1 id="create-an-empty-set-data-type-is-a-matrix-with-rows-length-img_size-width-img_size-height-data-type-is-32-bit-float">Create an empty set, data type is a matrix with rows length, img_size width, img_size height, data type is 32-bit float
+</h1><pre><code>labels = np.ndarray(nb_rows, dtype=np.int32)
+</code></pre>
+<h1 id="create-a-label-data-type-is-32-bit-integer-length-is-rows">Create a label, data type is 32-bit integer, length is rows
+</h1><p>else:
+dataset, labels = None, None
+return dataset, labels</p>
+<h1 id="return-created-data-type">Return created data type
+</h1><p>def merge_datasets(pickle_files, train_size, valid_size=0):
+num_classes = len(pickle_files)</p>
+<h1 id="number-of-categories-to-process">Number of categories to process
+</h1><p>valid_dataset, valid_labels = make_arrays(valid_size, image_size)</p>
+<h1 id="build-validation-dataset-length-is-validation-length">Build validation dataset, length is validation length
+</h1><p>train_dataset, train_labels = make_arrays(train_size, image_size)</p>
+<h1 id="build-training-dataset-length-is-training-length">Build training dataset, length is training length
+</h1><p>vsize_per_class = valid_size // num_classes
+tsize_per_class = train_size // num_classes</p>
+<h1 id="calculate-average-length-for-each-category-with-given-training-and-validation-lengths">Calculate average length for each category with given training and validation lengths
+</h1><p>start_v, start_t = 0, 0</p>
+<h1 id="initialize-indices-start_v-is-the-start-of-validation-data-start_t-is-the-start-of-training-data">Initialize indices, start_v is the start of validation data, start_t is the start of training data
+</h1><p>end_v, end_t = vsize_per_class, tsize_per_class</p>
+<h1 id="initialize-indices-end_v-is-the-end-of-validation-data-end_t-is-the-end-of-training-data">Initialize indices, end_v is the end of validation data, end_t is the end of training data
+</h1><p>end_l = vsize_per_class + tsize_per_class</p>
+<h1 id="initialize-indices-end_l-is-the-end-of-the-letter-set-equal-to-length-of-validation-data-for-each-category--length-of-training-data">Initialize indices, end_l is the end of the letter set, equal to length of validation data for each category + length of training data
+</h1><p>for label, pickle_file in enumerate(pickle_files):</p>
+<h1 id="loop-through-each-pickle_file">Loop through each pickle_file
+</h1><pre><code>try:
+  with open(pickle_file, 'rb') as f:
+</code></pre>
+<h1 id="open-this-persistence-file">Open this persistence file
+</h1><pre><code>    letter_set = pickle.load(f)
+</code></pre>
+<h1 id="load-dataset">Load dataset
+</h1><pre><code>    # let's shuffle the letters to have random validation and training set
+    np.random.shuffle(letter_set)
+</code></pre>
+<h1 id="shuffle-the-dataset">Shuffle the dataset
+</h1><pre><code>    if valid_dataset is not None:
+</code></pre>
+<h1 id="if-not-a-test-set-update-the-test-set-otherwise-valid_dataset-is-not-updated">If not a test set, update the test set, otherwise valid_dataset is not updated
+</h1><pre><code>      valid_letter = letter_set[:vsize_per_class, :, :]
+</code></pre>
+<h1 id="numpy-slicing-----httpbrieflyxme2015python-modulenumpy-array-split">numpy slicing     <a class="link" href="http://brieflyx.me/2015/python-module/numpy-array-split/"  target="_blank" rel="noopener"
+    >http://brieflyx.me/2015/python-module/numpy-array-split/</a>
+</h1><h1 id="select-data-of-valid-data-per-class-count-from-shuffled-data-for-processing-put-into-valid_letter">Select data of &lsquo;valid data per class&rsquo; count from shuffled data for processing, put into valid_letter
+</h1><pre><code>      valid_dataset[start_v:end_v, :, :] = valid_letter
+</code></pre>
+<h1 id="put-this-data-into-valid_dataset">Put this data into valid_dataset
+</h1><pre><code>      valid_labels[start_v:end_v] = label
+</code></pre>
+<h1 id="mark-label-should-be-one-of-09">Mark label should be one of 0~9
+</h1><pre><code>      start_v += vsize_per_class
+      end_v += vsize_per_class
+</code></pre>
+<h1 id="update-indices">Update indices
+</h1><h1 id="at-the-end-of-the-loop-valid_dataset-should-be-data-with-total-length-valid_size-valid_labels-is-the-label-at-the-corresponding-position">At the end of the loop, valid_dataset should be data with total length valid_size, valid_labels is the label at the corresponding position
+</h1><pre><code>    train_letter = letter_set[vsize_per_class:end_l, :, :]
+</code></pre>
+<h1 id="other-random-elements-except-valid-part-length-is-end_l---vsize_per_class--tsize_per_class">Other random elements except valid part, length is end_l - vsize_per_class = tsize_per_class
+</h1><pre><code>    train_dataset[start_t:end_t, :, :] = train_letter
+</code></pre>
+<h1 id="at-the-end-of-the-loop-train_dataset-should-be-data-with-total-length-train_size">At the end of the loop, train_dataset should be data with total length train_size
+</h1><h1 id="heading">
+</h1><pre><code>    train_labels[start_t:end_t] = label
+    start_t += tsize_per_class
+    end_t += tsize_per_class
+</code></pre>
+<h1 id="update-indices-1">Update indices
+</h1><pre><code>except Exception as e:
+  print('Unable to process data from', pickle_file, ':', e)
+  raise
+</code></pre>
+<p>return valid_dataset, valid_labels, train_dataset, train_labels</p>
+<p>train_size = 200000
+valid_size = 10000
+test_size = 10000</p>
+<p>valid_dataset, valid_labels, train_dataset, train_labels = merge_datasets(
+train_datasets, train_size, valid_size)
+_, _, test_dataset, test_labels = merge_datasets(test_datasets, test_size)</p>
+<p>print(&lsquo;Training:&rsquo;, train_dataset.shape, train_labels.shape)
+print(&lsquo;Validation:&rsquo;, valid_dataset.shape, valid_labels.shape)
+print(&lsquo;Testing:&rsquo;, test_dataset.shape, test_labels.shape)</p>
+<pre tabindex="0"><code>
+## Code Segment—Shuffling Data
+Introduction to the permutation function: http://www.jianshu.com/p/f0eb10acaa2d
+</code></pre><p>def randomize(dataset, labels):</p>
+<h1 id="labelsshape0-is-the-length-of-labels">labels.shape[0] is the length of labels
+</h1><p>permutation = np.random.permutation(labels.shape[0])</p>
+<h1 id="randomly-select-a-shuffled-set-of-this-many-numbers">Randomly select a shuffled set of this many numbers
+</h1><p>print(labels.shape[0])
+shuffled_dataset = dataset[permutation,:,:]</p>
+<h1 id="shuffle-data">Shuffle data
+</h1><p>shuffled_labels = labels[permutation]</p>
+<h1 id="shuffle-labels">Shuffle labels
+</h1><p>return shuffled_dataset, shuffled_labels
+train_dataset, train_labels = randomize(train_dataset, train_labels)
+test_dataset, test_labels = randomize(test_dataset, test_labels)
+valid_dataset, valid_labels = randomize(valid_dataset, valid_labels)</p>
+<pre tabindex="0"><code>
+## Question Four
+Verify if the shuffled data is correct
+
+- Reference answer
+</code></pre><p>import random
+def plot_sample_3(dataset, labels, title):
+fig = plt.figure()
+plt.suptitle(title, fontsize=16, fontweight=&lsquo;bold&rsquo;)</p>
+<h1 id="set-title-style">Set title style
+</h1><pre><code>items = random.sample(range(len(labels)), 200)
+</code></pre>
+<h1 id="shuffle-the-sequential-sequence-of-labels-length">Shuffle the sequential sequence of labels length
+</h1><pre><code>for i, item in enumerate(items):
+</code></pre>
+<h1 id="randomly-pick-one">Randomly pick one
+</h1><pre><code>    plt.subplot(10, 20, i + 1)
+</code></pre>
+<h1 id="draw-subplot">Draw subplot
+</h1><pre><code>    plt.axis('off')
+</code></pre>
+<h1 id="turn-off-coordinate-axes">Turn off coordinate axes
+</h1><pre><code>    plt.title(chr(ord('A') + labels[item]))
+</code></pre>
+<h1 id="add-title-1">Add title
+</h1><pre><code>    plt.imshow(dataset[item])
+</code></pre>
+<h1 id="display-subplot-at-corresponding-position">Display subplot at corresponding position
+</h1><pre><code>fig.set_size_inches(18.5, 10.5)
+plt.show()
+</code></pre>
+<h1 id="display-image">Display image
+</h1><p>plot_sample_3(train_dataset, train_labels, &rsquo;train dataset suffled&rsquo;)
+plot_sample_3(valid_dataset, valid_labels, &lsquo;valid dataset suffled&rsquo;)
+plot_sample_3(test_dataset, test_labels, &rsquo;test dataset suffled&rsquo;)</p>
+<pre tabindex="0"><code>
+![Question 4](http://upload-images.jianshu.io/upload_images/4388248-c33532945864acd9.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
+Similar two figures omitted
+
+## Code Segment—Saving Data
+</code></pre><p>pickle_file = os.path.join(data_root, &rsquo;notMNIST.pickle&rsquo;)</p>
+<h1 id="output-file-path">Output file path
+</h1><p>try:
+f = open(pickle_file, &lsquo;wb&rsquo;)</p>
+<h1 id="open-this-file">Open this file
+</h1><p>save = {
+&rsquo;train_dataset&rsquo;: train_dataset,
+&rsquo;train_labels&rsquo;: train_labels,
+&lsquo;valid_dataset&rsquo;: valid_dataset,
+&lsquo;valid_labels&rsquo;: valid_labels,
+&rsquo;test_dataset&rsquo;: test_dataset,
+&rsquo;test_labels&rsquo;: test_labels,
+}</p>
+<h1 id="write-a-dictionary-string-ndarray">Write a dictionary string-ndarray
+</h1><p>pickle.dump(save, f, pickle.HIGHEST_PROTOCOL)
+f.close()
+except Exception as e:
+print(&lsquo;Unable to save data to&rsquo;, pickle_file, &lsquo;:&rsquo;, e)
+raise</p>
+<pre tabindex="0"><code>
+## Code Segment—Displaying Saved Data Size
+</code></pre><p>statinfo = os.stat(pickle_file)
+print(&lsquo;Compressed pickle size:&rsquo;, statinfo.st_size)</p>
+<pre tabindex="0"><code>
+## Question Five
+Google translation of the question:
+
+By construction, this dataset may contain a lot of overlapping samples, including in the validation and test sets. Overlap between training and test can skew the results if you expect to use your model in an environment where there is never an overlap, but in practice this doesn&#39;t usually matter. Measure how much overlap there is between training, validation, and test samples.
+Optional question:
+What about the duplicates between datasets? (For instance, the same letter images)
+Create a sanitized validation and test set, and compare your accuracy on those versus your accuracy on the original sets.
+
+The basic idea is that training data should not overlap with testing data, otherwise it leads to inaccurate accuracy.
+
+Reference code:
+- Just check the number of duplicate images
+</code></pre><p>import hashlib</p>
+<p>pickle_file = os.path.join(&rsquo;.&rsquo;, &rsquo;notMNIST.pickle&rsquo;)
+try:
+with open(pickle_file, &lsquo;rb&rsquo;) as f:
+data = pickle.load(f)
+except Exception as e:
+print(&lsquo;Unable to open data from&rsquo;, pickle_file, &lsquo;:&rsquo;, e)
+raise</p>
+<h1 id="after-saving-the-data-if-the-kernel-crashed-you-can-read-directly-from-local-without-rerunning-previous-code">After saving the data, if the kernel crashed, you can read directly from local without rerunning previous code
+</h1><h1 id="if-theres-an-error-you-can-search-for-the-exception-online">If there&rsquo;s an error, you can search for the exception online
+</h1><p>def calcOverlap(sourceSet, targetSet, description):
+sourceSetMd5 = np.array([hashlib.md5(img).hexdigest() for img in sourceSet])</p>
+<h1 id="build-an-md5-table">Build an md5 table
+</h1><pre><code>targetSetMd5 = np.array([hashlib.md5(img).hexdigest() for img in targetSet])
+</code></pre>
+<h1 id="build-an-md5-table-1">Build an md5 table
+</h1><pre><code>overlap = np.intersect1d(sourceSetMd5, targetSetMd5, assume_unique=False)
+</code></pre>
+<h1 id="deduplicate">Deduplicate
+</h1><pre><code>print(description)
+print(&quot;overlap&quot;,overlap.shape[0], &quot;from&quot;,sourceSetMd5.shape[0],&quot;to&quot;, targetSetMd5.shape[0])
+print(&quot;rate&quot;,overlap.shape[0]*100.0/sourceSetMd5.shape[0],&quot;% and&quot;, overlap.shape[0]*100.0/targetSetMd5.shape[0],&quot;%&quot;)
+</code></pre>
+<h1 id="print-overlap-count">Print overlap count
+</h1><p>calcOverlap(data[&rsquo;train_dataset&rsquo;], data[&lsquo;valid_dataset&rsquo;], &ldquo;train_dataset &amp; valid_dataset&rdquo;)
+calcOverlap(data[&rsquo;train_dataset&rsquo;], data[&rsquo;test_dataset&rsquo;], &ldquo;train_dataset &amp; test_dataset&rdquo;)
+calcOverlap(data[&rsquo;test_dataset&rsquo;], data[&lsquo;valid_dataset&rsquo;], &ldquo;test_dataset &amp; valid_dataset&rdquo;)</p>
+<pre tabindex="0"><code>
+![Running result](http://upload-images.jianshu.io/upload_images/4388248-2882159fe68dc672.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
+- Remove duplicate image resources
+To be updated
+
+## Question Six
+Use logistic regression to train the model and test it
+
+- Reference code
+</code></pre><p>import random
+def disp_sample_dataset(dataset, labels,trueLabels, title=None):</p>
+<h1 id="display-training-results">Display training results
+</h1><pre><code>fig = plt.figure()
+if title: fig.suptitle(title, fontsize=16, fontweight='bold')
+</code></pre>
+<h1 id="set-title-style-1">Set title style
+</h1><pre><code>items = random.sample(range(len(labels)), 200)
+</code></pre>
+<h1 id="randomly-select-a-series-of-images">Randomly select a series of images
+</h1><pre><code>for i, item in enumerate(items):
+    plt.subplot(10, 20, i + 1)
+</code></pre>
+<h1 id="set-a-subplot">Set a subplot
+</h1><pre><code>    plt.axis('off')
+</code></pre>
+<h1 id="turn-off-coordinate-lines">Turn off coordinate lines
+</h1><pre><code>    lab = str(chr(ord('A') + labels[item]))
+    trueLab = str(chr(ord('A') + trueLabels[item]))
+    if lab == trueLab:
+        plt.title( lab )
+    else:
+        plt.title(lab + &quot; but &quot; + trueLab)
+</code></pre>
+<h1 id="add-title-2">Add title
+</h1><pre><code>    plt.imshow(dataset[item])
+</code></pre>
+<h1 id="display-this-image">Display this image
+</h1><pre><code>fig.set_size_inches(18.5, 10.5)
+plt.show()
+</code></pre>
+<p>def train_and_predict(train_dataset, train_labels, test_dataset, test_labels ,sample_size):
+regr = LogisticRegression()</p>
+<h1 id="generate-trainer">Generate trainer
+</h1><pre><code>X_train = train_dataset[:sample_size].reshape(sample_size, 784)
+</code></pre>
+<h1 id="choose-amount-of-data-to-train-based-on-sample_size">Choose amount of data to train based on sample_size
+</h1><h1 id="compress-2d-vector-to-1d-vector">Compress 2D vector to 1D vector
+</h1><pre><code>y_train = train_labels[:sample_size]
+</code></pre>
+<h1 id="extract-training-data">Extract training data
+</h1><pre><code>regr.fit(X_train, y_train)
+</code></pre>
+<h1 id="train-data">Train data
+</h1><pre><code>X_test = test_dataset.reshape(test_dataset.shape[0], 28 * 28)
+</code></pre>
+<h1 id="compress-test-data-to-1d-vector">Compress test data to 1D vector
+</h1><pre><code>y_test = test_labels
+</code></pre>
+<h1 id="true-labels-corresponding-to-test-data">True labels corresponding to test data
+</h1><pre><code>pred_labels = regr.predict(X_test)
+</code></pre>
+<h1 id="generate-prediction-data">Generate prediction data
+</h1><pre><code>print('Accuracy:', regr.score(X_test, y_test), 'when sample_size=', sample_size)
+disp_sample_dataset(test_dataset, pred_labels, test_labels, 'sample_size=' + str(sample_size))
+</code></pre>
+<p>train_and_predict(data[&rsquo;train_dataset&rsquo;],data[&rsquo;train_labels&rsquo;],data[&rsquo;test_dataset&rsquo;],data[&rsquo;test_labels&rsquo;], 1000)</p>
+<pre tabindex="0"><code>
+![image.png](http://upload-images.jianshu.io/upload_images/4388248-6b3fb8a1d1b1ce34.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
+
+## Model Performance
+
+Sections 22~27 discuss model performance-related knowledge. We usually hope that the model&#39;s performance can reach 100%, which is obviously impossible. Also, in order to improve the accuracy of the training set, the model may overfit. At this point, we should follow two points:
+- Don&#39;t use all training data at once, but use it in blocks, train a portion each time
+- When model parameter changes cause 30 or more cases to change from error to correct, then this parameter change is effective.
+
+
+![Model Performance](http://upload-images.jianshu.io/upload_images/4388248-033910ba1d5c09e3.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
+## Stochastic Gradient Descent
+Sections 29~31 explain what stochastic gradient descent is.
+During training, to make the model move in the optimal direction, we need to calculate the derivative at that point. 1. The calculation of derivatives is quite large, so we need to randomly select a subset of samples to calculate derivatives, to substitute for the real derivative. This is stochastic gradient descent. 2. To reduce the randomness of random selection, we use momentum inertia to reduce randomness. 3. To make the model stable in later stages, we reduce the learning step size.
+
+End of Course One
+
+
+&gt; Reference for assignment code
+&gt; http://www.hankcs.com/ml/notmnist.html
+</code></pre>
+</section>
+
+
+    <footer class="article-footer">
+    
+
+    </footer>
+
+
+    
+</article>
+
+    
+
+    
+
+     
+    
+        
+    <div class="disqus-container">
+    <div id="disqus_thread"></div>
+<script>
+    window.disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "nansenli" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+<style>
+    .disqus-container {
+        background-color: var(--card-background);
+        border-radius: var(--card-border-radius);
+        box-shadow: var(--shadow-l1);
+        padding: var(--card-padding);
+    }
+</style>
+
+<script>
+    window.addEventListener('onColorSchemeChange', (e) => {
+        if (typeof DISQUS == 'object') {
+            DISQUS.reset({
+                reload: true
+            });
+        }
+    })
+</script>
+
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+        2025 Nansen Li（李楠森）
+    </section>
+    
+    <section class="powerby">
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.30.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.1e9a3bafd846ced4c345d084b355fb8c7bae75701c338f8a1f8a82c780137826.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>

@@ -1,0 +1,1072 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>Essays on Nansen Li</title>
+        <link>https://nansenli.com/categories/essays/</link>
+        <description>Recent content in Essays on Nansen Li</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>en</language>
+        <copyright>Nansen Li（李楠森）</copyright>
+        <lastBuildDate>Wed, 24 Oct 2018 11:47:00 +0000</lastBuildDate><atom:link href="https://nansenli.com/categories/essays/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>Investigation and Solution of Windows 10 SSD Periodic Stuttering Problems</title>
+        <link>https://nansenli.com/post/jianshu/%E9%9A%8F%E7%AC%94/%E5%85%B3%E4%BA%8E-windows-10-%E4%BD%BF%E7%94%A8-ssd-%E6%AF%8F%E9%9A%94%E4%B8%80%E6%AE%B5%E6%97%B6%E9%97%B4%E5%8D%A1%E9%A1%BF%E9%97%AE%E9%A2%98%E7%9A%84%E6%8E%A2%E7%A9%B6%E4%B8%8E%E8%A7%A3%E5%86%B3/</link>
+        <pubDate>Wed, 24 Oct 2018 11:47:00 +0000</pubDate>
+        
+        <guid>https://nansenli.com/post/jianshu/%E9%9A%8F%E7%AC%94/%E5%85%B3%E4%BA%8E-windows-10-%E4%BD%BF%E7%94%A8-ssd-%E6%AF%8F%E9%9A%94%E4%B8%80%E6%AE%B5%E6%97%B6%E9%97%B4%E5%8D%A1%E9%A1%BF%E9%97%AE%E9%A2%98%E7%9A%84%E6%8E%A2%E7%A9%B6%E4%B8%8E%E8%A7%A3%E5%86%B3/</guid>
+        <description>&lt;h2 id=&#34;introduction&#34;&gt;Introduction
+&lt;/h2&gt;&lt;p&gt;I was originally using an Intel i5-6500 CPU, but after switching to an AMD Ryzen 2700, frequent system freezes started occurring.&lt;/p&gt;
+&lt;h2 id=&#34;symptoms&#34;&gt;Symptoms
+&lt;/h2&gt;&lt;p&gt;During these freezes, I observed that the disk usage in Task Manager was at 100%, while both read and write rates were at 0. The SSD is a generic Lexar Hades 512 GB. In Event Viewer, there were numerous events with ID 129.&lt;/p&gt;
+&lt;h2 id=&#34;suspecting-hardware-issues&#34;&gt;Suspecting Hardware Issues
+&lt;/h2&gt;&lt;p&gt;After repeatedly changing SATA ports and reconnecting power cables, the freezes persisted.&lt;/p&gt;
+&lt;h2 id=&#34;searching-for-related-issues-online&#34;&gt;Searching for Related Issues Online
+&lt;/h2&gt;&lt;p&gt;Online searches mostly pointed to the root cause being Windows 10&amp;rsquo;s AHCI driver issues and SSD firmware problems.&lt;/p&gt;
+&lt;h2 id=&#34;solution-approach-1-replacing-the-ahci-driver---ineffective&#34;&gt;Solution Approach 1: Replacing the AHCI Driver - Ineffective
+&lt;/h2&gt;&lt;p&gt;To replace the AHCI driver, I tried downloading chipset drivers from both AMD&amp;rsquo;s official website and ASUS&amp;rsquo;s official website, and manually replaced the driver in Device Manager so that it showed as an AMD SATA driver. I also tried various motherboard drivers, but testing proved ineffective, and the problem remained unsolved.&lt;/p&gt;
+&lt;h2 id=&#34;solution-approach-2-converting-the-drive-to-raid-format---ineffective&#34;&gt;Solution Approach 2: Converting the Drive to RAID Format - Ineffective
+&lt;/h2&gt;&lt;p&gt;To convert to RAID format, I reinstalled Windows, but during the installation process, Windows could not recognize the SSD. According to AMD&amp;rsquo;s official English manual and official RAID drivers, I manually loaded the RAID drivers, but Windows still couldn&amp;rsquo;t see the SSD during installation. After multiple attempts, it remained undetected. This might be because volume mode RAID is not supported with only one drive. I abandoned this approach.&lt;/p&gt;
+&lt;h2 id=&#34;solution-approach-3-modifying-the-registry-disabling-msi---ineffective&#34;&gt;Solution Approach 3: Modifying the Registry, Disabling MSI - Ineffective
+&lt;/h2&gt;&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;https://www.pconline.com.cn/win10/739/7395324.html&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;https://www.pconline.com.cn/win10/739/7395324.html&lt;/a&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;In essence, when using the StorAHCI.sys driver in certain AHCI modes, some SSDs may not be able to complete input/output operations correctly in &amp;ldquo;Message Signaled Interrupt&amp;rdquo; (MSI) mode, ultimately resulting in system freezes with disk usage showing 100% in Task Manager. Of course, the solution is simple: just disable it (MSI Mode) directly in regedit.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;blockquote&gt;
+&lt;p&gt;　　4. Click Cortana, type &amp;ldquo;regedit&amp;rdquo; to launch the Registry Editor, navigate to &amp;ldquo;HKEY_LOCAL_MACHINE\System\CurrentControlSet\Enum\PCI\xxxxx\Device Parameters\Interrupt Management\MessageSignaledInterruptProperties&amp;rdquo; (where &amp;ldquo;xxxxx&amp;rdquo; is the &amp;ldquo;device instance path&amp;rdquo; you just recorded);&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;blockquote&gt;
+&lt;p&gt;　　5. Finally, change the &amp;ldquo;MSISupported&amp;rdquo; key value in the right pane from 1 to 0;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Testing proved this ineffective.&lt;/p&gt;
+&lt;h2 id=&#34;solution-approach-4-changing-power-settings---ineffective&#34;&gt;Solution Approach 4: Changing Power Settings - Ineffective
+&lt;/h2&gt;&lt;p&gt;Setting the PCI-Express setting to OFF, testing proved ineffective.&lt;/p&gt;
+&lt;h2 id=&#34;solution-approach-5-changing-lpm---effective&#34;&gt;Solution Approach 5: Changing LPM - Effective
+&lt;/h2&gt;&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;http://www.sohu.com/a/204645459_493865&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;http://www.sohu.com/a/204645459_493865&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;https://answers.microsoft.com/en-us/windows/forum/windows_10-hardware-winpc/event-id-129-storahci-resetting-raidport0/7b30c512-6597-438b-80cb-22fb2f85d62e&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;https://answers.microsoft.com/en-us/windows/forum/windows_10-hardware-winpc/event-id-129-storahci-resetting-raidport0/7b30c512-6597-438b-80cb-22fb2f85d62e&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;The content is as follows:&lt;/p&gt;
+&lt;p&gt;Most SSDs we use today support some power-saving features, such as DIPM/HIPM/Device Sleep.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;http://upload-images.jianshu.io/upload_images/4388248-c66b7d6caad481df.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&#34;
+	
+	
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;image&#34;
+	
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;When a state change request is initiated by the host, we call it HIPM (Host-Initiated LPM), and when it&amp;rsquo;s directly initiated by the device, we call it DIPM (Device-Initiated LPM). What are they requesting? Requesting to slow down, save energy, or enter Device Sleep.&lt;/p&gt;
+&lt;p&gt;Both HIPM and DIPM rely on the computer&amp;rsquo;s LPM technology support. LPM, or Link Power Management, is a function at the physical layer of the SATA interface that can divide the link between the host and storage device into three states: Active state, Partial state, and Slumber state. The goal is to reduce the physical layer bus transmission speed, thus achieving power-saving effects.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;http://upload-images.jianshu.io/upload_images/4388248-e27d2b1539c83ea5.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&#34;
+	
+	
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;image&#34;
+	
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;LPM is generally enabled by default.&lt;/p&gt;
+&lt;p&gt;So is enabling LPM good for SSDs?&lt;/p&gt;
+&lt;p&gt;1. The host sends an HIPM state change command, but due to differing SSD device standards, it may not be well-supported, causing compatibility issues leading to stuttering or drive disconnection;&lt;/p&gt;
+&lt;p&gt;2. The host sends HIPM state change commands too frequently, causing the SSD device to not respond in time, resulting in stuttering;&lt;/p&gt;
+&lt;p&gt;3. After LPM is enabled, it increases SATA bus transmission delays, causing high-speed SSDs to become blocked and stutter;&lt;/p&gt;
+&lt;p&gt;4. Conflicts between the SSD&amp;rsquo;s internal DIPM and the host&amp;rsquo;s requested HIPM cause stuttering.&lt;/p&gt;
+&lt;p&gt;Often, SSD-induced computer stuttering and sudden drive disconnections are caused by LPM.&lt;/p&gt;
+&lt;p&gt;LPM can help SATA devices achieve power-saving effects. However, it also affects SSD performance.&lt;/p&gt;
+&lt;p&gt;So, for the sake of power saving, are you willing to pay the price of losing SSD performance?&lt;/p&gt;
+&lt;p&gt;HDD power consumption is around 10-25W. Perhaps LPM was originally only intended for HDDs.&lt;/p&gt;
+&lt;p&gt;SSD startup power consumption: 0.1W&lt;del&gt;1W (2W), maximum power consumption: 5&lt;/del&gt;10W, average power consumption: around 4~5W.&lt;/p&gt;
+&lt;p&gt;Does our power supply care about these few watts from the SSD? Do we care about this bit of electricity cost? Should we even care!&lt;/p&gt;
+&lt;p&gt;If SSDs don&amp;rsquo;t need LPM, which harms SSD performance, can we turn it off?&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;http://upload-images.jianshu.io/upload_images/4388248-203ee8f11de7a542.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&#34;
+	
+	
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;image&#34;
+	
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Save as &amp;ldquo;.reg&amp;rdquo; format.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;http://upload-images.jianshu.io/upload_images/4388248-c01d0e2b7805b56d.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&#34;
+	
+	
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;image&#34;
+	
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Click to run. It will automatically write to the registry, changing the LPM power settings.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;http://upload-images.jianshu.io/upload_images/4388248-d3bd755ea853343f.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&#34;
+	
+	
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;image&#34;
+	
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;http://upload-images.jianshu.io/upload_images/4388248-e7f9dba012dfc070.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&#34;
+	
+	
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;image&#34;
+	
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;If your SSD is experiencing severe stuttering or disconnections, you can try this method.&lt;/p&gt;
+&lt;p&gt;The main reason for SSD stuttering and disconnections is that the SSD is too poor quality. Indeed, with SSD prices constantly rising today, it&amp;rsquo;s very difficult to buy a good SSD at a relatively low price.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;After testing, this was effective&lt;/strong&gt;&lt;/p&gt;
+&lt;h2 id=&#34;solution-approach-6-changing-bios-settings-enabling-sata-hot-plug-functionality---recommended&#34;&gt;Solution Approach 6: Changing BIOS Settings, Enabling SATA Hot Plug Functionality - Recommended
+&lt;/h2&gt;&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;https://www.aiweibk.com/5795.html&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;https://www.aiweibk.com/5795.html&lt;/a&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;After enabling the Hot Plug attribute in the motherboard BIOS settings, there will be a side effect: the SSD&amp;rsquo;s LPM power saving will be turned off as hot-plugging is enabled, thereby avoiding data loss during hot-plugging or loss of response when reconnecting.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;blockquote&gt;
+&lt;p&gt;If your SSD and motherboard have compatibility issues causing intermittent stuttering, try enabling the Hot Plug option in the motherboard BIOS settings to disable LPM power saving, which might solve the problem.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;strong&gt;After testing, this was effective&lt;/strong&gt;&lt;/p&gt;
+&lt;h2 id=&#34;conclusion&#34;&gt;Conclusion
+&lt;/h2&gt;&lt;p&gt;Why was there no problem with Intel before, but problems arose after switching to AMD? I suspect it&amp;rsquo;s because the original Intel motherboard was inferior and didn&amp;rsquo;t support SATA LPM, while Windows 10 has LPM enabled by default. The generic SSD doesn&amp;rsquo;t support LPM well, so even though its firmware supports LPM, serious issues can occur. Since the motherboard didn&amp;rsquo;t support LPM, even with Windows enabling LPM, the problem didn&amp;rsquo;t manifest.&lt;/p&gt;
+&lt;p&gt;Now with a new motherboard that supports LPM, compatibility issues with the SSD have emerged under default settings. LPM functionality needs to be manually disabled.&lt;/p&gt;
+</description>
+        </item>
+        <item>
+        <title>2018-09-15 NetEase Interactive Entertainment Interview</title>
+        <link>https://nansenli.com/post/jianshu/%E9%9A%8F%E7%AC%94/2018-09-15-%E7%BD%91%E6%98%93%E4%BA%92%E5%A8%B1%E9%9D%A2%E8%AF%95/</link>
+        <pubDate>Sat, 15 Sep 2018 15:59:00 +0000</pubDate>
+        
+        <guid>https://nansenli.com/post/jianshu/%E9%9A%8F%E7%AC%94/2018-09-15-%E7%BD%91%E6%98%93%E4%BA%92%E5%A8%B1%E9%9D%A2%E8%AF%95/</guid>
+        <description>&lt;p&gt;Interviewed at a hotel in Chengdu
+Will update if I remember more&lt;/p&gt;
+&lt;h2 id=&#34;written-test&#34;&gt;Written Test
+&lt;/h2&gt;&lt;p&gt;Implement a hashmap using open addressing, with int as key and string as value, time limit 30 minutes&lt;/p&gt;
+&lt;h2 id=&#34;first-interview&#34;&gt;First Interview
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Purpose and principles of volatile&lt;/li&gt;
+&lt;li&gt;Differences between dynamic_cast and static_cast&lt;/li&gt;
+&lt;li&gt;Issues with legal conversions between parent and child classes using dynamic_cast&lt;/li&gt;
+&lt;li&gt;Virtual destructors and vtables&lt;/li&gt;
+&lt;li&gt;RTTI (Run-Time Type Information) and type_info&lt;/li&gt;
+&lt;li&gt;Sizeof for structures&lt;/li&gt;
+&lt;li&gt;Characteristics of red-black trees; given approximately 12 numbers, provide a possible red-black tree result and draw it&lt;/li&gt;
+&lt;li&gt;API call process for establishing a server listen, how to implement non-blocking epoll&lt;/li&gt;
+&lt;li&gt;Principles of epoll, differences in business code logic between edge-triggered and level-triggered&lt;/li&gt;
+&lt;li&gt;TCP packet sticking (concatenation)&lt;/li&gt;
+&lt;li&gt;Throwing two eggs from a 100-story building to determine the egg&amp;rsquo;s hardness, dynamic programming solution method&lt;/li&gt;
+&lt;li&gt;1 billion players, each with a score ranging from 0 to 100,000, how to determine a player&amp;rsquo;s ranking&lt;/li&gt;
+&lt;li&gt;Redis skip list&lt;/li&gt;
+&lt;li&gt;How memory barriers are implemented in assembly&lt;/li&gt;
+&lt;li&gt;Two things that every void func() assembly program needs to do at the beginning&lt;/li&gt;
+&lt;li&gt;How to determine the cause of a memory leak&lt;/li&gt;
+&lt;li&gt;How to print something before the main function. What other programs execute before the main function.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;second-interview&#34;&gt;Second Interview
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Differences between Python&amp;rsquo;s is and == operators, the id function&lt;/li&gt;
+&lt;li&gt;Differences between Python&amp;rsquo;s xrange and range&lt;/li&gt;
+&lt;li&gt;Python iterators&lt;/li&gt;
+&lt;li&gt;Redis ziplist&lt;/li&gt;
+&lt;li&gt;Redis TTL expiration implementation&lt;/li&gt;
+&lt;li&gt;STL deque implementation (I answered list, which was incorrect. Then asked how I would implement a deque)&lt;/li&gt;
+&lt;li&gt;What happens between running a program in shell and the program outputting &amp;ldquo;hello world&amp;rdquo;, in detail&lt;/li&gt;
+&lt;li&gt;Draw a typical memory layout for a Linux program&lt;/li&gt;
+&lt;li&gt;Can different threads access each other&amp;rsquo;s stack space?&lt;/li&gt;
+&lt;li&gt;A matrix of length x and width y, with holes at the four corners. A ball starts from a certain point and moves indefinitely without friction. Which hole will it enter?&lt;/li&gt;
+&lt;li&gt;What can be put inside the [] of a lambda expression, how do you think the compiler implements lambda expressions&lt;/li&gt;
+&lt;li&gt;What is an rvalue (I confused rvalue with rvalue reference here)&lt;/li&gt;
+&lt;li&gt;The implementation process of malloc, does malloc always call brk to adjust the heap boundary? Introduction to the buddy system&lt;/li&gt;
+&lt;li&gt;How do HTTPS clients and servers implement protocol selection, what are the commonly used protocols now&lt;/li&gt;
+&lt;li&gt;The process of client verification of the server in HTTPS&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+        </item>
+        <item>
+        <title>2018-08-29 Tencent Timi Phone Interview</title>
+        <link>https://nansenli.com/post/jianshu/%E9%9A%8F%E7%AC%94/2018-08-29-%E8%85%BE%E8%AE%AF%E5%A4%A9%E7%BE%8E%E7%94%B5%E8%AF%9D%E9%9D%A2%E8%AF%95/</link>
+        <pubDate>Wed, 29 Aug 2018 04:32:00 +0000</pubDate>
+        
+        <guid>https://nansenli.com/post/jianshu/%E9%9A%8F%E7%AC%94/2018-08-29-%E8%85%BE%E8%AE%AF%E5%A4%A9%E7%BE%8E%E7%94%B5%E8%AF%9D%E9%9D%A2%E8%AF%95/</guid>
+        <description>&lt;ul&gt;
+&lt;li&gt;Three-way handshake and four-way termination&lt;/li&gt;
+&lt;li&gt;Nagle algorithm&lt;/li&gt;
+&lt;li&gt;What states does a TCP connection go through when disconnecting&lt;/li&gt;
+&lt;li&gt;How to choose between multiple processes and multiple threads, considering business needs&lt;/li&gt;
+&lt;li&gt;How much knowledge of MySQL master-slave clusters&lt;/li&gt;
+&lt;li&gt;GDB debugging process in a multi-process environment&lt;/li&gt;
+&lt;li&gt;Introduction to network frameworks like libevent&lt;/li&gt;
+&lt;li&gt;Differences between select and epoll. Why Java uses select for connection instead of epoll&lt;/li&gt;
+&lt;li&gt;Inter-process communication methods&lt;/li&gt;
+&lt;li&gt;Understanding of locks. Implementation of lock-free data structures&lt;/li&gt;
+&lt;li&gt;How to design shared memory mutex&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+        </item>
+        <item>
+        <title>SVN Learning Notes</title>
+        <link>https://nansenli.com/post/jianshu/%E9%9A%8F%E7%AC%94/svn%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/</link>
+        <pubDate>Sun, 01 Jul 2018 15:01:00 +0000</pubDate>
+        
+        <guid>https://nansenli.com/post/jianshu/%E9%9A%8F%E7%AC%94/svn%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/</guid>
+        <description>&lt;h2 id=&#34;introduction&#34;&gt;Introduction
+&lt;/h2&gt;&lt;p&gt;Learning SVN for work purposes. SVN is a C/S type version management system that heavily depends on servers. Most operations are related to the SVN server.&lt;/p&gt;
+&lt;h2 id=&#34;most-common-operation-flow&#34;&gt;Most Common Operation Flow
+&lt;/h2&gt;&lt;p&gt;Here we assume the server project address is svn://192.168.1.1/shop&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Checkout the project&lt;/li&gt;
+&lt;li&gt;Update: update the server project to local&lt;/li&gt;
+&lt;li&gt;Commit: submit local changes&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;how-to-deploy-an-svn-server&#34;&gt;How to Deploy an SVN Server
+&lt;/h2&gt;&lt;p&gt;Since SVN is a C/S type software, you need to deploy a server to use it. So we need to set up a server for testing.
+To keep it as simple as possible, we&amp;rsquo;ll install VisualSVN software on Windows to act as our server. Note that servers usually run on Linux, but we&amp;rsquo;re using Windows server software here just for ease of getting started. You can easily download VisualSVN Server software from the official website. I downloaded version 3.9. Use the latest stable version. During installation, there&amp;rsquo;s a step to select the standard edition; for other steps, just use the defaults. Pay attention to the port selection to avoid conflicts with ports on your machine. The default port is 443, but you can change it to 8443.&lt;/p&gt;
+&lt;h2 id=&#34;creating-a-test-project-on-the-server&#34;&gt;Creating a Test Project on the Server
+&lt;/h2&gt;&lt;p&gt;Since an SVN project is a repository, which is a folder, we need to create a folder. Open the D:\Repositories folder and run the command &lt;code&gt;svnadmin create test1&lt;/code&gt; in that directory to create a project. For other users to access this directory, you need to use the &lt;code&gt;svnserve&lt;/code&gt; command to start the server, which we&amp;rsquo;ll discuss later. You also need to configure permissions. Open the svnserve.conf file in the conf directory under test1, uncomment anon-access, and change its value to write. This allows anonymous access with write permissions.&lt;/p&gt;
+&lt;p&gt;Then run the command in the D:\Repositories directory:
+&lt;code&gt;svnserve -d -r ./test1&lt;/code&gt;
+This step opens the SVN server&amp;rsquo;s listening state.&lt;/p&gt;
+&lt;h2 id=&#34;common-svn-client-operations&#34;&gt;Common SVN Client Operations
+&lt;/h2&gt;&lt;p&gt;Download and install TortoiseSVN.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Checkout
+Right-click in the directory you want to synchronize, select repo-browser from TortoiseSVN, enter svn://127.0.0.1, and confirm. Right-click on the folder icon and select checkout, then confirm. The checkout is now successful.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Commit
+Add a txt file and write something in it. Then right-click and select commit. This will commit to the server.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Update
+After developer A submits data and the server changes, developer B needs to synchronize. Right-click and select update.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Ignore
+To exclude files from being committed, right-click on the file and select &amp;ldquo;add to ignore list&amp;rdquo;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;svn-versions&#34;&gt;SVN Versions
+&lt;/h2&gt;&lt;p&gt;SVN versions start from 1 and increment. SVN can roll back versions. SVN can perform branch and merge operations, but these differ significantly from Git&amp;rsquo;s branch operations. It seems like it creates a new project. The final merge only combines conflicts. This is different from Git&amp;rsquo;s branch operations, which are based on diffs.&lt;/p&gt;
+</description>
+        </item>
+        <item>
+        <title>Understanding Google Protocol Buffer</title>
+        <link>https://nansenli.com/post/jianshu/%E9%9A%8F%E7%AC%94/google-protocol-buffer-%E4%BA%86%E8%A7%A3/</link>
+        <pubDate>Fri, 18 May 2018 11:10:00 +0000</pubDate>
+        
+        <guid>https://nansenli.com/post/jianshu/%E9%9A%8F%E7%AC%94/google-protocol-buffer-%E4%BA%86%E8%A7%A3/</guid>
+        <description>&lt;h2 id=&#34;introduction&#34;&gt;Introduction
+&lt;/h2&gt;&lt;p&gt;Learning about Google Protocol Buffer before bed&lt;/p&gt;
+&lt;h2 id=&#34;installing-the-protobuf-compiler&#34;&gt;Installing the protobuf compiler
+&lt;/h2&gt;&lt;p&gt;Start the latest Ubuntu Docker image, run apt install protobuf-compiler&lt;/p&gt;
+&lt;h2 id=&#34;writing-a-proto-file&#34;&gt;Writing a .proto file
+&lt;/h2&gt;&lt;p&gt;nano lm.helloworld.proto&lt;/p&gt;
+&lt;p&gt;Then input:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-protobuf&#34; data-lang=&#34;protobuf&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;package&lt;/span&gt; lm; &lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;message&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;helloworld&lt;/span&gt; &lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;&lt;/span&gt;{ &lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;&lt;/span&gt;   &lt;span style=&#34;color:#66d9ef&#34;&gt;required&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;int32&lt;/span&gt;     id &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;;  &lt;span style=&#34;color:#75715e&#34;&gt;// ID 
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;   &lt;span style=&#34;color:#66d9ef&#34;&gt;required&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;string&lt;/span&gt;    str &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;2&lt;/span&gt;;  &lt;span style=&#34;color:#75715e&#34;&gt;// str 
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;   &lt;span style=&#34;color:#66d9ef&#34;&gt;optional&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;int32&lt;/span&gt;     opt &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;3&lt;/span&gt;;  &lt;span style=&#34;color:#75715e&#34;&gt;//optional field 
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;}&lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;In the example above, the package name is lm, and a message called helloworld is defined. This message has three members: an int32 type id, a string type member str. opt is an optional member, meaning the message may not contain this member.&lt;/p&gt;
+&lt;h2 id=&#34;compiling-the-proto-file&#34;&gt;Compiling the proto file
+&lt;/h2&gt;</description>
+        </item>
+        <item>
+        <title>2018-05-11 Essay</title>
+        <link>https://nansenli.com/post/jianshu/%E9%9A%8F%E7%AC%94/2018-05-11-%E9%9A%8F%E7%AC%94/</link>
+        <pubDate>Fri, 11 May 2018 09:50:00 +0000</pubDate>
+        
+        <guid>https://nansenli.com/post/jianshu/%E9%9A%8F%E7%AC%94/2018-05-11-%E9%9A%8F%E7%AC%94/</guid>
+        <description>&lt;p&gt;Started preparing to write the server side of the SS assistant. There are many issues.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Language
+If I want to pursue C++ backend development in the future, it&amp;rsquo;s probably best to stick with C++. But I also want to try other solutions like Python. I tried webpy in Python and found it very lightweight - I probably won&amp;rsquo;t use the Flask framework I used before. Another option is Go. Go&amp;rsquo;s syntax is also an issue as I haven&amp;rsquo;t learned it yet.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Framework
+I&amp;rsquo;ve currently found C++&amp;rsquo;s handy library. I&amp;rsquo;m not particularly keen on using the muduo library. I still don&amp;rsquo;t want to use boost, even though Effective C++ recommends learning it. My first impression of handy is quite good. Still learning about it.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;The goal is to first write a static server using handy, then expand from there.&lt;/p&gt;
+</description>
+        </item>
+        <item>
+        <title>Tencent Campus Recruitment Essay</title>
+        <link>https://nansenli.com/post/jianshu/%E9%9A%8F%E7%AC%94/%E8%85%BE%E8%AE%AF%E6%A0%A1%E6%8B%9B%E9%9A%8F%E7%AC%94/</link>
+        <pubDate>Wed, 11 Apr 2018 08:39:00 +0000</pubDate>
+        
+        <guid>https://nansenli.com/post/jianshu/%E9%9A%8F%E7%AC%94/%E8%85%BE%E8%AE%AF%E6%A0%A1%E6%8B%9B%E9%9A%8F%E7%AC%94/</guid>
+        <description>&lt;h2 id=&#34;introduction&#34;&gt;Introduction
+&lt;/h2&gt;&lt;p&gt;There were two phone interviews in the early selection phase, which I&amp;rsquo;ll skip here.
+First published at: &lt;a class=&#34;link&#34; href=&#34;https://www.jianshu.com/p/d5aa63a27172&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;https://www.jianshu.com/p/d5aa63a27172&lt;/a&gt;&lt;/p&gt;
+&lt;h2 id=&#34;first-interview&#34;&gt;First Interview
+&lt;/h2&gt;&lt;p&gt;Chengdu, April 11&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Introduce your projects, what were the difficulties, and how did you solve them&lt;/li&gt;
+&lt;li&gt;Introduce C++11 features&lt;/li&gt;
+&lt;li&gt;Explain the fork function&lt;/li&gt;
+&lt;li&gt;Explain the TIME_WAIT state&lt;/li&gt;
+&lt;li&gt;Why does a TCP connection handshake require three steps&lt;/li&gt;
+&lt;li&gt;Explain iterator invalidation. Does push_back cause iterator invalidation?&lt;/li&gt;
+&lt;li&gt;Characteristics of red-black trees, explain&lt;/li&gt;
+&lt;li&gt;Methods to resolve hash collisions&lt;/li&gt;
+&lt;li&gt;Differences between processes and threads&lt;/li&gt;
+&lt;li&gt;What thread models do you use&lt;/li&gt;
+&lt;li&gt;Explain coroutines&lt;/li&gt;
+&lt;li&gt;Explain the quicksort algorithm&lt;/li&gt;
+&lt;li&gt;What is a stable sort, is quicksort stable, and why&lt;/li&gt;
+&lt;li&gt;Derive the formula for the worst-case scenario of quicksort&lt;/li&gt;
+&lt;li&gt;Why should a destructor be virtual&lt;/li&gt;
+&lt;li&gt;Why can&amp;rsquo;t a constructor be a virtual function&lt;/li&gt;
+&lt;li&gt;Questions printed on paper, testing: new[] objects, static members, what exactly a subclass constructor calls, differences between copy constructors and assignment operators, when the equals sign appears in a copy constructor, when an assignment operator is needed, deep copy vs. shallow copy, when virtual functions are called.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Below is one of the questions, please write the output:&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;#include &amp;lt;iostream&amp;gt;
+using namespace std;
+
+struct A{
+    A(){
+        local_var++;
+    }
+    virtual void func(){
+        cout &amp;lt;&amp;lt; &amp;#34;A&amp;#34; &amp;lt;&amp;lt; endl;
+    }
+    static int local_var;
+};
+
+int A::local_var = 0;
+
+struct B : A{
+    B(){
+        local_var+=2;
+    }
+    virtual void func(){
+        cout &amp;lt;&amp;lt; &amp;#34;B&amp;#34; &amp;lt;&amp;lt; endl;
+    }
+};
+
+int main(){
+    A* a1 = new B[3]; 
+    cout &amp;lt;&amp;lt; a1[0].local_var &amp;lt;&amp;lt; endl;
+    a1-&amp;gt;func();
+    A a2 = a1[0];
+    cout &amp;lt;&amp;lt; a2.local_var &amp;lt;&amp;lt; endl;
+    a2.func();
+    A a3;
+    a3 = a1[0];
+    cout &amp;lt;&amp;lt; a3.local_var &amp;lt;&amp;lt; endl;
+    a3.func();
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;What problem will occur in the following code?&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;#include &amp;lt;iostream&amp;gt;
+using namespace std;
+
+struct A{
+    virtual void func1(){
+        cout &amp;lt;&amp;lt; a &amp;lt;&amp;lt; endl;
+    }
+    void func2(){
+        cout &amp;lt;&amp;lt; a &amp;lt;&amp;lt; endl;
+    }
+    void func3(){
+        cout &amp;lt;&amp;lt; &amp;#34;a&amp;#34; &amp;lt;&amp;lt; endl;
+    }
+    int a;
+};
+
+int main(){
+    A * a = (A*)malloc(sizeof(A));
+    a-&amp;gt;func1();
+    a-&amp;gt;func2();
+    a-&amp;gt;func3();
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;ul&gt;
+&lt;li&gt;The approach to a problem during the written test (previous Nowcoder test. The interviewer actually printed all my test answers and results, including multiple-choice and algorithm questions, how many times I submitted, how many times I failed). Testing when the virtual pointer is initialized.&lt;/li&gt;
+&lt;li&gt;Randomly selected a question on paper. Given preorder traversal ABC and postorder traversal CBA, what is the inorder traversal? Draw out the two possible scenarios.&lt;/li&gt;
+&lt;li&gt;The approach to the first algorithm question during the written test (previous Nowcoder test)&lt;/li&gt;
+&lt;li&gt;There are 100 marbles, two players take turns, each person can only take 1-5 marbles, the person who cannot take any loses, what is the winning strategy?&lt;/li&gt;
+&lt;li&gt;What have you been learning recently (server programming)? What did you learn before (TensorFlow)? How did you learn it? What do you think about TensorFlow&amp;rsquo;s powerful neural networks?&lt;/li&gt;
+&lt;li&gt;Family situation.&lt;/li&gt;
+&lt;li&gt;After leaving, wrote code in the lobby: find elements in char array a that are not in char array b, and put them in char array c. Here I forgot to convert char characters to unsigned char type.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;second-interview&#34;&gt;Second Interview
+&lt;/h2&gt;&lt;p&gt;Chengdu, April 13&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Self-introduction&lt;/li&gt;
+&lt;li&gt;What are system calls? Which system calls have you used? Which system calls take a long time?&lt;/li&gt;
+&lt;li&gt;Have you used gdb debugging? What is a conditional breakpoint?&lt;/li&gt;
+&lt;li&gt;Difference between function pointers and pointer functions. Write an example.&lt;/li&gt;
+&lt;li&gt;Write a fork call example by hand. In what situations have you used fork calls?&lt;/li&gt;
+&lt;li&gt;Explain the connect function in UDP.&lt;/li&gt;
+&lt;li&gt;What is an index? Is adding more indexes always better? (I admitted to looking at interview experiences for the index question, but came up with the follow-up question myself)&lt;/li&gt;
+&lt;li&gt;Which questions from the last interview did you research afterward?&lt;/li&gt;
+&lt;li&gt;There was a problem with your code in the last interview, do you know what it was?&lt;/li&gt;
+&lt;li&gt;Where did you learn the answers to these questions? What have you been doing these two days?&lt;/li&gt;
+&lt;li&gt;Some suggestions for you: look into gdb debugging, database knowledge, network programming, and practice more.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;aftermath&#34;&gt;Aftermath
+&lt;/h2&gt;&lt;p&gt;Received a phone call on April 20 confirming the offer from Tencent.&lt;/p&gt;
+</description>
+        </item>
+        <item>
+        <title>Tencent Internal Referral Essay</title>
+        <link>https://nansenli.com/post/jianshu/%E9%9A%8F%E7%AC%94/%E8%85%BE%E8%AE%AF%E5%86%85%E6%8E%A8%E9%9A%8F%E7%AC%94/</link>
+        <pubDate>Mon, 26 Mar 2018 12:23:00 +0000</pubDate>
+        
+        <guid>https://nansenli.com/post/jianshu/%E9%9A%8F%E7%AC%94/%E8%85%BE%E8%AE%AF%E5%86%85%E6%8E%A8%E9%9A%8F%E7%AC%94/</guid>
+        <description>&lt;p&gt;This afternoon I was browsing Nowcoder. Suddenly I wanted to check on the progress of my Tencent internal referral, and the WeChat official account showed that &amp;ldquo;the current position may not be suitable for you.&amp;rdquo;&lt;/p&gt;
+&lt;p&gt;I don&amp;rsquo;t have any special feelings about it.&lt;/p&gt;
+&lt;p&gt;I still need to work hard and strive for a good outcome. Regardless, there are still opportunities.&lt;/p&gt;
+&lt;p&gt;In the afternoon while doing practice problems, there were 3 out of 8 NetEase questions that I couldn&amp;rsquo;t solve, which made me feel that there are indeed many things I need to learn.&lt;/p&gt;
+&lt;p&gt;I bought a lot of books, and I don&amp;rsquo;t know when I&amp;rsquo;ll be able to finish reading them.&lt;/p&gt;
+&lt;p&gt;Anyway, I should stay positive.&lt;/p&gt;
+&lt;p&gt;The interviewer said I was quite suitable, although that probably made me quite happy, but I won&amp;rsquo;t be sad because I was rejected, nor will I be proud because I was chosen.&lt;/p&gt;
+</description>
+        </item>
+        <item>
+        <title>My First Program</title>
+        <link>https://nansenli.com/post/jianshu/%E9%9A%8F%E7%AC%94/%E6%88%91%E7%9A%84%E7%AC%AC%E4%B8%80%E4%B8%AA%E7%A8%8B%E5%BA%8F/</link>
+        <pubDate>Wed, 21 Mar 2018 08:06:00 +0000</pubDate>
+        
+        <guid>https://nansenli.com/post/jianshu/%E9%9A%8F%E7%AC%94/%E6%88%91%E7%9A%84%E7%AC%AC%E4%B8%80%E4%B8%AA%E7%A8%8B%E5%BA%8F/</guid>
+        <description>&lt;h2 id=&#34;introduction&#34;&gt;Introduction
+&lt;/h2&gt;&lt;p&gt;Blank space&lt;/p&gt;
+&lt;h2 id=&#34;attempt&#34;&gt;Attempt
+&lt;/h2&gt;&lt;p&gt;During my freshman year, I remember participating in a college competition, which was my first exposure to programming concepts.&lt;/p&gt;
+&lt;p&gt;The competition involved using programmable building blocks and toys provided by the laboratory to create a project. It was somewhat similar to the concept of Mi Bunny Robot, except it was much earlier.&lt;/p&gt;
+&lt;p&gt;I built a smart car that could follow black tape tracks on the ground and perform corresponding actions. It had the following three functions:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Following a single line of tape on the ground. This function was implemented using two infrared sensors.&lt;/li&gt;
+&lt;li&gt;When encountering obstacles, it could bypass them according to pre-agreed actions. This was implemented with an infrared sensor.&lt;/li&gt;
+&lt;li&gt;It could grab ping pong balls from the ground using a claw. This was driven by a motor.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;I remember the programming interface was a graphical one, where you could drag different rectangles representing program bodies. Then you used connecting lines to indicate state transitions. After writing the code, it needed to be transmitted to the programmable blocks via an infrared device. The infrared transmission device looked a bit like an upright iron, and the block was quite large. It could be fitted with lithium batteries and had some gear-like objects that could be attached to other wheels or sliding devices. This way, the entire device could move as expected.&lt;/p&gt;
+&lt;p&gt;I remember that during the judging, except for my own work, none of the other teams&amp;rsquo; projects could move (meaning they hadn&amp;rsquo;t written programs).&lt;/p&gt;
+&lt;p&gt;When other teams were introducing their robots, they only described the functions, but unfortunately, they couldn&amp;rsquo;t move.&lt;/p&gt;
+&lt;p&gt;When it was my turn to present, it truly amazed everyone. The judges were astonished to see my robot move.&lt;/p&gt;
+&lt;p&gt;In reality, the built-in program would disappear when power was lost, and because the blocks were very old, the lithium batteries inside couldn&amp;rsquo;t last long. I wrote the program at the base and brought it to the competition venue. To prevent the program from being lost, I found a charger. Because when running, the lithium battery without a charging cable would instantly lose power, causing the program to disappear. So it was also lucky that it could move.&lt;/p&gt;
+&lt;p&gt;I didn&amp;rsquo;t really expect anything; I felt like I was just implementing this little project according to my own ideas. Later, when they announced the first prize, surprisingly, it wasn&amp;rsquo;t me. I didn&amp;rsquo;t feel very disappointed, as it was fun anyway. But when the person who went up to receive the award wasn&amp;rsquo;t me, everyone present was quite astonished.&lt;/p&gt;
+&lt;p&gt;Then the award presenter said there was a mistake, and I ended up winning first place after all.&lt;/p&gt;
+&lt;h2 id=&#34;failure&#34;&gt;Failure
+&lt;/h2&gt;&lt;p&gt;The university was holding an electronic design competition open to all students.&lt;/p&gt;
+&lt;p&gt;I looked at the competition topics and thought I could give it a try. I found similar topics on Baidu. The content required a series of electronic components to be soldered together, and then the required program, which was provided, had to be loaded.&lt;/p&gt;
+&lt;p&gt;For me at that time, that pile of code was just a bunch of gibberish.&lt;/p&gt;
+&lt;p&gt;I went to the Hangzhou electronics market and navigated through countless shops, where the shop owners looked at me as if I were an alien.&lt;/p&gt;
+&lt;p&gt;I awkwardly asked for the electronic components I wanted. A kind shop owner gave me some LED bulbs.&lt;/p&gt;
+&lt;p&gt;She also said that I should use a flat-head soldering iron, as beginners can&amp;rsquo;t handle pointed ones well.&lt;/p&gt;
+&lt;p&gt;They were very curious about what I was trying to do.&lt;/p&gt;
+&lt;p&gt;After buying the components, I sat on the floor and, following the circuit diagram from that blog, soldered everything together on a chair.&lt;/p&gt;
+&lt;p&gt;Oh, right, at that time I hadn&amp;rsquo;t learned about circuit diagrams either, so I was just soldering based on my intuition.&lt;/p&gt;
+&lt;p&gt;I think I was quite naive then, trying to solder something without any basics. But I don&amp;rsquo;t have the right to mock him.&lt;/p&gt;
+&lt;p&gt;Then I started loading the program. I put the single chip into the socket, connected the socket to the power supply, and started trying to download the program provided by that blog to the chip using software.&lt;/p&gt;
+&lt;p&gt;I actually wanted to tell him, &amp;ldquo;Hey, are you sure the firmware program provided by this website matches your chip model? The chip is so hot; you actually inserted it backward, did you know? The chip has probably been burned out.&amp;rdquo;&lt;/p&gt;
+&lt;p&gt;But I knew nothing. I stupidly took something soldered from unknown components and a chip that was actually burned out to participate in the evaluation. Needless to say, I was despised by the expert judges.&lt;/p&gt;
+&lt;p&gt;What I didn&amp;rsquo;t know was that almost no one like me had registered for the competition. The university had an electronic design competition experimental class where you could learn everything you wanted to know about electronic design.&lt;/p&gt;
+&lt;p&gt;Although the competition was open to the whole university, only those from this experimental class would register.&lt;/p&gt;
+&lt;h2 id=&#34;my-first-program&#34;&gt;My First Program
+&lt;/h2&gt;&lt;p&gt;Later, I understood the existence of the electronic design class. I signed up for it in my sophomore year. I remember there was an exam and an interview, and you had to pass to get in.&lt;/p&gt;
+&lt;p&gt;I remember they asked me several questions, none of which I could answer. Later, they asked what my C language score was, and I said 97, then they said, &amp;ldquo;Okay, you&amp;rsquo;ve passed.&amp;rdquo;&lt;/p&gt;
+&lt;p&gt;The first week mainly covered basic soldering knowledge. Although it seems the story is just beginning, the story I want to tell in this article is also about to end.&lt;/p&gt;
+&lt;p&gt;The second week mainly covered knowledge about LED digital tubes. I received the distributed 51 development board. In the evening, I studied in my dorm how to make the digital tubes light up according to my ideas.&lt;/p&gt;
+&lt;p&gt;I learned how to display numbers that were constantly lit. I understood that I needed to select position first and then segment. I suddenly understood a lot; this was the most primitive time-slicing method.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://upload-images.jianshu.io/upload_images/4388248-cb4503278381c120.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&#34;
+	
+	
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;image.png&#34;
+	
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;I suddenly had an idea: I wanted to make the digital tubes achieve a marquee effect, with the outer ring continuously rotating.&lt;/p&gt;
+&lt;p&gt;I wrote and wrote and wrote.&lt;/p&gt;
+&lt;p&gt;I wrote it out.&lt;/p&gt;
+&lt;p&gt;I burned it in, ran it, and amazingly, it was just as I had imagined. The outer ring kept turning and turning, which was really beautiful. I was very happy.&lt;/p&gt;
+&lt;h2 id=&#34;afterword&#34;&gt;Afterword
+&lt;/h2&gt;&lt;p&gt;Perhaps that wasn&amp;rsquo;t my first program, after all, before that, the C language course required designing programs, so I should have written programs already.&lt;/p&gt;
+&lt;p&gt;However, for me, that marquee display was truly my first program in a real sense, completely created by me.&lt;/p&gt;
+&lt;p&gt;Even if I die someday, if the programs I write can continue to run, I can continue my life in another way.&lt;/p&gt;
+</description>
+        </item>
+        <item>
+        <title>Excerpts from Nowcoder Interview Experiences</title>
+        <link>https://nansenli.com/post/jianshu/%E9%9A%8F%E7%AC%94/%E7%89%9B%E5%AE%A2%E7%BD%91%E9%9D%A2%E7%BB%8F%E9%A2%98%E7%9B%AE%E6%91%98%E6%8A%84/</link>
+        <pubDate>Sat, 17 Mar 2018 06:42:00 +0000</pubDate>
+        
+        <guid>https://nansenli.com/post/jianshu/%E9%9A%8F%E7%AC%94/%E7%89%9B%E5%AE%A2%E7%BD%91%E9%9D%A2%E7%BB%8F%E9%A2%98%E7%9B%AE%E6%91%98%E6%8A%84/</guid>
+        <description>&lt;h2 id=&#34;source-alibaba-cainiao-java-internship-phone-interview-experience-failed&#34;&gt;Source: Alibaba Cainiao Java Internship Phone Interview Experience, Failed~!~
+&lt;/h2&gt;&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;https://www.nowcoder.com/discuss/67251?type=2&amp;amp;order=0&amp;amp;pos=7&amp;amp;page=1&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;https://www.nowcoder.com/discuss/67251?type=2&amp;order=0&amp;pos=7&amp;page=1&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Java-specific questions removed&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Is a user request handled by one thread per request on the server?
+After searching, I found there are two models: blocking and non-blocking. Nowadays, technology based on I/O multiplexing is generally used, like the Reactor pattern, which only needs one thread or a small number of threads to handle a large number of requests.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Server pressure handling strategies
+This is an even bigger question. After searching on Baidu, there are two points: caching and distributed systems. A netizen answered with message queues, which can alleviate situations with sudden large concurrent volumes.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Finding the top ten numbers among many numbers
+Can use a variant of quicksort&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;How is the time complexity of heap sort calculated?
+n×log n, which is n times, each time extracting from the heap bottom to top takes log n times&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;HTTP and TCP
+Not sure what specifically was being asked, perhaps the relationship?&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Why are four steps needed to close a TCP connection (four-way handshake)?
+Two FIN+ACK, with unsent data inserted in the middle. In situations with delayed ACK.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;source-netease-internal-referral-cc-development-offer-journey&#34;&gt;Source: NetEase Internal Referral (C++/C Development) Offer Journey
+&lt;/h2&gt;&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;https://www.nowcoder.com/discuss/3038?type=2&amp;amp;order=0&amp;amp;pos=15&amp;amp;page=4&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;https://www.nowcoder.com/discuss/3038?type=2&amp;order=0&amp;pos=15&amp;page=4&lt;/a&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;What forms of polymorphism exist in C++?
+Polymorphism is one interface with multiple implementations. Static polymorphism and dynamic polymorphism. Static polymorphism is implemented through generic programming, dynamic polymorphism is implemented through virtual functions.&lt;/li&gt;
+&lt;li&gt;How is dynamic binding implemented?
+Static binding: compile-time binding, called through objects
+Dynamic binding: runtime binding, implemented through addresses
+Dynamic binding is implemented through virtual tables.&lt;/li&gt;
+&lt;li&gt;What types of type conversions are there?
+C-style conversions, explicit type casting, implicit type conversion. C++ has four types of type conversions: static_cast, const_cast, dynamic_cast, reinterpret_cast. They are used for built-in static type conversion (int, float), removing the const property of a type, dynamic type conversion (must be parent-child classes), and reinterpreting types without substantive conversion (pointer forced conversion), respectively.&lt;/li&gt;
+&lt;li&gt;Memory alignment principles
+The basic data type members of a structure must start aligned at integer multiples of the member size, structures as members must align at integer multiples of the widest data type. The size of a structure is aligned at integer multiples of its largest internal member.&lt;/li&gt;
+&lt;li&gt;How are templates implemented?
+The compiler remembers the template name when encountering a template declaration. When called, it generates specific type code based on the parameter types passed to the template, then compiles it.&lt;/li&gt;
+&lt;li&gt;Uses of pointers and const?
+Const type pointers, pointers to const type, const type pointers to const type.&lt;/li&gt;
+&lt;li&gt;Virtual functions, pure virtual functions, virtual functions and destructors? Why should destructors be defined as virtual functions?
+&lt;a class=&#34;link&#34; href=&#34;http://liaoxl.github.io/blog/20131205/virtual-destructor/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;http://liaoxl.github.io/blog/20131205/virtual-destructor/&lt;/a&gt;
+According to this article, if defined as a virtual function and the child class also implements it, both the child class destructor and the parent class destructor will be called.&lt;/li&gt;
+&lt;li&gt;Inline functions&lt;/li&gt;
+&lt;li&gt;const and typedef&lt;/li&gt;
+&lt;li&gt;What sorting algorithms are there? How is quicksort implemented? Best-case time complexity, average time complexity.
+Insertion, bubble, heap sort, merge sort, bucket sort, shell sort, quicksort.&lt;/li&gt;
+&lt;li&gt;What is extern &amp;ldquo;C&amp;rdquo; used for?
+Mainly used to call programs written in C.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;2017-summer-internship-c-interview-experience-alibaba-netease-games-tencent-etc&#34;&gt;2017 Summer Internship C++ Interview Experience (Alibaba, NetEase Games, Tencent, etc.)
+&lt;/h2&gt;&lt;p&gt;Source: &lt;a class=&#34;link&#34; href=&#34;https://www.nowcoder.com/discuss/23512?type=2&amp;amp;order=0&amp;amp;pos=20&amp;amp;page=2&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;https://www.nowcoder.com/discuss/23512?type=2&amp;order=0&amp;pos=20&amp;page=2&lt;/a&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;How is map implemented? What are the differences between red-black trees and AVL trees? Why do data structures like map and set use red-black trees for implementation? Have you heard of skip-list?&lt;/li&gt;
+&lt;li&gt;Have you used vector.reserve()? How does the vector array grow?&lt;/li&gt;
+&lt;li&gt;Are you familiar with map-reduce?&lt;/li&gt;
+&lt;li&gt;Are you familiar with Linux? Directory permissions, what does 644 represent? What does executable permission for a directory represent?&lt;/li&gt;
+&lt;li&gt;Do you regularly use vi? Are you familiar with common Linux commands? (like awk, grep, etc.) Have you used gdb for debugging?&lt;/li&gt;
+&lt;li&gt;What are the differences between TCP/UDP? How is congestion control implemented? How is reliable transmission implemented? Applications of UDP?
+Reliable/Unreliable, Byte stream/Datagram, Connection-oriented/Connectionless, High overhead/Low overhead, With congestion control/Without congestion control, Full-duplex/Simplex
+The purpose of congestion control is to prevent sending data packets beyond the network&amp;rsquo;s capacity, involving all hosts and routers. Congestion control assumes packet loss occurs when data packets exceed the network&amp;rsquo;s capacity, so when sending data packets, it needs to start slowly, gradually reaching the network&amp;rsquo;s capacity, increasing the congestion window exponentially to the slow start threshold, then entering congestion avoidance state where the congestion window grows linearly until congestion occurs. If a data packet&amp;rsquo;s ACK is not received before the timeout timer expires, it&amp;rsquo;s assumed that congestion has occurred, then the slow start threshold is set to half the current window size, and the slow start algorithm is executed. If three duplicate ACK packets are received, it&amp;rsquo;s assumed the lost packet hasn&amp;rsquo;t been received, so the unacknowledged packet is retransmitted early rather than waiting for the timeout timer to expire - this is fast retransmit. In case of fast retransmit, the slow start algorithm isn&amp;rsquo;t executed; instead, the congestion window is set to the slow start threshold, then congestion avoidance is executed - this is fast recovery.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Author: Simon_
+Link: &lt;a class=&#34;link&#34; href=&#34;https://www.nowcoder.com/discuss/23512?type=2&amp;amp;order=0&amp;amp;pos=20&amp;amp;page=2&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;https://www.nowcoder.com/discuss/23512?type=2&amp;amp;order=0&amp;amp;pos=20&amp;amp;page=2&lt;/a&gt;
+Source: Nowcoder&lt;/p&gt;
+&lt;p&gt;Summary:&lt;/p&gt;
+&lt;p&gt;I think Alibaba focuses more on projects, distributed systems, and multithreading knowledge. NetEase Games seems to focus more on algorithms and C++. Tencent asks about everything, from C++ memory structure, RTTI, to network programming, to algorithm implementation for brain teasers. You can prepare better based on the company you&amp;rsquo;re applying to. Let&amp;rsquo;s work hard together.&lt;/p&gt;
+&lt;p&gt;Books I read before preparing for internships include &amp;ldquo;C++ Primer&amp;rdquo;, &amp;ldquo;Inside the C++ Object Model&amp;rdquo;, &amp;ldquo;Effective C++&amp;rdquo;, &amp;ldquo;The Annotated STL Sources&amp;rdquo;, &amp;ldquo;Coding Interviews&amp;rdquo;, plus some books on networking and operating systems. I also solved the first 120 problems on LeetCode.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;strong&gt;Some advice for juniors and sophomores looking for C++ development internships:&lt;/strong&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;ol&gt;
+&lt;li&gt;It&amp;rsquo;s best to go through C++ Primer several times before looking for internships. Make notes on things you don&amp;rsquo;t understand for future reference. When you read &amp;ldquo;The Object Model&amp;rdquo;, you&amp;rsquo;ll find that concepts you couldn&amp;rsquo;t understand in Primer will become clear. (For Primer study methods, I followed the first answer in &lt;a class=&#34;link&#34; href=&#34;https://www.zhihu.com/question/32087709&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;https://www.zhihu.com/question/32087709&lt;/a&gt;)&lt;/li&gt;
+&lt;li&gt;It&amp;rsquo;s also good to read &amp;ldquo;The Annotated STL Sources&amp;rdquo;. Interviewers love to ask about the underlying implementation or dynamic growth of vector, map, etc. It might be difficult to understand these concepts just by reading blogs and interview experiences.&lt;/li&gt;
+&lt;li&gt;&amp;ldquo;Coding Interviews&amp;rdquo; covers algorithm questions for most companies&amp;rsquo; first interviews. I think it&amp;rsquo;s best to understand each problem. The first 100 problems on LeetCode are indeed very classic, and you can reinforce your knowledge of binary search, hash, dynamic programming, binary trees, etc. through practice.&lt;/li&gt;
+&lt;li&gt;For networking, TCP/IP Illustrated Volume 1 is essential, and if you have time, you can also read Unix Network Programming. If you have even more time, it&amp;rsquo;s best to read through Chen Shuo&amp;rsquo;s &amp;ldquo;Linux Multithreaded Server Programming&amp;rdquo; to gain an understanding of multithreading.&lt;/li&gt;
+&lt;li&gt;The final piece of advice is to prepare as early as possible. During the resume submission and interview period, it&amp;rsquo;s only suitable to organize Nowcoder interview experiences and your own experiences, filling in knowledge gaps. After all, interview questions are random, and to perform better in interviews, it&amp;rsquo;s best to accumulate knowledge regularly.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/blockquote&gt;
+&lt;h2 id=&#34;cc-backend-development-tencent-internship-spring-recruitment-first-interview-failed&#34;&gt;C/C++ Backend Development Tencent Internship Spring Recruitment First Interview, Failed~
+&lt;/h2&gt;&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;https://www.nowcoder.com/discuss/68508?type=0&amp;amp;order=0&amp;amp;pos=8&amp;amp;page=0&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;https://www.nowcoder.com/discuss/68508?type=0&amp;order=0&amp;pos=8&amp;page=0&lt;/a&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;The underlying implementation of vector. I talked a lot about this, so he asked what specific actions insert performs, what resize function calls, and expansion situations.&lt;/li&gt;
+&lt;li&gt;Inter-process communication mechanisms
+Pipe, Named pipe (FIFO)
+Signal
+Message queue
+Shared memory
+Semaphore
+Socket&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;alibaba-cainiao-network-second-interview&#34;&gt;Alibaba Cainiao Network Second Interview
+&lt;/h2&gt;&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;http://blog.csdn.net/caishenfans/article/details/44496581&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;http://blog.csdn.net/caishenfans/article/details/44496581&lt;/a&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Difference between fill and memset
+fill is an STL algorithm that calls the copy constructor; for basic types, it should directly copy bit by bit. memset is a C algorithm that copies byte by byte to the position pointed to by the original pointer.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;C++ memory management methods
+RAII stands for Resource Acquisition Is Initialization
+It utilizes the guarantee that destructors of stack objects will be automatically called during stack unwinding to correctly release previously acquired resources. RAII only works properly if stack unwinding executes normally. Both function calls and normal C++ exception handling flow (exceptions within try-catch blocks) involve stack unwinding.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Implementation of smart pointers
+When another smart pointer copies the current smart pointer, the reference counter increments by 1.
+When assignment occurs between two smart pointers, the reference count of the object pointed to by the left pointer decrements by 1, and the right one increments by 1.
+At destruction, the reference count similarly decrements by 1.
+When the reference count reaches 0, the object is reclaimed.
+A set of operators is redefined: -&amp;gt; pointer, returns a pointer to the original pointer. Dereference *T, returns the dereference of the original pointer.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;alibaba-internship-phone-interview-experience-over-an-hour&#34;&gt;Alibaba Internship Phone Interview Experience, Over an Hour
+&lt;/h2&gt;&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;https://www.nowcoder.com/discuss/3836&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;https://www.nowcoder.com/discuss/3836&lt;/a&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;What is a binary balanced tree, how to insert nodes, delete nodes, describe the key steps.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;how-students-can-get-an-alibaba-technical-offer-alibaba-internship-interview-experience-successful&#34;&gt;How Students Can Get an Alibaba Technical Offer: &amp;ldquo;Alibaba Internship Interview Experience (Successful)&amp;rdquo;
+&lt;/h2&gt;&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;https://yq.aliyun.com/articles/6395&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;https://yq.aliyun.com/articles/6395&lt;/a&gt;&lt;/p&gt;
+&lt;h2 id=&#34;alibaba-c-development-internship-second-and-third-interview-experience-failed&#34;&gt;Alibaba C++ Development Internship Second and Third Interview Experience (Failed)
+&lt;/h2&gt;&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;https://www.nowcoder.com/discuss/27801?type=2&amp;amp;order=3&amp;amp;pos=55&amp;amp;page=1&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;https://www.nowcoder.com/discuss/27801?type=2&amp;order=3&amp;pos=55&amp;page=1&lt;/a&gt;&lt;/p&gt;
+&lt;h2 id=&#34;internship-interview-summary&#34;&gt;Internship Interview Summary
+&lt;/h2&gt;&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;https://www.nowcoder.com/discuss/25302?type=2&amp;amp;order=3&amp;amp;pos=190&amp;amp;page=1&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;https://www.nowcoder.com/discuss/25302?type=2&amp;order=3&amp;pos=190&amp;page=1&lt;/a&gt;&lt;/p&gt;
+&lt;h2 id=&#34;zhihu-and-nowcoder-summary&#34;&gt;Zhihu and Nowcoder Summary
+&lt;/h2&gt;&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;http://link.zhihu.com/?target=https%3A//www.nowcoder.com/discuss/27801%3Ftype%3D2%26order%3D3%26pos%3D55%26page%3D1&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Alibaba C++ Development Internship Second and Third Interview Experience (Failed)&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;http://link.zhihu.com/?target=https%3A//www.nowcoder.com/discuss/27739%3Ftype%3D2%26order%3D3%26pos%3D57%26page%3D2&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;30 Interview Experiences for [Alibaba, Tencent, ByteDance] and 12 Other Companies in [C++ Direction]&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;http://link.zhihu.com/?target=https%3A//www.nowcoder.com/discuss/27616%3Ftype%3D2%26order%3D3%26pos%3D61%26page%3D1&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Alibaba Campus Recruitment Internship First Interview Experience&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;http://link.zhihu.com/?target=https%3A//www.nowcoder.com/discuss/27349%3Ftype%3D2%26order%3D3%26pos%3D71%26page%3D1&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Goodbye to Alibaba Autumn Recruitment&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;http://link.zhihu.com/?target=https%3A//www.nowcoder.com/discuss/26107%3Ftype%3D2%26order%3D3%26pos%3D125%26page%3D1&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Baidu Three Interviews (Offer) &amp;amp;&amp;amp; Alibaba Four Interviews (In Progress)&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;http://link.zhihu.com/?target=https%3A//www.nowcoder.com/discuss/25923%3Ftype%3D2%26order%3D3%26pos%3D143%26page%3D1&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Non-Key University Junior Spring Recruitment Internship Interview Experience&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;http://link.zhihu.com/?target=https%3A//www.nowcoder.com/discuss/25302%3Ftype%3D2%26order%3D3%26pos%3D190%26page%3D1&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Internship Interview Summary&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;http://link.zhihu.com/?target=https%3A//www.nowcoder.com/discuss/24900%3Ftype%3D2%26order%3D3%26pos%3D230%26page%3D1&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Alibaba, Morgan, Nomura, Tencent, Microsoft, TuDuck Technology Interview Experience Sharing&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;http://link.zhihu.com/?target=http%3A//www.nowcoder.com/discuss/8343%3Ftype%3D0%26order%3D3%26pos%3D3950%26page%3D1%26from%3Dmnks201&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Alibaba Four Interview Experiences + Successfully Received Offer&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;http://link.zhihu.com/?target=https%3A//www.nowcoder.com/discuss/18460%3Ftype%3D2%26order%3D3%26pos%3D57%26page%3D2%26from%3Dmnks201&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;My 2016 Written Test and Interview Experience (For Next Year&amp;rsquo;s Juniors and Sophomores)&lt;/a&gt;&lt;/p&gt;
+&lt;h2 id=&#34;alibaba-2017-internship-interview-sharing-three-technical-interviews--hr-interview&#34;&gt;Alibaba 2017 Internship Interview Sharing (Three Technical Interviews + HR Interview)
+&lt;/h2&gt;&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;https://www.nowcoder.com/discuss/25446&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;https://www.nowcoder.com/discuss/25446&lt;/a&gt;&lt;/p&gt;
+</description>
+        </item>
+        <item>
+        <title>Cainiao B2B First Interview Experience Record, C&#43;&#43; Backend Development</title>
+        <link>https://nansenli.com/post/jianshu/%E9%9A%8F%E7%AC%94/%E8%8F%9C%E9%B8%9Fb2b%E9%9D%A2%E8%AF%95%E4%B8%80%E9%9D%A2%E7%BB%8F%E5%8E%86%E8%AE%B0%E5%BD%95c&#43;&#43;%E5%90%8E%E5%8F%B0%E5%BC%80%E5%8F%91/</link>
+        <pubDate>Fri, 09 Mar 2018 02:30:00 +0000</pubDate>
+        
+        <guid>https://nansenli.com/post/jianshu/%E9%9A%8F%E7%AC%94/%E8%8F%9C%E9%B8%9Fb2b%E9%9D%A2%E8%AF%95%E4%B8%80%E9%9D%A2%E7%BB%8F%E5%8E%86%E8%AE%B0%E5%BD%95c&#43;&#43;%E5%90%8E%E5%8F%B0%E5%BC%80%E5%8F%91/</guid>
+        <description>&lt;h2 id=&#34;introduction&#34;&gt;Introduction
+&lt;/h2&gt;&lt;p&gt;I&amp;rsquo;m a second-year master&amp;rsquo;s student, and my advisor doesn&amp;rsquo;t allow internships, but I interviewed for spring internships to gain interview experience.
+My resume is very simple and modest, so the interviewer&amp;rsquo;s questions were relatively easy. The first interview was scheduled for 7 PM on March 8, 2018. Since I was doing an Alibaba test the night before, the interviewer said the interview would be postponed by one day, which gave me time to prepare. I especially reviewed basic knowledge again, which was very helpful.&lt;/p&gt;
+&lt;h2 id=&#34;self-introduction&#34;&gt;Self-introduction
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Omitted&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;project-experience-and-its-impact-on-you&#34;&gt;Project experience and its impact on you
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Omitted&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;what-are-the-four-layers-of-network-architecture&#34;&gt;What are the four layers of network architecture?
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;I answered the physical layer which includes fiber optics, switches, and twisted pairs; the network layer with IP; the transport layer with TCP, ICMP, and UDP; and the application layer with HTTP and DNS.&lt;/li&gt;
+&lt;li&gt;Standard answer: Actually, the TCP/IP standard does not define functionalities corresponding to the ISO data link layer and physical layer. Instead, it defines protocols like the Address Resolution Protocol (ARP), which provides interfaces between TCP/IP protocol data structures and actual physical hardware. So the first layer should be the link layer, which includes the ARP protocol and device drivers.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;which-layer-are-you-most-familiar-with&#34;&gt;Which layer are you most familiar with?
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;I answered the transport layer with the TCP protocol.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;what-are-the-differences-between-tcp-and-udp&#34;&gt;What are the differences between TCP and UDP?
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Omitted&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;three-way-handshake-and-four-way-termination&#34;&gt;Three-way handshake and four-way termination?
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Omitted&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;why-are-you-familiar-with-this-process&#34;&gt;Why are you familiar with this process?
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;I answered that I mainly learned it from books. Of course, I also used it in projects and observed the process by capturing packets with tcpdump and Wireshark.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;how-does-io-multiplexing-work&#34;&gt;How does I/O multiplexing work?
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;I answered that it&amp;rsquo;s because multithreading is resource-intensive, etc. After listening for a while, the interviewer said that&amp;rsquo;s not what they meant; they wanted to know the implementation principle of I/O multiplexing. I replied that I had forgotten, but I remembered that in the implementation process of select, poll, and epoll, efficient data structures are used to check which file descriptor has I/O operations.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;The standard answer is:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;The efficiency of epoll lies in the fact that when we call epoll_ctl to insert millions of handles, epoll_wait can still return quickly and effectively give us the handles with events. This is because when we call epoll_create, the kernel not only creates a file node in the epoll file system for us and builds a red-black tree in the kernel cache to store the sockets passed by epoll_ctl later, but also establishes a list to store ready events. When epoll_wait is called, it only needs to observe whether there is data in this list. If there is data, it returns; if there is no data, it sleeps until it returns when the timeout time arrives, even if the list has no data. Therefore, epoll_wait is very efficient.
+Another fatal weakness of traditional select/poll is that when you have a large socket collection, due to network latency, only part of the sockets are &amp;ldquo;active&amp;rdquo; at any time, but select/poll will linearly scan the entire collection for each call, causing efficiency to decrease linearly. However, epoll does not have this problem; it only operates on &amp;ldquo;active&amp;rdquo; sockets - this is because in the kernel implementation, epoll is implemented based on the callback function on each fd. Therefore, only &amp;ldquo;active&amp;rdquo; sockets will actively call the callback function, while other idle state sockets will not.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;explain-polymorphism-in-c&#34;&gt;Explain polymorphism in C++
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Omitted&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;what-is-a-destructor-and-what-is-its-purpose&#34;&gt;What is a destructor and what is its purpose?
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Omitted&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;what-is-the-purpose-of-a-virtual-destructor&#34;&gt;What is the purpose of a virtual destructor?
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Omitted&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;should-the-parent-classs-destructor-be-set-as-a-virtual-function&#34;&gt;Should the parent class&amp;rsquo;s destructor be set as a virtual function?
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Definitely yes&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;what-is-the-difference-between-shallow-copy-and-deep-copy&#34;&gt;What is the difference between shallow copy and deep copy?
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Omitted&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;if-a-function-accepts-an-object-as-a-parameter-is-that-a-shallow-copy-or-a-deep-copy&#34;&gt;If a function accepts an object as a parameter, is that a shallow copy or a deep copy?
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;I answered that it depends on the copy constructor. But I wasn&amp;rsquo;t sure about the specifics.&lt;/li&gt;
+&lt;li&gt;The standard answer should be: if references or pointers are used, no copying occurs. If the passed class hasn&amp;rsquo;t implemented a copy constructor, it&amp;rsquo;s a shallow copy. If it has implemented a copy constructor, it depends on whether the implemented copy constructor performs a shallow or deep copy.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;what-is-a-pointer-in-c-language&#34;&gt;What is a pointer in C language?
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;I answered that it&amp;rsquo;s first a variable that stores the address of the internal data type or object it points to. Dereferencing it retrieves the data or object.&lt;/li&gt;
+&lt;li&gt;In fact, a pointer is not necessarily a variable; there are also constant pointers, but generally, &amp;ldquo;pointer&amp;rdquo; is short for &amp;ldquo;pointer variable.&amp;rdquo; So the above expression doesn&amp;rsquo;t have any issues.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;what-is-the-difference-between-formal-parameters-and-actual-parameters&#34;&gt;What is the difference between formal parameters and actual parameters?
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Honestly, I wasn&amp;rsquo;t clear about this either. I said I didn&amp;rsquo;t know but explained pointers, references, and regular parameter passing.&lt;/li&gt;
+&lt;li&gt;Later I found out that actual parameters (arguments) refer to the parameters passed in when an external function is called, and formal parameters are the parameters used when processing inside the function.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;introduce-the-simulated-annealing-algorithm&#34;&gt;Introduce the simulated annealing algorithm
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Because it was mentioned on my resume&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;what-is-entropy-and-what-does-an-increase-represent&#34;&gt;What is entropy, and what does an increase represent?
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Omitted&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;the-department-primarily-uses-java-development-would-you-be-resistant-if-asked-to-do-java-development&#34;&gt;The department primarily uses Java development. Would you be resistant if asked to do Java development?
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Omitted&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;what-would-you-like-to-know-about-the-company&#34;&gt;What would you like to know about the company?
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Omitted&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;aftermath&#34;&gt;Aftermath
+&lt;/h2&gt;&lt;p&gt;Total duration was 27 minutes. I spoke rather quickly and was a bit nervous and excited. That&amp;rsquo;s about it, and I&amp;rsquo;ll add more if I remember anything else.&lt;/p&gt;
+</description>
+        </item>
+        <item>
+        <title>C&#43;&#43; Smart Pointers Learning</title>
+        <link>https://nansenli.com/post/jianshu/%E9%9A%8F%E7%AC%94/c&#43;&#43;-%E6%99%BA%E8%83%BD%E6%8C%87%E9%92%88%E5%AD%A6%E4%B9%A0/</link>
+        <pubDate>Sat, 03 Feb 2018 09:30:00 +0000</pubDate>
+        
+        <guid>https://nansenli.com/post/jianshu/%E9%9A%8F%E7%AC%94/c&#43;&#43;-%E6%99%BA%E8%83%BD%E6%8C%87%E9%92%88%E5%AD%A6%E4%B9%A0/</guid>
+        <description>&lt;h2 id=&#34;introduction&#34;&gt;Introduction
+&lt;/h2&gt;&lt;p&gt;Smart pointers seem to be used more and more widely. It&amp;rsquo;s necessary to remember them well.&lt;/p&gt;
+&lt;h2 id=&#34;shared_ptr&#34;&gt;shared_ptr
+&lt;/h2&gt;&lt;p&gt;shared_ptr allows multiple pointers to point to the same object, while unique_ptr exclusively owns the object it points to.&lt;/p&gt;
+&lt;p&gt;Example:&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;#include &amp;lt;memory&amp;gt;
+#include &amp;lt;thread&amp;gt;
+
+class A
+{
+    char * str;
+    public:
+    A(){
+        str = new char[20];
+        printf(&amp;#34;Constructor\n&amp;#34;);
+    }
+    ~A()
+    {
+        printf(&amp;#34;Destructor\n&amp;#34;);
+        delete [] str;
+    }
+
+};
+
+std::shared_ptr&amp;lt;A&amp;gt; xixi;
+
+void test()
+{
+    std::shared_ptr&amp;lt;A&amp;gt; shared_a = std::make_shared&amp;lt;A&amp;gt;();
+    xixi = shared_a;
+    printf(&amp;#34;%d\n&amp;#34;, xixi.use_count());
+}
+
+int main()
+{   
+    test();
+    std::this_thread::sleep_for(std::chrono::seconds(1));
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;In the example above, xixi is a global smart pointer that will only release the object it points to when the program ends. If we remove &lt;code&gt;xixi = shared_a&lt;/code&gt;, we would see the destructor being called before the delay in the main function.&lt;/p&gt;
+&lt;h2 id=&#34;unique_ptr&#34;&gt;unique_ptr
+&lt;/h2&gt;&lt;p&gt;unique_ptr exclusively owns an object and can only be moved (std::move) between different unique_ptrs. There is no make_unique statement. You can only construct a unique_ptr by passing a pointer to an object in the constructor.&lt;/p&gt;
+&lt;p&gt;Use cases for unique_ptr:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Providing exception safety guarantees for dynamically allocated resources
+Let&amp;rsquo;s look at the following code:&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;void Func()
+{
+    int *p = new int(5);
+
+    // ...（may throw an exception）
+
+    delete p;
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;This is our traditional approach: after we dynamically allocate memory, it&amp;rsquo;s possible that our subsequent code might not execute the delete operation due to an exception being thrown or early exit (if statement).&lt;/p&gt;
+&lt;p&gt;The solution is to use unique_ptr to manage dynamic memory. As long as the unique_ptr is successfully created, its destructor will be called, ensuring that dynamic resources are released.&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;void Func()
+{
+    unique_ptr&amp;lt;int&amp;gt; p(new int(5));
+
+    // ...（may throw an exception）
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&#34;weak_ptr&#34;&gt;weak_ptr
+&lt;/h2&gt;&lt;p&gt;weak_ptr is also a powerful pointer, despite its name suggesting weakness. weak_ptr doesn&amp;rsquo;t control the lifecycle of an object and is used when you need to use an object without owning it. weak_ptr can be promoted to a shared_ptr if the object still exists.&lt;/p&gt;
+</description>
+        </item>
+        <item>
+        <title>Thoughts on the Phenomenon of Telecom Hijacking Red Packet Ads on CSDN Mobile</title>
+        <link>https://nansenli.com/post/jianshu/%E9%9A%8F%E7%AC%94/%E5%85%B3%E4%BA%8Ecsdn%E7%A7%BB%E5%8A%A8%E7%AB%AF%E8%A2%AB%E7%94%B5%E4%BF%A1%E5%8A%AB%E6%8C%81%E7%BA%A2%E5%8C%85%E5%B9%BF%E5%91%8A%E7%9A%84%E7%8E%B0%E8%B1%A1%E4%B8%8E%E6%84%9F%E6%83%B3/</link>
+        <pubDate>Sun, 31 Dec 2017 06:24:00 +0000</pubDate>
+        
+        <guid>https://nansenli.com/post/jianshu/%E9%9A%8F%E7%AC%94/%E5%85%B3%E4%BA%8Ecsdn%E7%A7%BB%E5%8A%A8%E7%AB%AF%E8%A2%AB%E7%94%B5%E4%BF%A1%E5%8A%AB%E6%8C%81%E7%BA%A2%E5%8C%85%E5%B9%BF%E5%91%8A%E7%9A%84%E7%8E%B0%E8%B1%A1%E4%B8%8E%E6%84%9F%E6%83%B3/</guid>
+        <description>&lt;h2 id=&#34;introduction&#34;&gt;Introduction
+&lt;/h2&gt;&lt;p&gt;Recently I suspected being hijacked by China Telecom, so I&amp;rsquo;m recording my analysis here.&lt;/p&gt;
+&lt;h2 id=&#34;phenomenon&#34;&gt;Phenomenon
+&lt;/h2&gt;&lt;p&gt;I use a Sichuan Telecom SIM card with my Samsung S8. When visiting the following websites, I am redirected to a full-screen advertisement, which is the Alipay red packet interface. The user experience is terrible. Below is an address that gets hijacked:
+&lt;a class=&#34;link&#34; href=&#34;http://m.blog.csdn.net/skyroben/article/details/70195575&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;http://m.blog.csdn.net/skyroben/article/details/70195575&lt;/a&gt;&lt;/p&gt;
+&lt;h2 id=&#34;analysis&#34;&gt;Analysis
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;When using SS proxy (4G) on my phone to visit the above website, there&amp;rsquo;s no advertisement or hijacking&lt;/li&gt;
+&lt;li&gt;With direct connection via Telecom WiFi, hijacking occurs&lt;/li&gt;
+&lt;li&gt;Using hotspot and accessing the URL from a computer, no hijacking occurs&lt;/li&gt;
+&lt;li&gt;Using hotspot and changing the user agent on the computer to an Android client, hijacking occurs with some probability??&lt;/li&gt;
+&lt;li&gt;Without using hotspot, with a wired connection (Telecom) on the computer, changing the user agent to Android client, hijacking occurs with some probability??&lt;/li&gt;
+&lt;li&gt;Using Chrome on mobile (S8), connected to Telecom WiFi, adding view-source: before the URL to view the source code, and saving the results for comparison on the computer, no differences were found&lt;/li&gt;
+&lt;li&gt;Using Chrome on mobile (S8), connected to China Mobile WiFi, hijacking occurs! (Script cache?)&lt;/li&gt;
+&lt;li&gt;Using iOS Chrome, connected to Telecom WiFi, no hijacking&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;summary&#34;&gt;Summary
+&lt;/h2&gt;&lt;p&gt;Since the webpage source code doesn&amp;rsquo;t change after hijacking, it might be a script hijack. Since hijacking also occurs when using China Mobile WiFi, we can&amp;rsquo;t rule out the possibility that CSDN added the advertisements themselves. Using an SS proxy can bypass the hijacking, indicating that the hijacking is regional. The fact that computers and iOS devices aren&amp;rsquo;t hijacked suggests that the hijacking specifically targets Android browsers.&lt;/p&gt;
+&lt;h2 id=&#34;conclusion&#34;&gt;Conclusion
+&lt;/h2&gt;&lt;p&gt;Regular users should avoid using Telecom networks and Android phones, and all websites are advised to use HTTPS encryption.&lt;/p&gt;
+</description>
+        </item>
+        <item>
+        <title>Learning Cocos Creator from Zero - Part One</title>
+        <link>https://nansenli.com/post/jianshu/%E9%9A%8F%E7%AC%94/cocos-creator-%E4%BB%8E%E9%9B%B6%E5%AD%A6%E4%B9%A0-%E4%B8%80/</link>
+        <pubDate>Tue, 27 Jun 2017 09:31:00 +0000</pubDate>
+        
+        <guid>https://nansenli.com/post/jianshu/%E9%9A%8F%E7%AC%94/cocos-creator-%E4%BB%8E%E9%9B%B6%E5%AD%A6%E4%B9%A0-%E4%B8%80/</guid>
+        <description>&lt;h2 id=&#34;introduction&#34;&gt;Introduction
+&lt;/h2&gt;&lt;p&gt;Despite the prejudice against Cocos2dx on Zhihu, it&amp;rsquo;s better to try different game engines rather than hesitating about which one to use. Moreover, this software was developed by Chinese developers, so it shouldn&amp;rsquo;t be too difficult to learn.&lt;/p&gt;
+&lt;p&gt;Although I haven&amp;rsquo;t learned JavaScript before, it seems possible to look up references while writing. JavaScript tutorial: &lt;a class=&#34;link&#34; href=&#34;http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;The current version of Cocos Creator is 1.5.1, and there&amp;rsquo;s a detailed manual on the official website at &lt;a class=&#34;link&#34; href=&#34;http://www.cocos.com/docs/creator/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;http://www.cocos.com/docs/creator/&lt;/a&gt;. This article is a simplified version of the &amp;ldquo;Quick Start&amp;rdquo; chapter, with improved gameplay elements.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;http://upload-images.jianshu.io/upload_images/4388248-97260c179cc5ff7e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&#34;
+	
+	
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;Zhihu user expression.png&#34;
+	
+	
+&gt;&lt;/p&gt;
+&lt;h2 id=&#34;installation&#34;&gt;Installation
+&lt;/h2&gt;&lt;p&gt;Installation on Windows is straightforward. For Mac installation, there are a few things to note.
+After downloading the installation package from the official website and dragging it to Applications, when you open it, you&amp;rsquo;ll see a warning that the application is from an untrusted developer. In this case, open System Preferences &amp;gt; Security &amp;amp; Privacy &amp;gt; General, where you&amp;rsquo;ll see an &amp;ldquo;Open&amp;rdquo; button. After opening it this way, you won&amp;rsquo;t be reminded again.&lt;/p&gt;
+&lt;h2 id=&#34;quick-start&#34;&gt;Quick Start
+&lt;/h2&gt;&lt;p&gt;&lt;img src=&#34;http://upload-images.jianshu.io/upload_images/4388248-d9d3f43b9e1e4063.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&#34;
+	
+	
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;dashboard&#34;
+	
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;From the dashboard, you can create a new project or open an existing one. According to the tutorial&amp;rsquo;s quick start section, we can download an initial project from this address: &lt;a class=&#34;link&#34; href=&#34;https://github.com/cocos-creator/tutorial-first-game/releases/download/v1.2/start_project.zip&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Download Initial Project&lt;/a&gt;.
+Or click here to download: &lt;a class=&#34;link&#34; href=&#34;https://github.com/cocos-creator/tutorial-first-game/releases/download/v1.2/start_project.zip&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;https://github.com/cocos-creator/tutorial-first-game/releases/download/v1.2/start_project.zip&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;The final game effect of this quick start is like this: &lt;a class=&#34;link&#34; href=&#34;http://fbdemos.avosapps.com/star-catcher/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;http://fbdemos.avosapps.com/star-catcher/&lt;/a&gt;.
+This game is somewhat similar to coin-catching games, but more difficult. The game has a very steep learning curve. Due to the monster&amp;rsquo;s horizontal acceleration being difficult to control and its jumping up and down, it&amp;rsquo;s almost impossible to catch the stars. There&amp;rsquo;s also no storyline. We should make it more fun.&lt;/p&gt;
+&lt;p&gt;After opening the project, let&amp;rsquo;s learn about the interface. The resource panel is in the bottom left. In the initial project, a project directory has already been established with the most basic resources and directory organization. &amp;ldquo;Assets&amp;rdquo; means assets, and under this main directory, there are three subdirectories containing fonts, audio, and image resources.&lt;/p&gt;
+&lt;h2 id=&#34;creating-a-scene&#34;&gt;Creating a Scene
+&lt;/h2&gt;&lt;p&gt;Scenes are crucial because they contain game scripts, and scenes are automatically loaded when the game starts. Click the plus sign under assets in the resource panel to create a scene, rename it to &amp;ldquo;game&amp;rdquo;, and double-click to open it.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;http://upload-images.jianshu.io/upload_images/4388248-3d7fb1d661e357d0.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&#34;
+	
+	
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;Screenshot 2017-06-20 11.01.53.png&#34;
+	
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;The hierarchy manager in the upper left shows the relationships between nodes in the current scene.
+In this game scene, there is only one root node, canvas. Currently, this node is empty, meaning nothing will be loaded.&lt;/p&gt;
+&lt;p&gt;Click the root node in the right data panel to set the resolution of the root node. The height of the resolution is set to adaptive, always 960x640, consistent with the aspect ratio of the first-generation iPhone. I guess this resolution should be dp rather than pixel.&lt;/p&gt;
+&lt;h2 id=&#34;scene-graphics&#34;&gt;Scene Graphics
+&lt;/h2&gt;&lt;p&gt;Drag the background resource onto the canvas, making the background a child node of the canvas. Be careful not to make the background another root node.
+Use Cmd+S to save the changes.
+Select the background image in the scene, then find the fourth button of the transform tools in the upper left, which are translation, rotation, scaling, and rectangular transformation. Select rectangular transformation and transform the background into a size that can cover the scene, as shown below.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;http://upload-images.jianshu.io/upload_images/4388248-8e82dacdb3280ea5.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&#34;
+	
+	
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;Scene graphics&#34;
+	
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;The above steps can also be done by directly setting the properties of the background, setting the position to 0, 0, and the width and height to 1600 and 800.&lt;/p&gt;
+&lt;p&gt;Use the same method to add the ground.
+Use the same method to insert the little monster and rename it to &amp;ldquo;player&amp;rdquo;. The default anchor point of the image is the center position. Here, set the y value of the anchor to 0.&lt;/p&gt;
+&lt;h2 id=&#34;creating-scripts&#34;&gt;Creating Scripts
+&lt;/h2&gt;&lt;p&gt;Then comes an amazing moment: the tutorial actually says it doesn&amp;rsquo;t matter if you don&amp;rsquo;t know programming, &lt;strong&gt;you can let your programmer friend solve it&lt;/strong&gt;. Indeed, all I&amp;rsquo;m missing now is a programmer.&lt;/p&gt;
+&lt;p&gt;Create a JavaScript script file at the location of the player resource in the image below, and open it.
+&lt;img src=&#34;http://upload-images.jianshu.io/upload_images/4388248-f9e3103c2df38876.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&#34;
+	
+	
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;Script&#34;
+	
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Insert the following content in properties, which are the physical properties of the little monster:&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;        jumpHeight:0,
+        jumpDuration:0,
+        maxMoveSpeed:0,
+        accel:0,
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Select the little monster image, find &amp;ldquo;Add Component&amp;rdquo; in the property box, add the player script to the player image, and set the relevant parameters.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;http://upload-images.jianshu.io/upload_images/4388248-177701eab4de6cc6.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&#34;
+	
+	
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;Parameter setting&#34;
+	
+	
+&gt;&lt;/p&gt;
+&lt;h2 id=&#34;improving-the-script&#34;&gt;Improving the Script
+&lt;/h2&gt;&lt;p&gt;Let&amp;rsquo;s continue to add other functions to the script. First is the jumping action.&lt;/p&gt;
+&lt;p&gt;Add this section below properties:&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;    setJumpAction: function(){
+        var jumpUp = cc.moveBy(this.jumpDuration, cc.p(0,this.jumpHeight)).easing(cc.easeQuadraticActionOut());
+        var jumpDown = cc.moveBy(this.jumpDuration, cc.p(0,-this.jumpHeight)).easing(cc.easeQuadraticActionIn());
+        return cc.repeatForever(cc.sequence(jumpUp, jumpDown));
+    },
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;moveBy is an official API. Looking up its usage in the official API, the first parameter is the movement duration, and the second parameter is the movement position. Obviously, it moves up a certain distance. The easing that follows generates a gradual motion, producing easeQuadraticActionIn and Out, which are quadratic curves. The original tutorial used cubic curves, which differ too much from physical movement in the real world.&lt;/p&gt;
+&lt;p&gt;Add the following code to the onLoad method to start the animation:&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;    onLoad: function () {
+        this.jumpAction = this.setJumpAction();
+        this.node.runAction(this.jumpAction);
+    },
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Now click the play button to view the initial effect.&lt;/p&gt;
+</description>
+        </item>
+        <item>
+        <title>How to Set Up Xiaohe Shuangpin in Microsoft Pinyin for Windows 10</title>
+        <link>https://nansenli.com/post/jianshu/%E9%9A%8F%E7%AC%94/%E5%A6%82%E4%BD%95%E5%9C%A8windows10%E7%9A%84%E5%BE%AE%E8%BD%AF%E6%8B%BC%E9%9F%B3%E4%B8%AD%E8%AE%BE%E7%BD%AE%E5%B0%8F%E9%B9%A4%E5%8F%8C%E6%8B%BC/</link>
+        <pubDate>Mon, 05 Jun 2017 06:16:00 +0000</pubDate>
+        
+        <guid>https://nansenli.com/post/jianshu/%E9%9A%8F%E7%AC%94/%E5%A6%82%E4%BD%95%E5%9C%A8windows10%E7%9A%84%E5%BE%AE%E8%BD%AF%E6%8B%BC%E9%9F%B3%E4%B8%AD%E8%AE%BE%E7%BD%AE%E5%B0%8F%E9%B9%A4%E5%8F%8C%E6%8B%BC/</guid>
+        <description>&lt;h2 id=&#34;introduction&#34;&gt;Introduction
+&lt;/h2&gt;&lt;p&gt;The latest version of Windows 10 system&amp;rsquo;s built-in Pinyin input method already supports Xiaohe Shuangpin. Mom no longer has to worry about me installing bloatware!&lt;/p&gt;
+&lt;p&gt;After 4 years, here&amp;rsquo;s an updated advanced setup method. Mom no longer has to worry about me configuring keys one by one:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Press Win + R, type regedit, and open Registry Editor&lt;/li&gt;
+&lt;li&gt;Find the &lt;code&gt;Computer\HKEY_CURRENT_USER\Software\Microsoft\InputMethod\Settings\CHS&lt;/code&gt; entry&lt;/li&gt;
+&lt;li&gt;Create a new string value named UserDefinedDoublePinyinScheme0 with the value &lt;code&gt;小鹤双拼*2*^*iuvdjhcwfg^xmlnpbksqszxkrltvyovt&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Open Microsoft Pinyin input method settings and set &lt;code&gt;Xiaohe Shuangpin&lt;/code&gt; as the default scheme for Shuangpin.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;If you&amp;rsquo;re concerned about registry modifications causing system issues, here&amp;rsquo;s a manual configuration method:&lt;/p&gt;
+&lt;h2 id=&#34;step-1-open-settings&#34;&gt;Step 1: Open Settings
+&lt;/h2&gt;&lt;p&gt;Although the system&amp;rsquo;s Pinyin input method doesn&amp;rsquo;t have Xiaohe Shuangpin by default, we can customize it.&lt;/p&gt;
+&lt;p&gt;First, find the Shuangpin settings location. If you can&amp;rsquo;t find it, you can refer to the animated GIF:
+&lt;img src=&#34;http://upload-images.jianshu.io/upload_images/4388248-89a2a034b1eeacac.gif?imageMogr2/auto-orient/strip&#34;
+	
+	
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;Find settings&#34;
+	
+	
+&gt;&lt;/p&gt;
+&lt;h2 id=&#34;step-2-edit-custom-shuangpin&#34;&gt;Step 2: Edit Custom Shuangpin
+&lt;/h2&gt;&lt;p&gt;The Shuangpin settings are shown in the figure below&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;http://upload-images.jianshu.io/upload_images/4388248-fad73bc68cb1d79a.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&#34;
+	
+	
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;Xiaohe scheme&#34;
+	
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Except for the template section which doesn&amp;rsquo;t need to be set, the rest should be configured according to the image. One is the zero initial mode, and the other is custom key mapping. Custom key mapping should be set according to the preview in the image. Note that there is no &amp;ldquo;er&amp;rdquo; syllable in Xiaohe Shuangpin, so you can set it to either the &amp;ldquo;e&amp;rdquo; or &amp;ldquo;r&amp;rdquo; key. Also, both the &amp;ldquo;ue&amp;rdquo; and &amp;ldquo;ve&amp;rdquo; syllables are set to the &amp;ldquo;T&amp;rdquo; key. Here&amp;rsquo;s a tip: when setting keys, you can directly press the corresponding key instead of finding the key to set.&lt;/p&gt;
+&lt;h2 id=&#34;step-3-save-the-scheme&#34;&gt;Step 3: Save the Scheme
+&lt;/h2&gt;&lt;p&gt;If the add button becomes available, it means the scheme is set correctly. After adding the scheme, set it as the default scheme, and you can now use Xiaohe Shuangpin!&lt;/p&gt;
+&lt;h2 id=&#34;testing&#34;&gt;Testing
+&lt;/h2&gt;&lt;p&gt;Perform a typing test to check if the settings are correct&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;http://upload-images.jianshu.io/upload_images/4388248-7cf2b91fa49d4923.gif?imageMogr2/auto-orient/strip&#34;
+	
+	
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;Testing&#34;
+	
+	
+&gt;&lt;/p&gt;
+&lt;h2 id=&#34;step-4-click-like&#34;&gt;Step 4: Click &amp;ldquo;Like&amp;rdquo;
+&lt;/h2&gt;&lt;p&gt;Click &amp;ldquo;Like&amp;rdquo; to improve page ranking and help more people use Xiaohe Shuangpin on Windows 10&lt;/p&gt;
+</description>
+        </item>
+        
+    </channel>
+</rss>

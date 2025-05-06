@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="从例子入手。 #include &lt;stdio.h&gt; void my_itoa(int n,char s[]) { int i,j,sign; if((sign=n)&lt;0) //记录符号 n=-n; //使n成为正数 i=0; do{ s[i++]=n%10+&#39;0&#39;; //取下一个数字 }while((n/=10)&gt;0); //循环相除 if(sign&lt;0) s[i++]=&#39;-&#39;; s[i]=&#39;\\0&#39;; for(j=i-1;j&gt;=0;j--) //生成的数字是逆序的，所以要逆序输出 printf(&#34;%c&#34;,s[j]); } void main() { int n; char str[100]; my_itoa(-123,str); printf(&#34;\\n&#34;); printf(&#34;%d\\n&#34;,my_atoi(&#34;123&#34;)); system(&#34;pause&#34;); } 将上述文件保存到test.cpp文件，然后编译运行。 然后我们来调试一下，看看具体应该怎么调试。按照下面的方式来调试代码。 linan@linan-PC:~$ gdb test GNU gdb (Debian 7.12-6) 7.12.0.20161007-git Copyright (C) 2016 Free Software Foundation, Inc. License GPLv3+: GNU GPL version 3 or later &lt;http://gnu.org/licenses/gpl.html&gt; This is free software: you are free to change and redistribute it.">
+<title>GDB从零学习</title>
+
+<link rel='canonical' href='https://nansenli.com/zh-cn/post/jianshu/c&#43;&#43;/gdb-%E4%BB%8E%E9%9B%B6%E5%AD%A6%E4%B9%A0/'>
+
+<link rel="stylesheet" href="/scss/style.min.1084ac713783b88e0bd9807a58068e10aae22e99420f94a9234654a4e199baa4.css"><meta property='og:title' content="GDB从零学习">
+<meta property='og:description' content="从例子入手。 #include &lt;stdio.h&gt; void my_itoa(int n,char s[]) { int i,j,sign; if((sign=n)&lt;0) //记录符号 n=-n; //使n成为正数 i=0; do{ s[i++]=n%10+&#39;0&#39;; //取下一个数字 }while((n/=10)&gt;0); //循环相除 if(sign&lt;0) s[i++]=&#39;-&#39;; s[i]=&#39;\\0&#39;; for(j=i-1;j&gt;=0;j--) //生成的数字是逆序的，所以要逆序输出 printf(&#34;%c&#34;,s[j]); } void main() { int n; char str[100]; my_itoa(-123,str); printf(&#34;\\n&#34;); printf(&#34;%d\\n&#34;,my_atoi(&#34;123&#34;)); system(&#34;pause&#34;); } 将上述文件保存到test.cpp文件，然后编译运行。 然后我们来调试一下，看看具体应该怎么调试。按照下面的方式来调试代码。 linan@linan-PC:~$ gdb test GNU gdb (Debian 7.12-6) 7.12.0.20161007-git Copyright (C) 2016 Free Software Foundation, Inc. License GPLv3+: GNU GPL version 3 or later &lt;http://gnu.org/licenses/gpl.html&gt; This is free software: you are free to change and redistribute it.">
+<meta property='og:url' content='https://nansenli.com/zh-cn/post/jianshu/c&#43;&#43;/gdb-%E4%BB%8E%E9%9B%B6%E5%AD%A6%E4%B9%A0/'>
+<meta property='og:site_name' content='Nansen Li'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2018-04-25T16:45:00&#43;00:00'/><meta property='article:modified_time' content='2018-04-25T16:45:00&#43;00:00'/>
+<meta name="twitter:title" content="GDB从零学习">
+<meta name="twitter:description" content="从例子入手。 #include &lt;stdio.h&gt; void my_itoa(int n,char s[]) { int i,j,sign; if((sign=n)&lt;0) //记录符号 n=-n; //使n成为正数 i=0; do{ s[i++]=n%10+&#39;0&#39;; //取下一个数字 }while((n/=10)&gt;0); //循环相除 if(sign&lt;0) s[i++]=&#39;-&#39;; s[i]=&#39;\\0&#39;; for(j=i-1;j&gt;=0;j--) //生成的数字是逆序的，所以要逆序输出 printf(&#34;%c&#34;,s[j]); } void main() { int n; char str[100]; my_itoa(-123,str); printf(&#34;\\n&#34;); printf(&#34;%d\\n&#34;,my_atoi(&#34;123&#34;)); system(&#34;pause&#34;); } 将上述文件保存到test.cpp文件，然后编译运行。 然后我们来调试一下，看看具体应该怎么调试。按照下面的方式来调试代码。 linan@linan-PC:~$ gdb test GNU gdb (Debian 7.12-6) 7.12.0.20161007-git Copyright (C) 2016 Free Software Foundation, Inc. License GPLv3+: GNU GPL version 3 or later &lt;http://gnu.org/licenses/gpl.html&gt; This is free software: you are free to change and redistribute it.">
+    <link rel="shortcut icon" href="/favicon.ico" />
+
+  
+    
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-WC38C3XE3J"></script>
+      <script>
+        var doNotTrack = false;
+        if ( false ) {
+          var dnt = (navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack);
+          var doNotTrack = (dnt == "1" || dnt == "yes");
+        }
+        if (!doNotTrack) {
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-WC38C3XE3J');
+        }
+      </script>
+    
+  
+
+
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="切换菜单">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/zh-cn/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/avatar_hu96777ff80939aaa7d938dddcc232fcc6_1414962_300x0_resize_box_3.png" width="300"
+                            height="300" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+                    <span class="emoji">🌈</span>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/zh-cn">Nansen Li</a></h1>
+            <h2 class="site-description"></h2>
+        </div>
+    </header><ol class="menu-social">
+            
+                <li>
+                    <a 
+                        href='https://github.com/linanwx'
+                        target="_blank"
+                        title="GitHub"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://www.linkedin.com/in/nansen-li-3bb0a3146/'
+                        target="_blank"
+                        title="LinkedIn"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-brand-linkedin"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M8 11v5" /><path d="M8 8v.01" /><path d="M12 16v-5" /><path d="M16 16v-3a2 2 0 1 0 -4 0" /><path d="M3 7a4 4 0 0 1 4 -4h10a4 4 0 0 1 4 4v10a4 4 0 0 1 -4 4h-10a4 4 0 0 1 -4 -4z" /></svg>
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='index.xml'
+                        target="_blank"
+                        title="RSS"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-rss" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="5" cy="19" r="1" />
+  <path d="M4 4a16 16 0 0 1 16 16" />
+  <path d="M4 11a9 9 0 0 1 9 9" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/zh-cn/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+</svg>
+
+
+
+                
+                <span>主页</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/zh-cn/page/archives/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>归档</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/zh-cn/page/search/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
+
+
+
+                
+                <span>搜索</span>
+            </a>
+        </li>
+        
+        <li class="menu-bottom-section">
+            <ol class="menu">
+                    
+                        <li id="i18n-switch">  
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-language" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M4 5h7" />
+  <path d="M9 3v2c0 4.418 -2.239 8 -5 8" />
+  <path d="M5 9c-.003 2.144 2.952 3.908 6.7 4" />
+  <path d="M12 20l4 -9l4 9" />
+  <path d="M19.1 18h-6.2" />
+</svg>
+
+
+
+                            <select name="language" title="language" onchange="window.location.href = this.selectedOptions[0].value">
+                                
+                                    <option value="https://nansenli.com/" >English</option>
+                                
+                                    <option value="https://nansenli.com/zh-cn/" selected>中文</option>
+                                
+                            </select>
+                        </li>
+                    
+                
+
+                
+                    <li id="dark-mode-toggle">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <span>暗色模式</span>
+                    </li>
+                
+            </ol>
+        </li>
+    </ol>
+</aside>
+
+    
+
+            <main class="main full-width">
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/zh-cn/categories/c&#43;&#43;/" >
+                C&#43;&#43;
+            </a>
+        
+    </header>
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/zh-cn/post/jianshu/c&#43;&#43;/gdb-%E4%BB%8E%E9%9B%B6%E5%AD%A6%E4%B9%A0/">GDB从零学习</a>
+        </h2>
+    
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">Apr 25, 2018</time>
+            </div>
+        
+
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+                <time class="article-time--reading">
+                    阅读时长: 3 分钟
+                </time>
+            </div>
+        
+    </footer>
+    
+
+    
+        <footer class="article-translations">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-language" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M4 5h7" />
+  <path d="M9 3v2c0 4.418 -2.239 8 -5 8" />
+  <path d="M5 9c-.003 2.144 2.952 3.908 6.7 4" />
+  <path d="M12 20l4 -9l4 9" />
+  <path d="M19.1 18h-6.2" />
+</svg>
+
+
+
+            <div>
+                
+                    <a href="https://nansenli.com/post/jianshu/c&#43;&#43;/gdb-%E4%BB%8E%E9%9B%B6%E5%AD%A6%E4%B9%A0/" class="link">English</a>
+                
+            </div>
+        </footer>
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <p>从例子入手。</p>
+<pre tabindex="0"><code>#include &lt;stdio.h&gt;
+void my_itoa(int n,char s[])  
+{  
+    int i,j,sign;  
+  
+    if((sign=n)&lt;0)    //记录符号  
+        n=-n;         //使n成为正数  
+    i=0;  
+    do{  
+        s[i++]=n%10+&#39;0&#39;;    //取下一个数字  
+    }while((n/=10)&gt;0);      //循环相除  
+  
+    if(sign&lt;0)  
+        s[i++]=&#39;-&#39;;  
+    s[i]=&#39;\0&#39;;  
+    for(j=i-1;j&gt;=0;j--)        //生成的数字是逆序的，所以要逆序输出  
+        printf(&#34;%c&#34;,s[j]);  
+}  
+  
+  
+void main()  
+{  
+    int n;  
+    char str[100];  
+    my_itoa(-123,str);  
+    printf(&#34;\n&#34;);  
+    printf(&#34;%d\n&#34;,my_atoi(&#34;123&#34;));  
+    system(&#34;pause&#34;);  
+}  
+</code></pre><p>将上述文件保存到test.cpp文件，然后编译运行。</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/4388248-365b4bab0dedb77f.gif?imageMogr2/auto-orient/strip"
+	
+	
+	
+	loading="lazy"
+	
+		alt="Peek 2018-04-16 17-25.gif"
+	
+	
+></p>
+<p>然后我们来调试一下，看看具体应该怎么调试。按照下面的方式来调试代码。</p>
+<pre tabindex="0"><code>linan@linan-PC:~$ gdb test
+GNU gdb (Debian 7.12-6) 7.12.0.20161007-git
+Copyright (C) 2016 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later &lt;http://gnu.org/licenses/gpl.html&gt;
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.  Type &#34;show copying&#34;
+and &#34;show warranty&#34; for details.
+This GDB was configured as &#34;x86_64-linux-gnu&#34;.
+Type &#34;show configuration&#34; for configuration details.
+For bug reporting instructions, please see:
+&lt;http://www.gnu.org/software/gdb/bugs/&gt;.
+Find the GDB manual and other documentation resources online at:
+&lt;http://www.gnu.org/software/gdb/documentation/&gt;.
+For help, type &#34;help&#34;.
+Type &#34;apropos word&#34; to search for commands related to &#34;word&#34;...
+Reading symbols from test...done.
+(gdb) l
+2	
+3	int func(int n)
+4	{
+5	    int sum=0,i;
+6	    for(i=0; i&lt;n; i++)
+7	    {
+8	        sum+=i;
+9	    }
+10	    return sum;
+11	}
+(gdb) 
+12	
+13	main()
+14	{
+15	    int i;
+16	    long result = 0;
+17	    for(i=1; i&lt;=100; i++)
+18	    {
+19	        result += i;
+20	    }
+21	
+(gdb) 
+22	    printf(&#34;result[1-100] = %d \n&#34;, result );
+23	    printf(&#34;result[1-250] = %d \n&#34;, func(250) );
+24	}
+(gdb) 
+Line number 25 out of range; test.cpp has 24 lines.
+(gdb) break 15
+Breakpoint 1 at 0x706: file test.cpp, line 15.
+(gdb) break func
+Breakpoint 2 at 0x6d7: file test.cpp, line 5.
+(gdb) info break
+Num     Type           Disp Enb Address            What
+1       breakpoint     keep y   0x0000000000000706 in main() at test.cpp:15
+2       breakpoint     keep y   0x00000000000006d7 in func(int) at test.cpp:5
+(gdb) run
+Starting program: /home/linan/test 
+
+Breakpoint 1, main () at test.cpp:16
+16	    long result = 0;
+(gdb) next
+17	    for(i=1; i&lt;=100; i++)
+(gdb) next
+19	        result += i;
+(gdb) next
+17	    for(i=1; i&lt;=100; i++)
+(gdb) continue
+Continuing.
+result[1-100] = 5050 
+
+Breakpoint 2, func (n=250) at test.cpp:5
+5	    int sum=0,i;
+(gdb) p sum
+$1 = 32767
+(gdb) n
+6	    for(i=0; i&lt;n; i++)
+(gdb) p sum
+$2 = 0
+(gdb) p i
+$3 = -134225552
+(gdb) print i
+$4 = -134225552
+(gdb) n
+8	        sum+=i;
+(gdb) print i
+$5 = 0
+(gdb) bt
+#0  func (n=250) at test.cpp:8
+#1  0x000055555555474c in main () at test.cpp:23
+(gdb) help bt
+Print backtrace of all stack frames, or innermost COUNT frames.
+With a negative argument, print outermost -COUNT frames.
+Use of the &#39;full&#39; qualifier also prints the values of the local variables.
+Use of the &#39;no-filters&#39; qualifier prohibits frame filters from executing
+on this backtrace.
+
+(gdb) bt
+#0  func (n=250) at test.cpp:8
+#1  0x000055555555474c in main () at test.cpp:23
+(gdb) finish
+Run till exit from #0  func (n=250) at test.cpp:8
+0x000055555555474c in main () at test.cpp:23
+23	    printf(&#34;result[1-250] = %d \n&#34;, func(250) );
+Value returned is $6 = 31125
+(gdb) c
+Continuing.
+result[1-250] = 31125 
+[Inferior 1 (process 11480) exited normally]
+(gdb) 
+</code></pre><p><img src="https://upload-images.jianshu.io/upload_images/4388248-288cfdbb3c85ce2b.gif?imageMogr2/auto-orient/strip"
+	
+	
+	
+	loading="lazy"
+	
+		alt="Peek 2018-04-16 17-39.gif"
+	
+	
+></p>
+<h2 id="使用gdb之前">使用GDB之前
+</h2><p>首先确保你的程序在编译时使用了-g参数。这样才能将相关信息插入到可执行程序中。这些相关信息对程序是没有帮助的，但是对调试有帮助。</p>
+<h2 id="使用gdb启动调试">使用GDB启动调试
+</h2><p>启动GDB的方法有以下几种：</p>
+<ul>
+<li>
+<p>gdb <!-- raw HTML omitted -->
+program也就是你的执行文件，一般在当然目录下。</p>
+</li>
+<li>
+<p>gdb <!-- raw HTML omitted --> core
+用gdb同时调试一个运行程序和core文件，core是程序非法执行后core dump后产生的文件。</p>
+</li>
+<li>
+<p>gdb <!-- raw HTML omitted --> <!-- raw HTML omitted -->
+如果你的程序是一个服务程序，那么你可以指定这个服务程序运行时的进程ID。gdb会自动 <strong>attach</strong> 上去，并调试他。program应该在PATH环境变量中搜索得到。</p>
+</li>
+</ul>
+<h2 id="使用gdb的新手注意事项">使用GDB的新手注意事项
+</h2><p>GDB调试的时候需要知道源码的文件在哪里，在上面的例子中，源码和运行程序在一起。但是实际中不可能这样。在GDB命令加入参数-d或者在运行时使用direcotry 命令来添加源码目录。</p>
+<p>其他注意点：</p>
+<pre tabindex="0"><code>    -symbols &lt;file&gt; 
+    -s &lt;file&gt; 
+    从指定文件中读取符号表。
+
+    -se file 
+    从指定文件中读取符号表信息，并把他用在可执行文件中。
+
+    -core &lt;file&gt;
+    -c &lt;file&gt; 
+    调试时core dump的core文件。
+</code></pre>
+</section>
+
+
+    <footer class="article-footer">
+    
+
+    </footer>
+
+
+    
+</article>
+
+    
+
+    
+
+     
+    
+        
+    <div class="disqus-container">
+    <div id="disqus_thread"></div>
+<script>
+    window.disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "nansenli" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+<style>
+    .disqus-container {
+        background-color: var(--card-background);
+        border-radius: var(--card-border-radius);
+        box-shadow: var(--shadow-l1);
+        padding: var(--card-padding);
+    }
+</style>
+
+<script>
+    window.addEventListener('onColorSchemeChange', (e) => {
+        if (typeof DISQUS == 'object') {
+            DISQUS.reset({
+                reload: true
+            });
+        }
+    })
+</script>
+
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+        2025 Nansen Li（李楠森）
+    </section>
+    
+    <section class="powerby">
+        使用 <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> 构建 <br />
+        主题 <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.30.0">Stack</a></b> 由 <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a> 设计
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.1e9a3bafd846ced4c345d084b355fb8c7bae75701c338f8a1f8a82c780137826.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>

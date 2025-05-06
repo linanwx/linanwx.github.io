@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="Problem: Given two decimal numbers as strings, return their product as a string. Requirements: Do not use built-in big number arithmetic. String length ≤ 110 Inputs have no leading zeros Strings contain only digits Thoughts Initially, I didn&rsquo;t notice the prohibition on using built-in functions, so I directly used Python&rsquo;s str and int functions, which ranked in the top 10%&hellip; Later, I realized the problem doesn&rsquo;t allow built-in functions. I&rsquo;m not sure if this Python feature counts as built-in big number arithmetic.">
+<title>Weekly LeetCode — 43. Multiply Strings</title>
+
+<link rel='canonical' href='https://nansenli.com/post/jianshu/%E7%AE%97%E6%B3%95/%E6%AF%8F%E5%91%A8%E4%B8%80%E9%81%93leetcode-43--multiply-strings-/'>
+
+<link rel="stylesheet" href="/scss/style.min.1084ac713783b88e0bd9807a58068e10aae22e99420f94a9234654a4e199baa4.css"><meta property='og:title' content="Weekly LeetCode — 43. Multiply Strings">
+<meta property='og:description' content="Problem: Given two decimal numbers as strings, return their product as a string. Requirements: Do not use built-in big number arithmetic. String length ≤ 110 Inputs have no leading zeros Strings contain only digits Thoughts Initially, I didn&rsquo;t notice the prohibition on using built-in functions, so I directly used Python&rsquo;s str and int functions, which ranked in the top 10%&hellip; Later, I realized the problem doesn&rsquo;t allow built-in functions. I&rsquo;m not sure if this Python feature counts as built-in big number arithmetic.">
+<meta property='og:url' content='https://nansenli.com/post/jianshu/%E7%AE%97%E6%B3%95/%E6%AF%8F%E5%91%A8%E4%B8%80%E9%81%93leetcode-43--multiply-strings-/'>
+<meta property='og:site_name' content='Nansen Li'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2017-06-19T06:39:00&#43;00:00'/><meta property='article:modified_time' content='2017-06-19T06:39:00&#43;00:00'/>
+<meta name="twitter:title" content="Weekly LeetCode — 43. Multiply Strings">
+<meta name="twitter:description" content="Problem: Given two decimal numbers as strings, return their product as a string. Requirements: Do not use built-in big number arithmetic. String length ≤ 110 Inputs have no leading zeros Strings contain only digits Thoughts Initially, I didn&rsquo;t notice the prohibition on using built-in functions, so I directly used Python&rsquo;s str and int functions, which ranked in the top 10%&hellip; Later, I realized the problem doesn&rsquo;t allow built-in functions. I&rsquo;m not sure if this Python feature counts as built-in big number arithmetic.">
+    <link rel="shortcut icon" href="/favicon.ico" />
+
+  
+    
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-WC38C3XE3J"></script>
+      <script>
+        var doNotTrack = false;
+        if ( false ) {
+          var dnt = (navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack);
+          var doNotTrack = (dnt == "1" || dnt == "yes");
+        }
+        if (!doNotTrack) {
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-WC38C3XE3J');
+        }
+      </script>
+    
+  
+
+
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="Toggle Menu">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/avatar_hu96777ff80939aaa7d938dddcc232fcc6_1414962_300x0_resize_box_3.png" width="300"
+                            height="300" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+                    <span class="emoji">🌈</span>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">Nansen Li</a></h1>
+            <h2 class="site-description"></h2>
+        </div>
+    </header><ol class="menu-social">
+            
+                <li>
+                    <a 
+                        href='https://github.com/linanwx'
+                        target="_blank"
+                        title="GitHub"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://www.linkedin.com/in/nansen-li-3bb0a3146/'
+                        target="_blank"
+                        title="LinkedIn"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-brand-linkedin"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M8 11v5" /><path d="M8 8v.01" /><path d="M12 16v-5" /><path d="M16 16v-3a2 2 0 1 0 -4 0" /><path d="M3 7a4 4 0 0 1 4 -4h10a4 4 0 0 1 4 4v10a4 4 0 0 1 -4 4h-10a4 4 0 0 1 -4 -4z" /></svg>
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='index.xml'
+                        target="_blank"
+                        title="RSS"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-rss" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="5" cy="19" r="1" />
+  <path d="M4 4a16 16 0 0 1 16 16" />
+  <path d="M4 11a9 9 0 0 1 9 9" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+</svg>
+
+
+
+                
+                <span>Home</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/page/archives/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>Archives</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/page/search/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
+
+
+
+                
+                <span>Search</span>
+            </a>
+        </li>
+        
+        <li class="menu-bottom-section">
+            <ol class="menu">
+                    
+                        <li id="i18n-switch">  
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-language" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M4 5h7" />
+  <path d="M9 3v2c0 4.418 -2.239 8 -5 8" />
+  <path d="M5 9c-.003 2.144 2.952 3.908 6.7 4" />
+  <path d="M12 20l4 -9l4 9" />
+  <path d="M19.1 18h-6.2" />
+</svg>
+
+
+
+                            <select name="language" title="language" onchange="window.location.href = this.selectedOptions[0].value">
+                                
+                                    <option value="https://nansenli.com/" selected>English</option>
+                                
+                                    <option value="https://nansenli.com/zh-cn/" >中文</option>
+                                
+                            </select>
+                        </li>
+                    
+                
+
+                
+                    <li id="dark-mode-toggle">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <span>Dark Mode</span>
+                    </li>
+                
+            </ol>
+        </li>
+    </ol>
+</aside>
+
+    
+
+            <main class="main full-width">
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/algorithms/" >
+                Algorithms
+            </a>
+        
+    </header>
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/post/jianshu/%E7%AE%97%E6%B3%95/%E6%AF%8F%E5%91%A8%E4%B8%80%E9%81%93leetcode-43--multiply-strings-/">Weekly LeetCode — 43. Multiply Strings</a>
+        </h2>
+    
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">Jun 19, 2017</time>
+            </div>
+        
+
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+                <time class="article-time--reading">
+                    5 minute read
+                </time>
+            </div>
+        
+    </footer>
+    
+
+    
+        <footer class="article-translations">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-language" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M4 5h7" />
+  <path d="M9 3v2c0 4.418 -2.239 8 -5 8" />
+  <path d="M5 9c-.003 2.144 2.952 3.908 6.7 4" />
+  <path d="M12 20l4 -9l4 9" />
+  <path d="M19.1 18h-6.2" />
+</svg>
+
+
+
+            <div>
+                
+                    <a href="https://nansenli.com/zh-cn/post/jianshu/%E7%AE%97%E6%B3%95/%E6%AF%8F%E5%91%A8%E4%B8%80%E9%81%93leetcode-43--multiply-strings-/" class="link">中文</a>
+                
+            </div>
+        </footer>
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <h2 id="problem">Problem:
+</h2><p>Given two decimal numbers as strings, return their product as a string. Requirements:</p>
+<ol>
+<li>Do not use built-in big number arithmetic.</li>
+<li>String length ≤ 110</li>
+<li>Inputs have no leading zeros</li>
+<li>Strings contain only digits</li>
+</ol>
+<h2 id="thoughts">Thoughts
+</h2><p>Initially, I didn&rsquo;t notice the prohibition on using built-in functions, so I directly used Python&rsquo;s <code>str</code> and <code>int</code> functions, which ranked in the top 10%&hellip; Later, I realized the problem doesn&rsquo;t allow built-in functions. I&rsquo;m not sure if this Python feature counts as built-in big number arithmetic. This is a big number multiplication problem, and there are many established algorithms for this.</p>
+<p>My initial Python submission, which beat 88% of submissions:</p>
+<pre tabindex="0"><code>class Solution(object):
+    def multiply(self, num1, num2):
+        return str(int(num1)*int(num2))
+</code></pre><p>The most basic algorithm would be to simulate manual multiplication. First, you need to implement <strong>string addition</strong> and <strong>multi-digit multiplication by a single digit</strong>. With these, you can calculate multi-digit by multi-digit multiplication. For example, to calculate <code>12345*67890</code>, you compute <code>12345*6 + 12345*7 + 12345*8 + 12345*9 + 12345*0</code>, then add trailing zeros to each result and sum them. However, this approach would be relatively slow.</p>
+<p>Moreover, CPUs can already handle additions that don&rsquo;t overflow, so we should leverage this. We can improve the above algorithm by calculating <code>12345*67890</code> as <code>(12300 + 45)*(67800 + 90)</code>. This breaks down into 4 multiplication operations. For numbers with trailing zeros, we can remove them and add them back to the result later. If none of these four multiplications overflow, there&rsquo;s no problem. Otherwise, we can continue decomposing.</p>
+<p>The Karatsuba algorithm can further improve this approach.
+We notice that in the addition, there&rsquo;s <code>12300*90+45*67800</code>. We can use previously calculated results, namely <code>12300*67800</code> and <code>45*90</code>, and then calculate <code>(12300+45)*(67800+90) - 12300*67800 - 45*90</code> to get <code>12300*90 + 45*67800</code>. This reduces the number of multiplication operations by one.</p>
+<p>Implementing the Karatsuba algorithm would be a bit more complex, so I&rsquo;ll first submit an O(n²) algorithm (the basic version) to see its performance, and then improve it. (Results show that the manual calculation method is already quite fast.)</p>
+<h2 id="first-version">First Version
+</h2><p>First, we need to write a string addition algorithm. Looking at the input and output data types, they&rsquo;re strings. So we can add them digit by digit. We can use two integer arrays to store each digit, then add them to create a third array. Some digits in this third array will exceed 10, so we carry over from the lower digits to the higher ones. Finally, we convert this array back to a string.</p>
+<p>Although local testing was fine, the submission was very slow, ranking only at the 10th percentile.</p>
+<h2 id="improvement">Improvement
+</h2><p>Theoretically, this algorithm shouldn&rsquo;t be slow, but in practice it is. The issue might be with unnecessary conversions between integers and strings. In the above algorithm, when calculating multiplication, we converted strings to numbers and then back to strings, which might be causing the extra time. So, we should directly add the results to the final result.</p>
+<p>After submission, the runtime was 9ms, beating 50% of submissions.</p>
+<h2 id="further-improvement">Further Improvement
+</h2><p>Repeatedly converting the same strings might be consuming time.
+We can cache string conversions - convert once and store the result, then retrieve directly without additional calculations when needed.</p>
+<p>The final code, ready for compilation and execution. Runtime: 6ms, beating 76% of submissions. It seems string conversion was indeed the performance bottleneck.</p>
+<pre tabindex="0"><code>#include &lt;stdio.h&gt;
+#include &lt;string&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+
+
+using namespace std;
+
+const int BINARY = 10;
+
+class Solution
+{
+  private:
+    vector&lt;int&gt; result;
+    string _num1, _num2;
+    long num1buff[120];
+    long num2buff[120];
+
+  public:
+    string multiply(string num1, string num2)
+    {
+        result.clear();
+        result.resize(num1.length() + num2.length() + 1);
+        memset(num1buff, -1 , sizeof(long)*120);
+        memset(num2buff, -1 , sizeof(long)*120);
+        _num1 = num1;
+        _num2 = num2;
+        for(auto &amp;c : _num1){
+            c-=&#39;0&#39;;
+        }
+        for(auto &amp;c : _num2){
+            c-=&#39;0&#39;;
+        }
+        // This is a recursive process. Let&#39;s see when it terminates.
+        // It terminates when two numbers multiplied don&#39;t overflow.
+        // Assuming int is 30 bits in binary (for multiplication, we need 30 bits), 
+        // the original two numbers must be 15 bits, which is about 32768.
+        // So two 4-digit numbers multiplied shouldn&#39;t overflow.
+
+        // Using recursion to calculate the product
+        addMultiply(0,num1.length(), 0, num2.length());
+
+        string ret;
+        int i = result.size() -1;
+        for(; i&gt;0; i--)
+        {
+            if(result[i] != 0) break;
+        }
+        for(; i&gt;=0; i--)
+        {
+            ret.push_back(result[i] + &#39;0&#39;);
+        }
+        return ret;
+    }
+
+    void addMultiply(int a1, int a2, int b1, int b2 )
+    {;
+        // Check if direct calculation is possible
+        if (a1 == a2 || b1 == b2)
+            return;
+        if (a2 - a1 &lt; 10 &amp;&amp; b2 - b1 &lt; 10)
+        {
+            long int_num1 = getLong1(a1, a2);
+            long int_num2 = getLong2(b1, b2);
+            long output = int_num1 * int_num2;
+            int pos = _num1.length() + _num2.length() - a2 - b2;
+            while (output != 0 || result[pos] &gt;= BINARY)
+            {
+                long a = output % BINARY;
+                result[pos] += a;
+                result[pos + 1] += result[pos] / BINARY;
+                result[pos] %= BINARY;
+                output /= BINARY;
+                pos++;
+            }
+            return;
+        }
+        // Otherwise, split the longer number
+        if(a2 - a1 &gt;= 10){
+            addMultiply(a1, (a2 + a1)/2, b1, b2);
+            addMultiply((a2 + a1)/2, a2, b1, b2);
+        }
+        else {
+            addMultiply(a1, a2, (b1+b2)/2, b2);
+            addMultiply(a1, a2, b1, (b1+b2)/2);
+        }
+    }
+    long getLong1(int a, int b){
+        long ret = 0;
+        if(num1buff[a] != -1) return num1buff[a];
+        for(int i=a; i!=b;i++){
+            ret *= BINARY;
+            ret += _num1[i] ;
+        }
+        num1buff[a] = ret;
+        return ret;
+    }
+    long getLong2(int a, int b){
+        long ret = 0;
+        if(num2buff[a] != -1) return num2buff[a];
+        for(int i=a; i!=b;i++){
+            ret *= BINARY;
+            ret += _num2[i] ;
+        }
+        num2buff[a] = ret;
+        return ret;
+    }
+};
+
+int main(void)
+{
+    Solution s;
+    for(int i=0;i&lt;10000;i++){
+        cout &lt;&lt; s.multiply(&#34;12345678901&#34;, &#34;100&#34;) &lt;&lt; endl;
+        cout &lt;&lt; s.multiply(&#34;100&#34;, &#34;100&#34;) &lt;&lt; endl;
+    }
+    return 0;
+}
+</code></pre><p>Final ranking: beats 70% of submissions</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/4388248-a0745beb2a29152e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240"
+	
+	
+	
+	loading="lazy"
+	
+		alt="Ranking"
+	
+	
+></p>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+
+    </footer>
+
+
+    
+</article>
+
+    
+
+    
+
+     
+    
+        
+    <div class="disqus-container">
+    <div id="disqus_thread"></div>
+<script>
+    window.disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "nansenli" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+<style>
+    .disqus-container {
+        background-color: var(--card-background);
+        border-radius: var(--card-border-radius);
+        box-shadow: var(--shadow-l1);
+        padding: var(--card-padding);
+    }
+</style>
+
+<script>
+    window.addEventListener('onColorSchemeChange', (e) => {
+        if (typeof DISQUS == 'object') {
+            DISQUS.reset({
+                reload: true
+            });
+        }
+    })
+</script>
+
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+        2025 Nansen Li（李楠森）
+    </section>
+    
+    <section class="powerby">
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.30.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.1e9a3bafd846ced4c345d084b355fb8c7bae75701c338f8a1f8a82c780137826.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>

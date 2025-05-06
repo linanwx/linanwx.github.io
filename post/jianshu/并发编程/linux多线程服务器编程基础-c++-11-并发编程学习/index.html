@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="Introduction Previous versions of C++ didn&rsquo;t support threads natively. Instead, you had to use libraries like pthread. Using C++&rsquo;s built-in thread support makes programs more unified and concise. Header Files &lt;thread&gt;: This header file contains the std::thread and std::this_thread classes, along with functions for managing threads. It&rsquo;s the main file for implementing threads. &lt;atomic&gt;: This header file contains std::atomic and std::atomic_flag classes, which are the main files for implementing atomic operations.">
+<title>Linux Multithreaded Server Programming Basics: C&#43;&#43;11 Concurrent Programming</title>
+
+<link rel='canonical' href='https://nansenli.com/post/jianshu/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/linux%E5%A4%9A%E7%BA%BF%E7%A8%8B%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%BC%96%E7%A8%8B%E5%9F%BA%E7%A1%80-c&#43;&#43;-11-%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E5%AD%A6%E4%B9%A0/'>
+
+<link rel="stylesheet" href="/scss/style.min.1084ac713783b88e0bd9807a58068e10aae22e99420f94a9234654a4e199baa4.css"><meta property='og:title' content="Linux Multithreaded Server Programming Basics: C++11 Concurrent Programming">
+<meta property='og:description' content="Introduction Previous versions of C++ didn&rsquo;t support threads natively. Instead, you had to use libraries like pthread. Using C++&rsquo;s built-in thread support makes programs more unified and concise. Header Files &lt;thread&gt;: This header file contains the std::thread and std::this_thread classes, along with functions for managing threads. It&rsquo;s the main file for implementing threads. &lt;atomic&gt;: This header file contains std::atomic and std::atomic_flag classes, which are the main files for implementing atomic operations.">
+<meta property='og:url' content='https://nansenli.com/post/jianshu/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/linux%E5%A4%9A%E7%BA%BF%E7%A8%8B%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%BC%96%E7%A8%8B%E5%9F%BA%E7%A1%80-c&#43;&#43;-11-%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E5%AD%A6%E4%B9%A0/'>
+<meta property='og:site_name' content='Nansen Li'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2018-03-18T08:29:00&#43;00:00'/><meta property='article:modified_time' content='2018-03-18T08:29:00&#43;00:00'/>
+<meta name="twitter:title" content="Linux Multithreaded Server Programming Basics: C++11 Concurrent Programming">
+<meta name="twitter:description" content="Introduction Previous versions of C++ didn&rsquo;t support threads natively. Instead, you had to use libraries like pthread. Using C++&rsquo;s built-in thread support makes programs more unified and concise. Header Files &lt;thread&gt;: This header file contains the std::thread and std::this_thread classes, along with functions for managing threads. It&rsquo;s the main file for implementing threads. &lt;atomic&gt;: This header file contains std::atomic and std::atomic_flag classes, which are the main files for implementing atomic operations.">
+    <link rel="shortcut icon" href="/favicon.ico" />
+
+  
+    
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-WC38C3XE3J"></script>
+      <script>
+        var doNotTrack = false;
+        if ( false ) {
+          var dnt = (navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack);
+          var doNotTrack = (dnt == "1" || dnt == "yes");
+        }
+        if (!doNotTrack) {
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-WC38C3XE3J');
+        }
+      </script>
+    
+  
+
+
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="Toggle Menu">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/avatar_hu96777ff80939aaa7d938dddcc232fcc6_1414962_300x0_resize_box_3.png" width="300"
+                            height="300" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+                    <span class="emoji">🌈</span>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">Nansen Li</a></h1>
+            <h2 class="site-description"></h2>
+        </div>
+    </header><ol class="menu-social">
+            
+                <li>
+                    <a 
+                        href='https://github.com/linanwx'
+                        target="_blank"
+                        title="GitHub"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://www.linkedin.com/in/nansen-li-3bb0a3146/'
+                        target="_blank"
+                        title="LinkedIn"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-brand-linkedin"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M8 11v5" /><path d="M8 8v.01" /><path d="M12 16v-5" /><path d="M16 16v-3a2 2 0 1 0 -4 0" /><path d="M3 7a4 4 0 0 1 4 -4h10a4 4 0 0 1 4 4v10a4 4 0 0 1 -4 4h-10a4 4 0 0 1 -4 -4z" /></svg>
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='index.xml'
+                        target="_blank"
+                        title="RSS"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-rss" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="5" cy="19" r="1" />
+  <path d="M4 4a16 16 0 0 1 16 16" />
+  <path d="M4 11a9 9 0 0 1 9 9" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+</svg>
+
+
+
+                
+                <span>Home</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/page/archives/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>Archives</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/page/search/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
+
+
+
+                
+                <span>Search</span>
+            </a>
+        </li>
+        
+        <li class="menu-bottom-section">
+            <ol class="menu">
+                    
+                        <li id="i18n-switch">  
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-language" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M4 5h7" />
+  <path d="M9 3v2c0 4.418 -2.239 8 -5 8" />
+  <path d="M5 9c-.003 2.144 2.952 3.908 6.7 4" />
+  <path d="M12 20l4 -9l4 9" />
+  <path d="M19.1 18h-6.2" />
+</svg>
+
+
+
+                            <select name="language" title="language" onchange="window.location.href = this.selectedOptions[0].value">
+                                
+                                    <option value="https://nansenli.com/" selected>English</option>
+                                
+                                    <option value="https://nansenli.com/zh-cn/" >中文</option>
+                                
+                            </select>
+                        </li>
+                    
+                
+
+                
+                    <li id="dark-mode-toggle">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <span>Dark Mode</span>
+                    </li>
+                
+            </ol>
+        </li>
+    </ol>
+</aside>
+
+    
+
+            <main class="main full-width">
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/concurrent-programming/" >
+                Concurrent Programming
+            </a>
+        
+    </header>
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/post/jianshu/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/linux%E5%A4%9A%E7%BA%BF%E7%A8%8B%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%BC%96%E7%A8%8B%E5%9F%BA%E7%A1%80-c&#43;&#43;-11-%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E5%AD%A6%E4%B9%A0/">Linux Multithreaded Server Programming Basics: C&#43;&#43;11 Concurrent Programming</a>
+        </h2>
+    
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">Mar 18, 2018</time>
+            </div>
+        
+
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+                <time class="article-time--reading">
+                    8 minute read
+                </time>
+            </div>
+        
+    </footer>
+    
+
+    
+        <footer class="article-translations">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-language" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M4 5h7" />
+  <path d="M9 3v2c0 4.418 -2.239 8 -5 8" />
+  <path d="M5 9c-.003 2.144 2.952 3.908 6.7 4" />
+  <path d="M12 20l4 -9l4 9" />
+  <path d="M19.1 18h-6.2" />
+</svg>
+
+
+
+            <div>
+                
+                    <a href="https://nansenli.com/zh-cn/post/jianshu/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/linux%E5%A4%9A%E7%BA%BF%E7%A8%8B%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%BC%96%E7%A8%8B%E5%9F%BA%E7%A1%80-c&#43;&#43;-11-%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E5%AD%A6%E4%B9%A0/" class="link">中文</a>
+                
+            </div>
+        </footer>
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <h2 id="introduction">Introduction
+</h2><p>Previous versions of C++ didn&rsquo;t support threads natively. Instead, you had to use libraries like pthread. Using C++&rsquo;s built-in thread support makes programs more unified and concise.</p>
+<h2 id="header-files">Header Files
+</h2><ul>
+<li><code>&lt;thread&gt;</code>: This header file contains the std::thread and std::this_thread classes, along with functions for managing threads. It&rsquo;s the main file for implementing threads.</li>
+<li><code>&lt;atomic&gt;</code>: This header file contains std::atomic and std::atomic_flag classes, which are the main files for implementing atomic operations.</li>
+<li><code>&lt;mutex&gt;</code>: Contains mutex-related classes and functions.</li>
+<li><code>&lt;future&gt;</code>: Contains the future class and related functions.</li>
+<li><code>&lt;condition_variable&gt;</code>: Contains condition variable classes.</li>
+</ul>
+<p>These are the thread-related parts of C++11. Although there are many debates about pthread versus C++ thread, the cross-platform C++ thread seems to be more standard.</p>
+<p>Recommended book for learning C++11 threads:
+<a class="link" href="https://www.gitbook.com/book/chenxiaowei/cpp_concurrency_in_action/details"  target="_blank" rel="noopener"
+    >https://www.gitbook.com/book/chenxiaowei/cpp_concurrency_in_action/details</a></p>
+<h2 id="hello-world-thread">Hello World Thread
+</h2><p>A simple introduction to the thread class:</p>
+<pre tabindex="0"><code>#include &lt;thread&gt;
+
+using namespace std;
+// This function is the thread task we want to run
+void hello()
+{
+    printf(&#34;%s&#34;, &#34;hello\n&#34;);
+}
+// Using the thread class, we pass a function as our initial task
+// We can also pass other parameters like classes
+int main()
+{
+    thread t(hello);
+    // Using join to wait for completion
+    t.join();
+}
+</code></pre><p>Besides join to wait for completion, you can use detach to not wait for the thread to finish.</p>
+<pre tabindex="0"><code>struct func
+{
+  int&amp; i;
+  func(int&amp; i_) : i(i_) {}
+  void operator() ()
+  {
+    for (unsigned j=0 ; j&lt;1000000 ; ++j)
+    {
+      do_something(i);           // 1. Potential access hazard: dangling reference
+    }
+  }
+};
+
+void oops()
+{
+  int some_local_state=0;
+  func my_func(some_local_state);
+  std::thread my_thread(my_func);
+  my_thread.detach();          // 2. Don&#39;t wait for the thread to finish
+}                              // 3. The new thread might still be running
+</code></pre><p>In this example, we&rsquo;ve decided not to wait for the thread to finish (using detach() ②), so when the oops() function completes ③, the new thread might still be running. If the thread is still running, it will call the do_something(i) function ①, which accesses a variable that has already been destroyed. As with a single-threaded program—allowing pointers or references to local variables to persist after the function completes has never been a good idea—this situation isn&rsquo;t obvious and makes multithreading more error-prone.</p>
+<h2 id="how-to-wait-for-a-thread-to-complete">How to Wait for a Thread to Complete?
+</h2><p>If you need to wait for a thread, the corresponding std::thread instance needs to use join(). In example 2.1, replacing my_thread.detach() with my_thread.join() ensures that local variables are only destroyed after the thread completes. In this case, since the original thread doesn&rsquo;t do much during its lifetime, running the function in a separate thread offers minimal benefit. However, in real programming, either the original thread has its own work to do, or it starts multiple child threads to do useful work and waits for these threads to complete.</p>
+<p>join() is a simple, direct way to wait for a thread to complete or not wait at all. When you need more flexible control over waiting threads, such as checking if a thread has finished or only waiting for a period of time (determining a timeout if exceeded), you need to use other mechanisms like condition variables and futures. Calling join() also cleans up the thread-related storage parts, so the std::thread object is no longer associated with the completed thread. This means you can only use join() once on a thread; once you&rsquo;ve used join(), the std::thread object can&rsquo;t be joined again. When joinable() is used on it, it will return false.</p>
+<h2 id="passing-parameters-to-threads">Passing Parameters to Threads
+</h2><pre tabindex="0"><code>void f(int i, std::string const&amp; s);
+std::thread t(f, 3, &#34;hello&#34;);
+</code></pre><p>The code creates a thread that calls f(3, &ldquo;hello&rdquo;). Note that function f needs a std::string object as its second parameter, but here a string literal is used, which is of type char const *. The conversion from the literal to a std::string object is completed in the thread&rsquo;s context.</p>
+<p>It&rsquo;s important to note that the constructor ignores the expected parameter types of the function and blindly copies the provided variables.</p>
+<p>Example 1:</p>
+<pre tabindex="0"><code>void f(int i,std::string const&amp; s);
+void oops(int some_param)
+{
+  char buffer[1024]; // 1
+  sprintf(buffer, &#34;%i&#34;,some_param);
+  std::thread t(f,3,buffer); // 2
+  t.detach();
+}
+</code></pre><p>In this case, buffer ② is a pointer variable pointing to a local variable, and then the local variable is passed to the new thread through buffer ②. Furthermore, the function is very likely to crash (oops) before the literal is converted to a std::string object, resulting in undefined behavior. And even if you want to rely on implicit conversion to convert the literal to the std::string object that the function expects, since std::thread&rsquo;s constructor copies the provided variables, it only copies the unconverted string literal.
+The solution is to convert the literal to a std::string object before passing it to the std::thread constructor:</p>
+<pre tabindex="0"><code>void f(int i,std::string const&amp; s);
+void not_oops(int some_param)
+{
+  char buffer[1024];
+  sprintf(buffer,&#34;%i&#34;,some_param);
+  std::thread t(f,3,std::string(buffer));  // Use std::string to avoid dangling pointers
+  t.detach();
+}
+</code></pre><p>Example 2:
+You might also encounter the opposite situation: expecting to pass a reference, but the entire object is copied. This can happen when a thread updates a data structure passed by reference, such as:</p>
+<pre tabindex="0"><code>void update_data_for_widget(widget_id w,widget_data&amp; data); // 1
+void oops_again(widget_id w)
+{
+  widget_data data;
+  std::thread t(update_data_for_widget,w,data); // 2
+  display_status();
+  t.join();
+  process_widget_data(data); // 3
+}
+</code></pre><h2 id="using-mutexes">Using Mutexes
+</h2><p>In C++, you create a mutex by instantiating std::mutex and lock it by calling the member function lock(), and unlock it with unlock(). However, direct calling of member functions is not recommended in practice, as it means you must remember to call unlock() at every function exit, including exception cases. The C++ standard library provides a RAII syntax template class std::lock_guard for mutexes, which provides a locked mutex when constructed and unlocks it when destructed, ensuring that a locked mutex is always correctly unlocked. The following program listing shows how to use a std::lock_guard instance constructed with std::mutex to protect access to a list in a multithreaded program. Both std::mutex and std::lock_guard are declared in the <!-- raw HTML omitted --> header file.</p>
+<pre tabindex="0"><code>#include &lt;list&gt;
+#include &lt;mutex&gt;
+#include &lt;algorithm&gt;
+
+std::list&lt;int&gt; some_list;    // 1
+std::mutex some_mutex;    // 2
+
+void add_to_list(int new_value)
+{
+  std::lock_guard&lt;std::mutex&gt; guard(some_mutex);    // 3
+  some_list.push_back(new_value);
+}
+
+bool list_contains(int value_to_find)
+{
+  std::lock_guard&lt;std::mutex&gt; guard(some_mutex);    // 4
+  return std::find(some_list.begin(),some_list.end(),value_to_find) != some_list.end();
+}
+</code></pre><p>Protection of data breaks when one of the member functions returns a pointer or reference to the protected data. Pointers or references with access capability can access (and possibly modify) the protected data without being restricted by the mutex. The design of interfaces that involve mutex-protected data requires careful consideration to ensure that the mutex can lock any access to the protected data, leaving no backdoors.</p>
+<h2 id="using-locks">Using Locks
+</h2><p>Imagine a toy that consists of two parts, both of which must be obtained to play with it. For example, a toy drum requires a drumstick and a drum to play. Now there are two children who both like to play with this toy. When one child has both the drum and the drumstick, they can play freely. When the other child wants to play, they have to wait until the first child is finished. Now imagine that the drum and drumstick are kept in different toy boxes, and both children want to play the drum at the same time. So they go to the toy boxes looking for the drum. One finds the drum, and the other finds the drumstick. Now there&rsquo;s a problem: unless one child decides to let the other play first by giving up their part, if they both hold firmly to their parts without giving them up, neither can play the drum.</p>
+<p>Fortunately, the C++ standard library has a way to solve this problem: std::lock—it can lock multiple (two or more) mutexes at once without side effects (risk of deadlock).</p>
+<p>How to avoid deadlocks?</p>
+<ul>
+<li>
+<p>Avoid nested locks
+The first suggestion is often the simplest: don&rsquo;t acquire a second lock when a thread already has one. If you can stick to this advice, there won&rsquo;t be deadlocks on locks because each thread only holds one lock.</p>
+</li>
+<li>
+<p>Use a fixed order to acquire locks
+When hard conditions require you to acquire two or more locks, and you can&rsquo;t use std::lock to acquire them in a single operation; it&rsquo;s best to acquire them in a fixed order on each thread.</p>
+</li>
+</ul>
+<h2 id="synchronization-and-waiting">Synchronization and Waiting
+</h2><p>Imagine you&rsquo;re traveling on a night train. How do you get off at the right station at night? One way is to stay awake all night and pay attention to which station you&rsquo;re at. This way, you won&rsquo;t miss your destination, but it will make you very tired. Alternatively, you can look at the timetable, estimate when the train will arrive at your destination, and set an alarm a little earlier, then you can sleep soundly. This method sounds good and doesn&rsquo;t involve missing your station, but when the train is late, you&rsquo;ll be woken up too early. Of course, the battery in your alarm clock might also die, causing you to sleep through your station. The ideal way is, regardless of early or late, to have someone or something wake you up exactly when the train arrives at the station.</p>
+<p>The C++ standard library has two implementations for condition variables: std::condition_variable and std::condition_variable_any. Both implementations are declared in the &lt;condition_variable&gt; header file. Both need to work with a mutex (for synchronization); the former is limited to working with std::mutex, while the latter can work with any mutex that meets minimum standards, hence the _any suffix. Because std::condition_variable_any is more general, there may be additional overhead in terms of size, performance, and system resource usage, so std::condition_variable is generally the preferred type, and we only consider std::condition_variable_any when there are hard requirements for flexibility.</p>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+
+    </footer>
+
+
+    
+</article>
+
+    
+
+    
+
+     
+    
+        
+    <div class="disqus-container">
+    <div id="disqus_thread"></div>
+<script>
+    window.disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "nansenli" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+<style>
+    .disqus-container {
+        background-color: var(--card-background);
+        border-radius: var(--card-border-radius);
+        box-shadow: var(--shadow-l1);
+        padding: var(--card-padding);
+    }
+</style>
+
+<script>
+    window.addEventListener('onColorSchemeChange', (e) => {
+        if (typeof DISQUS == 'object') {
+            DISQUS.reset({
+                reload: true
+            });
+        }
+    })
+</script>
+
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+        2025 Nansen Li（李楠森）
+    </section>
+    
+    <section class="powerby">
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.30.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.1e9a3bafd846ced4c345d084b355fb8c7bae75701c338f8a1f8a82c780137826.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>

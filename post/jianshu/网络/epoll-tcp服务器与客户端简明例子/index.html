@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="Introduction epoll is a Linux-specific API that provides efficient file descriptor management. It&rsquo;s commonly used to monitor the readability of multiple file descriptors in batch and is one of the effective methods for high-concurrency servers. Below is a simple example of an epoll server and client. Server Side #include &lt;fcntl.h&gt; #include &lt;unistd.h&gt; #include &lt;sys/socket.h&gt; #include &lt;netinet/in.h&gt; #include &lt;arpa/inet.h&gt; #include &lt;stdio.h&gt; #include &lt;stdlib.h&gt; #include &lt;sys/epoll.h&gt; using namespace std; const int MAX_EPOLL_EVENTS = 1000; const int MAX_MSG_LEN = 1024; void setFdNonblock(int fd) { fcntl(fd, F_SETFL, fcntl(fd, F_GETFL) | O_NONBLOCK); } void err_exit(const char *s){ printf(&#34;error: %s\\n&#34;,s); exit(0); } int create_socket(const char *ip, const int port_number) { struct sockaddr_in server_addr = {0}; /* Set IPv4 mode */ server_addr.">
+<title>Epoll TCP Server and Client Simple Example</title>
+
+<link rel='canonical' href='https://nansenli.com/post/jianshu/%E7%BD%91%E7%BB%9C/epoll-tcp%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B8%8E%E5%AE%A2%E6%88%B7%E7%AB%AF%E7%AE%80%E6%98%8E%E4%BE%8B%E5%AD%90/'>
+
+<link rel="stylesheet" href="/scss/style.min.1084ac713783b88e0bd9807a58068e10aae22e99420f94a9234654a4e199baa4.css"><meta property='og:title' content="Epoll TCP Server and Client Simple Example">
+<meta property='og:description' content="Introduction epoll is a Linux-specific API that provides efficient file descriptor management. It&rsquo;s commonly used to monitor the readability of multiple file descriptors in batch and is one of the effective methods for high-concurrency servers. Below is a simple example of an epoll server and client. Server Side #include &lt;fcntl.h&gt; #include &lt;unistd.h&gt; #include &lt;sys/socket.h&gt; #include &lt;netinet/in.h&gt; #include &lt;arpa/inet.h&gt; #include &lt;stdio.h&gt; #include &lt;stdlib.h&gt; #include &lt;sys/epoll.h&gt; using namespace std; const int MAX_EPOLL_EVENTS = 1000; const int MAX_MSG_LEN = 1024; void setFdNonblock(int fd) { fcntl(fd, F_SETFL, fcntl(fd, F_GETFL) | O_NONBLOCK); } void err_exit(const char *s){ printf(&#34;error: %s\\n&#34;,s); exit(0); } int create_socket(const char *ip, const int port_number) { struct sockaddr_in server_addr = {0}; /* Set IPv4 mode */ server_addr.">
+<meta property='og:url' content='https://nansenli.com/post/jianshu/%E7%BD%91%E7%BB%9C/epoll-tcp%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B8%8E%E5%AE%A2%E6%88%B7%E7%AB%AF%E7%AE%80%E6%98%8E%E4%BE%8B%E5%AD%90/'>
+<meta property='og:site_name' content='Nansen Li'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2017-12-25T02:52:00&#43;00:00'/><meta property='article:modified_time' content='2017-12-25T02:52:00&#43;00:00'/>
+<meta name="twitter:title" content="Epoll TCP Server and Client Simple Example">
+<meta name="twitter:description" content="Introduction epoll is a Linux-specific API that provides efficient file descriptor management. It&rsquo;s commonly used to monitor the readability of multiple file descriptors in batch and is one of the effective methods for high-concurrency servers. Below is a simple example of an epoll server and client. Server Side #include &lt;fcntl.h&gt; #include &lt;unistd.h&gt; #include &lt;sys/socket.h&gt; #include &lt;netinet/in.h&gt; #include &lt;arpa/inet.h&gt; #include &lt;stdio.h&gt; #include &lt;stdlib.h&gt; #include &lt;sys/epoll.h&gt; using namespace std; const int MAX_EPOLL_EVENTS = 1000; const int MAX_MSG_LEN = 1024; void setFdNonblock(int fd) { fcntl(fd, F_SETFL, fcntl(fd, F_GETFL) | O_NONBLOCK); } void err_exit(const char *s){ printf(&#34;error: %s\\n&#34;,s); exit(0); } int create_socket(const char *ip, const int port_number) { struct sockaddr_in server_addr = {0}; /* Set IPv4 mode */ server_addr.">
+    <link rel="shortcut icon" href="/favicon.ico" />
+
+  
+    
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-WC38C3XE3J"></script>
+      <script>
+        var doNotTrack = false;
+        if ( false ) {
+          var dnt = (navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack);
+          var doNotTrack = (dnt == "1" || dnt == "yes");
+        }
+        if (!doNotTrack) {
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-WC38C3XE3J');
+        }
+      </script>
+    
+  
+
+
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="Toggle Menu">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/avatar_hu96777ff80939aaa7d938dddcc232fcc6_1414962_300x0_resize_box_3.png" width="300"
+                            height="300" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+                    <span class="emoji">🌈</span>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">Nansen Li</a></h1>
+            <h2 class="site-description"></h2>
+        </div>
+    </header><ol class="menu-social">
+            
+                <li>
+                    <a 
+                        href='https://github.com/linanwx'
+                        target="_blank"
+                        title="GitHub"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://www.linkedin.com/in/nansen-li-3bb0a3146/'
+                        target="_blank"
+                        title="LinkedIn"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-brand-linkedin"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M8 11v5" /><path d="M8 8v.01" /><path d="M12 16v-5" /><path d="M16 16v-3a2 2 0 1 0 -4 0" /><path d="M3 7a4 4 0 0 1 4 -4h10a4 4 0 0 1 4 4v10a4 4 0 0 1 -4 4h-10a4 4 0 0 1 -4 -4z" /></svg>
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='index.xml'
+                        target="_blank"
+                        title="RSS"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-rss" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="5" cy="19" r="1" />
+  <path d="M4 4a16 16 0 0 1 16 16" />
+  <path d="M4 11a9 9 0 0 1 9 9" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+</svg>
+
+
+
+                
+                <span>Home</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/page/archives/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>Archives</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/page/search/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
+
+
+
+                
+                <span>Search</span>
+            </a>
+        </li>
+        
+        <li class="menu-bottom-section">
+            <ol class="menu">
+                    
+                        <li id="i18n-switch">  
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-language" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M4 5h7" />
+  <path d="M9 3v2c0 4.418 -2.239 8 -5 8" />
+  <path d="M5 9c-.003 2.144 2.952 3.908 6.7 4" />
+  <path d="M12 20l4 -9l4 9" />
+  <path d="M19.1 18h-6.2" />
+</svg>
+
+
+
+                            <select name="language" title="language" onchange="window.location.href = this.selectedOptions[0].value">
+                                
+                                    <option value="https://nansenli.com/" selected>English</option>
+                                
+                                    <option value="https://nansenli.com/zh-cn/" >中文</option>
+                                
+                            </select>
+                        </li>
+                    
+                
+
+                
+                    <li id="dark-mode-toggle">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <span>Dark Mode</span>
+                    </li>
+                
+            </ol>
+        </li>
+    </ol>
+</aside>
+
+    
+
+            <main class="main full-width">
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/networking/" >
+                Networking
+            </a>
+        
+    </header>
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/post/jianshu/%E7%BD%91%E7%BB%9C/epoll-tcp%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B8%8E%E5%AE%A2%E6%88%B7%E7%AB%AF%E7%AE%80%E6%98%8E%E4%BE%8B%E5%AD%90/">Epoll TCP Server and Client Simple Example</a>
+        </h2>
+    
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">Dec 25, 2017</time>
+            </div>
+        
+
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+                <time class="article-time--reading">
+                    5 minute read
+                </time>
+            </div>
+        
+    </footer>
+    
+
+    
+        <footer class="article-translations">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-language" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M4 5h7" />
+  <path d="M9 3v2c0 4.418 -2.239 8 -5 8" />
+  <path d="M5 9c-.003 2.144 2.952 3.908 6.7 4" />
+  <path d="M12 20l4 -9l4 9" />
+  <path d="M19.1 18h-6.2" />
+</svg>
+
+
+
+            <div>
+                
+                    <a href="https://nansenli.com/zh-cn/post/jianshu/%E7%BD%91%E7%BB%9C/epoll-tcp%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B8%8E%E5%AE%A2%E6%88%B7%E7%AB%AF%E7%AE%80%E6%98%8E%E4%BE%8B%E5%AD%90/" class="link">中文</a>
+                
+            </div>
+        </footer>
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <h2 id="introduction">Introduction
+</h2><p>epoll is a Linux-specific API that provides efficient file descriptor management. It&rsquo;s commonly used to monitor the readability of multiple file descriptors in batch and is one of the effective methods for high-concurrency servers. Below is a simple example of an epoll server and client.</p>
+<h2 id="server-side">Server Side
+</h2><pre tabindex="0"><code>#include &lt;fcntl.h&gt;
+#include &lt;unistd.h&gt;
+#include &lt;sys/socket.h&gt;
+#include &lt;netinet/in.h&gt;
+#include &lt;arpa/inet.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;sys/epoll.h&gt;
+
+using namespace std;
+
+const int MAX_EPOLL_EVENTS = 1000;
+const int MAX_MSG_LEN = 1024;
+
+void setFdNonblock(int fd)
+{
+    fcntl(fd, F_SETFL, fcntl(fd, F_GETFL) | O_NONBLOCK);
+}
+
+void err_exit(const char *s){
+    printf(&#34;error: %s\n&#34;,s);
+    exit(0);
+}
+
+int create_socket(const char *ip, const int port_number)
+{
+    struct sockaddr_in server_addr = {0};
+    /* Set IPv4 mode */
+    server_addr.sin_family = AF_INET;           /* ipv4 */
+    /* Set port number */
+    server_addr.sin_port = htons(port_number);
+    /* Set host address */
+    if(inet_pton(server_addr.sin_family, ip, &amp;server_addr.sin_addr) == -1){
+        err_exit(&#34;inet_pton&#34;);
+    }
+    /* Create socket */
+    int sockfd = socket(PF_INET, SOCK_STREAM, 0);
+    if(sockfd == -1){
+        err_exit(&#34;socket&#34;);
+    }
+    /* Set reuse mode */
+    int reuse = 1;
+    if(setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &amp;reuse, sizeof(reuse)) == -1)
+    {
+        err_exit(&#34;setsockopt&#34;);
+    }
+    /* Bind to port */
+    if(bind(sockfd, (sockaddr *)&amp;server_addr, sizeof(server_addr)) == -1){
+        err_exit(&#34;bind&#34;);
+    }
+    /* Set passive open */
+    if(listen(sockfd, 5) == -1){
+        err_exit(&#34;listen&#34;);
+    }
+    return sockfd;
+}
+
+int main(int argc, const char *argv[])
+{
+    /* Help message */
+    if(argc &lt; 3){
+        printf(&#34;usage:%s ip port\n&#34;, argv[0]);
+        exit(0);
+    }
+    /* Get server parameters */
+    const char * ip = argv[1];
+    const int port = atoi(argv[2]);
+    /* Create socket */
+    int sockfd = create_socket(ip, port);
+    printf(&#34;success create sockfd %d\n&#34;, sockfd);
+    setFdNonblock(sockfd);
+    /* Create epoll */
+    int epollfd = epoll_create1(0);
+    if(epollfd == -1) err_exit(&#34;epoll_create1&#34;);
+    /* Add sockfd to epollfd interest list */
+    struct epoll_event ev;
+    ev.data.fd = sockfd;
+    ev.events = EPOLLIN ;
+    if(epoll_ctl(epollfd, EPOLL_CTL_ADD, sockfd, &amp;ev) == -1){
+        err_exit(&#34;epoll_ctl1&#34;);
+    }
+    /* Create a list to store events returned by wait */
+    struct epoll_event events[MAX_EPOLL_EVENTS] = {0};
+    /* Start waiting for all events registered on epoll */
+
+    while(1){
+        /* Wait for events */
+        printf(&#34;begin wait\n&#34;);
+        int number = epoll_wait(epollfd, events, MAX_EPOLL_EVENTS, -1);
+        printf(&#34;end wait\n&#34;);
+        sleep(1);
+        if(number &gt; 0){
+            /* Traverse all events */
+            for (int i = 0; i &lt; number; i++)
+            {
+                int eventfd = events[i].data.fd;
+                /* If the fd triggering the event is sockfd, someone has connected, and we need to accept them */
+                if(eventfd == sockfd){
+                    printf(&#34;accept new client...\n&#34;);
+                    struct sockaddr_in client_addr;
+                    socklen_t client_addr_len = sizeof(client_addr);
+                    int connfd = accept(sockfd, (struct sockaddr *)&amp;client_addr, &amp;client_addr_len);
+                    setFdNonblock(connfd);
+                    /* After accept, we need to add the file descriptor to the monitoring list */
+                    struct epoll_event ev;
+                    ev.data.fd = connfd;
+                    ev.events = EPOLLIN;
+                    if(epoll_ctl(epollfd, EPOLL_CTL_ADD, connfd, &amp;ev) == -1){
+                        err_exit(&#34;epoll_ctl2&#34;);
+                    }
+                    printf(&#34;accept new client end.\n&#34;);
+                }
+                /* If the triggering fd is not sockfd, it&#39;s the newly added connfd */
+                else{
+                    /* Read content until encountering a newline, then display the content */
+                    printf(&#34;read start...\n&#34;);
+                    while(1){
+                        char buff = -1;
+                        int ret = read(eventfd, &amp;buff, 1);
+                        if(ret &gt; 0){
+                            printf(&#34;%c&#34;, buff);
+                        }
+                        if(buff == &#39;\n&#39;){
+                            break;
+                        }
+                        else if (ret == 0){
+                            printf(&#34;client close.\n&#34;);
+                            close(eventfd);
+                            epoll_ctl(epollfd, EPOLL_CTL_DEL, eventfd, NULL);
+                            break;
+                        }
+                        else if (ret &lt; 0){
+                            printf(&#34;read error.\n&#34;);
+                            break;
+                        }
+                    }
+                    printf(&#34;read end.\n&#34;);
+                }
+            }
+        }
+    }
+}
+</code></pre><h2 id="client-side">Client Side
+</h2><pre tabindex="0"><code>#include &lt;stdio.h&gt;
+#include &lt;string.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;unistd.h&gt;
+#include &lt;arpa/inet.h&gt;
+#include &lt;sys/socket.h&gt;
+#include &lt;string&gt;
+#include &lt;iostream&gt;
+
+using namespace std;
+
+void err_exit(const char *s){
+    printf(&#34;error: %s\n&#34;,s);
+    exit(0);
+}
+
+int create_socket(const char *ip, const int port_number)
+{
+    struct sockaddr_in server_addr = {0};
+    /* Set IPv4 mode */
+    server_addr.sin_family = AF_INET;           /* ipv4 */
+    /* Set port number */
+    server_addr.sin_port = htons(port_number);
+    /* Set host address */
+    if(inet_pton(PF_INET, ip, &amp;server_addr.sin_addr) == -1){
+        err_exit(&#34;inet_pton&#34;);
+    }
+
+    /* Create socket */
+    int sockfd = socket(PF_INET, SOCK_STREAM, 0);
+    if(sockfd == -1){
+        err_exit(&#34;socket&#34;);
+    }
+
+    if(connect(sockfd, (struct sockaddr*)&amp;server_addr, sizeof(server_addr)) == -1){
+        err_exit(&#34;connect&#34;);
+    }
+
+    return sockfd;
+}
+
+int main(int argc, const char *argv[]){
+    if(argc &lt; 3){
+        printf(&#34;usage:%s ip port\n&#34;, argv[0]);
+        exit(0);
+    }
+    /* Get server parameters */
+    const char * ip = argv[1];
+    const int port = atoi(argv[2]);
+    //Create socket
+    int sock = create_socket(ip, port);
+    //Initiate request to server (specific IP and port)
+    
+    while(1){
+        string buff;
+        getline(cin, buff);
+        if(buff == &#34;exit&#34;) break;
+        write(sock, buff.c_str(), buff.size());
+        char end = &#39;\n&#39;;
+        write(sock, &amp;end, 1);
+    }
+    close(sock);
+    return 0;
+}
+</code></pre><h2 id="compilation">Compilation
+</h2><p>Save the above text as socket_server.cpp and socket_client.cpp, then compile and link the programs.</p>
+<pre tabindex="0"><code>g++ -Wall socket_server.cpp -o server &amp;&amp; g++ -Wall socket_client.cpp -o client
+</code></pre><h2 id="execution">Execution
+</h2><pre tabindex="0"><code>./server localhost 1234
+</code></pre><pre tabindex="0"><code>./client localhost 1234
+</code></pre><p>Entering text on the client side and pressing Enter will display it on the server side. Press Ctrl+C or type &ldquo;exit&rdquo; to close the client.</p>
+<h2 id="execution-flow">Execution Flow
+</h2><p>The server first creates a passive open socket file descriptor, then adds this file descriptor to the epoll interest list. It then enters a loop. Whenever the interest list&rsquo;s wait ends, it means the corresponding file descriptor can be operated on. When a client connects to the passive open socket file descriptor, it indicates a client has connected, and the passive open file descriptor can be accepted. The new file descriptor created after accept is the file descriptor for communicating with the client, which is also added to the interest list. When the client sends data, this file descriptor will also generate a readable signal, causing the wait to end. At this point, it enters processing mode, reading and displaying the data sent by the client.</p>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+
+    </footer>
+
+
+    
+</article>
+
+    
+
+    
+
+     
+    
+        
+    <div class="disqus-container">
+    <div id="disqus_thread"></div>
+<script>
+    window.disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "nansenli" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+<style>
+    .disqus-container {
+        background-color: var(--card-background);
+        border-radius: var(--card-border-radius);
+        box-shadow: var(--shadow-l1);
+        padding: var(--card-padding);
+    }
+</style>
+
+<script>
+    window.addEventListener('onColorSchemeChange', (e) => {
+        if (typeof DISQUS == 'object') {
+            DISQUS.reset({
+                reload: true
+            });
+        }
+    })
+</script>
+
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+        2025 Nansen Li（李楠森）
+    </section>
+    
+    <section class="powerby">
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.30.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.1e9a3bafd846ced4c345d084b355fb8c7bae75701c338f8a1f8a82c780137826.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>

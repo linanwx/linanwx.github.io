@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="来源 阿里菜鸟java实习电话面试经，凉凉~！~ https://www.nowcoder.com/discuss/67251?type=2&order=0&pos=7&page=1 去除了java部分的题目 用户请求在服务器是一个线程一个请求吗 这个问题搜了下有两种模型，一种是阻塞的一种是非阻塞的。现在一般使用基于IO多路复用的技术，Reactor模式，只需要一个线程或者少量线程，就可以处理大量请求。 服务器抗压策略 这个问题就更大了。百度了一下有两点，一个是缓存，一个是分布式。网友回答了消息队列，可以减轻大量并发量突发的情况。 很多很多个数，找到前十个 可以使用快排的变体 堆排序时间复杂度如何计算？ n×log n，就是n次，每次从低向顶出堆要log n次 HTTP和TCP 这个不知道问的具体是什么，可能是联系？ TCP关闭连接四次挥手，为啥 两次fin+ack，中间插入未发送完的数据。在带有延迟ack的 来源 网易内推（C++/C研发）offer之路 https://www.nowcoder.com/discuss/3038?type=2&order=0&pos=15&page=4 C++多态性都有哪些？ 多态是一种接口多种实现。静态多态和动态多态。静态多态是通过泛型编程实现的，动态多态是通过虚函数实现的。 动态绑定是怎么实现的？ 静态绑定：编译时绑定，通过对象调用 动态绑定：运行时绑定，通过地址实现 动态绑定是通过虚表实现的。 类型转换有哪些？ C风格的转换，强制类型转换，隐式类型转换。C++四种类型转换：static_cast，const_cast，dynamic_cost，reinterpret_cost。分别用于内置静态类型转换（int float）、去掉类型的const属性，用于动态类型转换（必须为父子类），重新解释类型而不做实质转换（指针强转）。 内存对齐的原则 结构体基本数据类型成员要从成员大小的整数倍开始对齐，结构体作为成员要从最宽的数据类型的整数倍对齐。结构体的大小为内部最大的成员的整数倍对齐。 模板是如何实现的？ 编译器在遇到模板声明时记住这个模板名称。在调用时根据模板传入的参数类型产生出具体的类型的代码，然后进行编译。 指针和const的用法？ const类型的指针，指向const类型的指针，指向const类型的const类型的指针。 虚函数、纯虚函数、虚函数与析构函数？为什么析构函数要定义成虚函数？ http://liaoxl.github.io/blog/20131205/virtual-destructor/ 根据这篇文章所述，意思是如果定义为虚函数并且子类也实现了的话，那么子类的析构函数和父类的析构函数都会调用。 内联函数 const 和 typedef 排序算法有哪些？快速排序怎么实现的？最好时间复杂度，平均时间复杂度。 插入、冒泡、堆排序、归并排序、桶排序、希尔排序、快速排序。 extern “C”有什么用 主要是为了调用C编写的程序。 2017暑期实习C++面经(阿里，网易游戏，腾讯等) 来源：https://www.nowcoder.com/discuss/23512?type=2&amp;order=0&amp;pos=20&amp;page=2 map由什么实现的？你知道红黑树和AVL树有什么区别吗？为什么像map，set都用红黑树来实现？你有听过skip-list吗？ 用过vector.reserve()吗，vector的数组是怎么增长的？ map-reduce了解吗？ linux熟悉吗？目录权限，如644代表什么，目录如果有可执行权限代表什么？ 平时有使用vi吗？一般的linux命令熟悉吗？(如awk，grep等) 有用过gdb的调试吗？ TCP/UDP的区别，如何实现拥塞控制，如何实现可靠传输？UDP的应用？ 可靠/不可靠 字节流/报文 连接/非连接 开销大/开销小 有拥塞控制/无拥塞控制 全双工/单工 拥塞控制目的是为了防止发送的数据包超出了网络的承载能力，涉及到所有的主机和路由器。拥塞控制认为丢包是因为数据包超出了网络的承载能力，所以在发送数据包的，需要慢开始，不断地达到网络的承载能力，将拥塞窗口以指数的规律增长到慢开始门限，超出门限后，如果继续增大数据包的发送量，认为网络将会出现拥塞，所以进入拥塞避免状态，该阶段以线性的增长规模扩大拥塞窗口，直到拥塞发生。如果某个数据包在超时计时器已到仍然没有收到对方的ACK，则认为网络中出现了拥塞，此时将慢开始门限设置为当前窗口的一半，并执行慢开始算法。如果收到了对方的三个重复的确认报文，则认为对方尚未收到丢失的报文，则尽早重传未被确认的报文，而不是等到超时计时器到时时才重传，这就是快速重传。如果出现了快速重传，则不执行慢开始算法，而是将拥塞窗口设置为慢开始门限，然后执行拥塞避免，这就是快恢复。 作者：Simon_ 链接：https://www.nowcoder.com/discuss/23512?type=2&amp;order=0&amp;pos=20&amp;page=2 来源：牛客网 总结： 我觉得阿里更注重项目和分布式，多线程方面的知识。网易游戏的话更注重算法和C++吧。腾讯的话就什么都问，从C++的内存结构，RTTI，到网络编程，到智力题的算法实现。同学们可以根据自己要投的公司再好好准备准备。与君共勉。 准备实习之前刷过的书籍有《C++ primer》, 《深度探索C++对象模型》，《Effective C++》，《STL源码解析》，《剑指offer》还有就是一些网络和操作系统的书。刷了leetcode前120的题 目。">
+<title>牛客网面经题目摘抄</title>
+
+<link rel='canonical' href='https://nansenli.com/zh-cn/post/jianshu/%E9%9A%8F%E7%AC%94/%E7%89%9B%E5%AE%A2%E7%BD%91%E9%9D%A2%E7%BB%8F%E9%A2%98%E7%9B%AE%E6%91%98%E6%8A%84/'>
+
+<link rel="stylesheet" href="/scss/style.min.1084ac713783b88e0bd9807a58068e10aae22e99420f94a9234654a4e199baa4.css"><meta property='og:title' content="牛客网面经题目摘抄">
+<meta property='og:description' content="来源 阿里菜鸟java实习电话面试经，凉凉~！~ https://www.nowcoder.com/discuss/67251?type=2&order=0&pos=7&page=1 去除了java部分的题目 用户请求在服务器是一个线程一个请求吗 这个问题搜了下有两种模型，一种是阻塞的一种是非阻塞的。现在一般使用基于IO多路复用的技术，Reactor模式，只需要一个线程或者少量线程，就可以处理大量请求。 服务器抗压策略 这个问题就更大了。百度了一下有两点，一个是缓存，一个是分布式。网友回答了消息队列，可以减轻大量并发量突发的情况。 很多很多个数，找到前十个 可以使用快排的变体 堆排序时间复杂度如何计算？ n×log n，就是n次，每次从低向顶出堆要log n次 HTTP和TCP 这个不知道问的具体是什么，可能是联系？ TCP关闭连接四次挥手，为啥 两次fin+ack，中间插入未发送完的数据。在带有延迟ack的 来源 网易内推（C++/C研发）offer之路 https://www.nowcoder.com/discuss/3038?type=2&order=0&pos=15&page=4 C++多态性都有哪些？ 多态是一种接口多种实现。静态多态和动态多态。静态多态是通过泛型编程实现的，动态多态是通过虚函数实现的。 动态绑定是怎么实现的？ 静态绑定：编译时绑定，通过对象调用 动态绑定：运行时绑定，通过地址实现 动态绑定是通过虚表实现的。 类型转换有哪些？ C风格的转换，强制类型转换，隐式类型转换。C++四种类型转换：static_cast，const_cast，dynamic_cost，reinterpret_cost。分别用于内置静态类型转换（int float）、去掉类型的const属性，用于动态类型转换（必须为父子类），重新解释类型而不做实质转换（指针强转）。 内存对齐的原则 结构体基本数据类型成员要从成员大小的整数倍开始对齐，结构体作为成员要从最宽的数据类型的整数倍对齐。结构体的大小为内部最大的成员的整数倍对齐。 模板是如何实现的？ 编译器在遇到模板声明时记住这个模板名称。在调用时根据模板传入的参数类型产生出具体的类型的代码，然后进行编译。 指针和const的用法？ const类型的指针，指向const类型的指针，指向const类型的const类型的指针。 虚函数、纯虚函数、虚函数与析构函数？为什么析构函数要定义成虚函数？ http://liaoxl.github.io/blog/20131205/virtual-destructor/ 根据这篇文章所述，意思是如果定义为虚函数并且子类也实现了的话，那么子类的析构函数和父类的析构函数都会调用。 内联函数 const 和 typedef 排序算法有哪些？快速排序怎么实现的？最好时间复杂度，平均时间复杂度。 插入、冒泡、堆排序、归并排序、桶排序、希尔排序、快速排序。 extern “C”有什么用 主要是为了调用C编写的程序。 2017暑期实习C++面经(阿里，网易游戏，腾讯等) 来源：https://www.nowcoder.com/discuss/23512?type=2&amp;order=0&amp;pos=20&amp;page=2 map由什么实现的？你知道红黑树和AVL树有什么区别吗？为什么像map，set都用红黑树来实现？你有听过skip-list吗？ 用过vector.reserve()吗，vector的数组是怎么增长的？ map-reduce了解吗？ linux熟悉吗？目录权限，如644代表什么，目录如果有可执行权限代表什么？ 平时有使用vi吗？一般的linux命令熟悉吗？(如awk，grep等) 有用过gdb的调试吗？ TCP/UDP的区别，如何实现拥塞控制，如何实现可靠传输？UDP的应用？ 可靠/不可靠 字节流/报文 连接/非连接 开销大/开销小 有拥塞控制/无拥塞控制 全双工/单工 拥塞控制目的是为了防止发送的数据包超出了网络的承载能力，涉及到所有的主机和路由器。拥塞控制认为丢包是因为数据包超出了网络的承载能力，所以在发送数据包的，需要慢开始，不断地达到网络的承载能力，将拥塞窗口以指数的规律增长到慢开始门限，超出门限后，如果继续增大数据包的发送量，认为网络将会出现拥塞，所以进入拥塞避免状态，该阶段以线性的增长规模扩大拥塞窗口，直到拥塞发生。如果某个数据包在超时计时器已到仍然没有收到对方的ACK，则认为网络中出现了拥塞，此时将慢开始门限设置为当前窗口的一半，并执行慢开始算法。如果收到了对方的三个重复的确认报文，则认为对方尚未收到丢失的报文，则尽早重传未被确认的报文，而不是等到超时计时器到时时才重传，这就是快速重传。如果出现了快速重传，则不执行慢开始算法，而是将拥塞窗口设置为慢开始门限，然后执行拥塞避免，这就是快恢复。 作者：Simon_ 链接：https://www.nowcoder.com/discuss/23512?type=2&amp;order=0&amp;pos=20&amp;page=2 来源：牛客网 总结： 我觉得阿里更注重项目和分布式，多线程方面的知识。网易游戏的话更注重算法和C++吧。腾讯的话就什么都问，从C++的内存结构，RTTI，到网络编程，到智力题的算法实现。同学们可以根据自己要投的公司再好好准备准备。与君共勉。 准备实习之前刷过的书籍有《C++ primer》, 《深度探索C++对象模型》，《Effective C++》，《STL源码解析》，《剑指offer》还有就是一些网络和操作系统的书。刷了leetcode前120的题 目。">
+<meta property='og:url' content='https://nansenli.com/zh-cn/post/jianshu/%E9%9A%8F%E7%AC%94/%E7%89%9B%E5%AE%A2%E7%BD%91%E9%9D%A2%E7%BB%8F%E9%A2%98%E7%9B%AE%E6%91%98%E6%8A%84/'>
+<meta property='og:site_name' content='Nansen Li'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2018-03-17T06:42:00&#43;00:00'/><meta property='article:modified_time' content='2018-03-17T06:42:00&#43;00:00'/>
+<meta name="twitter:title" content="牛客网面经题目摘抄">
+<meta name="twitter:description" content="来源 阿里菜鸟java实习电话面试经，凉凉~！~ https://www.nowcoder.com/discuss/67251?type=2&order=0&pos=7&page=1 去除了java部分的题目 用户请求在服务器是一个线程一个请求吗 这个问题搜了下有两种模型，一种是阻塞的一种是非阻塞的。现在一般使用基于IO多路复用的技术，Reactor模式，只需要一个线程或者少量线程，就可以处理大量请求。 服务器抗压策略 这个问题就更大了。百度了一下有两点，一个是缓存，一个是分布式。网友回答了消息队列，可以减轻大量并发量突发的情况。 很多很多个数，找到前十个 可以使用快排的变体 堆排序时间复杂度如何计算？ n×log n，就是n次，每次从低向顶出堆要log n次 HTTP和TCP 这个不知道问的具体是什么，可能是联系？ TCP关闭连接四次挥手，为啥 两次fin+ack，中间插入未发送完的数据。在带有延迟ack的 来源 网易内推（C++/C研发）offer之路 https://www.nowcoder.com/discuss/3038?type=2&order=0&pos=15&page=4 C++多态性都有哪些？ 多态是一种接口多种实现。静态多态和动态多态。静态多态是通过泛型编程实现的，动态多态是通过虚函数实现的。 动态绑定是怎么实现的？ 静态绑定：编译时绑定，通过对象调用 动态绑定：运行时绑定，通过地址实现 动态绑定是通过虚表实现的。 类型转换有哪些？ C风格的转换，强制类型转换，隐式类型转换。C++四种类型转换：static_cast，const_cast，dynamic_cost，reinterpret_cost。分别用于内置静态类型转换（int float）、去掉类型的const属性，用于动态类型转换（必须为父子类），重新解释类型而不做实质转换（指针强转）。 内存对齐的原则 结构体基本数据类型成员要从成员大小的整数倍开始对齐，结构体作为成员要从最宽的数据类型的整数倍对齐。结构体的大小为内部最大的成员的整数倍对齐。 模板是如何实现的？ 编译器在遇到模板声明时记住这个模板名称。在调用时根据模板传入的参数类型产生出具体的类型的代码，然后进行编译。 指针和const的用法？ const类型的指针，指向const类型的指针，指向const类型的const类型的指针。 虚函数、纯虚函数、虚函数与析构函数？为什么析构函数要定义成虚函数？ http://liaoxl.github.io/blog/20131205/virtual-destructor/ 根据这篇文章所述，意思是如果定义为虚函数并且子类也实现了的话，那么子类的析构函数和父类的析构函数都会调用。 内联函数 const 和 typedef 排序算法有哪些？快速排序怎么实现的？最好时间复杂度，平均时间复杂度。 插入、冒泡、堆排序、归并排序、桶排序、希尔排序、快速排序。 extern “C”有什么用 主要是为了调用C编写的程序。 2017暑期实习C++面经(阿里，网易游戏，腾讯等) 来源：https://www.nowcoder.com/discuss/23512?type=2&amp;order=0&amp;pos=20&amp;page=2 map由什么实现的？你知道红黑树和AVL树有什么区别吗？为什么像map，set都用红黑树来实现？你有听过skip-list吗？ 用过vector.reserve()吗，vector的数组是怎么增长的？ map-reduce了解吗？ linux熟悉吗？目录权限，如644代表什么，目录如果有可执行权限代表什么？ 平时有使用vi吗？一般的linux命令熟悉吗？(如awk，grep等) 有用过gdb的调试吗？ TCP/UDP的区别，如何实现拥塞控制，如何实现可靠传输？UDP的应用？ 可靠/不可靠 字节流/报文 连接/非连接 开销大/开销小 有拥塞控制/无拥塞控制 全双工/单工 拥塞控制目的是为了防止发送的数据包超出了网络的承载能力，涉及到所有的主机和路由器。拥塞控制认为丢包是因为数据包超出了网络的承载能力，所以在发送数据包的，需要慢开始，不断地达到网络的承载能力，将拥塞窗口以指数的规律增长到慢开始门限，超出门限后，如果继续增大数据包的发送量，认为网络将会出现拥塞，所以进入拥塞避免状态，该阶段以线性的增长规模扩大拥塞窗口，直到拥塞发生。如果某个数据包在超时计时器已到仍然没有收到对方的ACK，则认为网络中出现了拥塞，此时将慢开始门限设置为当前窗口的一半，并执行慢开始算法。如果收到了对方的三个重复的确认报文，则认为对方尚未收到丢失的报文，则尽早重传未被确认的报文，而不是等到超时计时器到时时才重传，这就是快速重传。如果出现了快速重传，则不执行慢开始算法，而是将拥塞窗口设置为慢开始门限，然后执行拥塞避免，这就是快恢复。 作者：Simon_ 链接：https://www.nowcoder.com/discuss/23512?type=2&amp;order=0&amp;pos=20&amp;page=2 来源：牛客网 总结： 我觉得阿里更注重项目和分布式，多线程方面的知识。网易游戏的话更注重算法和C++吧。腾讯的话就什么都问，从C++的内存结构，RTTI，到网络编程，到智力题的算法实现。同学们可以根据自己要投的公司再好好准备准备。与君共勉。 准备实习之前刷过的书籍有《C++ primer》, 《深度探索C++对象模型》，《Effective C++》，《STL源码解析》，《剑指offer》还有就是一些网络和操作系统的书。刷了leetcode前120的题 目。">
+    <link rel="shortcut icon" href="/favicon.ico" />
+
+  
+    
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-WC38C3XE3J"></script>
+      <script>
+        var doNotTrack = false;
+        if ( false ) {
+          var dnt = (navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack);
+          var doNotTrack = (dnt == "1" || dnt == "yes");
+        }
+        if (!doNotTrack) {
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-WC38C3XE3J');
+        }
+      </script>
+    
+  
+
+
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="切换菜单">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/zh-cn/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/avatar_hu96777ff80939aaa7d938dddcc232fcc6_1414962_300x0_resize_box_3.png" width="300"
+                            height="300" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+                    <span class="emoji">🌈</span>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/zh-cn">Nansen Li</a></h1>
+            <h2 class="site-description"></h2>
+        </div>
+    </header><ol class="menu-social">
+            
+                <li>
+                    <a 
+                        href='https://github.com/linanwx'
+                        target="_blank"
+                        title="GitHub"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://www.linkedin.com/in/nansen-li-3bb0a3146/'
+                        target="_blank"
+                        title="LinkedIn"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-brand-linkedin"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M8 11v5" /><path d="M8 8v.01" /><path d="M12 16v-5" /><path d="M16 16v-3a2 2 0 1 0 -4 0" /><path d="M3 7a4 4 0 0 1 4 -4h10a4 4 0 0 1 4 4v10a4 4 0 0 1 -4 4h-10a4 4 0 0 1 -4 -4z" /></svg>
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='index.xml'
+                        target="_blank"
+                        title="RSS"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-rss" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="5" cy="19" r="1" />
+  <path d="M4 4a16 16 0 0 1 16 16" />
+  <path d="M4 11a9 9 0 0 1 9 9" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/zh-cn/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+</svg>
+
+
+
+                
+                <span>主页</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/zh-cn/page/archives/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>归档</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/zh-cn/page/search/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
+
+
+
+                
+                <span>搜索</span>
+            </a>
+        </li>
+        
+        <li class="menu-bottom-section">
+            <ol class="menu">
+                    
+                        <li id="i18n-switch">  
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-language" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M4 5h7" />
+  <path d="M9 3v2c0 4.418 -2.239 8 -5 8" />
+  <path d="M5 9c-.003 2.144 2.952 3.908 6.7 4" />
+  <path d="M12 20l4 -9l4 9" />
+  <path d="M19.1 18h-6.2" />
+</svg>
+
+
+
+                            <select name="language" title="language" onchange="window.location.href = this.selectedOptions[0].value">
+                                
+                                    <option value="https://nansenli.com/" >English</option>
+                                
+                                    <option value="https://nansenli.com/zh-cn/" selected>中文</option>
+                                
+                            </select>
+                        </li>
+                    
+                
+
+                
+                    <li id="dark-mode-toggle">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <span>暗色模式</span>
+                    </li>
+                
+            </ol>
+        </li>
+    </ol>
+</aside>
+
+    
+
+            <main class="main full-width">
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/zh-cn/categories/%E9%9A%8F%E7%AC%94/" >
+                随笔
+            </a>
+        
+    </header>
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/zh-cn/post/jianshu/%E9%9A%8F%E7%AC%94/%E7%89%9B%E5%AE%A2%E7%BD%91%E9%9D%A2%E7%BB%8F%E9%A2%98%E7%9B%AE%E6%91%98%E6%8A%84/">牛客网面经题目摘抄</a>
+        </h2>
+    
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">Mar 17, 2018</time>
+            </div>
+        
+
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+                <time class="article-time--reading">
+                    阅读时长: 1 分钟
+                </time>
+            </div>
+        
+    </footer>
+    
+
+    
+        <footer class="article-translations">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-language" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M4 5h7" />
+  <path d="M9 3v2c0 4.418 -2.239 8 -5 8" />
+  <path d="M5 9c-.003 2.144 2.952 3.908 6.7 4" />
+  <path d="M12 20l4 -9l4 9" />
+  <path d="M19.1 18h-6.2" />
+</svg>
+
+
+
+            <div>
+                
+                    <a href="https://nansenli.com/post/jianshu/%E9%9A%8F%E7%AC%94/%E7%89%9B%E5%AE%A2%E7%BD%91%E9%9D%A2%E7%BB%8F%E9%A2%98%E7%9B%AE%E6%91%98%E6%8A%84/" class="link">English</a>
+                
+            </div>
+        </footer>
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <h2 id="来源-阿里菜鸟java实习电话面试经凉凉">来源 阿里菜鸟java实习电话面试经，凉凉~！~
+</h2><p><a class="link" href="https://www.nowcoder.com/discuss/67251?type=2&amp;order=0&amp;pos=7&amp;page=1"  target="_blank" rel="noopener"
+    >https://www.nowcoder.com/discuss/67251?type=2&order=0&pos=7&page=1</a></p>
+<p>去除了java部分的题目</p>
+<ul>
+<li>
+<p>用户请求在服务器是一个线程一个请求吗
+这个问题搜了下有两种模型，一种是阻塞的一种是非阻塞的。现在一般使用基于IO多路复用的技术，Reactor模式，只需要一个线程或者少量线程，就可以处理大量请求。</p>
+</li>
+<li>
+<p>服务器抗压策略
+这个问题就更大了。百度了一下有两点，一个是缓存，一个是分布式。网友回答了消息队列，可以减轻大量并发量突发的情况。</p>
+</li>
+<li>
+<p>很多很多个数，找到前十个
+可以使用快排的变体</p>
+</li>
+<li>
+<p>堆排序时间复杂度如何计算？
+n×log n，就是n次，每次从低向顶出堆要log n次</p>
+</li>
+<li>
+<p>HTTP和TCP
+这个不知道问的具体是什么，可能是联系？</p>
+</li>
+<li>
+<p>TCP关闭连接四次挥手，为啥
+两次fin+ack，中间插入未发送完的数据。在带有延迟ack的</p>
+</li>
+</ul>
+<h2 id="来源-网易内推cc研发offer之路">来源 网易内推（C++/C研发）offer之路
+</h2><p><a class="link" href="https://www.nowcoder.com/discuss/3038?type=2&amp;order=0&amp;pos=15&amp;page=4"  target="_blank" rel="noopener"
+    >https://www.nowcoder.com/discuss/3038?type=2&order=0&pos=15&page=4</a></p>
+<ul>
+<li>C++多态性都有哪些？
+多态是一种接口多种实现。静态多态和动态多态。静态多态是通过泛型编程实现的，动态多态是通过虚函数实现的。</li>
+<li>动态绑定是怎么实现的？
+静态绑定：编译时绑定，通过对象调用
+动态绑定：运行时绑定，通过地址实现
+动态绑定是通过虚表实现的。</li>
+<li>类型转换有哪些？
+C风格的转换，强制类型转换，隐式类型转换。C++四种类型转换：static_cast，const_cast，dynamic_cost，reinterpret_cost。分别用于内置静态类型转换（int float）、去掉类型的const属性，用于动态类型转换（必须为父子类），重新解释类型而不做实质转换（指针强转）。</li>
+<li>内存对齐的原则
+结构体基本数据类型成员要从成员大小的整数倍开始对齐，结构体作为成员要从最宽的数据类型的整数倍对齐。结构体的大小为内部最大的成员的整数倍对齐。</li>
+<li>模板是如何实现的？
+编译器在遇到模板声明时记住这个模板名称。在调用时根据模板传入的参数类型产生出具体的类型的代码，然后进行编译。</li>
+<li>指针和const的用法？
+const类型的指针，指向const类型的指针，指向const类型的const类型的指针。</li>
+<li>虚函数、纯虚函数、虚函数与析构函数？为什么析构函数要定义成虚函数？
+<a class="link" href="http://liaoxl.github.io/blog/20131205/virtual-destructor/"  target="_blank" rel="noopener"
+    >http://liaoxl.github.io/blog/20131205/virtual-destructor/</a>
+根据这篇文章所述，意思是如果定义为虚函数并且子类也实现了的话，那么子类的析构函数和父类的析构函数都会调用。</li>
+<li>内联函数</li>
+<li>const 和 typedef</li>
+<li>排序算法有哪些？快速排序怎么实现的？最好时间复杂度，平均时间复杂度。
+插入、冒泡、堆排序、归并排序、桶排序、希尔排序、快速排序。</li>
+<li>extern “C”有什么用
+主要是为了调用C编写的程序。</li>
+</ul>
+<h2 id="2017暑期实习c面经阿里网易游戏腾讯等">2017暑期实习C++面经(阿里，网易游戏，腾讯等)
+</h2><p>来源：https://www.nowcoder.com/discuss/23512?type=2&amp;order=0&amp;pos=20&amp;page=2</p>
+<ul>
+<li>map由什么实现的？你知道红黑树和AVL树有什么区别吗？为什么像map，set都用红黑树来实现？你有听过skip-list吗？</li>
+<li>用过vector.reserve()吗，vector的数组是怎么增长的？</li>
+<li>map-reduce了解吗？</li>
+<li>linux熟悉吗？目录权限，如644代表什么，目录如果有可执行权限代表什么？</li>
+<li>平时有使用vi吗？一般的linux命令熟悉吗？(如awk，grep等) 有用过gdb的调试吗？</li>
+<li>TCP/UDP的区别，如何实现拥塞控制，如何实现可靠传输？UDP的应用？
+可靠/不可靠 字节流/报文 连接/非连接 开销大/开销小 有拥塞控制/无拥塞控制 全双工/单工
+拥塞控制目的是为了防止发送的数据包超出了网络的承载能力，涉及到所有的主机和路由器。拥塞控制认为丢包是因为数据包超出了网络的承载能力，所以在发送数据包的，需要慢开始，不断地达到网络的承载能力，将拥塞窗口以指数的规律增长到慢开始门限，超出门限后，如果继续增大数据包的发送量，认为网络将会出现拥塞，所以进入拥塞避免状态，该阶段以线性的增长规模扩大拥塞窗口，直到拥塞发生。如果某个数据包在超时计时器已到仍然没有收到对方的ACK，则认为网络中出现了拥塞，此时将慢开始门限设置为当前窗口的一半，并执行慢开始算法。如果收到了对方的三个重复的确认报文，则认为对方尚未收到丢失的报文，则尽早重传未被确认的报文，而不是等到超时计时器到时时才重传，这就是快速重传。如果出现了快速重传，则不执行慢开始算法，而是将拥塞窗口设置为慢开始门限，然后执行拥塞避免，这就是快恢复。</li>
+</ul>
+<blockquote>
+<p>作者：Simon_
+链接：<a class="link" href="https://www.nowcoder.com/discuss/23512?type=2&amp;order=0&amp;pos=20&amp;page=2"  target="_blank" rel="noopener"
+    >https://www.nowcoder.com/discuss/23512?type=2&amp;order=0&amp;pos=20&amp;page=2</a>
+来源：牛客网</p>
+<p>总结：</p>
+<p>我觉得阿里更注重项目和分布式，多线程方面的知识。网易游戏的话更注重算法和C++吧。腾讯的话就什么都问，从C++的内存结构，RTTI，到网络编程，到智力题的算法实现。同学们可以根据自己要投的公司再好好准备准备。与君共勉。</p>
+<p>准备实习之前刷过的书籍有《C++ primer》, 《深度探索C++对象模型》，《Effective C++》，《STL源码解析》，《剑指offer》还有就是一些网络和操作系统的书。刷了leetcode前120的题 目。</p>
+</blockquote>
+<p><strong>给未来找C++研发实习的学弟学妹的一些建议：</strong></p>
+<blockquote>
+<ol>
+<li>最好在找实习之前，先把C++ primer刷几遍，不懂的可以做个笔记，下次再看。当你看《对象模型》的时候，你会发现Primer中看不懂的知识都能在《对象模型》中迎刃而解。（关于Primer的学习方法我是参照https://www.zhihu.com/question/32087709中的第一个回答来做的）</li>
+<li>《STL源码解析》最好也看看。面试官很喜欢问vector，map等的底层实现或者动态增长，如果不看书，关靠看博客和面经的话可能理解起来比较困难。</li>
+<li>剑指offer是大部分公司一面的算法题，我觉得最好把每个题目都看懂吧。leetcode的话前100题确实很经典，二分查找，hash，动态规划，二叉树等的知识也可以通过刷题来巩固。</li>
+<li>网络的话肯定是TCP/IP详解  卷1，有时间的话可以再看看Unix网络编程。时间更充裕的话最好刷一刷陈硕的《linux多线程服务器编程》，对多线程的知识会有一个了解。</li>
+<li>最后一个建议就是越早准备越好，投递简历、面试期间只适合整理牛客网上的面经以及自己的面经，补缺补漏。毕竟面试题都是随机的，想要在面试中表现好一些，最好还是平时多积累。</li>
+</ol>
+</blockquote>
+<h2 id="cc后台研发-腾讯实习春招一面-凉凉">C/C++后台研发 腾讯实习春招一面 凉凉~
+</h2><p><a class="link" href="https://www.nowcoder.com/discuss/68508?type=0&amp;order=0&amp;pos=8&amp;page=0"  target="_blank" rel="noopener"
+    >https://www.nowcoder.com/discuss/68508?type=0&order=0&pos=8&page=0</a></p>
+<ul>
+<li>vector底层的实现. 这里我说的比较多,所以他问到了insert具体做里那些事情. resize函数调用的是什么样. 扩容的情况.</li>
+<li>进程间通信机制
+管道（pipe），有名管道（FIFO）
+信号（signal）
+消息队列
+共享内存
+信号量
+套接字（socket)</li>
+</ul>
+<h2 id="阿里巴巴菜鸟网络二面">阿里巴巴菜鸟网络二面
+</h2><p><a class="link" href="http://blog.csdn.net/caishenfans/article/details/44496581"  target="_blank" rel="noopener"
+    >http://blog.csdn.net/caishenfans/article/details/44496581</a></p>
+<ul>
+<li>
+<p>fill和memset的区别
+fill 是stl算法，会调用拷贝构造函数，如果是基础类型应该会直接按位复制。memset是c算法，就是一个字节一个字节拷贝到原始指针指向的位置。</p>
+</li>
+<li>
+<p>C++内存管理方法
+RAII全称为Resource Acquisition Is Initialization
+利用栈展开过程栈上对象的析构函数将被 自动调用的保证，从而正确地释放先前获取的资源。RAII只有在栈展开正常执行的前提下才能正常工作。函数调用和正常的C++异常处理流程(异常处于 try-catch块)都存在栈展开。</p>
+</li>
+<li>
+<p>智能指针的实现
+当有另外一个智能指针对当前智能指针进行拷贝时，引用计数器加1。
+当两个智能指针进行赋值操作时，左边的指针指向的对象引用计数减1，右边的加1。
+析构时，同样引用计数减1。
+当引用计数为0时，对象被回收。
+重新定义了一组operator ：-&gt;指针，返回原始指针的指针。解引用*T，返回原始指针的解引用。</p>
+</li>
+</ul>
+<h2 id="阿里实习电话面试经验一个多小时">阿里实习电话面试经验，一个多小时
+</h2><p><a class="link" href="https://www.nowcoder.com/discuss/3836"  target="_blank" rel="noopener"
+    >https://www.nowcoder.com/discuss/3836</a></p>
+<ul>
+<li>什么是二叉平衡树，如何插入节点，删除节点，说出关键步骤。</li>
+</ul>
+<h2 id="学生党如何拿到阿里技术offer阿里实习生面试经验成功">学生党如何拿到阿里技术offer：《阿里实习生面试经验（成功）》
+</h2><p><a class="link" href="https://yq.aliyun.com/articles/6395"  target="_blank" rel="noopener"
+    >https://yq.aliyun.com/articles/6395</a></p>
+<h2 id="阿里c研发实习二面和三面面经已跪">阿里C++研发实习二面和三面面经(已跪)
+</h2><p><a class="link" href="https://www.nowcoder.com/discuss/27801?type=2&amp;order=3&amp;pos=55&amp;page=1"  target="_blank" rel="noopener"
+    >https://www.nowcoder.com/discuss/27801?type=2&order=3&pos=55&page=1</a></p>
+<h2 id="实习面试总结">实习面试总结
+</h2><p><a class="link" href="https://www.nowcoder.com/discuss/25302?type=2&amp;order=3&amp;pos=190&amp;page=1"  target="_blank" rel="noopener"
+    >https://www.nowcoder.com/discuss/25302?type=2&order=3&pos=190&page=1</a></p>
+<h2 id="知乎牛客总结">知乎牛客总结
+</h2><p><a class="link" href="http://link.zhihu.com/?target=https%3A//www.nowcoder.com/discuss/27801%3Ftype%3D2%26order%3D3%26pos%3D55%26page%3D1"  target="_blank" rel="noopener"
+    >阿里C++研发实习二面和三面面经(已跪)</a></p>
+<p><a class="link" href="http://link.zhihu.com/?target=https%3A//www.nowcoder.com/discuss/27739%3Ftype%3D2%26order%3D3%26pos%3D57%26page%3D2"  target="_blank" rel="noopener"
+    >【阿里、腾讯、头条】等12家企业【C++方向】30场面试经验</a></p>
+<p><a class="link" href="http://link.zhihu.com/?target=https%3A//www.nowcoder.com/discuss/27616%3Ftype%3D2%26order%3D3%26pos%3D61%26page%3D1"  target="_blank" rel="noopener"
+    >阿里校招实习一面面经</a></p>
+<p><a class="link" href="http://link.zhihu.com/?target=https%3A//www.nowcoder.com/discuss/27349%3Ftype%3D2%26order%3D3%26pos%3D71%26page%3D1"  target="_blank" rel="noopener"
+    >阿里巴巴秋招再见</a></p>
+<p><a class="link" href="http://link.zhihu.com/?target=https%3A//www.nowcoder.com/discuss/26107%3Ftype%3D2%26order%3D3%26pos%3D125%26page%3D1"  target="_blank" rel="noopener"
+    >百度三面（offer）&amp;&amp;阿里四面（进行中）</a></p>
+<p><a class="link" href="http://link.zhihu.com/?target=https%3A//www.nowcoder.com/discuss/25923%3Ftype%3D2%26order%3D3%26pos%3D143%26page%3D1"  target="_blank" rel="noopener"
+    >双非大三春招实习面经</a></p>
+<p><a class="link" href="http://link.zhihu.com/?target=https%3A//www.nowcoder.com/discuss/25302%3Ftype%3D2%26order%3D3%26pos%3D190%26page%3D1"  target="_blank" rel="noopener"
+    >实习面试总结</a></p>
+<p><a class="link" href="http://link.zhihu.com/?target=https%3A//www.nowcoder.com/discuss/24900%3Ftype%3D2%26order%3D3%26pos%3D230%26page%3D1"  target="_blank" rel="noopener"
+    >阿里，摩根，野村，腾讯，微软，图鸭科技面经分享</a></p>
+<p><a class="link" href="http://link.zhihu.com/?target=http%3A//www.nowcoder.com/discuss/8343%3Ftype%3D0%26order%3D3%26pos%3D3950%26page%3D1%26from%3Dmnks201"  target="_blank" rel="noopener"
+    >阿里四面面经 + 已成功拿到offer</a></p>
+<p><a class="link" href="http://link.zhihu.com/?target=https%3A//www.nowcoder.com/discuss/18460%3Ftype%3D2%26order%3D3%26pos%3D57%26page%3D2%26from%3Dmnks201"  target="_blank" rel="noopener"
+    >我的2016笔试面试经验(送给下一届的学弟学妹们)</a></p>
+<h2 id="阿里巴巴2017实习面试分享技术三面hr面">阿里巴巴2017实习面试分享（技术三面+HR面）
+</h2><p><a class="link" href="https://www.nowcoder.com/discuss/25446"  target="_blank" rel="noopener"
+    >https://www.nowcoder.com/discuss/25446</a></p>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+
+    </footer>
+
+
+    
+</article>
+
+    
+
+    
+
+     
+    
+        
+    <div class="disqus-container">
+    <div id="disqus_thread"></div>
+<script>
+    window.disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "nansenli" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+<style>
+    .disqus-container {
+        background-color: var(--card-background);
+        border-radius: var(--card-border-radius);
+        box-shadow: var(--shadow-l1);
+        padding: var(--card-padding);
+    }
+</style>
+
+<script>
+    window.addEventListener('onColorSchemeChange', (e) => {
+        if (typeof DISQUS == 'object') {
+            DISQUS.reset({
+                reload: true
+            });
+        }
+    })
+</script>
+
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+        2025 Nansen Li（李楠森）
+    </section>
+    
+    <section class="powerby">
+        使用 <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> 构建 <br />
+        主题 <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.30.0">Stack</a></b> 由 <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a> 设计
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.1e9a3bafd846ced4c345d084b355fb8c7bae75701c338f8a1f8a82c780137826.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>英语 on Nansen Li</title>
+        <link>http://localhost:1313/zh-cn/categories/%E8%8B%B1%E8%AF%AD/</link>
+        <description>Recent content in 英语 on Nansen Li</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>zh-cn</language>
+        <copyright>Nansen Li（李楠森）</copyright><atom:link href="http://localhost:1313/zh-cn/categories/%E8%8B%B1%E8%AF%AD/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>Docker搭建kafka测试环境</title>
+        <link>http://localhost:1313/zh-cn/post/jianshu/%E8%8B%B1%E8%AF%AD/docker%E6%90%AD%E5%BB%BAkafka%E6%B5%8B%E8%AF%95%E7%8E%AF%E5%A2%83/</link>
+        <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+        
+        <guid>http://localhost:1313/zh-cn/post/jianshu/%E8%8B%B1%E8%AF%AD/docker%E6%90%AD%E5%BB%BAkafka%E6%B5%8B%E8%AF%95%E7%8E%AF%E5%A2%83/</guid>
+        <description>&lt;p&gt;亲测可用&lt;/p&gt;
+&lt;p&gt;新建文件docker-compose.yml&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;version: &amp;#39;2&amp;#39;
+services:
+  zoo:
+    image: wurstmeister/zookeeper
+    restart: unless-stopped
+    hostname: zoo
+    ports:
+      - &amp;#34;2181:2181&amp;#34;
+    container_name: zookeeper
+  kafka:
+    image: wurstmeister/kafka
+    ports:
+      - &amp;#34;9092:9092&amp;#34;
+    environment:
+      KAFKA_ADVERTISED_HOST_NAME: 9.134.5.240                     ## 修改:宿主机IP
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://9.134.5.240:19092    ## 修改:宿主机IP
+      KAFKA_ZOOKEEPER_CONNECT: &amp;#34;zoo:2181&amp;#34;
+      KAFKA_ADVERTISED_PORT: 9092
+      KAFKA_BROKER_ID: 1
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    depends_on:
+      - zoo
+    container_name: kafka
+  kafka-manager:
+    image: sheepkiller/kafka-manager              ## 镜像：开源的web管理kafka集群的界面
+    environment:
+        ZK_HOSTS: zoo:2181                        ## 修改:宿主机IP
+    ports:
+      - &amp;#34;9000:9000&amp;#34;                               ## 暴露端口
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;运行docker-compose up -d即可&lt;/p&gt;
+</description>
+        </item>
+        
+    </channel>
+</rss>

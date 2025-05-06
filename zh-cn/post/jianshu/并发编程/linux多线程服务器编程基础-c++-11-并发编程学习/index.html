@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="前言 C++中在以往版本中不支持线程。需要使用pthread之类的使用线程。如果能够使用C++自身的线程则可以使程序变得统一简洁。 头文件 该头文件包含有std::thread类与std::this_thread类。以及管理线程的函数。是实现线程的主要文件。 该头文件包含有std::atomic和std::atomic_flag类，是实现原子操作的的主要文件。 包含互斥相关的类与函数。 包含有future类及相关的函数。 &lt;condition_variable&gt; 包含有条件变量的类。 以上就是c++11 的线程部分了。虽然有关pthread与c++ thread有很多争议，但是对于跨平台的c++ thread来说，似乎更为标准一些。 推荐此书来学习c++11的线程。 https://www.gitbook.com/book/chenxiaowei/cpp_concurrency_in_action/details hello world 线程 简单认识thread类 #include &lt;thread&gt; using namespace std; // 下面这个函数是一个我们想要运行的线程任务 void hello() { printf(&#34;%s&#34;, &#34;hello\\n&#34;); } // 使用thread类，传入一个函数作为我们的初始任务。不仅如此，还能传入类等其他的参数 int main() { thread t(hello); // 使用join来等待结束 t.join(); } 除了join来等待结束，可以使用detach来不等待线程结束。 struct func { int&amp; i; func(int&amp; i_) : i(i_) {} void operator() () { for (unsigned j=0 ; j&lt;1000000 ; ++j) { do_something(i); // 1. 潜在访问隐患：悬空引用 } } }; void oops() { int some_local_state=0; func my_func(some_local_state); std::thread my_thread(my_func); my_thread.">
+<title>Linux多线程服务器编程基础 C&#43;&#43; 11 并发编程学习</title>
+
+<link rel='canonical' href='https://nansenli.com/zh-cn/post/jianshu/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/linux%E5%A4%9A%E7%BA%BF%E7%A8%8B%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%BC%96%E7%A8%8B%E5%9F%BA%E7%A1%80-c&#43;&#43;-11-%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E5%AD%A6%E4%B9%A0/'>
+
+<link rel="stylesheet" href="/scss/style.min.1084ac713783b88e0bd9807a58068e10aae22e99420f94a9234654a4e199baa4.css"><meta property='og:title' content="Linux多线程服务器编程基础 C++ 11 并发编程学习">
+<meta property='og:description' content="前言 C++中在以往版本中不支持线程。需要使用pthread之类的使用线程。如果能够使用C++自身的线程则可以使程序变得统一简洁。 头文件 该头文件包含有std::thread类与std::this_thread类。以及管理线程的函数。是实现线程的主要文件。 该头文件包含有std::atomic和std::atomic_flag类，是实现原子操作的的主要文件。 包含互斥相关的类与函数。 包含有future类及相关的函数。 &lt;condition_variable&gt; 包含有条件变量的类。 以上就是c++11 的线程部分了。虽然有关pthread与c++ thread有很多争议，但是对于跨平台的c++ thread来说，似乎更为标准一些。 推荐此书来学习c++11的线程。 https://www.gitbook.com/book/chenxiaowei/cpp_concurrency_in_action/details hello world 线程 简单认识thread类 #include &lt;thread&gt; using namespace std; // 下面这个函数是一个我们想要运行的线程任务 void hello() { printf(&#34;%s&#34;, &#34;hello\\n&#34;); } // 使用thread类，传入一个函数作为我们的初始任务。不仅如此，还能传入类等其他的参数 int main() { thread t(hello); // 使用join来等待结束 t.join(); } 除了join来等待结束，可以使用detach来不等待线程结束。 struct func { int&amp; i; func(int&amp; i_) : i(i_) {} void operator() () { for (unsigned j=0 ; j&lt;1000000 ; ++j) { do_something(i); // 1. 潜在访问隐患：悬空引用 } } }; void oops() { int some_local_state=0; func my_func(some_local_state); std::thread my_thread(my_func); my_thread.">
+<meta property='og:url' content='https://nansenli.com/zh-cn/post/jianshu/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/linux%E5%A4%9A%E7%BA%BF%E7%A8%8B%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%BC%96%E7%A8%8B%E5%9F%BA%E7%A1%80-c&#43;&#43;-11-%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E5%AD%A6%E4%B9%A0/'>
+<meta property='og:site_name' content='Nansen Li'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2018-03-18T08:29:00&#43;00:00'/><meta property='article:modified_time' content='2018-03-18T08:29:00&#43;00:00'/>
+<meta name="twitter:title" content="Linux多线程服务器编程基础 C++ 11 并发编程学习">
+<meta name="twitter:description" content="前言 C++中在以往版本中不支持线程。需要使用pthread之类的使用线程。如果能够使用C++自身的线程则可以使程序变得统一简洁。 头文件 该头文件包含有std::thread类与std::this_thread类。以及管理线程的函数。是实现线程的主要文件。 该头文件包含有std::atomic和std::atomic_flag类，是实现原子操作的的主要文件。 包含互斥相关的类与函数。 包含有future类及相关的函数。 &lt;condition_variable&gt; 包含有条件变量的类。 以上就是c++11 的线程部分了。虽然有关pthread与c++ thread有很多争议，但是对于跨平台的c++ thread来说，似乎更为标准一些。 推荐此书来学习c++11的线程。 https://www.gitbook.com/book/chenxiaowei/cpp_concurrency_in_action/details hello world 线程 简单认识thread类 #include &lt;thread&gt; using namespace std; // 下面这个函数是一个我们想要运行的线程任务 void hello() { printf(&#34;%s&#34;, &#34;hello\\n&#34;); } // 使用thread类，传入一个函数作为我们的初始任务。不仅如此，还能传入类等其他的参数 int main() { thread t(hello); // 使用join来等待结束 t.join(); } 除了join来等待结束，可以使用detach来不等待线程结束。 struct func { int&amp; i; func(int&amp; i_) : i(i_) {} void operator() () { for (unsigned j=0 ; j&lt;1000000 ; ++j) { do_something(i); // 1. 潜在访问隐患：悬空引用 } } }; void oops() { int some_local_state=0; func my_func(some_local_state); std::thread my_thread(my_func); my_thread.">
+    <link rel="shortcut icon" href="/favicon.ico" />
+
+  
+    
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-WC38C3XE3J"></script>
+      <script>
+        var doNotTrack = false;
+        if ( false ) {
+          var dnt = (navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack);
+          var doNotTrack = (dnt == "1" || dnt == "yes");
+        }
+        if (!doNotTrack) {
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-WC38C3XE3J');
+        }
+      </script>
+    
+  
+
+
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="切换菜单">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/zh-cn/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/avatar_hu96777ff80939aaa7d938dddcc232fcc6_1414962_300x0_resize_box_3.png" width="300"
+                            height="300" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+                    <span class="emoji">🌈</span>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/zh-cn">Nansen Li</a></h1>
+            <h2 class="site-description"></h2>
+        </div>
+    </header><ol class="menu-social">
+            
+                <li>
+                    <a 
+                        href='https://github.com/linanwx'
+                        target="_blank"
+                        title="GitHub"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://www.linkedin.com/in/nansen-li-3bb0a3146/'
+                        target="_blank"
+                        title="LinkedIn"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-brand-linkedin"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M8 11v5" /><path d="M8 8v.01" /><path d="M12 16v-5" /><path d="M16 16v-3a2 2 0 1 0 -4 0" /><path d="M3 7a4 4 0 0 1 4 -4h10a4 4 0 0 1 4 4v10a4 4 0 0 1 -4 4h-10a4 4 0 0 1 -4 -4z" /></svg>
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='index.xml'
+                        target="_blank"
+                        title="RSS"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-rss" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="5" cy="19" r="1" />
+  <path d="M4 4a16 16 0 0 1 16 16" />
+  <path d="M4 11a9 9 0 0 1 9 9" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/zh-cn/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+</svg>
+
+
+
+                
+                <span>主页</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/zh-cn/page/archives/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>归档</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/zh-cn/page/search/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
+
+
+
+                
+                <span>搜索</span>
+            </a>
+        </li>
+        
+        <li class="menu-bottom-section">
+            <ol class="menu">
+                    
+                        <li id="i18n-switch">  
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-language" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M4 5h7" />
+  <path d="M9 3v2c0 4.418 -2.239 8 -5 8" />
+  <path d="M5 9c-.003 2.144 2.952 3.908 6.7 4" />
+  <path d="M12 20l4 -9l4 9" />
+  <path d="M19.1 18h-6.2" />
+</svg>
+
+
+
+                            <select name="language" title="language" onchange="window.location.href = this.selectedOptions[0].value">
+                                
+                                    <option value="https://nansenli.com/" >English</option>
+                                
+                                    <option value="https://nansenli.com/zh-cn/" selected>中文</option>
+                                
+                            </select>
+                        </li>
+                    
+                
+
+                
+                    <li id="dark-mode-toggle">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <span>暗色模式</span>
+                    </li>
+                
+            </ol>
+        </li>
+    </ol>
+</aside>
+
+    
+
+            <main class="main full-width">
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/zh-cn/categories/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/" >
+                并发编程
+            </a>
+        
+    </header>
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/zh-cn/post/jianshu/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/linux%E5%A4%9A%E7%BA%BF%E7%A8%8B%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%BC%96%E7%A8%8B%E5%9F%BA%E7%A1%80-c&#43;&#43;-11-%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E5%AD%A6%E4%B9%A0/">Linux多线程服务器编程基础 C&#43;&#43; 11 并发编程学习</a>
+        </h2>
+    
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">Mar 18, 2018</time>
+            </div>
+        
+
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+                <time class="article-time--reading">
+                    阅读时长: 2 分钟
+                </time>
+            </div>
+        
+    </footer>
+    
+
+    
+        <footer class="article-translations">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-language" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M4 5h7" />
+  <path d="M9 3v2c0 4.418 -2.239 8 -5 8" />
+  <path d="M5 9c-.003 2.144 2.952 3.908 6.7 4" />
+  <path d="M12 20l4 -9l4 9" />
+  <path d="M19.1 18h-6.2" />
+</svg>
+
+
+
+            <div>
+                
+                    <a href="https://nansenli.com/post/jianshu/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/linux%E5%A4%9A%E7%BA%BF%E7%A8%8B%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%BC%96%E7%A8%8B%E5%9F%BA%E7%A1%80-c&#43;&#43;-11-%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E5%AD%A6%E4%B9%A0/" class="link">English</a>
+                
+            </div>
+        </footer>
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <h2 id="前言">前言
+</h2><p>C++中在以往版本中不支持线程。需要使用pthread之类的使用线程。如果能够使用C++自身的线程则可以使程序变得统一简洁。</p>
+<h2 id="头文件">头文件
+</h2><ul>
+<li><!-- raw HTML omitted --> 该头文件包含有std::thread类与std::this_thread类。以及管理线程的函数。是实现线程的主要文件。</li>
+<li><!-- raw HTML omitted --> 该头文件包含有std::atomic和std::atomic_flag类，是实现原子操作的的主要文件。</li>
+<li><!-- raw HTML omitted --> 包含互斥相关的类与函数。</li>
+<li><!-- raw HTML omitted --> 包含有future类及相关的函数。</li>
+<li>&lt;condition_variable&gt; 包含有条件变量的类。</li>
+</ul>
+<p>以上就是c++11 的线程部分了。虽然有关pthread与c++ thread有很多争议，但是对于跨平台的c++ thread来说，似乎更为标准一些。</p>
+<p>推荐此书来学习c++11的线程。
+<a class="link" href="https://www.gitbook.com/book/chenxiaowei/cpp_concurrency_in_action/details"  target="_blank" rel="noopener"
+    >https://www.gitbook.com/book/chenxiaowei/cpp_concurrency_in_action/details</a></p>
+<h2 id="hello-world-线程">hello world 线程
+</h2><p>简单认识thread类</p>
+<pre tabindex="0"><code>#include &lt;thread&gt;
+
+using namespace std;
+// 下面这个函数是一个我们想要运行的线程任务
+void hello()
+{
+    printf(&#34;%s&#34;, &#34;hello\n&#34;);
+}
+// 使用thread类，传入一个函数作为我们的初始任务。不仅如此，还能传入类等其他的参数
+int main()
+{
+    thread t(hello);
+    // 使用join来等待结束
+    t.join();
+}
+</code></pre><p>除了join来等待结束，可以使用detach来不等待线程结束。</p>
+<pre tabindex="0"><code>struct func
+{
+  int&amp; i;
+  func(int&amp; i_) : i(i_) {}
+  void operator() ()
+  {
+    for (unsigned j=0 ; j&lt;1000000 ; ++j)
+    {
+      do_something(i);           // 1. 潜在访问隐患：悬空引用
+    }
+  }
+};
+
+void oops()
+{
+  int some_local_state=0;
+  func my_func(some_local_state);
+  std::thread my_thread(my_func);
+  my_thread.detach();          // 2. 不等待线程结束
+}                              // 3. 新线程可能还在运行
+</code></pre><p>这个例子中，已经决定不等待线程结束(使用了detach()②)，所以当oops()函数执行完成时③，新线程中的函数可能还在运行。如果线程还在运行，它就会去调用do_something(i)函数①，这时就会访问已经销毁的变量。如同一个单线程程序——允许在函数完成后继续持有局部变量的指针或引用；当然，这从来就不是一个好主意——这种情况发生时，错误并不明显，会使多线程更容易出错。</p>
+<h2 id="如何等待线程结束">如何等待线程结束？
+</h2><p>如果需要等待线程，相关的std::thread实例需要使用join()。清单2.1中，将my_thread.detach()替换为my_thread.join()，就可以确保局部变量在线程完成后，才被销毁。在这种情况下，因为原始线程在其生命周期中并没有做什么事，使得用一个独立的线程去执行函数变得收益甚微，但在实际编程中，原始线程要么有自己的工作要做；要么会启动多个子线程来做一些有用的工作，并等待这些线程结束。</p>
+<p>join()是简单粗暴的等待线程完成或不等待。当你需要对等待中的线程有更灵活的控制时，比如，看一下某个线程是否结束，或者只等待一段时间(超过时间就判定为超时)。想要做到这些，你需要使用其他机制来完成，比如条件变量和期待(futures)。调用join()的行为，还清理了线程相关的存储部分，这样std::thread对象将不再与已经完成的线程有任何关联。这意味着，只能对一个线程使用一次join();一旦已经使用过join()，std::thread对象就不能再次加入了，当对其使用joinable()时，将返回false。</p>
+<h2 id="向线程传递参数">向线程传递参数
+</h2><pre tabindex="0"><code>void f(int i, std::string const&amp; s);
+std::thread t(f, 3, &#34;hello&#34;);
+</code></pre><p>代码创建了一个调用f(3, &ldquo;hello&rdquo;)的线程。注意，函数f需要一个std::string对象作为第二个参数，但这里使用的是字符串的字面值，也就是char const *类型。之后，在线程的上下文中完成字面值向std::string对象的转化。</p>
+<p>需要注意的是，构造函数无视函数期待的参数类型，并盲目的拷贝已提供的变量。</p>
+<p>例如一：</p>
+<pre tabindex="0"><code>void f(int i,std::string const&amp; s);
+void oops(int some_param)
+{
+  char buffer[1024]; // 1
+  sprintf(buffer, &#34;%i&#34;,some_param);
+  std::thread t(f,3,buffer); // 2
+  t.detach();
+}
+</code></pre><p>这种情况下，buffer②是一个指针变量，指向本地变量，然后本地变量通过buffer传递到新线程中②。并且，函数有很有可能会在字面值转化成std::string对象之前崩溃(oops)，从而导致一些未定义的行为。并且想要依赖隐式转换将字面值转换为函数期待的std::string对象，但因std::thread的构造函数会复制提供的变量，就只复制了没有转换成期望类型的字符串字面值。
+解决方案就是在传递到std::thread构造函数之前就将字面值转化为std::string对象：</p>
+<pre tabindex="0"><code>void f(int i,std::string const&amp; s);
+void not_oops(int some_param)
+{
+  char buffer[1024];
+  sprintf(buffer,&#34;%i&#34;,some_param);
+  std::thread t(f,3,std::string(buffer));  // 使用std::string，避免悬垂指针
+  t.detach();
+}
+</code></pre><p>例如二：
+还可能遇到相反的情况：期望传递一个引用，但整个对象被复制了。当线程更新一个引用传递的数据结构时，这种情况就可能发生，比如：</p>
+<pre tabindex="0"><code>void update_data_for_widget(widget_id w,widget_data&amp; data); // 1
+void oops_again(widget_id w)
+{
+  widget_data data;
+  std::thread t(update_data_for_widget,w,data); // 2
+  display_status();
+  t.join();
+  process_widget_data(data); // 3
+}
+</code></pre><h2 id="使用互斥">使用互斥
+</h2><p>C++中通过实例化std::mutex创建互斥量，通过调用成员函数lock()进行上锁，unlock()进行解锁。不过，不推荐实践中直接去调用成员函数，因为调用成员函数就意味着，必须记住在每个函数出口都要去调用unlock()，也包括异常的情况。C++标准库为互斥量提供了一个RAII语法的模板类std::lock_guard，其会在构造的时候提供已锁的互斥量，并在析构的时候进行解锁，从而保证了一个已锁的互斥量总是会被正确的解锁。下面的程序清单中，展示了如何在多线程程序中，使用std::mutex构造的std::lock_guard实例，对一个列表进行访问保护。std::mutex和std::lock_guard都在<!-- raw HTML omitted -->头文件中声明。</p>
+<pre tabindex="0"><code>#include &lt;list&gt;
+#include &lt;mutex&gt;
+#include &lt;algorithm&gt;
+
+std::list&lt;int&gt; some_list;    // 1
+std::mutex some_mutex;    // 2
+
+void add_to_list(int new_value)
+{
+  std::lock_guard&lt;std::mutex&gt; guard(some_mutex);    // 3
+  some_list.push_back(new_value);
+}
+
+bool list_contains(int value_to_find)
+{
+  std::lock_guard&lt;std::mutex&gt; guard(some_mutex);    // 4
+  return std::find(some_list.begin(),some_list.end(),value_to_find) != some_list.end();
+}
+</code></pre><p>当其中一个成员函数返回的是保护数据的指针或引用时，会破坏对数据的保护。具有访问能力的指针或引用可以访问(并可能修改)被保护的数据，而不会被互斥锁限制。互斥量保护的数据需要对接口的设计相当谨慎，要确保互斥量能锁住任何对保护数据的访问，并且不留后门。</p>
+<h2 id="使用锁">使用锁
+</h2><p>试想有一个玩具，这个玩具由两部分组成，必须拿到这两个部分，才能够玩。例如，一个玩具鼓，需要一个鼓锤和一个鼓才能玩。现在有两个小孩，他们都很喜欢玩这个玩具。当其中一个孩子拿到了鼓和鼓锤时，那就可以尽情的玩耍了。当另一孩子想要玩，他就得等待另一孩子玩完才行。再试想，鼓和鼓锤被放在不同的玩具箱里，并且两个孩子在同一时间里都想要去敲鼓。之后，他们就去玩具箱里面找这个鼓。其中一个找到了鼓，并且另外一个找到了鼓锤。现在问题就来了，除非其中一个孩子决定让另一个先玩，他可以把自己的那部分给另外一个孩子；但当他们都紧握着自己所有的部分而不给予，那么这个鼓谁都没法玩。</p>
+<p>很幸运，C++标准库有办法解决这个问题，std::lock——可以一次性锁住多个(两个以上)的互斥量，并且没有副作用(死锁风险)。</p>
+<p>如何避免死锁？</p>
+<ul>
+<li>
+<p>避免嵌套锁
+第一个建议往往是最简单的：一个线程已获得一个锁时，再别去获取第二个。如果能坚持这个建议，因为每个线程只持有一个锁，锁上就不会产生死锁。</p>
+</li>
+<li>
+<p>使用固定顺序获取锁
+当硬性条件要求你获取两个以上(包括两个)的锁，并且不能使用std::lock单独操作来获取它们;那么最好在每个线程上，用固定的顺序获取它们获取它们(锁)。</p>
+</li>
+</ul>
+<h2 id="同步等待">同步等待
+</h2><p>假设你在旅游，而且正在一辆在夜间运行的火车上。在夜间，如何在正确的站点下车呢？一种方法是整晚都要醒着，然后注意到了哪一站。这样，你就不会错过你要到达的站点，但是这样会让你感到很疲倦。另外，你可以看一下时间表，估计一下火车到达目的地的时间，然后在一个稍早的时间点上设置闹铃，然后你就可以安心的睡会了。这个方法听起来也很不错，也没有错过你要下车的站点，但是当火车晚点的时候，你就要被过早的叫醒了。当然，闹钟的电池也可能会没电了，并导致你睡过站。理想的方式是，无论是早或晚，只要当火车到站的时候，有人或其他东西能把你唤醒，就好了。</p>
+<p>C++标准库对条件变量有两套实现：std::condition_variable和std::condition_variable_any。这两个实现都包含在&lt;condition_variable&gt;头文件的声明中。两者都需要与一个互斥量一起才能工作(互斥量是为了同步)；前者仅限于与std::mutex一起工作，而后者可以和任何满足最低标准的互斥量一起工作，从而加上了_any的后缀。因为std::condition_variable_any更加通用，这就可能从体积、性能，以及系统资源的使用方面产生额外的开销，所以std::condition_variable一般作为首选的类型，当对灵活性有硬性要求时，我们才会去考虑std::condition_variable_any。</p>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+
+    </footer>
+
+
+    
+</article>
+
+    
+
+    
+
+     
+    
+        
+    <div class="disqus-container">
+    <div id="disqus_thread"></div>
+<script>
+    window.disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "nansenli" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+<style>
+    .disqus-container {
+        background-color: var(--card-background);
+        border-radius: var(--card-border-radius);
+        box-shadow: var(--shadow-l1);
+        padding: var(--card-padding);
+    }
+</style>
+
+<script>
+    window.addEventListener('onColorSchemeChange', (e) => {
+        if (typeof DISQUS == 'object') {
+            DISQUS.reset({
+                reload: true
+            });
+        }
+    })
+</script>
+
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+        2025 Nansen Li（李楠森）
+    </section>
+    
+    <section class="powerby">
+        使用 <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> 构建 <br />
+        主题 <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.30.0">Stack</a></b> 由 <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a> 设计
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.1e9a3bafd846ced4c345d084b355fb8c7bae75701c338f8a1f8a82c780137826.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>

@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="Summarized from C++ Primer 5th Edition, as a quick review of these features long long type Defined to be at least 32 bits in length. Generally not very useful. List initialization A list is a set of elements composed of braces and commas, for example {1,2,3}. We can use braces to initialize variables. int a{0}; The equal sign in a declaration is not assignment but initialization, so the following form can also be used for initialization: int a = {0}; This has the same effect as int a = 0;">
+<title>C&#43;&#43;11 Features - Simple Introduction</title>
+
+<link rel='canonical' href='https://nansenli.com/post/jianshu/c&#43;&#43;/c&#43;&#43;11-%E7%89%B9%E6%80%A7-%E7%AE%80%E5%8D%95%E4%BB%8B%E7%BB%8D/'>
+
+<link rel="stylesheet" href="/scss/style.min.1084ac713783b88e0bd9807a58068e10aae22e99420f94a9234654a4e199baa4.css"><meta property='og:title' content="C++11 Features - Simple Introduction">
+<meta property='og:description' content="Summarized from C++ Primer 5th Edition, as a quick review of these features long long type Defined to be at least 32 bits in length. Generally not very useful. List initialization A list is a set of elements composed of braces and commas, for example {1,2,3}. We can use braces to initialize variables. int a{0}; The equal sign in a declaration is not assignment but initialization, so the following form can also be used for initialization: int a = {0}; This has the same effect as int a = 0;">
+<meta property='og:url' content='https://nansenli.com/post/jianshu/c&#43;&#43;/c&#43;&#43;11-%E7%89%B9%E6%80%A7-%E7%AE%80%E5%8D%95%E4%BB%8B%E7%BB%8D/'>
+<meta property='og:site_name' content='Nansen Li'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2017-12-28T07:31:00&#43;00:00'/><meta property='article:modified_time' content='2017-12-28T07:31:00&#43;00:00'/>
+<meta name="twitter:title" content="C++11 Features - Simple Introduction">
+<meta name="twitter:description" content="Summarized from C++ Primer 5th Edition, as a quick review of these features long long type Defined to be at least 32 bits in length. Generally not very useful. List initialization A list is a set of elements composed of braces and commas, for example {1,2,3}. We can use braces to initialize variables. int a{0}; The equal sign in a declaration is not assignment but initialization, so the following form can also be used for initialization: int a = {0}; This has the same effect as int a = 0;">
+    <link rel="shortcut icon" href="/favicon.ico" />
+
+  
+    
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-WC38C3XE3J"></script>
+      <script>
+        var doNotTrack = false;
+        if ( false ) {
+          var dnt = (navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack);
+          var doNotTrack = (dnt == "1" || dnt == "yes");
+        }
+        if (!doNotTrack) {
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-WC38C3XE3J');
+        }
+      </script>
+    
+  
+
+
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="Toggle Menu">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/avatar_hu96777ff80939aaa7d938dddcc232fcc6_1414962_300x0_resize_box_3.png" width="300"
+                            height="300" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+                    <span class="emoji">🌈</span>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">Nansen Li</a></h1>
+            <h2 class="site-description"></h2>
+        </div>
+    </header><ol class="menu-social">
+            
+                <li>
+                    <a 
+                        href='https://github.com/linanwx'
+                        target="_blank"
+                        title="GitHub"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://www.linkedin.com/in/nansen-li-3bb0a3146/'
+                        target="_blank"
+                        title="LinkedIn"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-brand-linkedin"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M8 11v5" /><path d="M8 8v.01" /><path d="M12 16v-5" /><path d="M16 16v-3a2 2 0 1 0 -4 0" /><path d="M3 7a4 4 0 0 1 4 -4h10a4 4 0 0 1 4 4v10a4 4 0 0 1 -4 4h-10a4 4 0 0 1 -4 -4z" /></svg>
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='index.xml'
+                        target="_blank"
+                        title="RSS"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-rss" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="5" cy="19" r="1" />
+  <path d="M4 4a16 16 0 0 1 16 16" />
+  <path d="M4 11a9 9 0 0 1 9 9" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+</svg>
+
+
+
+                
+                <span>Home</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/page/archives/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>Archives</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/page/search/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
+
+
+
+                
+                <span>Search</span>
+            </a>
+        </li>
+        
+        <li class="menu-bottom-section">
+            <ol class="menu">
+                    
+                        <li id="i18n-switch">  
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-language" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M4 5h7" />
+  <path d="M9 3v2c0 4.418 -2.239 8 -5 8" />
+  <path d="M5 9c-.003 2.144 2.952 3.908 6.7 4" />
+  <path d="M12 20l4 -9l4 9" />
+  <path d="M19.1 18h-6.2" />
+</svg>
+
+
+
+                            <select name="language" title="language" onchange="window.location.href = this.selectedOptions[0].value">
+                                
+                                    <option value="https://nansenli.com/" selected>English</option>
+                                
+                                    <option value="https://nansenli.com/zh-cn/" >中文</option>
+                                
+                            </select>
+                        </li>
+                    
+                
+
+                
+                    <li id="dark-mode-toggle">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <span>Dark Mode</span>
+                    </li>
+                
+            </ol>
+        </li>
+    </ol>
+</aside>
+
+    
+
+            <main class="main full-width">
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/c&#43;&#43;/" >
+                C&#43;&#43;
+            </a>
+        
+    </header>
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/post/jianshu/c&#43;&#43;/c&#43;&#43;11-%E7%89%B9%E6%80%A7-%E7%AE%80%E5%8D%95%E4%BB%8B%E7%BB%8D/">C&#43;&#43;11 Features - Simple Introduction</a>
+        </h2>
+    
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">Dec 28, 2017</time>
+            </div>
+        
+
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+                <time class="article-time--reading">
+                    6 minute read
+                </time>
+            </div>
+        
+    </footer>
+    
+
+    
+        <footer class="article-translations">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-language" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M4 5h7" />
+  <path d="M9 3v2c0 4.418 -2.239 8 -5 8" />
+  <path d="M5 9c-.003 2.144 2.952 3.908 6.7 4" />
+  <path d="M12 20l4 -9l4 9" />
+  <path d="M19.1 18h-6.2" />
+</svg>
+
+
+
+            <div>
+                
+                    <a href="https://nansenli.com/zh-cn/post/jianshu/c&#43;&#43;/c&#43;&#43;11-%E7%89%B9%E6%80%A7-%E7%AE%80%E5%8D%95%E4%BB%8B%E7%BB%8D/" class="link">中文</a>
+                
+            </div>
+        </footer>
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <h2 id="summarized-from-c-primer-5th-edition-as-a-quick-review-of-these-features">Summarized from C++ Primer 5th Edition, as a quick review of these features
+</h2><ul>
+<li>
+<p>long long type
+Defined to be at least 32 bits in length. Generally not very useful.</p>
+</li>
+<li>
+<p>List initialization
+A list is a set of elements composed of braces and commas, for example {1,2,3}.
+We can use braces to initialize variables.
+int a{0};
+The equal sign in a declaration is not assignment but initialization, so the following form can also be used for initialization:
+int a = {0};
+This has the same effect as int a = 0;</p>
+</li>
+<li>
+<p>nullptr constant
+This is because before C++11, assigning a null pointer was done directly with 0. Now using nullptr is better. nullptr is essentially an object that can only have a right value and can only be type-converted to a pointer with a value of address 0, which solves some problems. Related information can be found in how to implement nullptr.</p>
+</li>
+<li>
+<p>constexpr variables
+Stands for &ldquo;const expressions&rdquo;. The difference from const is that const indicates that the variable name must be a constant when used later, while constexpr not only requires this but also requires that the expression used to initialize the variable must also be a constant.</p>
+</li>
+<li>
+<p>Type aliases
+using uint = unsigned int
+typedef uint unsigned int
+These two statements are equivalent</p>
+</li>
+<li>
+<p>auto type specifier
+When declaring and defining a variable, the compiler automatically deduces the type of the declared variable based on the definition type.</p>
+</li>
+<li>
+<p>decltype type indicator
+When declaring a variable, you can use decltype(expressions) to determine the type of an expression as the type of the declared variable</p>
+</li>
+<li>
+<p>In-class initialization</p>
+</li>
+</ul>
+<pre tabindex="0"><code>    class A {
+    public:
+        int a = 7;
+    };
+</code></pre><p>This is equivalent to the following in previous versions:</p>
+<pre tabindex="0"><code>    class A {
+    public:
+        int a;
+        A() : a(7) {}
+    };
+</code></pre><ul>
+<li>
+<p>Using auto or decltype to deduce types
+auto len = line.size(); automatically deduces string::size_type which is better</p>
+</li>
+<li>
+<p>Range-based for statements
+Print characters in a string
+for(auto c:str) cout &laquo; c &laquo; endl;
+Similar to for in statements in Python</p>
+</li>
+<li>
+<p>Nested vectors
+vector&lt;vector<!-- raw HTML omitted --> on older compilers, a space is needed, so the two angle brackets aren&rsquo;t adjacent &gt;</p>
+</li>
+<li>
+<p>List initialization of vector objects
+vector<!-- raw HTML omitted --> strs = {&ldquo;a&rdquo;, &ldquo;bb&rdquo;, &ldquo;ccc&rdquo;};</p>
+</li>
+<li>
+<p>cbegin and cend
+Return iterators of type const_iterator</p>
+</li>
+<li>
+<p>Using auto in two-dimensional arrays</p>
+</li>
+</ul>
+<pre tabindex="0"><code>int mat[3][4];
+int main()
+{
+    for (int(*p)[4] = mat; p != mat + 3; p++)
+    {
+        /* ... */
+    }
+    for (auto p = mat; p != mat + 3; p++)
+    {
+        /* ... */
+    }
+}
+</code></pre><ul>
+<li>
+<p>Division rounding
+C++11 specifies that division always rounds toward zero</p>
+</li>
+<li>
+<p>List assignment to vector objects
+vector<!-- raw HTML omitted --> strs;
+strs = {&ldquo;a&rdquo;, &ldquo;bb&rdquo;, &ldquo;ccc&rdquo;};</p>
+</li>
+<li>
+<p>139 Using sizeof to get the size of class members
+Normally class members can only be accessed through objects. But sizeof can directly determine the size of members.</p>
+</li>
+<li>
+<p>168 Range-based for statements
+In range-based for statements, you cannot add elements to vector objects because it may cause the end element of the range-based for statement to become invalid. This is similar to issues in Python range loops.</p>
+</li>
+<li>
+<p>197 initializer_list
+initializer_list is a template type, the object elements are always constants, and the types must be the same. Lists in braces are objects of this type.</p>
+</li>
+<li>
+<p>203 List initialization of return values
+Returning an initializer_list can initialize temporary quantities for objects with a return type of vector.</p>
+</li>
+<li>
+<p>206 Defining trailing return types
+Declaring a function that returns an array pointer
+int * func(int i) this is not quite right, as it returns a pointer, not an array pointer
+int (* func(int i))[10] this would return a pointer to an array of size 10
+You can also write: auto func(int i) -&gt; int(*)[10];</p>
+</li>
+<li>
+<p>206 Using decltype to simplify return types
+decltype can be used to simplify return types, but this need is less common.</p>
+</li>
+<li>
+<p>214 constexpr functions
+A constexpr function is a function that returns a literal type and can only have one return statement.</p>
+</li>
+<li>
+<p>237 default default constructor
+You can assign an equal sign to a constructor to indicate using the compiler-provided default constructor.</p>
+</li>
+<li>
+<p>246 In-class initialization
+The new standard allows for initializing members with values directly within the class</p>
+</li>
+<li>
+<p>261 Delegating constructors
+When initializing a constructor, use an initializer list to initialize members. In addition, you can use other constructors to help construct.
+For example, a constructor is func(int a,int b), and a delegating constructor func():func(0,0){} so it can be constructed with default values 0,0.</p>
+</li>
+<li>
+<p>268 constexpr constructors
+Used to generate constexpr objects</p>
+</li>
+<li>
+<p>284 Using string type to represent file paths
+In stream types, previously only C character strings could be used, now strings of string type can be used</p>
+</li>
+<li>
+<p>293 array and forward_list
+Very fast, comparable to handwritten lists, safer than arrays</p>
+</li>
+<li>
+<p>300 Using list initialization for containers
+list<!-- raw HTML omitted --> authors = {&ldquo;milton&rdquo;, &ldquo;shakespeare&rdquo;, &ldquo;austen&rdquo;};
+vector&lt;const char*&gt; articles = {&ldquo;a&rdquo;, &ldquo;b&rdquo;, &ldquo;cc&rdquo;};</p>
+</li>
+<li>
+<p>303 Non-member swap for containers
+Using swap can quickly exchange two content containers</p>
+</li>
+<li>
+<p>308 Using the return value of insert
+The new standard&rsquo;s insert returns an iterator after successful insertion, and the position of the iterator points to the newly inserted element. Using this feature, multiple elements can be repeatedly inserted at that position.</p>
+</li>
+<li>
+<p>308 Using emplace functions
+The emplace function can achieve construction rather than copying.
+This method can pass the parameters needed by the constructor without constructing the object and then making a copy.</p>
+</li>
+<li>
+<p>shrink_to_fit
+Calling this function on a container will release extra space occupied by a vector or string. Generally not very useful</p>
+</li>
+<li>
+<p>String type numeric conversion functions
+to_string represents a group of overloaded functions that can convert data of int, double types to string type.
+stoi can convert string to int, similar to other functions, including different bases and floating-point numbers</p>
+</li>
+<li>
+<p>346 lambda expressions
+Simple lambda expression
+auto f = []{return 42;};
+Here, a lambda expression is assigned to f. Later, f() can be called to get 42
+How to pass parameters to a lambda expression?
+[](int a, int b){return a&gt;b;};
+But sometimes you don&rsquo;t want to pass a parameter, yet still have the lambda expression use external variables?
+[&amp;out](int a, int b){return a&lt;out &amp;&amp; out &lt; b;};
+But what if I don&rsquo;t want the above expression to return int, but double?
+[&amp;out](int a, int b)-&gt;double{return a&lt;out &amp;&amp; out &lt; b;}</p>
+</li>
+<li>
+<p>354 bind
+The bind function can change a function call to a simple call</p>
+</li>
+<li>
+<p>377 List initialization of associative containers
+map&lt;string, string&gt; authors={ {&ldquo;joncy&rdquo;, &ldquo;james&rdquo;} };
+set<!-- raw HTML omitted --> exclude = {&ldquo;the&rdquo;, &ldquo;but&rdquo; };</p>
+</li>
+<li>
+<p>380 List initialization of pair return types
+Returning a list represented by {} to a pair type automatically converts.</p>
+</li>
+<li>
+<p>384 List initialization of pairs
+When inserting pairs into a map, the simplest way is to insert a pair of key-values represented by braces. The inserted content will be initialized as a pair.</p>
+</li>
+<li>
+<p>394 Unordered containers
+Add unordered in front of map and set to get unordered containers. Implemented using hash underneath. Requires implementation of a hash template for stored elements.</p>
+</li>
+<li>
+<p>400 Smart pointers
+shared_ptr allows multiple pointers to point to the same object. unique_ptr exclusively owns the object it points to.
+Smart pointers are templates, and when declaring them, you need to explicitly provide the type, similar to using vector.
+shared_ptr<!-- raw HTML omitted --> p1;</p>
+</li>
+</ul>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+
+    </footer>
+
+
+    
+</article>
+
+    
+
+    
+
+     
+    
+        
+    <div class="disqus-container">
+    <div id="disqus_thread"></div>
+<script>
+    window.disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "nansenli" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+<style>
+    .disqus-container {
+        background-color: var(--card-background);
+        border-radius: var(--card-border-radius);
+        box-shadow: var(--shadow-l1);
+        padding: var(--card-padding);
+    }
+</style>
+
+<script>
+    window.addEventListener('onColorSchemeChange', (e) => {
+        if (typeof DISQUS == 'object') {
+            DISQUS.reset({
+                reload: true
+            });
+        }
+    })
+</script>
+
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+        2025 Nansen Li（李楠森）
+    </section>
+    
+    <section class="powerby">
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.30.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.1e9a3bafd846ced4c345d084b355fb8c7bae75701c338f8a1f8a82c780137826.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>

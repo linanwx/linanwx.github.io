@@ -1,0 +1,1385 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>网络 on Nansen Li</title>
+        <link>https://nansenli.com/zh-cn/categories/%E7%BD%91%E7%BB%9C/</link>
+        <description>Recent content in 网络 on Nansen Li</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>zh-cn</language>
+        <copyright>Nansen Li（李楠森）</copyright>
+        <lastBuildDate>Tue, 11 Dec 2018 10:50:00 +0000</lastBuildDate><atom:link href="https://nansenli.com/zh-cn/categories/%E7%BD%91%E7%BB%9C/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>socketio学习</title>
+        <link>https://nansenli.com/zh-cn/post/jianshu/%E7%BD%91%E7%BB%9C/socket-io%E5%AD%A6%E4%B9%A0/</link>
+        <pubDate>Tue, 11 Dec 2018 10:50:00 +0000</pubDate>
+        
+        <guid>https://nansenli.com/zh-cn/post/jianshu/%E7%BD%91%E7%BB%9C/socket-io%E5%AD%A6%E4%B9%A0/</guid>
+        <description>&lt;h2 id=&#34;前言&#34;&gt;前言
+&lt;/h2&gt;&lt;p&gt;很急，暂时不写了&lt;/p&gt;
+&lt;h2 id=&#34;核心点&#34;&gt;核心点
+&lt;/h2&gt;&lt;p&gt;不管是服务器还是客户端都有 emit 和 on 这两个函数，可以说 socket.io 的核心就是这两个函数了，通过 emit 和 on 可以轻松地实现服务器与客户端之间的双向通信。&lt;/p&gt;
+&lt;p&gt;emit ：用来发射一个事件或者说触发一个事件，第一个参数为事件名，第二个参数为要发送的数据，第三个参数为回调函数（一般省略，如需对方接受到信息后立即得到确认时，则需要用到回调函数）。
+on ：用来监听一个 emit 发射的事件，第一个参数为要监听的事件名，第二个参数为一个匿名函数用来接收对方发来的数据，该匿名函数的第一个参数为接收的数据，若有第二个参数，则为要返回的函数。
+socket.io 提供了三种默认的事件（客户端和服务器都有）：connect 、message 、disconnect 。当与对方建立连接后自动触发 connect 事件，当收到对方发来的数据后触发 message 事件（通常为 socket.send() 触发），当对方关闭连接后触发 disconnect 事件。&lt;/p&gt;
+&lt;p&gt;在服务器端区分以下三种情况：&lt;/p&gt;
+&lt;p&gt;socket.emit() ：向建立该连接的客户端广播
+socket.broadcast.emit() ：向除去建立该连接的客户端的所有客户端广播
+io.sockets.emit() ：向所有客户端广播，等同于上面两个的和&lt;/p&gt;
+</description>
+        </item>
+        <item>
+        <title>合法单线双拨——提高寝室路由带宽利用率</title>
+        <link>https://nansenli.com/zh-cn/post/jianshu/%E7%BD%91%E7%BB%9C/%E5%90%88%E6%B3%95%E5%8D%95%E7%BA%BF%E5%8F%8C%E6%8B%A8%E6%8F%90%E9%AB%98%E5%AF%9D%E5%AE%A4%E8%B7%AF%E7%94%B1%E5%B8%A6%E5%AE%BD%E5%88%A9%E7%94%A8%E7%8E%87/</link>
+        <pubDate>Sat, 10 Nov 2018 18:08:00 +0000</pubDate>
+        
+        <guid>https://nansenli.com/zh-cn/post/jianshu/%E7%BD%91%E7%BB%9C/%E5%90%88%E6%B3%95%E5%8D%95%E7%BA%BF%E5%8F%8C%E6%8B%A8%E6%8F%90%E9%AB%98%E5%AF%9D%E5%AE%A4%E8%B7%AF%E7%94%B1%E5%B8%A6%E5%AE%BD%E5%88%A9%E7%94%A8%E7%8E%87/</guid>
+        <description>&lt;h2 id=&#34;前言&#34;&gt;前言
+&lt;/h2&gt;&lt;p&gt;本人寝室有两个移动宽带，使用光纤入户方式，其中一个是20M，另一个是30M，使用pppoe方式拨号上网。希望能够将两个带宽进行合并。&lt;/p&gt;
+&lt;h2 id=&#34;方案一&#34;&gt;方案一
+&lt;/h2&gt;&lt;p&gt;在京东上搜索多wan口路由，价格比较贵。pass。&lt;/p&gt;
+&lt;h2 id=&#34;方案二&#34;&gt;方案二
+&lt;/h2&gt;&lt;p&gt;将手上的小米路由器mini进行改造。刷入OpenWrt。&lt;/p&gt;
+&lt;h2 id=&#34;刷入openwrt&#34;&gt;刷入OpenWrt
+&lt;/h2&gt;&lt;p&gt;不是本篇得重点。但是有一点，OpenWrt的固件可以在官方网站查询到并下载，其源也齐全并新潮，不需要刷入旧的Pandorabox等源不可靠得固件。路由需要刷入开发版固件和ssh固件，然后通过命令行刷入OpenWrt固件。不需要刷入breed的u-boot，这种行为太危险了，还会丢失SN。&lt;/p&gt;
+&lt;h2 id=&#34;第一次拨号设置国内源&#34;&gt;第一次拨号，设置国内源
+&lt;/h2&gt;&lt;p&gt;首先开启路由器，插上网线，访问192.168.1.1，在页面中设置root密码。&lt;/p&gt;
+&lt;p&gt;在system software页面中，点击configuration，将downloads.openwrt.org进行替换，换成openwrt.proxy.ustclug.org，并提交。在network - interface页面编辑 wan配置，更改协议并配置pppoe上网。&lt;/p&gt;
+&lt;p&gt;使用ssh连接路由器，在命令行输入opkg update。注意有没有成功。
+然后输入opkg install kmod-macvlan mwan3 luci-app-mwan3。没成功多试几次。&lt;/p&gt;
+&lt;h2 id=&#34;设置虚拟网卡&#34;&gt;设置虚拟网卡
+&lt;/h2&gt;&lt;p&gt;在interface中查看wan的interface绑定的vlan，是eth0.2。在终端输入 ip link add link eth0.2 name veth0 type macvlan，并输入ifconfig veth0 up。&lt;/p&gt;
+&lt;h2 id=&#34;绑定网卡到接口&#34;&gt;绑定网卡到接口
+&lt;/h2&gt;&lt;p&gt;方便起见，修改WAN6作为我们的第二个接口，设置第二个账号得pppoe的上网账号，然后修改其physical setting为veth0。&lt;/p&gt;
+&lt;p&gt;如果此时两个账户无法同时拨号，说明不支持单线双拨。&lt;/p&gt;
+&lt;h2 id=&#34;设置跃点数&#34;&gt;设置跃点数
+&lt;/h2&gt;&lt;p&gt;在wan和wan6两个页面中设置use gateway metric，注意要不一样。例如一个10一个11.&lt;/p&gt;
+&lt;h2 id=&#34;设置负载均衡&#34;&gt;设置负载均衡
+&lt;/h2&gt;&lt;p&gt;在load balance依次设置。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://upload-images.jianshu.io/upload_images/4388248-4ab82e3c830e21eb.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&#34;
+	
+	
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;image.png&#34;
+	
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://upload-images.jianshu.io/upload_images/4388248-4d33889aa0f50ac4.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&#34;
+	
+	
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;image.png&#34;
+	
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://upload-images.jianshu.io/upload_images/4388248-b2c855543979f90d.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&#34;
+	
+	
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;image.png&#34;
+	
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://upload-images.jianshu.io/upload_images/4388248-663f2ac3b0c03f9a.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&#34;
+	
+	
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;image.png&#34;
+	
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://upload-images.jianshu.io/upload_images/4388248-1471b0c103f8d280.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&#34;
+	
+	
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;image.png&#34;
+	
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://upload-images.jianshu.io/upload_images/4388248-9700345d9f5cc1b7.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&#34;
+	
+	
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;image.png&#34;
+	
+	
+&gt;&lt;/p&gt;
+&lt;h2 id=&#34;重启服务&#34;&gt;重启服务
+&lt;/h2&gt;&lt;p&gt;点击重启服务&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://upload-images.jianshu.io/upload_images/4388248-4c7cf9d8e39f4654.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&#34;
+	
+	
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;image.png&#34;
+	
+	
+&gt;&lt;/p&gt;
+&lt;h2 id=&#34;测试&#34;&gt;测试
+&lt;/h2&gt;&lt;p&gt;&lt;img src=&#34;https://upload-images.jianshu.io/upload_images/4388248-85863aecfb262d0d.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&#34;
+	
+	
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;image.png&#34;
+	
+	
+&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;参考 &lt;a class=&#34;link&#34; href=&#34;https://acris.me/2017/06/25/Load-balancing-multiple-PPPoE-on-LEDE/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;https://acris.me/2017/06/25/Load-balancing-multiple-PPPoE-on-LEDE/&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+</description>
+        </item>
+        <item>
+        <title>使用Let&#39;s encrypt和nginx配置https访问</title>
+        <link>https://nansenli.com/zh-cn/post/jianshu/%E7%BD%91%E7%BB%9C/%E4%BD%BF%E7%94%A8lets-encrypt%E5%92%8Cnginx%E9%85%8D%E7%BD%AEhttps%E8%AE%BF%E9%97%AE/</link>
+        <pubDate>Mon, 04 Jun 2018 09:12:00 +0000</pubDate>
+        
+        <guid>https://nansenli.com/zh-cn/post/jianshu/%E7%BD%91%E7%BB%9C/%E4%BD%BF%E7%94%A8lets-encrypt%E5%92%8Cnginx%E9%85%8D%E7%BD%AEhttps%E8%AE%BF%E9%97%AE/</guid>
+        <description>&lt;h2 id=&#34;前言&#34;&gt;前言
+&lt;/h2&gt;&lt;p&gt;为了加密传输http的数据，我们需要用到https证书。免费的证书有lets‘s encrypt。&lt;/p&gt;
+&lt;h2 id=&#34;使用nginx配置转发&#34;&gt;使用nginx配置转发
+&lt;/h2&gt;&lt;p&gt;我们需要在服务器上配置nginx，使得lets&amp;rsquo;s encrypt能够验证我们的域名。
+下面是我的服务器nginx的配置文件&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-nginx&#34; data-lang=&#34;nginx&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;server&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#f92672&#34;&gt;listen&lt;/span&gt;       &lt;span style=&#34;color:#ae81ff&#34;&gt;80&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#f92672&#34;&gt;server_name&lt;/span&gt;  &lt;span style=&#34;color:#e6db74&#34;&gt;www.unrealblue.cc&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#f92672&#34;&gt;location&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;/&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#f92672&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;301&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;https://&lt;/span&gt;$host$request_uri;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#f92672&#34;&gt;location&lt;/span&gt; ~ &lt;span style=&#34;color:#e6db74&#34;&gt;/.well-known/acme-challenge&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#f92672&#34;&gt;root&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;/var/www/html&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#f92672&#34;&gt;allow&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;all&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;说明：第一个location意思是转发所有的80请求到https连接。第二个请求的意思是，如果访问.well-known，则使用我们提供的/var/www/html目录。&lt;/p&gt;
+&lt;p&gt;将文件保存为default.conf。&lt;/p&gt;
+&lt;p&gt;这里我使用了nginx docker来部署，所以没有安装nginx。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-docker&#34; data-lang=&#34;docker&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;FROM&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt; nginx&lt;/span&gt;&lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;LABEL&lt;/span&gt; MAINTAINER linanwx@gmail.com&lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;RUN&lt;/span&gt; apt update&lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;RUN&lt;/span&gt; apt install -y certbot&lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;RUN&lt;/span&gt; mkdir -p /var/www/html&lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;COPY&lt;/span&gt; ./default.conf /etc/nginx/conf.d/&lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;EXPOSE&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt; 80:80&lt;/span&gt;&lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;EXPOSE&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt; 443:443&lt;/span&gt;&lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;VOLUME&lt;/span&gt; [&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;/etc/letsencrypt/&amp;#34;&lt;/span&gt;]&lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;将第一个代码段存为default.conf，第二个代码段存为dockerfile，然后运行&lt;code&gt;docker build -t nginx-server .&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;运行&lt;code&gt;docker run -it --rm -d -p80:80 -p443:443 --net=server-net --name nginx-server -v $PWD/letsencrypt:/etc/letsencrypt nginx-server&lt;/code&gt;启动容器并在后台运行。&lt;/p&gt;
+&lt;h2 id=&#34;生成证书&#34;&gt;生成证书
+&lt;/h2&gt;&lt;p&gt;运行&lt;code&gt;docker exec -it nginx-server /bin/bash&lt;/code&gt;进入容器内部。
+运行下面的命令生成证书&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;openssl dhparam -out /etc/letsencrypt/live/dhparams.pem 2048
+certbot certonly --agree-tos -a webroot --webroot-path=/var/www/html -d www.unrealblue.cc -m linanwx@gmail.com
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;certbot程序会访问你的域名，来确认你的域名所有权是你，这就用到了上一步操作的nginx的配置。其中还有一些参数，查看help可以知道含义。另外，除非你确认要部署到服务器上，否则在测试阶段使用&amp;ndash;test-cert参数来进行测试。因为证书生成是有数量限制的。
+另外一点就是生成dhparam。他是迪菲-赫尔曼秘钥交换协议参数，生成时间较长。之后我们会在nginx中使用这个。&lt;/p&gt;
+&lt;p&gt;不出意外你会获得证书，他们存在/etc/letsencrypt/目录下。并且，由于在容器启动的时候使用了挂卷，证书会出现在宿主机中。&lt;/p&gt;
+&lt;h2 id=&#34;配置nginx-https&#34;&gt;配置nginx https
+&lt;/h2&gt;&lt;p&gt;新建一个文件，命名为http.conf&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-nginx&#34; data-lang=&#34;nginx&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# https://www.jianshu.com/p/f7f39cb24423
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;server&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#f92672&#34;&gt;listen&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;443&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;ssl&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#f92672&#34;&gt;server_name&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;www.unrealblue.cc&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#f92672&#34;&gt;ssl_certificate&lt;/span&gt;                 &lt;span style=&#34;color:#e6db74&#34;&gt;/etc/letsencrypt/live/www.unrealblue.cc/fullchain.pem&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#f92672&#34;&gt;ssl_trusted_certificate&lt;/span&gt;         &lt;span style=&#34;color:#e6db74&#34;&gt;/etc/letsencrypt/live/www.unrealblue.cc/fullchain.pem&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#f92672&#34;&gt;ssl_certificate_key&lt;/span&gt;             &lt;span style=&#34;color:#e6db74&#34;&gt;/etc/letsencrypt/live/www.unrealblue.cc/privkey.pem&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#f92672&#34;&gt;ssl_dhparam&lt;/span&gt;                     &lt;span style=&#34;color:#e6db74&#34;&gt;/etc/letsencrypt/live/dhparams.pem&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#f92672&#34;&gt;ssl_ciphers&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA256:ECDHE-ECDSA-AES128-SHA:ECDHE-RSA-AES256-SHA384:ECDHE-RSA-AES128-SHA:ECDHE-ECDSA-AES256-SHA384:ECDHE-ECDSA-AES256-SHA:ECDHE-RSA-AES256-SHA:DHE-RSA-AES128-SHA256:DHE-RSA-AES128-SHA:DHE-RSA-AES256-SHA256:DHE-RSA-AES256-SHA:ECDHE-ECDSA-DES-CBC3-SHA:ECDHE-RSA-DES-CBC3-SHA:EDH-RSA-DES-CBC3-SHA:AES128-GCM-SHA256:AES256-GCM-SHA384:AES128-SHA256:AES256-SHA256:AES128-SHA:AES256-SHA:DES-CBC3-SHA:!DSS&amp;#39;&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#f92672&#34;&gt;ssl_prefer_server_ciphers&lt;/span&gt;  &lt;span style=&#34;color:#66d9ef&#34;&gt;on&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#f92672&#34;&gt;ssl_protocols&lt;/span&gt;        &lt;span style=&#34;color:#e6db74&#34;&gt;TLSv1&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;TLSv1.1&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;TLSv1.2&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#f92672&#34;&gt;ssl_session_cache&lt;/span&gt;          &lt;span style=&#34;color:#e6db74&#34;&gt;shared:SSL:50m&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#f92672&#34;&gt;ssl_session_timeout&lt;/span&gt;        &lt;span style=&#34;color:#e6db74&#34;&gt;1d&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#f92672&#34;&gt;ssl_stapling&lt;/span&gt;               &lt;span style=&#34;color:#66d9ef&#34;&gt;on&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#f92672&#34;&gt;ssl_stapling_verify&lt;/span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;on&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#f92672&#34;&gt;add_header&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;Strict-Transport-Security&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;max-age=60&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#f92672&#34;&gt;location&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;/&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#f92672&#34;&gt;root&lt;/span&gt;   &lt;span style=&#34;color:#e6db74&#34;&gt;/usr/share/nginx/html&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#f92672&#34;&gt;index&lt;/span&gt;  &lt;span style=&#34;color:#e6db74&#34;&gt;index.html&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;index.htm&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;# location = /gfwlist {
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;#     proxy_pass http://server-handy:8081;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;# }
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#f92672&#34;&gt;error_page&lt;/span&gt;   &lt;span style=&#34;color:#ae81ff&#34;&gt;500&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;502&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;503&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;504&lt;/span&gt;  &lt;span style=&#34;color:#e6db74&#34;&gt;/50x.html&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#f92672&#34;&gt;location&lt;/span&gt; = &lt;span style=&#34;color:#e6db74&#34;&gt;/50x.html&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#f92672&#34;&gt;root&lt;/span&gt;   &lt;span style=&#34;color:#e6db74&#34;&gt;/usr/share/nginx/html&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;将其保存。然后修改dockerfile如下：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-dockerfile&#34; data-lang=&#34;dockerfile&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;FROM&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt; nginx&lt;/span&gt;&lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;LABEL&lt;/span&gt; MAINTAINER linanwx@gmail.com&lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;RUN&lt;/span&gt; apt update&lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;RUN&lt;/span&gt; apt install -y certbot&lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;RUN&lt;/span&gt; mkdir -p /var/www/html&lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;COPY&lt;/span&gt; ./default.conf /etc/nginx/conf.d/&lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;COPY&lt;/span&gt; ./https.conf /etc/nginx/conf.d/&lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;EXPOSE&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt; 80:80&lt;/span&gt;&lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;EXPOSE&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt; 443:443&lt;/span&gt;&lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;VOLUME&lt;/span&gt; [&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;/etc/letsencrypt/&amp;#34;&lt;/span&gt;]&lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;这里将这个http.conf也一同复制进去了。&lt;/p&gt;
+&lt;p&gt;重新启动容器，访问https://127.0.0.1，可以看到访问成功了。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://upload-images.jianshu.io/upload_images/4388248-edc2003618e67290.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&#34;
+	
+	
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;image.png&#34;
+	
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;在本地环境测试的时候会提示证书不正确。
+点继续。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://upload-images.jianshu.io/upload_images/4388248-f155d050593dadf4.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&#34;
+	
+	
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;image.png&#34;
+	
+	
+&gt;&lt;/p&gt;
+</description>
+        </item>
+        <item>
+        <title>socat命令学习</title>
+        <link>https://nansenli.com/zh-cn/post/jianshu/%E7%BD%91%E7%BB%9C/socat%E5%91%BD%E4%BB%A4%E5%AD%A6%E4%B9%A0/</link>
+        <pubDate>Wed, 23 May 2018 09:04:00 +0000</pubDate>
+        
+        <guid>https://nansenli.com/zh-cn/post/jianshu/%E7%BD%91%E7%BB%9C/socat%E5%91%BD%E4%BB%A4%E5%AD%A6%E4%B9%A0/</guid>
+        <description>&lt;h2 id=&#34;前言&#34;&gt;前言
+&lt;/h2&gt;&lt;p&gt;socat是强大易用的工具，可以实现任意socket的转换。&lt;/p&gt;
+&lt;h2 id=&#34;使用&#34;&gt;使用
+&lt;/h2&gt;&lt;p&gt;&lt;code&gt;socat [options] &amp;lt;address&amp;gt; &amp;lt;address&amp;gt;&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;options可以查看help。&lt;/p&gt;
+&lt;p&gt;address有一下几种形式：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;-&lt;/code&gt; &lt;code&gt;STDIN&lt;/code&gt; &lt;code&gt;STDOUT&lt;/code&gt; ：表示标准输入输出，可以就用一个横杠代替&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;/var/log/syslog&lt;/code&gt; : 也可以是任意路径，如果是相对路径要使用./，打开一个文件作为数据流。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;TCP:127.0.0.1:1080&lt;/code&gt; : 建立一个TCP连接作为数据流，TCP也可以替换为UDP&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;TCP-LISTEN:12345&lt;/code&gt; : 建立TCP监听端口，TCP也可以替换为UDP&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;EXEC:/bin/bash&lt;/code&gt; : 执行一个程序作为数据流。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;场景一&#34;&gt;场景一
+&lt;/h2&gt;&lt;p&gt;本地有个文件，我想显示在终端中&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;socat - /etc/sysctl.conf&lt;/code&gt;&lt;/p&gt;
+&lt;h2 id=&#34;场景二&#34;&gt;场景二
+&lt;/h2&gt;&lt;p&gt;有个TCP连接会连上来，我想看看会获得什么数据。
+&lt;code&gt;socat TCP-LISTEN:12345 -&lt;/code&gt;&lt;/p&gt;
+&lt;h2 id=&#34;场景三&#34;&gt;场景三
+&lt;/h2&gt;&lt;p&gt;我是黑客，我想在目标机上弄一个shell代理
+&lt;code&gt;socat TCP-LISTEN:12345 EXEC:/bin/bash&lt;/code&gt;&lt;/p&gt;
+&lt;h2 id=&#34;场景四&#34;&gt;场景四
+&lt;/h2&gt;&lt;p&gt;本地有一个UNIX DOMAIN域套接字，我想把他转成TCP SOCKET供局域网内的机器使用，怎么办？&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;socat TCP-LISTEN:12345,reuseaddr,fork UNIX-CONNECT:/data/deCOREIDPS/unix.domain&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;当有多个tcp连上来那就fork一个去连域套接字&lt;/p&gt;
+&lt;h2 id=&#34;场景五&#34;&gt;场景五
+&lt;/h2&gt;&lt;p&gt;将本地的80端口转到远程去&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;socat TCP-LISTEN:80,fork TCP:www.baidu.com:80&lt;/code&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;参考 &lt;a class=&#34;link&#34; href=&#34;http://brieflyx.me/2015/linux-tools/socat-introduction/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;http://brieflyx.me/2015/linux-tools/socat-introduction/&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+</description>
+        </item>
+        <item>
+        <title>epoll代码示例——handy库自带epoll.cc分析</title>
+        <link>https://nansenli.com/zh-cn/post/jianshu/%E7%BD%91%E7%BB%9C/epoll%E4%BB%A3%E7%A0%81%E7%A4%BA%E4%BE%8Bhandy%E5%BA%93%E8%87%AA%E5%B8%A6epoll-cc%E5%88%86%E6%9E%90/</link>
+        <pubDate>Wed, 16 May 2018 07:43:00 +0000</pubDate>
+        
+        <guid>https://nansenli.com/zh-cn/post/jianshu/%E7%BD%91%E7%BB%9C/epoll%E4%BB%A3%E7%A0%81%E7%A4%BA%E4%BE%8Bhandy%E5%BA%93%E8%87%AA%E5%B8%A6epoll-cc%E5%88%86%E6%9E%90/</guid>
+        <description>&lt;h2 id=&#34;前言&#34;&gt;前言
+&lt;/h2&gt;&lt;p&gt;C++网络库有很多。handy是一个C++11风格的网络库，对深入学习C++有很大帮助。&lt;/p&gt;
+&lt;h2 id=&#34;代码分析&#34;&gt;代码分析
+&lt;/h2&gt;&lt;p&gt;下面是来自handy/raw_examples下的epoll.cc文件。是水平触发的一个示例。该http服务器无论接收到什么样的请求，都返回一个静态资源123456。编译：c++ -o epoll epoll.cc，运行： sudo ./epoll。源代码中sendRes的if (con.writeEnabled)这句似乎有些问题，导致发送超大资源时出现问题。我已经做了修改，使之能够正确发送超大文件。&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;/*
+ * 编译：c++ -o epoll epoll.cc
+ * 运行： ./epoll
+ * 测试：curl -v localhost
+ */
+
+
+/* 
+    运行效果
+    使用sudo 运行epoll程序。该程序在本机0.0.0.0的80端口监听，作为一个http服务器运行
+    每当有连接访问时，返回静态资源httpRes
+    LT是默认模式
+
+ */
+
+#include &amp;lt;sys/socket.h&amp;gt;
+#include &amp;lt;sys/epoll.h&amp;gt;
+#include &amp;lt;netinet/in.h&amp;gt;
+#include &amp;lt;arpa/inet.h&amp;gt;
+#include &amp;lt;fcntl.h&amp;gt;
+#include &amp;lt;unistd.h&amp;gt;
+#include &amp;lt;stdio.h&amp;gt;
+#include &amp;lt;errno.h&amp;gt;
+#include &amp;lt;string.h&amp;gt;
+#include &amp;lt;stdlib.h&amp;gt;
+#include &amp;lt;map&amp;gt;
+#include &amp;lt;string&amp;gt;
+#include &amp;lt;signal.h&amp;gt;
+#include &amp;lt;iostream&amp;gt;
+using namespace std;
+
+
+bool output_log = true;
+// 一个宏，用来打印错误并退出
+#define exit_if(r, ...) if(r) {printf(__VA_ARGS__); printf(&amp;#34;%s:%d error no: %d error msg %s\n&amp;#34;, __FILE__, __LINE__, errno, strerror(errno)); exit(1);}
+// 这个函数用于将指定的fd设置为非阻塞状态
+void setNonBlock(int fd) {
+    // 首先我们取出原来文件描述符的flags
+    int flags = fcntl(fd, F_GETFL, 0);
+    exit_if(flags&amp;lt;0, &amp;#34;fcntl failed&amp;#34;);
+    // 然后加上O_NONBLOCK，再设置回去
+    int r = fcntl(fd, F_SETFL, flags | O_NONBLOCK);
+    exit_if(r&amp;lt;0, &amp;#34;fcntl failed&amp;#34;);
+}
+// 对epoll_ctl二次包装，将events 和 fd放入ev中。
+// 并且设置events 设置为可读可写时触发
+void updateEvents(int efd, int fd, int events, int op) {
+    struct epoll_event ev = {0};
+    ev.events = events;
+    ev.data.fd = fd;
+    printf(&amp;#34;%s fd %d events read %d write %d\n&amp;#34;,
+           op==EPOLL_CTL_MOD?&amp;#34;mod&amp;#34;:&amp;#34;add&amp;#34;, fd, ev.events &amp;amp; EPOLLIN, ev.events &amp;amp; EPOLLOUT);
+    int r = epoll_ctl(efd, op, fd, &amp;amp;ev);
+    exit_if(r, &amp;#34;epoll_ctl failed&amp;#34;);
+}
+// 尝试在fd上做accept操作。如果成功，将其加入到epoll fd的监听列表中。epoll的events设置为当数据有写入的时候触发。
+void handleAccept(int efd, int fd) {
+    struct sockaddr_in raddr;
+    socklen_t rsz = sizeof(raddr);
+    int cfd = accept(fd,(struct sockaddr *)&amp;amp;raddr,&amp;amp;rsz);
+    exit_if(cfd&amp;lt;0, &amp;#34;accept failed&amp;#34;);
+    sockaddr_in peer, local;
+    socklen_t alen = sizeof(peer);
+    int r = getpeername(cfd, (sockaddr*)&amp;amp;peer, &amp;amp;alen);
+    exit_if(r&amp;lt;0, &amp;#34;getpeername failed&amp;#34;);
+    printf(&amp;#34;accept a connection from %s\n&amp;#34;, inet_ntoa(raddr.sin_addr));
+    setNonBlock(cfd);
+    updateEvents(efd, cfd, EPOLLIN, EPOLL_CTL_ADD);
+}
+// 表示一个连接。成员有连接已读取的数据、已写入的数据
+// string用来保存二进制内容没有问题吗，如果遇到\0会如何？
+// 没有问题https://www.zhihu.com/question/33104941
+struct Con {
+    string readed;
+    size_t written;
+    bool writeEnabled;
+    Con(): written(0), writeEnabled(false) {}
+};
+// 用来映射fd与con的数据结构
+map&amp;lt;int, Con&amp;gt; cons;
+
+string httpRes;
+// 发送资源
+void sendRes(int efd, int fd) {
+    // 首先取得连接信息
+    Con&amp;amp; con = cons[fd];
+    // 没有接受到数据就要求写入
+    // 说明其可能上一次继续发送的数据发送完了
+    // 其对应的文件描述符在cons中已经删除
+    // 然后触发了epoll信号
+    // 此时关闭其上一次发送的标志
+    // 然后关闭其缓冲区发送触发epoll的标志
+    // 只保留其有数据可读时触发
+    // 为什么不在写入完数据时就将这步做了呢？
+    // if (!con.readed.length()) {
+    //     if (con.writeEnabled) {
+    //         updateEvents(efd, fd, EPOLLIN, EPOLL_CTL_MOD);
+    //         con.writeEnabled = false;
+    //     }
+    //     return;
+    // }
+    // 计算还需要写入的数据长度
+    size_t left = httpRes.length() - con.written;
+    int wd = 0;
+    // 连续写入数据，直到内核缓冲区无法写入数据为止
+    while((wd=::write(fd, httpRes.data()+con.written, left))&amp;gt;0) {
+        con.written += wd;
+        left -= wd;
+        if(output_log) printf(&amp;#34;write %d bytes left: %lu\n&amp;#34;, wd, left);
+    };
+    // 如果没有数据可以写入，则删除这个连接。但是不断开连接，即将连接信息置空
+    if (left == 0) {
+//        close(fd); // 测试中使用了keepalive，因此不关闭连接。连接会在read事件中关闭
+        if (con.writeEnabled) {
+            updateEvents(efd, fd, EPOLLIN, EPOLL_CTL_MOD);
+            con.writeEnabled = false;
+        }
+        cons.erase(fd);
+        return;
+    }
+    // 如果内核缓冲区满了，没办法写入了
+    if (wd &amp;lt; 0 &amp;amp;&amp;amp;  (errno == EAGAIN || errno == EWOULDBLOCK)) {
+        // 将其标记上可继续写
+        if (!con.writeEnabled) {
+            // 等待其可继续写，或可读
+            // 避免重复进行系统调用，使用con.writeEnabled标记位
+            printf(&amp;#34;update it to EPOLLIN|EPOLLOUT\n&amp;#34;);
+            updateEvents(efd, fd, EPOLLIN|EPOLLOUT, EPOLL_CTL_MOD);
+            con.writeEnabled = true;
+        }
+        return;
+    }
+    // 如果是其他情况，比如在没有写完数据时直接返回0，或者是返回了其他错误
+    // 则说明出错了
+    if (wd&amp;lt;=0) {
+        printf(&amp;#34;write error for %d: %d %s\n&amp;#34;, fd, errno, strerror(errno));
+        close(fd);
+        cons.erase(fd);
+    }
+}
+// 当loop once处理读取数据时，调用该函数
+void handleRead(int efd, int fd) {
+    char buf[4096];
+    int n = 0;
+    // 每次读取4k字节，循环读出当前内核中已存在的数据（有可能分包导致信息不完整）
+    while ((n=::read(fd, buf, sizeof buf)) &amp;gt; 0) {
+        if(output_log) printf(&amp;#34;read %d bytes\n&amp;#34;, n);
+        // 这里通过一个map来获取之前fd对应的连接信息。
+        // 当fd对应的下标不存在的时候，则会调用con的默认构造函数Con(): written(0), writeEnabled(false) {}
+        string&amp;amp; readed = cons[fd].readed;
+        // 调用string类的append方法将数据加入到连接信息中
+        // 注意为了保证二进制安全需要传入参数n
+        readed.append(buf, n);
+        std::cout  &amp;lt;&amp;lt; &amp;#34;now info is&amp;#34; &amp;lt;&amp;lt; std::endl &amp;lt;&amp;lt; &amp;#34;---&amp;#34; &amp;lt;&amp;lt;  readed &amp;lt;&amp;lt; endl &amp;lt;&amp;lt; &amp;#34;---&amp;#34; &amp;lt;&amp;lt;  std::endl;
+        // 判断一个http请求发送完毕。
+        // 不判断http请求的内容，一律发送静态资源
+        if (readed.length()&amp;gt;4) {
+            if (readed.substr(readed.length()-2, 2) == &amp;#34;\n\n&amp;#34; || readed.substr(readed.length()-4, 4) == &amp;#34;\r\n\r\n&amp;#34;) {
+                //当读取到一个完整的http请求，测试发送响应
+                // TCP连接建立起来之后，客户端就开始传输首部，然后以\r\n\r\n来标志首部的结束和实体的开始（当然是请求里包含实体才会有实体的开始），
+                // 接下来就是实体的传输，当实体传输完之后，客户端就开始接收数据，服务器就知道，这次请求就已经结束了，
+                // 那么实体就是\r\n\r\n到停止接收的那么一段数据。对应的，客户端接收响应的时候也是这样。
+                // 没有实体，则\r\n\r\n就是http的结束
+                // 开始写入数据。注意有可能使缓冲区写满，若写满了则在之后继续写入
+                sendRes(efd, fd);
+            }
+        }
+    }
+    // read无法读取的话，就会返回-1。此时errno（errno是属于线程的，是线程安全的）是EAGAIN代表没读完。EWOULDBLOCK和EAGAIN是一样的。
+    // 那就返回，然后等待下次再读取
+    if (n&amp;lt;0 &amp;amp;&amp;amp; (errno == EAGAIN || errno == EWOULDBLOCK)){
+        printf(&amp;#34;nothing to read from %d, return. \n&amp;#34;, fd);
+        return;
+    }
+    //实际应用中，n&amp;lt;0应当检查各类错误，如EINTR
+    if (n &amp;lt; 0) {
+        printf(&amp;#34;read %d error: %d %s\n&amp;#34;, fd, errno, strerror(errno));
+    }
+    // 执行到这里，n是0，表示对端关闭连接。这时我们也关闭连接
+    printf(&amp;#34;%d close the connection\n&amp;#34;, fd);
+    close(fd);
+    cons.erase(fd);
+}
+// 当loop once缓冲区可写的时候，简单的写入我们准备好的静态资源
+void handleWrite(int efd, int fd) {
+    sendRes(efd, fd);
+}
+// 对一个epoll句柄进行循环中的一次操作
+// 其中l是LISTEN的fd
+void loop_once(int efd, int lfd, int waitms) {
+    // 最多让内核拷贝20个事件出来
+    const int kMaxEvents = 20;
+    struct epoll_event activeEvs[100];
+    int n = epoll_wait(efd, activeEvs, kMaxEvents, waitms);
+    // n是返回了多少个事件
+    if(output_log) printf(&amp;#34;epoll_wait return %d\n&amp;#34;, n);
+    for (int i = 0; i &amp;lt; n; i ++) {
+        int fd = activeEvs[i].data.fd;
+        int events = activeEvs[i].events;
+        // EPOLLIN 事件或者是 EPOLLERR事件。EPOLLERR也代表管道写入结束。
+        // 参见： http://man7.org/linux/man-pages/man2/epoll_ctl.2.html
+        if (events &amp;amp; (EPOLLIN | EPOLLERR)) {
+            // EPOLLIN事件则只有当对端有数据写入时才会触发，所以触发一次后需要不断读取所有数据直到读完EAGAIN为止。否则剩下的数据只有在下次对端有写入时才能一起取出来了。
+            // 当对方关闭连接，则是EPOLLERR事件
+            if (fd == lfd) {
+                printf(&amp;#34;this is accept\n&amp;#34;);
+                handleAccept(efd, fd); 
+            } else {
+                printf(&amp;#34;this can read\n&amp;#34;);
+                handleRead(efd, fd);
+            }
+        } else if (events &amp;amp; EPOLLOUT) {
+            // 这里处理文件描述符如果可以写入的事件
+            // EPOLLOUT事件只有在连接时触发一次，表示可写
+            // 之后表示缓冲区的数据已经送出，可以继续写入
+            // 详见https://www.zhihu.com/question/22840801
+            if(output_log) printf(&amp;#34;handling epollout\n&amp;#34;);
+            handleWrite(efd, fd);
+        } else {
+            exit_if(1, &amp;#34;unknown event&amp;#34;);
+        }
+    }
+}
+
+int main(int argc, const char* argv[]) {
+    if (argc &amp;gt; 1) { output_log = false; }
+    /* 
+小知识
+signal（参数1，参数2）；
+参数1：我们要进行处理的信号。系统的信号我们可以再终端键入 kill -l查看(共64个)。其实这些信号时系统定义的宏。
+参数2：我们处理的方式（是系统默认还是忽略还是捕获）。SIG_IGN: 如果func参数被设置为SIG_IGN，该信号将被忽略。
+     */
+    ::signal(SIGPIPE, SIG_IGN);
+    // 设置http返回的内容
+    httpRes = &amp;#34;HTTP/1.1 200 OK\r\nConnection: Keep-Alive\r\nContent-Type: text/html; charset=UTF-8\r\nContent-Length: 19048576\r\n\r\n123456&amp;#34;;
+    // 将剩下的内容填充成0。最后content的长度是大约1024*1024
+    for(int i=0;i&amp;lt;19048570;i++) {
+        httpRes+=&amp;#39;\0&amp;#39;;
+    }
+    // 设置端口为80端口
+    short port = 80;
+    // 创建一个epoll句柄
+    int epollfd = epoll_create(1);
+    exit_if(epollfd &amp;lt; 0, &amp;#34;epoll_create failed&amp;#34;);
+    // 创建一个socket套接字
+    int listenfd = socket(AF_INET, SOCK_STREAM, 0);
+    exit_if(listenfd &amp;lt; 0, &amp;#34;socket failed&amp;#34;);
+    struct sockaddr_in addr;
+    memset(&amp;amp;addr, 0, sizeof addr);
+    addr.sin_family = AF_INET;
+    addr.sin_port = htons(port);
+    addr.sin_addr.s_addr = INADDR_ANY;
+    // 先绑定socket到端口上
+    int r = ::bind(listenfd,(struct sockaddr *)&amp;amp;addr, sizeof(struct sockaddr));
+    // 这一步如果没有超级用户的权限，就会报错。linux对于非root权限用户不能使用1024以下的端口
+    exit_if(r, &amp;#34;bind to 0.0.0.0:%d failed %d %s&amp;#34;, port, errno, strerror(errno));
+    /* 
+    #include&amp;lt;sys/socket.h&amp;gt;
+int listen(int sockfd, int backlog)
+返回：0──成功， -1──失败
+参数sockfd
+被listen函数作用的套接字，sockfd之前由socket函数返回。在被socket函数返回的套接字fd之时，它是一个主动连接的套接字，
+也就是此时系统假设用户会对这个套接字调用connect函数，期待它主动与其它进程连接，然后在服务器编程中，用户希望这个套接字可以接受外来的连接请求，
+也就是被动等待用户来连接。由于系统默认时认为一个套接字是主动连接的，所以需要通过某种方式来告诉系统，用户进程通过系统调用listen来完成这件事。
+参数backlog
+这个参数涉及到一些网络的细节。在进程正理一个一个连接请求的时候，可能还存在其它的连接请求。
+因为TCP连接是一个过程，所以可能存在一种半连接的状态，有时由于同时尝试连接的用户过多，使得服务器进程无法快速地完成连接请求。
+如果这个情况出现了，服务器进程希望内核如何处理呢？
+内核会在自己的进程空间里维护一个队列以跟踪这些完成的连接但服务器进程还没有接手处理或正在进行的连接，这样的一个队列内核不可能让其任意大，
+所以必须有一个大小的上限。这个backlog告诉内核使用这个数值作为上限。
+毫无疑问，服务器进程不能随便指定一个数值，内核有一个许可的范围。这个范围是实现相关的。很难有某种统一，一般这个值会小30以内。
+内核用于跟踪这些完成连接但是用户代码还没有通过accept调用的队列长度这里设置为了20。在队列长度小于20时，内核会立即完成连接的建立。
+但是如果队列长度大于20，在用户代码调用accept之前该连接都不会建立，对方则处于阻塞状态。
+     */
+    r = listen(listenfd, 20);
+    exit_if(r, &amp;#34;listen failed %d %s&amp;#34;, errno, strerror(errno));
+    printf(&amp;#34;fd %d listening at %d\n&amp;#34;, listenfd, port);
+    // 接下来设置文件描述符为阻塞。
+    // 为什么要设置为非阻塞？https://www.zhihu.com/question/23614342
+    setNonBlock(listenfd);
+    // 将其设置为可读取时触发，添加到epoll文件描述符池中
+    updateEvents(epollfd, listenfd, EPOLLIN, EPOLL_CTL_ADD);
+    for (;;) { //实际应用应当注册信号处理函数，退出时清理资源
+        loop_once(epollfd, listenfd, 10000);
+    }
+    return 0;
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&#34;运行效果&#34;&gt;运行效果
+&lt;/h2&gt;&lt;p&gt;&lt;img src=&#34;https://upload-images.jianshu.io/upload_images/4388248-57aa370a0545fdb4.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&#34;
+	
+	
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;image.png&#34;
+	
+	
+&gt;&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;sudo ./epoll
+fd 4 listening at 80
+add fd 4 events read 1 write 0
+epoll_wait return 1
+this is accept
+accept a connection from 127.0.0.1
+add fd 5 events read 1 write 0
+epoll_wait return 1
+this can read
+read 412 bytes
+now info is
+---GET / HTTP/1.1
+Host: 127.0.0.1
+Connection: keep-alive
+User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36
+Upgrade-Insecure-Requests: 1
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8
+Accept-Encoding: gzip, deflate, br
+Accept-Language: zh-CN,zh;q=0.9,und;q=0.8,zh-TW;q=0.7,en;q=0.6,pl;q=0.5
+
+
+---
+write 4081834 bytes left: 14966851
+update it to EPOLLIN|EPOLLOUT
+mod fd 5 events read 1 write 4
+nothing to read from 5, return.
+epoll_wait return 1
+handling epollout
+write 2226422 bytes left: 12740429
+epoll_wait return 1
+handling epollout
+write 2095456 bytes left: 10644973
+epoll_wait return 1
+handling epollout
+write 1964490 bytes left: 8680483
+epoll_wait return 1
+handling epollout
+write 1506109 bytes left: 7174374
+epoll_wait return 1
+handling epollout
+write 1833524 bytes left: 5340850
+epoll_wait return 1
+handling epollout
+write 1637075 bytes left: 3703775
+write 130966 bytes left: 3572809
+epoll_wait return 1
+handling epollout
+write 1571592 bytes left: 2001217
+epoll_wait return 1
+handling epollout
+write 1440626 bytes left: 560591
+epoll_wait return 1
+handling epollout
+write 560591 bytes left: 0
+mod fd 5 events read 1 write 0
+epoll_wait return 1
+this can read
+read 375 bytes
+now info is
+---GET /favicon.ico HTTP/1.1
+Host: 127.0.0.1
+Connection: keep-alive
+User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36
+Accept: image/webp,image/apng,image/*,*/*;q=0.8
+Referer: http://127.0.0.1/
+Accept-Encoding: gzip, deflate, br
+Accept-Language: zh-CN,zh;q=0.9,und;q=0.8,zh-TW;q=0.7,en;q=0.6,pl;q=0.5
+
+
+---
+write 10477280 bytes left: 8571405
+update it to EPOLLIN|EPOLLOUT
+mod fd 5 events read 1 write 4
+nothing to read from 5, return.
+epoll_wait return 1
+handling epollout
+write 1440626 bytes left: 7130779
+epoll_wait return 1
+handling epollout
+write 1768041 bytes left: 5362738
+epoll_wait return 1
+handling epollout
+write 1571592 bytes left: 3791146
+epoll_wait return 1
+handling epollout
+write 1637075 bytes left: 2154071
+epoll_wait return 1
+handling epollout
+write 1702558 bytes left: 451513
+epoll_wait return 1
+handling epollout
+write 451513 bytes left: 0
+mod fd 5 events read 1 write 0
+epoll_wait return 0
+epoll_wait return 0
+epoll_wait return 0
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;这里我发送的资源改大了，改成如下的数值：&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;    httpRes = &amp;#34;HTTP/1.1 200 OK\r\nConnection: Keep-Alive\r\nContent-Type: text/html; charset=UTF-8\r\nContent-Length: 19048576\r\n\r\n123456&amp;#34;;
+    // 将剩下的内容填充成0。最后content的长度是大约1024*1024
+    for(int i=0;i&amp;lt;19048570;i++) {
+        httpRes+=&amp;#39;\0&amp;#39;;
+    }
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;可以看到分了多次传输。最终终端页面上显示123456，后面全都是\0，不会显示。
+可以看到浏览器请求了两次，一次请求根目录，一次请求页面的图标favicon.ico&lt;/p&gt;
+</description>
+        </item>
+        <item>
+        <title>TCP UDP IP最大报文长度</title>
+        <link>https://nansenli.com/zh-cn/post/jianshu/%E7%BD%91%E7%BB%9C/tcp-udp-ip%E6%9C%80%E5%A4%A7%E6%8A%A5%E6%96%87%E9%95%BF%E5%BA%A6/</link>
+        <pubDate>Mon, 26 Mar 2018 16:41:00 +0000</pubDate>
+        
+        <guid>https://nansenli.com/zh-cn/post/jianshu/%E7%BD%91%E7%BB%9C/tcp-udp-ip%E6%9C%80%E5%A4%A7%E6%8A%A5%E6%96%87%E9%95%BF%E5%BA%A6/</guid>
+        <description>&lt;h2 id=&#34;udp&#34;&gt;UDP
+&lt;/h2&gt;&lt;p&gt;对于UDP协议来说，整个包的最大长度为65535，其中包头长度是65535-20=65515。&lt;/p&gt;
+&lt;h2 id=&#34;tcp&#34;&gt;TCP
+&lt;/h2&gt;&lt;p&gt;对于TCP协议来说，整个包的最大长度是由最大传输大小（MSS，Maxitum Segment Size）决定，MSS就是TCP数据包每次能够传输的最大数据分段。为了达到最佳的传输效能TCP协议在建立连接的时候通常要协商双方的MSS值，这个值TCP协议在实现的时候往往用MTU值代替（需要减去IP数据包包头的大小20Bytes和TCP数据段的包头20Bytes）所以往往MSS为1460。通讯双方会根据双方提供的MSS值得最小值确定为这次连接的最大MSS值。&lt;/p&gt;
+&lt;h2 id=&#34;ip&#34;&gt;IP
+&lt;/h2&gt;&lt;p&gt;对于IP协议来说，IP包的大小由MTU决定。&lt;/p&gt;
+</description>
+        </item>
+        <item>
+        <title>TCP 报文格式 HTTP报文格式</title>
+        <link>https://nansenli.com/zh-cn/post/jianshu/%E7%BD%91%E7%BB%9C/tcp-%E6%8A%A5%E6%96%87%E6%A0%BC%E5%BC%8F-http%E6%8A%A5%E6%96%87%E6%A0%BC%E5%BC%8F/</link>
+        <pubDate>Mon, 26 Mar 2018 16:37:00 +0000</pubDate>
+        
+        <guid>https://nansenli.com/zh-cn/post/jianshu/%E7%BD%91%E7%BB%9C/tcp-%E6%8A%A5%E6%96%87%E6%A0%BC%E5%BC%8F-http%E6%8A%A5%E6%96%87%E6%A0%BC%E5%BC%8F/</guid>
+        <description>&lt;h2 id=&#34;tcp&#34;&gt;TCP
+&lt;/h2&gt;&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;源端口 目标端口
+    序号
+    确认号
+位标识   窗口
+校验和   紧急指针
+    选项
+    数据
+&lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&#34;http&#34;&gt;HTTP
+&lt;/h2&gt;&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;请求 URL 协议版本\r\n
+字段：值\r\n
+\r\n
+正文
+&lt;/code&gt;&lt;/pre&gt;&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;协议版本 状态码 状态码描述\r\n
+字段：值\r\n
+\r\n
+正文
+&lt;/code&gt;&lt;/pre&gt;</description>
+        </item>
+        <item>
+        <title>TCP UDP 通过socket建立连接的过程</title>
+        <link>https://nansenli.com/zh-cn/post/jianshu/%E7%BD%91%E7%BB%9C/tcp-udp-%E9%80%9A%E8%BF%87socket%E5%BB%BA%E7%AB%8B%E8%BF%9E%E6%8E%A5%E7%9A%84%E8%BF%87%E7%A8%8B/</link>
+        <pubDate>Mon, 26 Mar 2018 14:46:00 +0000</pubDate>
+        
+        <guid>https://nansenli.com/zh-cn/post/jianshu/%E7%BD%91%E7%BB%9C/tcp-udp-%E9%80%9A%E8%BF%87socket%E5%BB%BA%E7%AB%8B%E8%BF%9E%E6%8E%A5%E7%9A%84%E8%BF%87%E7%A8%8B/</guid>
+        <description>&lt;h2 id=&#34;tcp&#34;&gt;TCP
+&lt;/h2&gt;&lt;p&gt;|    阶段    | 服务器    |  客户端  |
+| &amp;mdash;&amp;mdash;&amp;ndash;   | &amp;mdash;&amp;ndash;:   | :&amp;mdash;-: |
+|         | socket      |   socket    |
+|         | bind      |        |
+|        | listen      |        |
+|        | accept     |   connect    |
+|         | write      |   write    |
+|         | read      |   read   |
+|         | close      |   close   |&lt;/p&gt;
+&lt;h2 id=&#34;udp&#34;&gt;UDP
+&lt;/h2&gt;&lt;p&gt;|    阶段    | 服务器    |  客户端  |
+| &amp;mdash;&amp;mdash;&amp;ndash;   | &amp;mdash;&amp;ndash;:   | :&amp;mdash;-: |
+|         | socket      |   socket    |
+|         | bind      |        |
+|         | sendto      |   recvfrom    |
+|         | recvfrom      |   sendto   |
+|         | close      |   close   |&lt;/p&gt;
+</description>
+        </item>
+        <item>
+        <title>HTTPS 双向加密过程分析</title>
+        <link>https://nansenli.com/zh-cn/post/jianshu/%E7%BD%91%E7%BB%9C/https-%E5%8F%8C%E5%90%91%E5%8A%A0%E5%AF%86%E8%BF%87%E7%A8%8B%E5%88%86%E6%9E%90/</link>
+        <pubDate>Mon, 26 Mar 2018 14:42:00 +0000</pubDate>
+        
+        <guid>https://nansenli.com/zh-cn/post/jianshu/%E7%BD%91%E7%BB%9C/https-%E5%8F%8C%E5%90%91%E5%8A%A0%E5%AF%86%E8%BF%87%E7%A8%8B%E5%88%86%E6%9E%90/</guid>
+        <description>&lt;p&gt;HTTPS认证过程：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;① 浏览器发送一个连接请求给安全服务器。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;② 服务器将自己的证书，以及同证书相关的信息发送给客户浏览器。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;③ 客户浏览器检查服务器送过来的证书是否是由自己信赖的 CA 中心所签发的。如果是，就继续执行协议；如果不是，客户浏览器就给客户一个警告消息：警告客户这个证书不是可以信赖的，询问客户是否需要继续。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;④ 接着客户浏览器比较证书里的消息，例如域名和公钥，与服务器刚刚发送的相关消息是否一致，如果是一致的，客户浏览器认可这个服务器的合法身份。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;⑤ 服务器要求客户发送客户自己的证书。收到后，服务器验证客户的证书，如果没有通过验证，拒绝连接；如果通过验证，服务器获得用户的公钥。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;⑥ 客户浏览器告诉服务器自己所能够支持的通讯对称密码方案。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;⑦ 服务器从客户发送过来的密码方案中，选择一种加密程度最高的密码方案，用客户的公钥加过密后通知浏览器。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;⑧ 浏览器针对这个密码方案，选择一个通话密钥，接着用服务器的公钥加过密后发送给服务器。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;⑨ 服务器接收到浏览器送过来的消息，用自己的私钥解密，获得通话密钥。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;⑩ 服务器、浏览器接下来的通讯都是用对称密码方案，对称密钥是加过密的。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;上面所述的是双向认证 SSL 协议的具体通讯过程，这种情况要求服务器和用户双方都有证书。单向认证 SSL 协议不需要客户拥有 CA 证书，具体的过程相对于上面的步骤，只需将服务器端验证客户证书的过程去掉，以及在协商对称密码方案，对称通话密钥时，服务器发送给客户的是没有加过密的 （这并不影响 SSL 过程的安全性）密码方案。这样，双方具体的通讯内容，就是加过密的数据，如果有第三方攻击，获得的只是加密的数据，第三方要获得有用的信息，就需要对加密 的数据进行解密，这时候的安全就依赖于密码方案的安全。而幸运的是，目前所用的密码方案，只要通讯密钥长度足够的长，就足够的安全。这也是我们强调要求使用128 位加密通讯的原因。&lt;/p&gt;
+</description>
+        </item>
+        <item>
+        <title>select poll epoll 简明介绍</title>
+        <link>https://nansenli.com/zh-cn/post/jianshu/%E7%BD%91%E7%BB%9C/select-poll-epoll-%E7%AE%80%E6%98%8E%E4%BB%8B%E7%BB%8D/</link>
+        <pubDate>Mon, 12 Mar 2018 13:19:00 +0000</pubDate>
+        
+        <guid>https://nansenli.com/zh-cn/post/jianshu/%E7%BD%91%E7%BB%9C/select-poll-epoll-%E7%AE%80%E6%98%8E%E4%BB%8B%E7%BB%8D/</guid>
+        <description>&lt;p&gt;来源 &lt;a class=&#34;link&#34; href=&#34;https://cloud.tencent.com/developer/article/1005481&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;https://cloud.tencent.com/developer/article/1005481&lt;/a&gt;&lt;/p&gt;
+&lt;h1 id=&#34;函数简介&#34;&gt;函数简介
+&lt;/h1&gt;&lt;h2 id=&#34;select&#34;&gt;select
+&lt;/h2&gt;&lt;p&gt;函数原型如下：&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;int select (int n, fd_set *readfds, fd_set *writefds, fd_set *exceptfds, struct timeval *timeout);
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;fd_set是包含有文件描述符的集合，是一个位图，总共有n位。这意味这每次调用就会拷贝一次文件描述符集合到内核。&lt;/p&gt;
+&lt;h2 id=&#34;poll&#34;&gt;poll
+&lt;/h2&gt;&lt;p&gt;函数原型如下：&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;int poll (struct pollfd *fds, unsigned int nfds, int timeout);
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;不同与select使用三个位图来表示三个fdset的方式，poll使用一个 pollfd的数组实现。传入他的长度，以及超时。&lt;/p&gt;
+&lt;h2 id=&#34;epoll&#34;&gt;epoll
+&lt;/h2&gt;&lt;p&gt;epoll是在2.6内核中提出的，是之前的select和poll的增强版本。&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;int epoll_create(int size)；//创建一个epoll的句柄，size用来告诉内核这个监听的数目一共有多大
+int epoll_ctl(int epfd, int op, int fd, struct epoll_event *event)；
+int epoll_wait(int epfd, struct epoll_event * events, int maxevents, int timeout);
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;epoll_create是用于创建epoll的句柄。size是建议内核预先分配的文件描述符数目，不会限制实际运行的数目。
+epoll_ctl会控制epoll的句柄，我们可以向其中添加、删除、修改文件描述符。ctl与epoll_wait相分离的机制使得只用复制一次事件集合。
+epoll_wait可以用于获得从内核得到的事件的集合。&lt;/p&gt;
+&lt;h1 id=&#34;socket-事件&#34;&gt;socket 事件
+&lt;/h1&gt;&lt;p&gt;在Linux 2.6内核事件中，设置了wakeup callback机制。当socket在等待事件发生时，由内核的socket睡眠队列管理。当socket事件发生时，内核会顺序遍历socket睡眠队列上的每个process，通知该进程事件发生。通知时，会依次调用该事件的回调函数。&lt;/p&gt;
+&lt;h2 id=&#34;最初的select&#34;&gt;最初的select
+&lt;/h2&gt;&lt;p&gt;select最初只是一个朴素的实现，来尝试解决多个文件描述符的检查问题。&lt;/p&gt;
+&lt;h3 id=&#34;select做了什么&#34;&gt;select做了什么？
+&lt;/h3&gt;&lt;p&gt;select调用后，做了以下事情：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;将参数传进来的文件描述符集合拷贝到内核空间&lt;/li&gt;
+&lt;li&gt;依次遍历文件描述符，查看是否有事件可读，如果可读就返回&lt;/li&gt;
+&lt;li&gt;没有可读的文件描述符，开始睡眠，等待内核socket事件发生&lt;/li&gt;
+&lt;li&gt;被唤醒，再次检查到底是哪个文件描述符发生了操作&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;select的问题&#34;&gt;select的问题？
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;每次调用socket都会拷贝一次到内核空间，性能低下&lt;/li&gt;
+&lt;li&gt;任意一个socket被唤醒都需要遍历所有的socket，浪费时间&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;select的改进&#34;&gt;select的改进？
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;被监控的fds集合限制为1024，1024太小了，我们希望能够有个比较大的可监控fds集合&lt;/li&gt;
+&lt;li&gt;fds集合需要从用户空间拷贝到内核空间的问题，我们希望不需要拷贝&lt;/li&gt;
+&lt;li&gt;被监控的fds中某些有数据可读的时候，我们希望通知更加精细一点，就是我们希望能够从通知中得到有可读事件的fds列表，而不是需要遍历整个fds来收集。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;鸡肋的poll&#34;&gt;鸡肋的poll
+&lt;/h2&gt;&lt;p&gt;poll只解决了第一个问题。fds的大小是1024限制的问题。仅仅是传入的参数的接口变了而已。&lt;/p&gt;
+&lt;h2 id=&#34;成熟的epoll&#34;&gt;成熟的epoll
+&lt;/h2&gt;&lt;p&gt;epoll解决了第二个和第三个问题。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;对于第二个问题&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;拆分函数调用，再细分函数调用
+对于IO多路复用，我们会发现，每次调用select或poll都在重复地准备(集中处理)整个需要监控的fds集合。然而对于频繁调用的select或poll而言，fds集合的变化频率要低得多，我们没必要每次都重新准备(集中处理)整个fds集合。
+于是，epoll引入了epoll_ctl系统调用，将高频调用的epoll_wait和低频的epoll_ctl隔离开。同时，epoll_ctl通过(EPOLL_CTL_ADD、EPOLL_CTL_MOD、EPOLL_CTL_DEL)三个操作来分散对需要监控的fds集合的修改，做到了有变化才变更，将select或poll高频、大块内存拷贝(集中处理)变成epoll_ctl的低频、小块内存的拷贝(分散处理)，避免了大量的内存拷贝。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;使用红黑树
+另外，epoll通过epoll_ctl来对监控的fds集合来进行增、删、改，那么必须涉及到fd的快速查找问题，于是，一个低时间复杂度的增、删、改、查的数据结构来组织被监控的fds集合是必不可少的了。在linux 2.6.8之前的内核，epoll使用hash来组织fds集合，于是在创建epoll fd的时候，epoll需要初始化hash的大小。于是epoll_create(int size)有一个参数size，以便内核根据size的大小来分配hash的大小。在linux 2.6.8以后的内核中，epoll使用红黑树来组织监控的fds集合，于是epoll_create(int size)的参数size实际上已经没有意义了。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;对于第三个问题&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;使用回调机制
+通过上面的socket的睡眠队列唤醒逻辑我们知道，socket唤醒睡眠在其睡眠队列的wait_entry(process)的时候会调用wait_entry的回调函数callback，并且，我们可以在callback中做任何事情。为了做到只遍历就绪的fd，我们需要有个地方来组织那些已经就绪的fd。为此，epoll引入了一个中间层，一个双向链表(ready_list)，一个单独的睡眠队列(single_epoll_wait_list)，并且，与select或poll不同的是，epoll的process不需要同时插入到多路复用的socket集合的所有睡眠队列中，相反process只是插入到中间层的epoll的单独睡眠队列中，process睡眠在epoll的单独队列上，等待事件的发生。同时，引入一个中间的wait_entry_sk，它与某个socket sk密切相关，wait_entry_sk睡眠在sk的睡眠队列上，其callback函数逻辑是将当前sk排入到epoll的ready_list中，并唤醒epoll的single_epoll_wait_list。而single_epoll_wait_list上睡眠的process的回调函数就明朗了：遍历ready_list上的所有sk，挨个调用sk的poll函数收集事件，然后唤醒process从epoll_wait返回。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;最后边缘触发与水平触发&#34;&gt;最后，边缘触发与水平触发
+&lt;/h2&gt;&lt;p&gt;说到Epoll就不能不说说Epoll事件的两种模式了，下面是两个模式的基本概念&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Edge Triggered (ET) 边沿触发
+.socket的接收缓冲区状态变化时触发读事件，即空的接收缓冲区刚接收到数据时触发读事件
+.socket的发送缓冲区状态变化时触发写事件，即满的缓冲区刚空出空间时触发读事件
+仅在缓冲区状态变化时触发事件，比如数据缓冲去从无到有的时候(不可读-可读)&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Level Triggered (LT) 水平触发
+.socket接收缓冲区不为空，有数据可读，则读事件一直触发
+.socket发送缓冲区不满可以继续写入数据，则写事件一直触发
+符合思维习惯，epoll_wait返回的事件就是socket的状态&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+        </item>
+        <item>
+        <title>HTTP长连接与短连接</title>
+        <link>https://nansenli.com/zh-cn/post/jianshu/%E7%BD%91%E7%BB%9C/http%E9%95%BF%E8%BF%9E%E6%8E%A5%E4%B8%8E%E7%9F%AD%E8%BF%9E%E6%8E%A5/</link>
+        <pubDate>Wed, 07 Mar 2018 03:15:00 +0000</pubDate>
+        
+        <guid>https://nansenli.com/zh-cn/post/jianshu/%E7%BD%91%E7%BB%9C/http%E9%95%BF%E8%BF%9E%E6%8E%A5%E4%B8%8E%E7%9F%AD%E8%BF%9E%E6%8E%A5/</guid>
+        <description>&lt;h2 id=&#34;http协议与tcpip协议的关系&#34;&gt;HTTP协议与TCP/IP协议的关系
+&lt;/h2&gt;&lt;p&gt;HTTP的长连接和短连接本质上是TCP长连接和短连接。HTTP属于应用层协议，在传输层使用TCP协议，在网络层使用IP协议。IP协议主要解决网络路由和寻址问题，TCP协议主要解决如何在IP层之上可靠的传递数据包，使在网络上的另一端收到发端发出的所有包，并且顺序与发出顺序一致。TCP有可靠，面向连接的特点。&lt;/p&gt;
+&lt;h2 id=&#34;如何理解http协议是无状态的&#34;&gt;如何理解HTTP协议是无状态的
+&lt;/h2&gt;&lt;p&gt;HTTP协议是无状态的，指的是协议对于事务处理没有记忆能力，服务器不知道客户端是什么状态。也就是说，打开一个服务器上的网页和你之前打开这个服务器上的网页之间没有任何联系。HTTP是一个无状态的面向连接的协议，无状态不代表HTTP不能保持TCP连接，更不能代表HTTP使用的是UDP协议（无连接）。&lt;/p&gt;
+&lt;h2 id=&#34;什么是长连接短连接&#34;&gt;什么是长连接、短连接
+&lt;/h2&gt;&lt;p&gt;在HTTP/1.0中，默认使用的是短连接。也就是说，浏览器和服务器每进行一次HTTP操作，就建立一次连接，但任务结束就中断连接。如果客户端浏览器访问的某个HTML或其他类型的 Web页中包含有其他的Web资源，如JavaScript文件、图像文件、CSS文件等；当浏览器每遇到这样一个Web资源，就会建立一个HTTP会话。但从 HTTP/1.1起，默认使用长连接，用以保持连接特性。使用长连接的HTTP协议，会在响应头有加入这行代码：&lt;code&gt;Connection:keep-alive&lt;/code&gt;。在使用长连接的情况下，当一个网页打开完成后，客户端和服务器之间用于传输HTTP数据的 TCP连接不会关闭，如果客户端再次访问这个服务器上的网页，会继续使用这一条已经建立的连接。Keep-Alive不会永久保持连接，它有一个保持时间，可以在不同的服务器软件（如Apache）中设定这个时间。实现长连接要客户端和服务端都支持长连接。HTTP协议的长连接和短连接，实质上是TCP协议的长连接和短连接。&lt;/p&gt;
+&lt;h2 id=&#34;tcp连接&#34;&gt;TCP连接
+&lt;/h2&gt;&lt;p&gt;当网络通信时采用TCP协议时，在真正的读写操作之前，server与client之间必须建立一个连接，当读写操作完成后，双方不再需要这个连接 时它们可以释放这个连接，连接的建立是需要三次握手的，而释放则需要4次握手，所以说每个连接的建立都是需要资源消耗和时间消耗的。&lt;/p&gt;
+&lt;h2 id=&#34;tcp短连接&#34;&gt;TCP短连接
+&lt;/h2&gt;&lt;p&gt;接下来我们再模拟一下长连接的情况，client向server发起连接，server接受client连接，双方建立连接。Client与server完成一次读写之后，它们之间的连接并不会主动关闭，后续的读写操作会继续使用这个连接。&lt;/p&gt;
+&lt;h2 id=&#34;tcp长连接&#34;&gt;TCP长连接
+&lt;/h2&gt;&lt;p&gt;接下来我们再模拟一下长连接的情况，client向server发起连接，server接受client连接，双方建立连接。Client与server完成一次读写之后，它们之间的连接并不会主动关闭，后续的读写操作会继续使用这个连接。&lt;/p&gt;
+&lt;p&gt;首先说一下TCP/IP详解上讲到的TCP保活功能，保活功能主要为服务器应用提供，服务器应用希望知道客户主机是否崩溃，从而可以代表客户使用资源。如果客户已经消失，使得服务器上保留一个半开放的连接，而服务器又在等待来自客户端的数据，则服务器将应远等待客户端的数据，保活功能就是试图在服务 器端检测到这种半开放的连接。&lt;/p&gt;
+&lt;p&gt;如果一个给定的连接在两小时内没有任何的动作，则服务器就向客户发一个探测报文段，客户主机必须处于以下4个状态之一：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;客户主机依然正常运行，并从服务器可达。客户的TCP响应正常，而服务器也知道对方是正常的，服务器在两小时后将保活定时器复位。&lt;/li&gt;
+&lt;li&gt;客户主机已经崩溃，并且关闭或者正在重新启动。在任何一种情况下，客户的TCP都没有响应。服务端将不能收到对探测的响应，并在75秒后超时。服务器总共发送10个这样的探测 ，每个间隔75秒。如果服务器没有收到一个响应，它就认为客户主机已经关闭并终止连接。&lt;/li&gt;
+&lt;li&gt;客户主机崩溃并已经重新启动。服务器将收到一个对其保活探测的响应，这个响应是一个复位，使得服务器终止这个连接。&lt;/li&gt;
+&lt;li&gt;客户机正常运行，但是服务器不可达，这种情况与2类似，TCP能发现的就是没有收到探查的响应。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id=&#34;如何选择长连接还是短连接&#34;&gt;如何选择长连接还是短连接
+&lt;/h2&gt;&lt;p&gt;长连接多用于操作频繁，点对点的通讯，而且连接数不能太多情况，。每个TCP连接都需要三步握手，这需要时间，如果每个操作都是先连接，再操作的话那么处理速度会降低很多，所以每个操作完后都不断开，次处理时直接发送数据包就OK了，不用建立TCP连接。例如：数据库的连接用长连接， 如果用短连接频繁的通信会造成socket错误，而且频繁的socket 创建也是对资源的浪费。&lt;/p&gt;
+&lt;p&gt;而像WEB网站的http服务一般都用短链接，因为长连接对于服务端来说会耗费一定的资源，而像WEB网站这么频繁的成千上万甚至上亿客户端的连接用短连接会更省一些资源，如果用长连接，而且同时有成千上万的用户，如果每个用户都占用一个连接的话，那可想而知吧。所以并发量大，但每个用户无需频繁操作情况下需用短连好。&lt;/p&gt;
+</description>
+        </item>
+        <item>
+        <title>epoll TCP服务器与客户端简明例子</title>
+        <link>https://nansenli.com/zh-cn/post/jianshu/%E7%BD%91%E7%BB%9C/epoll-tcp%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B8%8E%E5%AE%A2%E6%88%B7%E7%AB%AF%E7%AE%80%E6%98%8E%E4%BE%8B%E5%AD%90/</link>
+        <pubDate>Mon, 25 Dec 2017 02:52:00 +0000</pubDate>
+        
+        <guid>https://nansenli.com/zh-cn/post/jianshu/%E7%BD%91%E7%BB%9C/epoll-tcp%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B8%8E%E5%AE%A2%E6%88%B7%E7%AB%AF%E7%AE%80%E6%98%8E%E4%BE%8B%E5%AD%90/</guid>
+        <description>&lt;h2 id=&#34;前言&#34;&gt;前言
+&lt;/h2&gt;&lt;p&gt;epoll是Linux专有API，提供高效的文件描述符管理，常用于批量监听文件描述符的可读情况，是高并发服务器的有效手段之一。下面是一个简单的epoll服务器与客户端例子。&lt;/p&gt;
+&lt;h2 id=&#34;服务器端&#34;&gt;服务器端
+&lt;/h2&gt;&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;#include &amp;lt;fcntl.h&amp;gt;
+#include &amp;lt;unistd.h&amp;gt;
+#include &amp;lt;sys/socket.h&amp;gt;
+#include &amp;lt;netinet/in.h&amp;gt;
+#include &amp;lt;arpa/inet.h&amp;gt;
+#include &amp;lt;stdio.h&amp;gt;
+#include &amp;lt;stdlib.h&amp;gt;
+#include &amp;lt;sys/epoll.h&amp;gt;
+
+using namespace std;
+
+const int MAX_EPOLL_EVENTS = 1000;
+const int MAX_MSG_LEN = 1024;
+
+void setFdNonblock(int fd)
+{
+    fcntl(fd, F_SETFL, fcntl(fd, F_GETFL) | O_NONBLOCK);
+}
+
+void err_exit(const char *s){
+    printf(&amp;#34;error: %s\n&amp;#34;,s);
+    exit(0);
+}
+
+int create_socket(const char *ip, const int port_number)
+{
+    struct sockaddr_in server_addr = {0};
+    /* 设置ipv4模式 */
+    server_addr.sin_family = AF_INET;           /* ipv4 */
+    /* 设置端口号 */
+    server_addr.sin_port = htons(port_number);
+    /* 设置主机地址 */
+    if(inet_pton(server_addr.sin_family, ip, &amp;amp;server_addr.sin_addr) == -1){
+        err_exit(&amp;#34;inet_pton&amp;#34;);
+    }
+    /* 建立socket */
+    int sockfd = socket(PF_INET, SOCK_STREAM, 0);
+    if(sockfd == -1){
+        err_exit(&amp;#34;socket&amp;#34;);
+    }
+    /* 设置复用模式 */
+    int reuse = 1;
+    if(setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &amp;amp;reuse, sizeof(reuse)) == -1)
+    {
+        err_exit(&amp;#34;setsockopt&amp;#34;);
+    }
+    /* 绑定端口 */
+    if(bind(sockfd, (sockaddr *)&amp;amp;server_addr, sizeof(server_addr)) == -1){
+        err_exit(&amp;#34;bind&amp;#34;);
+    }
+    /* 设置被动打开 */
+    if(listen(sockfd, 5) == -1){
+        err_exit(&amp;#34;listen&amp;#34;);
+    }
+    return sockfd;
+}
+
+int main(int argc, const char *argv[])
+{
+    /* 帮助 */
+    if(argc &amp;lt; 3){
+        printf(&amp;#34;usage:%s ip port\n&amp;#34;, argv[0]);
+        exit(0);
+    }
+    /* 获取服务器参数 */
+    const char * ip = argv[1];
+    const int port = atoi(argv[2]);
+    /* 创建套接字 */
+    int sockfd = create_socket(ip, port);
+    printf(&amp;#34;success create sockfd %d\n&amp;#34;, sockfd);
+    setFdNonblock(sockfd);
+    /* 创建epoll */
+    int epollfd = epoll_create1(0);
+    if(epollfd == -1) err_exit(&amp;#34;epoll_create1&amp;#34;);
+    /* 添加sockfd到epollfd兴趣列表 */
+    struct epoll_event ev;
+    ev.data.fd = sockfd;
+    ev.events = EPOLLIN ;
+    if(epoll_ctl(epollfd, EPOLL_CTL_ADD, sockfd, &amp;amp;ev) == -1){
+        err_exit(&amp;#34;epoll_ctl1&amp;#34;);
+    }
+    /* 创建一个列表用于存放wait所返回的events */
+    struct epoll_event events[MAX_EPOLL_EVENTS] = {0};
+    /* 开始等待所有在epoll上挂上去的事件 */
+
+    while(1){
+        /* 等待事件 */
+        printf(&amp;#34;begin wait\n&amp;#34;);
+        int number = epoll_wait(epollfd, events, MAX_EPOLL_EVENTS, -1);
+        printf(&amp;#34;end wait\n&amp;#34;);
+        sleep(1);
+        if(number &amp;gt; 0){
+            /* 遍历所有事件 */
+            for (int i = 0; i &amp;lt; number; i++)
+            {
+                int eventfd = events[i].data.fd;
+                /* 如果触发事件的fd是sockfd，则说明有人连接上来了，我们需要accept他 */
+                if(eventfd == sockfd){
+                    printf(&amp;#34;accept new client...\n&amp;#34;);
+                    struct sockaddr_in client_addr;
+                    socklen_t client_addr_len = sizeof(client_addr);
+                    int connfd = accept(sockfd, (struct sockaddr *)&amp;amp;client_addr, &amp;amp;client_addr_len);
+                    setFdNonblock(connfd);
+                    /* accept之后，需要将文件描述符加入到监听列表中 */
+                    struct epoll_event ev;
+                    ev.data.fd = connfd;
+                    ev.events = EPOLLIN;
+                    if(epoll_ctl(epollfd, EPOLL_CTL_ADD, connfd, &amp;amp;ev) == -1){
+                        err_exit(&amp;#34;epoll_ctl2&amp;#34;);
+                    }
+                    printf(&amp;#34;accept new client end.\n&amp;#34;);
+                }
+                /* 如果触发的fd不是sockfd，那就是新加的connfd */
+                else{
+                    /* 读出内容，直到遇到回车。然后显示该内容。 */
+                    printf(&amp;#34;read start...\n&amp;#34;);
+                    while(1){
+                        char buff = -1;
+                        int ret = read(eventfd, &amp;amp;buff, 1);
+                        if(ret &amp;gt; 0){
+                            printf(&amp;#34;%c&amp;#34;, buff);
+                        }
+                        if(buff == &amp;#39;\n&amp;#39;){
+                            break;
+                        }
+                        else if (ret == 0){
+                            printf(&amp;#34;client close.\n&amp;#34;);
+                            close(eventfd);
+                            epoll_ctl(epollfd, EPOLL_CTL_DEL, eventfd, NULL);
+                            break;
+                        }
+                        else if (ret &amp;lt; 0){
+                            printf(&amp;#34;read error.\n&amp;#34;);
+                            break;
+                        }
+                    }
+                    printf(&amp;#34;read end.\n&amp;#34;);
+                }
+            }
+        }
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&#34;客户端&#34;&gt;客户端
+&lt;/h2&gt;&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;#include &amp;lt;stdio.h&amp;gt;
+#include &amp;lt;string.h&amp;gt;
+#include &amp;lt;stdlib.h&amp;gt;
+#include &amp;lt;unistd.h&amp;gt;
+#include &amp;lt;arpa/inet.h&amp;gt;
+#include &amp;lt;sys/socket.h&amp;gt;
+#include &amp;lt;string&amp;gt;
+#include &amp;lt;iostream&amp;gt;
+
+using namespace std;
+
+void err_exit(const char *s){
+    printf(&amp;#34;error: %s\n&amp;#34;,s);
+    exit(0);
+}
+
+int create_socket(const char *ip, const int port_number)
+{
+    struct sockaddr_in server_addr = {0};
+    /* 设置ipv4模式 */
+    server_addr.sin_family = AF_INET;           /* ipv4 */
+    /* 设置端口号 */
+    server_addr.sin_port = htons(port_number);
+    /* 设置主机地址 */
+    if(inet_pton(PF_INET, ip, &amp;amp;server_addr.sin_addr) == -1){
+        err_exit(&amp;#34;inet_pton&amp;#34;);
+    }
+
+    /* 建立socket */
+    int sockfd = socket(PF_INET, SOCK_STREAM, 0);
+    if(sockfd == -1){
+        err_exit(&amp;#34;socket&amp;#34;);
+    }
+
+    if(connect(sockfd, (struct sockaddr*)&amp;amp;server_addr, sizeof(server_addr)) == -1){
+        err_exit(&amp;#34;connect&amp;#34;);
+    }
+
+    return sockfd;
+}
+
+int main(int argc, const char *argv[]){
+    if(argc &amp;lt; 3){
+        printf(&amp;#34;usage:%s ip port\n&amp;#34;, argv[0]);
+        exit(0);
+    }
+    /* 获取服务器参数 */
+    const char * ip = argv[1];
+    const int port = atoi(argv[2]);
+    //创建套接字
+    int sock = create_socket(ip, port);
+    //向服务器（特定的IP和端口）发起请求
+    
+    while(1){
+        string buff;
+        getline(cin, buff);
+        if(buff == &amp;#34;exit&amp;#34;) break;
+        write(sock, buff.c_str(), buff.size());
+        char end = &amp;#39;\n&amp;#39;;
+        write(sock, &amp;amp;end, 1);
+    }
+    close(sock);
+    return 0;
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&#34;编译&#34;&gt;编译
+&lt;/h2&gt;&lt;p&gt;将上述文本存为socket_server.cpp与socket_client.cpp，编译链接该程序。&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;g++ -Wall socket_server.cpp -o server &amp;amp;&amp;amp; g++ -Wall socket_client.cpp -o client
+&lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&#34;运行&#34;&gt;运行
+&lt;/h2&gt;&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;./server localhost 1234
+&lt;/code&gt;&lt;/pre&gt;&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;./client localhost 1234
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;在client端输入文字并回车，会出现在服务器端。按下Ctrl C关闭客户端或者输入exit关闭客户端。&lt;/p&gt;
+&lt;h2 id=&#34;运行流程&#34;&gt;运行流程
+&lt;/h2&gt;&lt;p&gt;服务器首先创建被动打开socket文件描述符，然后将该文件描述符加入到epoll兴趣列表。接下来进入循环。每当兴趣列表wait结束时，说明对应文件描述符可以进行操作。当有客户端连上被动打开socket文件描述符时，说明有客户端连上，被动打开文件描述符可以被accept。accept后所创建的新的文件描述符是与客户端通信的文件描述符，该文件描述符继续加入兴趣列表。当客户端发送数据时，该文件描述符也会产生可读信号，会导致wait结束，此时进入处理模式，读取并显示客户端所发送的数据。&lt;/p&gt;
+</description>
+        </item>
+        <item>
+        <title>SOCKET 学习笔记</title>
+        <link>https://nansenli.com/zh-cn/post/jianshu/%E7%BD%91%E7%BB%9C/socket-%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/</link>
+        <pubDate>Mon, 25 Dec 2017 02:34:00 +0000</pubDate>
+        
+        <guid>https://nansenli.com/zh-cn/post/jianshu/%E7%BD%91%E7%BB%9C/socket-%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/</guid>
+        <description>&lt;h2 id=&#34;前言&#34;&gt;前言
+&lt;/h2&gt;&lt;p&gt;面经中提到的epoll，涉及到了socket编程。为了深入了解epoll原理，需要首先了解socket编程。socket是进程间通信IPC，就算在网络中也是如此，所以说网络中通信的主体是进程，而不是计算机。socket学习内容一个是如何建立服务器和客户端，一个是如何使用socket API。&lt;/p&gt;
+&lt;h4 id=&#34;fdsocketdomain-type-protocol&#34;&gt;fd=socket(domain, type, protocol);
+&lt;/h4&gt;&lt;p&gt;socket调用可以用来创建一个socket，例如
+domain可以用来指定ipv4，type可以用来指定tcp，protocol一般是0。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;domain
+domain是通信范围与通信地址的类型。有下面几个经典类型：
+UNIX IPV4 IPV6，分别对应的参数是AF_UNIX AF_INET AF_INET6。
+domain 的参数都是以AF开头的代表地址簇。PF开头的代表协议簇。本来设计是地址簇和协议簇是多对多的，但是后来实现过程中，一个协议簇和地址簇是一一对应的。所以基本上domain就是指定了协议簇，地址簇也被指定了。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;type
+socket表示是流还是数据包，其实就是TCP还是UDP。如果是TCP就是SOCK_STREAM，如果是UDP就是SOCK_DGRAM&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;bindint-sockfd-const-struct-sockaddr-addr-socklen_t-addrlen&#34;&gt;bind(int sockfd, const struct sockaddr *addr, socklen_t addrlen);
+&lt;/h4&gt;&lt;p&gt;该调用用于将socket绑定到一个地址上。之后可以发送TCP报文，在一些场合下也可以通过write发送UDP报文，但是只能在该socket上读取对等socket数据。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;sockaddr
+该结构体有一个整形表示地址类型，然后后面跟着一个char数组。后面可以看到具体传进来的是根据使用场合的其他数据结构，但是是通用的&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;listenint-sockfd-int-backlog&#34;&gt;listen(int sockfd, int backlog)
+&lt;/h4&gt;&lt;p&gt;将一个socket描述符标记为被动。可以被主动socket连接。backlog是用于限制等待连接的数量。&lt;/p&gt;
+&lt;h4 id=&#34;acceptint-sockfd-struct-sockaddr-addr-socklen_t--addrlen&#34;&gt;accept(int sockfd, struct sockaddr *addr, socklen_t * addrlen);
+&lt;/h4&gt;&lt;p&gt;accept调用会阻塞并等待在文件描述符sockfd上的接入请求。一旦请求成功，会创建一个新的socket，这个新的socket与对方进行连接。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;addr
+返回对方的地址&lt;/li&gt;
+&lt;li&gt;addrlen
+传入addr的长度，用于告知能够写入输入的最大长度。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;connectint-sockfd-const-struct-sockaddr--addr-socklen_t-addrlen&#34;&gt;connect(int sockfd, const struct sockaddr * addr, socklen_t addrlen);
+&lt;/h4&gt;&lt;p&gt;将sockfd连接到addr所述的地址上。&lt;/p&gt;
+&lt;h4 id=&#34;closeint-fd&#34;&gt;close(int fd)
+&lt;/h4&gt;&lt;p&gt;用于关闭连接&lt;/p&gt;
+&lt;h4 id=&#34;read-write&#34;&gt;read write
+&lt;/h4&gt;&lt;p&gt;用于对sockfd进行读入或读出&lt;/p&gt;
+&lt;h4 id=&#34;recvfromint-sockfd-void-buffer-size_t-length-int-flags-struct-sockaddr-src_addr-socklen_t-addrlen&#34;&gt;recvfrom(int sockfd, void *buffer, size_t length, int flags, struct sockaddr *src_addr, socklen_t *addrlen);
+&lt;/h4&gt;&lt;h4 id=&#34;sendtoint-sockfd-const-void-buffer-size_t-length-int-flags-const-struct-sockaddr-dest_addr-socklen_t-addrlen&#34;&gt;sendto(int sockfd, const void *buffer, size_t length, int flags, const struct sockaddr *dest_addr, socklen_t addrlen);
+&lt;/h4&gt;&lt;p&gt;用于发送和接受udp报文。服务器端不能使用listen函数和accept函数，客户端不能使用connect函数。&lt;/p&gt;
+&lt;h4 id=&#34;unix-domain&#34;&gt;unix domain
+&lt;/h4&gt;&lt;p&gt;使用上面的API就可以实现本机上通过文件的通信。
+unix domain所使用的sockaddr是sockaddr_run，如下表示：&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;struct sockaddr_un{
+    sa_family_t sun_family;
+    char sun_path[108];
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;h4 id=&#34;网络字节序&#34;&gt;网络字节序
+&lt;/h4&gt;&lt;p&gt;网络字节顺序是按照大端来的，x86是小端结构。转换使用的是如下的函数进行的&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;htons&lt;/li&gt;
+&lt;li&gt;htonl&lt;/li&gt;
+&lt;li&gt;ntohs&lt;/li&gt;
+&lt;li&gt;ntohl
+h是host，n是net，s是16位，l是32位。s和l是short和long，虽然现在已经不再使用这样的标准了。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;internet-socket-地址结构&#34;&gt;Internet socket 地址结构
+&lt;/h4&gt;&lt;p&gt;网络下使用的socket地址是sockaddr_in，定义如下&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;struct sockaddr_in{
+    sa_family_t sin_family;
+    in_port_t sin_port;
+    struct in_addr sin_addr;
+    unsigned char __pad[X];
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;可以看出不一样的地方是后面的char数组变成了一个端口和地址。sin是socket Internet的简写，简写的和sun一样很差。&lt;/p&gt;
+&lt;h4 id=&#34;internet-socket-地址转换&#34;&gt;Internet socket 地址转换
+&lt;/h4&gt;&lt;p&gt;字符串式的地址格式和二进制地址格式转换API:&lt;/p&gt;
+&lt;h4 id=&#34;inet_ptonint-domain-const-char-src-void-addrptr&#34;&gt;inet_pton(int domain, const char *src, void *addrptr);
+&lt;/h4&gt;&lt;p&gt;该函数用于将src中包含的字符串转换为&lt;strong&gt;网络字节&lt;/strong&gt;的二进制地址，存入addrptr。p是presentation的意思，就是人类方便的地址。&lt;/p&gt;
+&lt;h4 id=&#34;const-char--inet_ntopint-domain-const-void-addrptr-char-dst_str-size_t-len&#34;&gt;const char * inet_ntop(int domain, const void *addrptr, char *dst_str, size_t len);
+&lt;/h4&gt;&lt;p&gt;该函数执行网络字节的二进制地址转换为人类可读的地址，写入到dst_str中，缓冲区的大小有len传入。&lt;/p&gt;
+&lt;h4 id=&#34;getaddrinfoconst-char-host-const-char-service-const-struct-addrinfo-hints-struct-result&#34;&gt;getaddrinfo(const char *host, const char *service, const struct addrinfo *hints, struct **result);
+&lt;/h4&gt;&lt;p&gt;该函数给定一个主机名和服务器名，返回socket地址和端口号。
+getaddrinfo以host、service、hints参数作为输入，其中host参数包括一个主机名或一个以IPV4字符串。service是服务名或者是端口号。该函数的调用之后需要使用freeaddrinfo来释放空间。&lt;/p&gt;
+&lt;h4 id=&#34;getnameinfoconst-struct-sockaddr-addr-socklen_t-addrlen-char-host-size_t-hostlen-char-service-size_t-servlen-int-flags&#34;&gt;getnameinfo(const struct sockaddr *addr, socklen_t addrlen, char *host, size_t hostlen, char *service, size_t servlen, int flags);
+&lt;/h4&gt;&lt;p&gt;给定一个socket地址结构，返回一个主机和服务器名的字符串。&lt;/p&gt;
+&lt;h4 id=&#34;setsockoptint-sockfd-int-level-int-optname-const-void-optval-socklen_t-optlen&#34;&gt;setsockopt(int sockfd, int level, int optname, const void *optval, socklen_t optlen);
+&lt;/h4&gt;&lt;p&gt;sockfd是代表指向套接字的文件描述符。参数level制定了套接字选项所适用的协议。例如TCP或者是IP，这表示选项作用的套接字API层。一般来说，该选项会设置为SOL_SOCKET，表示作用于套接字API层。参数optname表示了我们期待设置的选项，optvalue是用来设置刚刚的选项的值，可以是整数或者是结构体的指针，指向了一个缓冲区，而参数optlen是刚刚那个指针所指向区域的大小。&lt;/p&gt;
+&lt;p&gt;例如，要设置sockfd为reuseaddr属性时，可以如下调用：&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;    int reuse = 1;
+    if(setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &amp;amp;reuse, sizeof(reuse)) == -1)
+    {
+        err_exit(&amp;#34;setsockopt&amp;#34;);
+    }
+&lt;/code&gt;&lt;/pre&gt;&lt;h4 id=&#34;getsockoptint-sockfd-int-level-int-optname-void-optval-socklen_t-optlen&#34;&gt;getsockopt(int sockfd, int level, int optname, void *optval, socklen_t optlen);
+&lt;/h4&gt;&lt;p&gt;用法和上面一样，只是获取而已。&lt;/p&gt;
+</description>
+        </item>
+        <item>
+        <title>其他 I/O 模型总结</title>
+        <link>https://nansenli.com/zh-cn/post/jianshu/%E7%BD%91%E7%BB%9C/%E5%85%B6%E4%BB%96-i-o-%E6%A8%A1%E5%9E%8B%E6%80%BB%E7%BB%93/</link>
+        <pubDate>Thu, 21 Dec 2017 06:18:00 +0000</pubDate>
+        
+        <guid>https://nansenli.com/zh-cn/post/jianshu/%E7%BD%91%E7%BB%9C/%E5%85%B6%E4%BB%96-i-o-%E6%A8%A1%E5%9E%8B%E6%80%BB%E7%BB%93/</guid>
+        <description>&lt;ul&gt;
+&lt;li&gt;I/O 多路复用&lt;/li&gt;
+&lt;li&gt;信号驱动I/O&lt;/li&gt;
+&lt;li&gt;Linux专有epoll&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;io多路复用&#34;&gt;I/O多路复用
+&lt;/h2&gt;&lt;p&gt;通过select系统调用或者poll系统调用，来对文件描述符进行检查。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;select函数
+&lt;code&gt;int select(int nfds, fd_set *readfds, fd_set *writefds, fd_set *errorfds, struct timeval *timeout);&lt;/code&gt;
+参数分别的意思是：需要测试的fd范围0～fd-1，满足三种情况要求的文件描述符号，超时时间。&lt;/li&gt;
+&lt;li&gt;poll函数
+&lt;code&gt;int poll(struct pollfd fds[], nfds_t nfds, int timeout); &lt;/code&gt;
+参数分别是：元素包含文件描述符、需要检查的状态、返回的状态的一个数组，数组长度以及超时时间。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;二者的区别在于poll里面传进去的数组大小不受fd_set定义的大小限制。poll的events和revents更丰富一些。select用的更为广泛一些。新版中select的性能经过优化与poll差不多。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;epoll函数
+epoll函数包括三个API：epoll_create()、epoll_ctl()、epoll_wait()三个调用。
+epoll是三个调用中性能最好，效果最多的。但是只有Linux才可以使用。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;主要是因为服务器上面会连接多个socket链接，如果为每一个套接字建立一个线程的话，会比较占用资源，所以需要使用epoll来优化性能。&lt;/p&gt;
+</description>
+        </item>
+        <item>
+        <title>基于Flask的个人博客搭建</title>
+        <link>https://nansenli.com/zh-cn/post/jianshu/%E7%BD%91%E7%BB%9C/%E5%9F%BA%E4%BA%8Eflask%E7%9A%84%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA/</link>
+        <pubDate>Sun, 30 Jul 2017 17:38:00 +0000</pubDate>
+        
+        <guid>https://nansenli.com/zh-cn/post/jianshu/%E7%BD%91%E7%BB%9C/%E5%9F%BA%E4%BA%8Eflask%E7%9A%84%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA/</guid>
+        <description>&lt;h2 id=&#34;前言&#34;&gt;前言
+&lt;/h2&gt;&lt;p&gt;源码可直接运行，支持markdown语法，支持邮箱注册，任何问题均可参考&lt;a class=&#34;link&#34; href=&#34;https://book.douban.com/subject/26274202/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;《Flask Web开发：基于Python的Web应用开发实战》&lt;/a&gt;。&lt;/p&gt;
+&lt;p&gt;博客网址：http://www.unrealblue.cc
+项目地址：https://github.com/linanwx/unrealblue-blog&lt;/p&gt;
+&lt;h2 id=&#34;效果预览&#34;&gt;效果预览
+&lt;/h2&gt;&lt;p&gt;&lt;img src=&#34;http://upload-images.jianshu.io/upload_images/4388248-14b7a806bb06cf9a.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&#34;
+	
+	
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;image.png&#34;
+	
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;http://upload-images.jianshu.io/upload_images/4388248-2c73dba03a62ae14.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&#34;
+	
+	
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;markdown语法&#34;
+	
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;http://upload-images.jianshu.io/upload_images/4388248-90a191e0ee2bc604.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&#34;
+	
+	
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;登录&#34;
+	
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;http://upload-images.jianshu.io/upload_images/4388248-6cad70a486daaeea.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&#34;
+	
+	
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;首页&#34;
+	
+	
+&gt;&lt;/p&gt;
+&lt;h2 id=&#34;部署过程&#34;&gt;部署过程
+&lt;/h2&gt;&lt;p&gt;首先为了验证程序功能，需要在本机上部署，之后使用nginx反向代理工具，可以将端口号暴露出去，这样其他人就可以在公网访问你的博客了，之后在服务器进行同样的步骤。具体过程如下。&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;安装virtualenv python虚拟环境，&lt;code&gt;pip install virtualenv&lt;/code&gt; 或者 &lt;code&gt;pip3 install virtualenv&lt;/code&gt; 。然后使用virtualenv在一个合适的目录，例如在该项目下面建立venv环境&lt;code&gt;virtualenv venv&lt;/code&gt;，&lt;/li&gt;
+&lt;li&gt;激活virtualenv环境，运行venv目录下的activate，&lt;code&gt;. venv/bin/activate&lt;/code&gt;， 注意点的位置，之后你会看到命令行前面多了(venv)这个标记。&lt;/li&gt;
+&lt;li&gt;在虚拟环境下安装所有requirements.txt中的模块, &lt;code&gt;pip3 install -r requirements.txt&lt;/code&gt;。如果安装太慢，你可能需要配置pip的国内源。更改pip源的方法参见pip官方页面。&lt;/li&gt;
+&lt;li&gt;导入坏境变量，在项目目录下创建文件 &lt;code&gt;env&lt;/code&gt; ，输入如下字段：&lt;/li&gt;
+&lt;/ol&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;MAIL_USERNAME=email@example.com&lt;/code&gt; (服务器发验证码用的邮箱，开启了smtp服务的邮箱账号，程序里默认使用qq邮箱，修改config文件可成其它类型邮箱)&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;MAIL_PASSWORD=password&lt;/code&gt; (上面邮箱的密码，注意qq邮箱使用特殊16位专用密码)&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;FLASK_ADMIN=admin@example.com&lt;/code&gt; (服务器运行后，使用该邮箱创建账号就是管理者)&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;MAIL_SERVER=smtp.qq.com&lt;/code&gt;(邮箱服务器地址)&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;FLASKY_MAIL_SENDER=example@foxmail.com&lt;/code&gt;(发送人)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;ol start=&#34;5&#34;&gt;
+&lt;li&gt;安装数据库迁移。输入以下命令&lt;/li&gt;
+&lt;/ol&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;python manager.py db init&lt;/code&gt; (使用init命令创建迁移仓库，此时会多出 migrations 文件夹)&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;python manager.py db migrate -m &amp;quot;initial migration&amp;quot;&lt;/code&gt;(migrate命令用来自动创建迁移脚本)&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;python manager.py db upgrade&lt;/code&gt;(更新数据库，第一次使用该命令会新建一个数据库data-dev.sqlite)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;ol start=&#34;6&#34;&gt;
+&lt;li&gt;部署程序， &lt;code&gt;python manager.py deploy&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;在本地运行程序, &lt;code&gt;python manager.py runserver&lt;/code&gt;打开 http://127.0.0.1:5000 端口查看，按Ctrl+C退出程序。&lt;/li&gt;
+&lt;li&gt;如果在服务器运行，要保留数据，则可以复制数据库 migrations 文件夹以及数据库 data-dev.sqlite 到服务器，然后使用 &lt;code&gt;./venv/bin/gunicorn -w 4 -b 127.0.0.1:8080 manager:app&lt;/code&gt; 此时应该可以查看8080端口显示了网页，且该端口是暴露外网的。在本地浏览器输入服务器地址，此时就可以看到博客了。&lt;/li&gt;
+&lt;/ol&gt;
+</description>
+        </item>
+        
+    </channel>
+</rss>

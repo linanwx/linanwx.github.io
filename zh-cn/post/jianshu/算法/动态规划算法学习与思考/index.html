@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="前言 动态规划是笔试中经常出现的一类题目。掌握他很关键。 网易题目 小Q和牛博士合唱一首歌曲,这首歌曲由n个音调组成,每个音调由一个正整数表示。 对于每个音调要么由小Q演唱要么由牛博士演唱,对于一系列音调演唱的难度等于所有相邻音调变化幅度之和, 例如一个音调序列是8, 8, 13, 12, 那么它的难度等于|8 - 8| + |13 - 8| + |12 - 13| = 6(其中||表示绝对值)。 现在要对把这n个音调分配给小Q或牛博士,让他们演唱的难度之和最小,请你算算最小的难度和是多少。 如样例所示: 小Q选择演唱{5, 6}难度为1, 牛博士选择演唱{1, 2, 1}难度为2,难度之和为3,这一个是最小难度和的方案了。 贪心解法（错误） 将所有数字进行排序，取最大的两个数字差作为间隔，取其中一下半作为小Q的音符，取另一上半作为牛博士的音符，然后计算结果。最终能过通过60%的用例。 如果时间不够，或者不会的情况可以使用这种解法。 #include &lt;vector&gt; #include &lt;iostream&gt; #include &lt;algorithm&gt; #include &lt;cmath&gt; using namespace std; int main(){ int n; cin &gt;&gt; n; vector&lt;int&gt; nums; for(int i=0;i&lt;n;i++) { int num; cin &gt;&gt; num; nums.push_back(num); } vector&lt;int&gt; nums_sort(nums.begin(), nums.end()); sort(nums_sort.begin(), nums_sort.end()); int max_gap = 0; auto max_gap_it = nums_sort.">
+<title>动态规划算法学习与思考</title>
+
+<link rel='canonical' href='https://nansenli.com/zh-cn/post/jianshu/%E7%AE%97%E6%B3%95/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92%E7%AE%97%E6%B3%95%E5%AD%A6%E4%B9%A0%E4%B8%8E%E6%80%9D%E8%80%83/'>
+
+<link rel="stylesheet" href="/scss/style.min.1084ac713783b88e0bd9807a58068e10aae22e99420f94a9234654a4e199baa4.css"><meta property='og:title' content="动态规划算法学习与思考">
+<meta property='og:description' content="前言 动态规划是笔试中经常出现的一类题目。掌握他很关键。 网易题目 小Q和牛博士合唱一首歌曲,这首歌曲由n个音调组成,每个音调由一个正整数表示。 对于每个音调要么由小Q演唱要么由牛博士演唱,对于一系列音调演唱的难度等于所有相邻音调变化幅度之和, 例如一个音调序列是8, 8, 13, 12, 那么它的难度等于|8 - 8| + |13 - 8| + |12 - 13| = 6(其中||表示绝对值)。 现在要对把这n个音调分配给小Q或牛博士,让他们演唱的难度之和最小,请你算算最小的难度和是多少。 如样例所示: 小Q选择演唱{5, 6}难度为1, 牛博士选择演唱{1, 2, 1}难度为2,难度之和为3,这一个是最小难度和的方案了。 贪心解法（错误） 将所有数字进行排序，取最大的两个数字差作为间隔，取其中一下半作为小Q的音符，取另一上半作为牛博士的音符，然后计算结果。最终能过通过60%的用例。 如果时间不够，或者不会的情况可以使用这种解法。 #include &lt;vector&gt; #include &lt;iostream&gt; #include &lt;algorithm&gt; #include &lt;cmath&gt; using namespace std; int main(){ int n; cin &gt;&gt; n; vector&lt;int&gt; nums; for(int i=0;i&lt;n;i++) { int num; cin &gt;&gt; num; nums.push_back(num); } vector&lt;int&gt; nums_sort(nums.begin(), nums.end()); sort(nums_sort.begin(), nums_sort.end()); int max_gap = 0; auto max_gap_it = nums_sort.">
+<meta property='og:url' content='https://nansenli.com/zh-cn/post/jianshu/%E7%AE%97%E6%B3%95/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92%E7%AE%97%E6%B3%95%E5%AD%A6%E4%B9%A0%E4%B8%8E%E6%80%9D%E8%80%83/'>
+<meta property='og:site_name' content='Nansen Li'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2018-01-18T08:52:00&#43;00:00'/><meta property='article:modified_time' content='2018-01-18T08:52:00&#43;00:00'/>
+<meta name="twitter:title" content="动态规划算法学习与思考">
+<meta name="twitter:description" content="前言 动态规划是笔试中经常出现的一类题目。掌握他很关键。 网易题目 小Q和牛博士合唱一首歌曲,这首歌曲由n个音调组成,每个音调由一个正整数表示。 对于每个音调要么由小Q演唱要么由牛博士演唱,对于一系列音调演唱的难度等于所有相邻音调变化幅度之和, 例如一个音调序列是8, 8, 13, 12, 那么它的难度等于|8 - 8| + |13 - 8| + |12 - 13| = 6(其中||表示绝对值)。 现在要对把这n个音调分配给小Q或牛博士,让他们演唱的难度之和最小,请你算算最小的难度和是多少。 如样例所示: 小Q选择演唱{5, 6}难度为1, 牛博士选择演唱{1, 2, 1}难度为2,难度之和为3,这一个是最小难度和的方案了。 贪心解法（错误） 将所有数字进行排序，取最大的两个数字差作为间隔，取其中一下半作为小Q的音符，取另一上半作为牛博士的音符，然后计算结果。最终能过通过60%的用例。 如果时间不够，或者不会的情况可以使用这种解法。 #include &lt;vector&gt; #include &lt;iostream&gt; #include &lt;algorithm&gt; #include &lt;cmath&gt; using namespace std; int main(){ int n; cin &gt;&gt; n; vector&lt;int&gt; nums; for(int i=0;i&lt;n;i++) { int num; cin &gt;&gt; num; nums.push_back(num); } vector&lt;int&gt; nums_sort(nums.begin(), nums.end()); sort(nums_sort.begin(), nums_sort.end()); int max_gap = 0; auto max_gap_it = nums_sort.">
+    <link rel="shortcut icon" href="/favicon.ico" />
+
+  
+    
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-WC38C3XE3J"></script>
+      <script>
+        var doNotTrack = false;
+        if ( false ) {
+          var dnt = (navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack);
+          var doNotTrack = (dnt == "1" || dnt == "yes");
+        }
+        if (!doNotTrack) {
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-WC38C3XE3J');
+        }
+      </script>
+    
+  
+
+
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="切换菜单">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/zh-cn/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/avatar_hu96777ff80939aaa7d938dddcc232fcc6_1414962_300x0_resize_box_3.png" width="300"
+                            height="300" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+                    <span class="emoji">🌈</span>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/zh-cn">Nansen Li</a></h1>
+            <h2 class="site-description"></h2>
+        </div>
+    </header><ol class="menu-social">
+            
+                <li>
+                    <a 
+                        href='https://github.com/linanwx'
+                        target="_blank"
+                        title="GitHub"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://www.linkedin.com/in/nansen-li-3bb0a3146/'
+                        target="_blank"
+                        title="LinkedIn"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-brand-linkedin"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M8 11v5" /><path d="M8 8v.01" /><path d="M12 16v-5" /><path d="M16 16v-3a2 2 0 1 0 -4 0" /><path d="M3 7a4 4 0 0 1 4 -4h10a4 4 0 0 1 4 4v10a4 4 0 0 1 -4 4h-10a4 4 0 0 1 -4 -4z" /></svg>
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='index.xml'
+                        target="_blank"
+                        title="RSS"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-rss" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="5" cy="19" r="1" />
+  <path d="M4 4a16 16 0 0 1 16 16" />
+  <path d="M4 11a9 9 0 0 1 9 9" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/zh-cn/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+</svg>
+
+
+
+                
+                <span>主页</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/zh-cn/page/archives/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>归档</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/zh-cn/page/search/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
+
+
+
+                
+                <span>搜索</span>
+            </a>
+        </li>
+        
+        <li class="menu-bottom-section">
+            <ol class="menu">
+                    
+                        <li id="i18n-switch">  
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-language" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M4 5h7" />
+  <path d="M9 3v2c0 4.418 -2.239 8 -5 8" />
+  <path d="M5 9c-.003 2.144 2.952 3.908 6.7 4" />
+  <path d="M12 20l4 -9l4 9" />
+  <path d="M19.1 18h-6.2" />
+</svg>
+
+
+
+                            <select name="language" title="language" onchange="window.location.href = this.selectedOptions[0].value">
+                                
+                                    <option value="https://nansenli.com/" >English</option>
+                                
+                                    <option value="https://nansenli.com/zh-cn/" selected>中文</option>
+                                
+                            </select>
+                        </li>
+                    
+                
+
+                
+                    <li id="dark-mode-toggle">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <span>暗色模式</span>
+                    </li>
+                
+            </ol>
+        </li>
+    </ol>
+</aside>
+
+    
+
+            <main class="main full-width">
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/zh-cn/categories/%E7%AE%97%E6%B3%95/" >
+                算法
+            </a>
+        
+    </header>
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/zh-cn/post/jianshu/%E7%AE%97%E6%B3%95/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92%E7%AE%97%E6%B3%95%E5%AD%A6%E4%B9%A0%E4%B8%8E%E6%80%9D%E8%80%83/">动态规划算法学习与思考</a>
+        </h2>
+    
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">Jan 18, 2018</time>
+            </div>
+        
+
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+                <time class="article-time--reading">
+                    阅读时长: 3 分钟
+                </time>
+            </div>
+        
+    </footer>
+    
+
+    
+        <footer class="article-translations">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-language" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M4 5h7" />
+  <path d="M9 3v2c0 4.418 -2.239 8 -5 8" />
+  <path d="M5 9c-.003 2.144 2.952 3.908 6.7 4" />
+  <path d="M12 20l4 -9l4 9" />
+  <path d="M19.1 18h-6.2" />
+</svg>
+
+
+
+            <div>
+                
+                    <a href="https://nansenli.com/post/jianshu/%E7%AE%97%E6%B3%95/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92%E7%AE%97%E6%B3%95%E5%AD%A6%E4%B9%A0%E4%B8%8E%E6%80%9D%E8%80%83/" class="link">English</a>
+                
+            </div>
+        </footer>
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <h2 id="前言">前言
+</h2><p>动态规划是笔试中经常出现的一类题目。掌握他很关键。</p>
+<h2 id="网易题目">网易题目
+</h2><p>小Q和牛博士合唱一首歌曲,这首歌曲由n个音调组成,每个音调由一个正整数表示。
+对于每个音调要么由小Q演唱要么由牛博士演唱,对于一系列音调演唱的难度等于所有相邻音调变化幅度之和, 例如一个音调序列是8, 8, 13, 12, 那么它的难度等于|8 - 8| + |13 - 8| + |12 - 13| = 6(其中||表示绝对值)。
+现在要对把这n个音调分配给小Q或牛博士,让他们演唱的难度之和最小,请你算算最小的难度和是多少。
+如样例所示: 小Q选择演唱{5, 6}难度为1, 牛博士选择演唱{1, 2, 1}难度为2,难度之和为3,这一个是最小难度和的方案了。</p>
+<h2 id="贪心解法错误">贪心解法（错误）
+</h2><p>将所有数字进行排序，取最大的两个数字差作为间隔，取其中一下半作为小Q的音符，取另一上半作为牛博士的音符，然后计算结果。最终能过通过60%的用例。
+如果时间不够，或者不会的情况可以使用这种解法。</p>
+<pre tabindex="0"><code>#include &lt;vector&gt;
+#include &lt;iostream&gt;
+#include &lt;algorithm&gt;
+#include &lt;cmath&gt;
+ 
+using namespace std;
+ 
+int main(){
+    int n;
+    cin &gt;&gt; n;
+    vector&lt;int&gt; nums;
+    for(int i=0;i&lt;n;i++)
+    {
+        int num;
+        cin &gt;&gt; num;
+        nums.push_back(num);
+    }
+    vector&lt;int&gt; nums_sort(nums.begin(), nums.end());
+    sort(nums_sort.begin(), nums_sort.end());
+    int max_gap = 0;
+    auto max_gap_it = nums_sort.begin();
+    for(auto it=nums_sort.begin(); it!=nums_sort.end()-1; it++){
+        if(*(it+1) - *it &gt; max_gap){
+            max_gap = *(it+1) - *it;
+            max_gap_it = it;
+        }
+    }
+    int max_gap_num = *max_gap_it;
+     
+    int ret = 0;
+    int last_1 = -1;
+    int last_2 = -1;
+    for(auto it = nums.begin(); it!=nums.end(); it++){
+         
+        if(*it &lt;= max_gap_num){
+            if(last_1 != -1){
+                ret += abs(*it - last_1);
+            }
+            last_1 = *it;
+        }
+        else{
+            if(last_2 != -1){
+                ret += abs(*it - last_2);
+            }
+            last_2 = *it;
+        }
+    }
+    cout &lt;&lt; ret;
+}
+</code></pre><h2 id="动态规划小思">动态规划小思
+</h2><p>由于我对动态规划一点也不了解，先从找零开始。</p>
+<ul>
+<li>找零问题</li>
+</ul>
+<p>动态规划的核心在于问题的分解和子问题递归组合变成原问题。</p>
+<p>举个例子，假设我们有面值为1元、3元和5元的硬币若干枚，如何用最少的硬币凑够11元？
+如果你是个人类的话，你会说，我大眼一瞪，两个五元和一个一元，总共3个硬币。我们换个例子，假设题目是237元呢？你可能会说，我先用5块钱换出200元，然后找到剩下37元的最优组合。这种方法实际上是默认了将237元分成了两份，并假设两份的组合是最优组合。如果真是这样的话，那么就没什么问题了。可问题就出在分的200和37元，没有方法能证明这是有效的分割，所以动态规划就是建立在有效分割上的。</p>
+<p>分治算法与动态规划也是建立在分割上的。只是动态规划涉及到状态转移，而分治算法没有状态转移。分治算法可以由上向下分解，而动态规划通常由下向上构建。</p>
+<p>动态规划会涉及到两个维度，第一个维度通常和问题的规模相关，第二个维度需要从题目中提取出来。在本题目中，第二个维度是允许使用的硬币，例如，允许使用1元、允许使用1元和3元、允许使用1元3元5元。我们把他记为下标1,2,3，我们用j来代表这个变量，如果用i来表示当前题目的规模，也就是237，那么我们要求的是c[i][j] 为 c[237][3]的值。对于这个问题，我们可以分两种假设，第一种假设，这个最优解中5元的数量&gt;0，第二种假设，这个最优值中5元的数量=0.对于第一种假设c[237][3]=c[237][2]，因为没有使用5元，那么就不需要5元了，这个最优解的解应该和只是用1元和3元的情况一致。对于第二种情况，由于这个解中必然有一个5元（因为你假设他大于0），那么，除了这枚5元钱，剩下的钱数是232元钱。由于原来c[237][3]是135元找237元的最优值，又因为其中必然有一枚5元，在最优值状态下拿掉其中必然存在的一枚硬币，剩下的钱所组成的钱数必然也是最优状态，(假设子问题不是最优的，即237元找135元的硬币数中构成232元的解有更优解，则237找135元也有更有解，和c[237][3]为最优解矛盾)，那么c[232][3]的值就是c[237][3]-1的值。</p>
+<p>这样我们可以推导出
+c[i][j] = c[i][j-1] 假设1
+c[i][j] = c[i-j下标代表的钱数][j]+1 假设2
+如果写成min的形式，就是熟知的状态转移方程了。</p>
+<p>最终求的是c[11][5]，使用表格从c[0][0]状态开始向右下角推，最终可以推出答案。</p>
+<ul>
+<li>双人合唱难度问题
+<a class="link" href="https://www.nowcoder.com/questionTerminal/fddf64d5757e41ec93f3ef0c0a10b891"  target="_blank" rel="noopener"
+    >https://www.nowcoder.com/questionTerminal/fddf64d5757e41ec93f3ef0c0a10b891</a></li>
+</ul>
+<p>我们要记住</p>
+<blockquote>
+<p>题目的最优解不一定是状态矩阵的右下角的值</p>
+</blockquote>
+<p>我们必须时刻记住，状态矩阵的右下角方格不一定就是直接的最优解。如果这样想的话，往往会陷入困境。为此，我们只能这样设想，矩阵i，j一定和题目中的两个维度有关，但是dp[i][j]不一定代表了最优解的值。</p>
+<p>例如本题目，题目要求求出最优难度系数。假如dp[i_max][j_max]就是最优难度系数，那i和j是什么的下标呢？？是无解的。反过来想，最优难度系数到底是什么呢？我们想想看，因为存在状态转移，最优状态必然是从多个状态中获取到的最小值。i代表什么呢？i如果代表当前唱的音符，那么j代表什么呢？j就只能代表另外一个人唱的音符了。那么最优状态下，一共会有多少种情况，就从这些情况来推算最优的值是哪个。在最优状态下，必然有一个人在唱最后一个音符，那么另一个人可能一个都没有唱，可能在唱第一个音符，可能在唱第二个音符。。。可能在唱倒数第二个音符。然后我们计算所有情况的最小值，就知道了问题的最优解。</p>
+<p>还有一个问题，i和j是不是要分人？如果i代表小Q唱的，j代表牛博士唱的，那么这个矩阵就是对称的，我们多计算了一半的内容。其实我们不关心到底是谁唱的，因为都一样。我们只能这样想，其中一个i是当前人唱的，j是上一个人唱到哪里了。</p>
+<p>c[i][j]可能由哪些状态转移过来呢？
+例如某人唱到了第6个音符，另一个人最后一次唱到了第3个音符，此时如果当前的总的难度是最小的，那么有以下结论：
+第6个音符、第5、第4个音符都是第一个人唱的。因为第二个人才唱到了第三个音符，他不可能去唱后面的音符。
+所以c[6][3] = c[5][3] + 56难度差 = c[4][3] + 45难度差。
+但是c[4][3]是怎么转移来的呢？如果此时第一个人唱到了第4个音符，另一个人唱到了第3个音符，这说明第一个人唱第4个音符中断了第二个人唱的音符。由于不知道上一次第一个人是从哪里跳到第4个音符的，所以我们分别假设是从可能的所有音符跳过来的，如果是从第二个音符跳过来的，那么就是c[3][2]+ 34差。如果是从第一个音符跳过来的，那么就是c[3][1]+14差。如果是从没有跳过来的，那么就是c[3][0]+04差。由于第一个人唱的时候，第二个人上一次唱的总是比第一个人唱的要小，所以我们不需要考虑j&gt;=i的时候。</p>
+<p>基于此，有以下代码</p>
+<pre tabindex="0"><code>#include &lt;vector&gt;
+#include &lt;iostream&gt;
+#include &lt;algorithm&gt;
+#include &lt;cmath&gt;
+#include &lt;array&gt;
+
+using namespace std;
+
+vector&lt;int&gt; nums;
+array&lt;array&lt;int, 2100&gt;, 2100&gt; dp;
+
+/* 计算两个音符之间的难度。注意第一个音符的下标在输入数据里面是0，有个差1的关系。如果起始音符是0，说明第一次唱，不增加难度 */
+int diffcult(int s, int e)
+{
+    if(s == 0) return 0;
+    // printf(&#34;diffcult %d %d to %d %d is %d \n&#34;, s,nums[s-1], e,nums[e-1], abs(nums[e-1] - nums[s-1]));
+    return abs(nums[e-1] - nums[s-1]);
+}
+
+int main()
+{
+    int n;
+    cin &gt;&gt; n;
+
+    for (int i = 0; i &lt; n; i++)
+    {
+        int num;
+        cin &gt;&gt; num;
+        nums.push_back(num);
+    }
+
+    /* 从0开始向后考虑，直到考虑完所有音符，第一个人最差的情况是没有唱，此时j也没有唱，直接continue了 */
+    for (int i = 0; i &lt;= n; i++)
+    {
+        /* 这里也是从0开始考虑，因为第一个人最差一个都不唱，就是处于0 */
+        for (int j = 0; j &lt;= n; j++)
+        {
+            /* 不考虑后面的情况。当然也可以直接写到上面的范围限制里面 */
+            if (j &gt;= i)
+                continue;
+            /* 如果是一般情况下，比如第一个人在唱6音符时，第二个人在唱3音符，显然是从dp[5][3]转移来的 */
+            if (j + 1 &lt; i)
+            {
+                dp[i][j] = dp[i - 1][j] + diffcult(i - 1, i);
+            }
+            /* 否则，如果第二个人刚唱完就被第一个人抢唱了，那么第一个人唱的音符就可能是前面跳过来的 */
+            if (j + 1 == i)
+            {
+                /* k表示i是从第几个跳过来的 */
+                int min_cost = -1;
+                for (int k = 0; k &lt; j; k++)
+                {
+                    int cost = dp[j][k] + diffcult(k, j + 1);
+                    /* 只用记录最小跳唱难度 */
+                    if(min_cost == -1 || min_cost &gt; cost){
+                        min_cost = cost;
+                    }
+                }
+                if(min_cost == -1) min_cost = 0;
+                dp[i][j] = min_cost;
+            }
+            // for(int a=0;a&lt;=n;a++){
+            //     for(int b=0;b&lt;=n;b++){
+            //         if(a==i &amp;&amp; b == j){
+            //             printf(&#34;\t【%d】&#34;, dp[a][b]);
+            //         }
+            //         else printf(&#34;\t%d&#34;, dp[a][b]);
+            //     }
+            //     // printf(&#34;\n&#34;);
+            // }
+            // printf(&#34;\n&#34;);
+        }
+    }
+    int min_cost = -1;
+    for(int j=0;j&lt;n;j++){
+        if(min_cost == -1 || min_cost &gt; dp[n][j]){
+            min_cost = dp[n][j];
+        }
+    }
+    printf(&#34;%d&#34;, min_cost);
+}
+</code></pre><ul>
+<li>最长回文子串问题
+<a class="link" href="https://leetcode.com/problems/longest-palindromic-substring/description/"  target="_blank" rel="noopener"
+    >https://leetcode.com/problems/longest-palindromic-substring/description/</a></li>
+</ul>
+<p>其实已经明白了为什么动态规划会以这种方式进行呈现了。二维动态规划问题的最关键的点在于：</p>
+<blockquote>
+<p>线性增长问题的平面展开</p>
+</blockquote>
+<p>例如找零问题，展开第二个维度就是以当前硬币种类找零。而合唱问题，则是以唱到当前位置时且上一个唱到某个位置时的难度最小值。最长回文子串，则变得是起始位置。</p>
+<p>最长回文子串的i表示从第i个字符开始，第j个字符结束时的最长子串问题。当i是起始字符，j是终止字符，则是问题的答案。</p>
+<p>对于最小的子问题来说，就是单个字符了，他的长度就是1，对于长字符串来说，如果他两边的字符不一样，那么等于去掉右边或者左边的字符中小的那一个。如果两边的字符一样，那么就等于去掉两边的子串的值加2。</p>
+<pre tabindex="0"><code>
+#include &lt;vector&gt;
+#include &lt;string&gt;
+
+using namespace std;
+
+class Solution {
+public:
+    int longestPalindromeSubseq(string s) {
+        vector&lt;vector&lt;int&gt;&gt; dp;
+        dp.resize(s.size() + 1);
+        for (int i = 0; i &lt; s.size() + 1; i++)
+        {
+            dp[i].resize(s.size() + 1);
+        }
+        int len = s.size();
+        for(int t=0;t&lt;len;t++){
+            for(int j=t; j&lt;len;j++){
+                int i = j-t;
+                if(i==j){
+                    dp[i][j] = 1;
+                    
+                }
+                else if(s[i] == s[j]){
+                    dp[i][j] = dp[i+1][j-1] + 2;
+                    
+                }
+                else{
+                    if(dp[i+1][j]&gt; dp[i][j-1]){
+                        
+                        dp[i][j] = dp[i+1][j];
+                    }
+                    else{
+                        
+                        dp[i][j] = dp[i][j-1];
+                    }
+                }
+            }
+        }
+        return dp[0][len-1];
+    }
+    
+};
+</code></pre><ul>
+<li>最大子串问题</li>
+</ul>
+<p>这个题目也很经典，按照上一个题目的思路，我们依次求出所有串的长度，就得到了最大的子串。</p>
+<p>然而事情不是这么简单，这个题目可以用一维来做。（注意其中有负数）。</p>
+<p>我们的记得，最后一个方格内存的不一定就是最优解。往往我们会认为dp[i]就是从开始到这个位置中，能够找到的最大的子串的值。但是这个最大的子串与i又没有什么关系，似乎i往左一位和往右移一位没有什么区别。如果我们的下标与题目中的最优解产生了“松弛”的关系，我们一定要警惕起来。我们需要紧紧把下标和最优解绑在一起。最优解必然和i产生直接关系。那么i是最优的什么。你会想到，i就是必须以第i个数字为结尾的串的最大值。最大子串就是遍历dp矩阵，找到那个最大的值。</p>
+<p>状态方程也容易写出来了，每当我们多考虑一个数字，以这个数字为结尾的子串的最大值有两种情况，第一种就是以上一个数字为结尾的最大子串加上这个数字，第二种情况就是不以上一个数字 为结尾。显然第二种情况就是以这个数字为开头的情况，并且只有这一个数字。</p>
+<p>input表示输入矩阵，dp表示状态矩阵
+我们有 dp[i] = max (dp[i-1] + input[i] , input[i])</p>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+
+    </footer>
+
+
+    
+</article>
+
+    
+
+    
+
+     
+    
+        
+    <div class="disqus-container">
+    <div id="disqus_thread"></div>
+<script>
+    window.disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "nansenli" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+<style>
+    .disqus-container {
+        background-color: var(--card-background);
+        border-radius: var(--card-border-radius);
+        box-shadow: var(--shadow-l1);
+        padding: var(--card-padding);
+    }
+</style>
+
+<script>
+    window.addEventListener('onColorSchemeChange', (e) => {
+        if (typeof DISQUS == 'object') {
+            DISQUS.reset({
+                reload: true
+            });
+        }
+    })
+</script>
+
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+        2025 Nansen Li（李楠森）
+    </section>
+    
+    <section class="powerby">
+        使用 <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> 构建 <br />
+        主题 <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.30.0">Stack</a></b> 由 <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a> 设计
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.1e9a3bafd846ced4c345d084b355fb8c7bae75701c338f8a1f8a82c780137826.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>

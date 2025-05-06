@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="Introduction Dynamic programming is a common type of problem in coding interviews. Mastering it is crucial. NetEase Problem Little Q and Dr. Niu are singing a song together. This song consists of n notes, each represented by a positive integer. Each note must be sung by either Little Q or Dr. Niu. The difficulty of singing a series of notes equals the sum of the absolute differences between all adjacent notes.">
+<title>Learning and Thinking About Dynamic Programming Algorithms</title>
+
+<link rel='canonical' href='https://nansenli.com/post/jianshu/%E7%AE%97%E6%B3%95/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92%E7%AE%97%E6%B3%95%E5%AD%A6%E4%B9%A0%E4%B8%8E%E6%80%9D%E8%80%83/'>
+
+<link rel="stylesheet" href="/scss/style.min.1084ac713783b88e0bd9807a58068e10aae22e99420f94a9234654a4e199baa4.css"><meta property='og:title' content="Learning and Thinking About Dynamic Programming Algorithms">
+<meta property='og:description' content="Introduction Dynamic programming is a common type of problem in coding interviews. Mastering it is crucial. NetEase Problem Little Q and Dr. Niu are singing a song together. This song consists of n notes, each represented by a positive integer. Each note must be sung by either Little Q or Dr. Niu. The difficulty of singing a series of notes equals the sum of the absolute differences between all adjacent notes.">
+<meta property='og:url' content='https://nansenli.com/post/jianshu/%E7%AE%97%E6%B3%95/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92%E7%AE%97%E6%B3%95%E5%AD%A6%E4%B9%A0%E4%B8%8E%E6%80%9D%E8%80%83/'>
+<meta property='og:site_name' content='Nansen Li'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2018-01-18T08:52:00&#43;00:00'/><meta property='article:modified_time' content='2018-01-18T08:52:00&#43;00:00'/>
+<meta name="twitter:title" content="Learning and Thinking About Dynamic Programming Algorithms">
+<meta name="twitter:description" content="Introduction Dynamic programming is a common type of problem in coding interviews. Mastering it is crucial. NetEase Problem Little Q and Dr. Niu are singing a song together. This song consists of n notes, each represented by a positive integer. Each note must be sung by either Little Q or Dr. Niu. The difficulty of singing a series of notes equals the sum of the absolute differences between all adjacent notes.">
+    <link rel="shortcut icon" href="/favicon.ico" />
+
+  
+    
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-WC38C3XE3J"></script>
+      <script>
+        var doNotTrack = false;
+        if ( false ) {
+          var dnt = (navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack);
+          var doNotTrack = (dnt == "1" || dnt == "yes");
+        }
+        if (!doNotTrack) {
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-WC38C3XE3J');
+        }
+      </script>
+    
+  
+
+
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="Toggle Menu">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/avatar_hu96777ff80939aaa7d938dddcc232fcc6_1414962_300x0_resize_box_3.png" width="300"
+                            height="300" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+                    <span class="emoji">🌈</span>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">Nansen Li</a></h1>
+            <h2 class="site-description"></h2>
+        </div>
+    </header><ol class="menu-social">
+            
+                <li>
+                    <a 
+                        href='https://github.com/linanwx'
+                        target="_blank"
+                        title="GitHub"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://www.linkedin.com/in/nansen-li-3bb0a3146/'
+                        target="_blank"
+                        title="LinkedIn"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-brand-linkedin"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M8 11v5" /><path d="M8 8v.01" /><path d="M12 16v-5" /><path d="M16 16v-3a2 2 0 1 0 -4 0" /><path d="M3 7a4 4 0 0 1 4 -4h10a4 4 0 0 1 4 4v10a4 4 0 0 1 -4 4h-10a4 4 0 0 1 -4 -4z" /></svg>
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='index.xml'
+                        target="_blank"
+                        title="RSS"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-rss" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="5" cy="19" r="1" />
+  <path d="M4 4a16 16 0 0 1 16 16" />
+  <path d="M4 11a9 9 0 0 1 9 9" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+</svg>
+
+
+
+                
+                <span>Home</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/page/archives/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>Archives</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/page/search/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
+
+
+
+                
+                <span>Search</span>
+            </a>
+        </li>
+        
+        <li class="menu-bottom-section">
+            <ol class="menu">
+                    
+                        <li id="i18n-switch">  
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-language" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M4 5h7" />
+  <path d="M9 3v2c0 4.418 -2.239 8 -5 8" />
+  <path d="M5 9c-.003 2.144 2.952 3.908 6.7 4" />
+  <path d="M12 20l4 -9l4 9" />
+  <path d="M19.1 18h-6.2" />
+</svg>
+
+
+
+                            <select name="language" title="language" onchange="window.location.href = this.selectedOptions[0].value">
+                                
+                                    <option value="https://nansenli.com/" selected>English</option>
+                                
+                                    <option value="https://nansenli.com/zh-cn/" >中文</option>
+                                
+                            </select>
+                        </li>
+                    
+                
+
+                
+                    <li id="dark-mode-toggle">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <span>Dark Mode</span>
+                    </li>
+                
+            </ol>
+        </li>
+    </ol>
+</aside>
+
+    
+
+            <main class="main full-width">
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/algorithms/" >
+                Algorithms
+            </a>
+        
+    </header>
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/post/jianshu/%E7%AE%97%E6%B3%95/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92%E7%AE%97%E6%B3%95%E5%AD%A6%E4%B9%A0%E4%B8%8E%E6%80%9D%E8%80%83/">Learning and Thinking About Dynamic Programming Algorithms</a>
+        </h2>
+    
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">Jan 18, 2018</time>
+            </div>
+        
+
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+                <time class="article-time--reading">
+                    10 minute read
+                </time>
+            </div>
+        
+    </footer>
+    
+
+    
+        <footer class="article-translations">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-language" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M4 5h7" />
+  <path d="M9 3v2c0 4.418 -2.239 8 -5 8" />
+  <path d="M5 9c-.003 2.144 2.952 3.908 6.7 4" />
+  <path d="M12 20l4 -9l4 9" />
+  <path d="M19.1 18h-6.2" />
+</svg>
+
+
+
+            <div>
+                
+                    <a href="https://nansenli.com/zh-cn/post/jianshu/%E7%AE%97%E6%B3%95/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92%E7%AE%97%E6%B3%95%E5%AD%A6%E4%B9%A0%E4%B8%8E%E6%80%9D%E8%80%83/" class="link">中文</a>
+                
+            </div>
+        </footer>
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <h2 id="introduction">Introduction
+</h2><p>Dynamic programming is a common type of problem in coding interviews. Mastering it is crucial.</p>
+<h2 id="netease-problem">NetEase Problem
+</h2><p>Little Q and Dr. Niu are singing a song together. This song consists of n notes, each represented by a positive integer.
+Each note must be sung by either Little Q or Dr. Niu. The difficulty of singing a series of notes equals the sum of the absolute differences between all adjacent notes. For example, if a sequence of notes is 8, 8, 13, 12, then its difficulty is |8 - 8| + |13 - 8| + |12 - 13| = 6 (where || represents absolute value).
+Now we need to distribute these n notes between Little Q and Dr. Niu to minimize the sum of their singing difficulties. Calculate the minimum possible total difficulty.
+As shown in the example: Little Q chooses to sing {5, 6} with difficulty 1, Dr. Niu chooses to sing {1, 2, 1} with difficulty 2, the sum of difficulties is 3, which is the minimum possible difficulty.</p>
+<h2 id="greedy-approach-incorrect">Greedy Approach (Incorrect)
+</h2><p>Sort all the numbers and use the largest difference between two numbers as a dividing point. Assign the lower half to Little Q and the upper half to Dr. Niu, then calculate the result. This approach passes 60% of the test cases.
+If time is limited or you don&rsquo;t know how to solve it optimally, you can use this approach.</p>
+<pre tabindex="0"><code>#include &lt;vector&gt;
+#include &lt;iostream&gt;
+#include &lt;algorithm&gt;
+#include &lt;cmath&gt;
+ 
+using namespace std;
+ 
+int main(){
+    int n;
+    cin &gt;&gt; n;
+    vector&lt;int&gt; nums;
+    for(int i=0;i&lt;n;i++)
+    {
+        int num;
+        cin &gt;&gt; num;
+        nums.push_back(num);
+    }
+    vector&lt;int&gt; nums_sort(nums.begin(), nums.end());
+    sort(nums_sort.begin(), nums_sort.end());
+    int max_gap = 0;
+    auto max_gap_it = nums_sort.begin();
+    for(auto it=nums_sort.begin(); it!=nums_sort.end()-1; it++){
+        if(*(it+1) - *it &gt; max_gap){
+            max_gap = *(it+1) - *it;
+            max_gap_it = it;
+        }
+    }
+    int max_gap_num = *max_gap_it;
+     
+    int ret = 0;
+    int last_1 = -1;
+    int last_2 = -1;
+    for(auto it = nums.begin(); it!=nums.end(); it++){
+         
+        if(*it &lt;= max_gap_num){
+            if(last_1 != -1){
+                ret += abs(*it - last_1);
+            }
+            last_1 = *it;
+        }
+        else{
+            if(last_2 != -1){
+                ret += abs(*it - last_2);
+            }
+            last_2 = *it;
+        }
+    }
+    cout &lt;&lt; ret;
+}
+</code></pre><h2 id="thinking-about-dynamic-programming">Thinking About Dynamic Programming
+</h2><p>Since I don&rsquo;t know much about dynamic programming, let&rsquo;s start with the coin change problem.</p>
+<ul>
+<li>Coin Change Problem</li>
+</ul>
+<p>The core of dynamic programming lies in breaking down the problem and recursively combining subproblems to solve the original problem.</p>
+<p>For example, suppose we have coins with denominations of 1, 3, and 5, and we want to make change for 11 using the minimum number of coins.
+If you&rsquo;re human, you might say, &ldquo;I can easily see that two 5-coins and one 1-coin, for a total of 3 coins, is optimal.&rdquo; Let&rsquo;s try a different example: what about making change for 237? You might say, &ldquo;I&rsquo;ll first use 5-value coins to make 200, then find the optimal combination for the remaining 37.&rdquo; This method assumes that splitting 237 into two parts and finding the optimal solution for each part will yield the global optimal solution. If that were always true, there would be no problem. But the issue is with splitting into 200 and 37 - there&rsquo;s no proof that this is an effective split. Dynamic programming is built on effective partitioning.</p>
+<p>Both divide-and-conquer algorithms and dynamic programming are based on partitioning. The difference is that dynamic programming involves state transitions, while divide-and-conquer doesn&rsquo;t. Divide-and-conquer can decompose from top to bottom, while dynamic programming usually builds from bottom to top.</p>
+<p>Dynamic programming involves two dimensions. The first dimension is usually related to the scale of the problem, and the second dimension needs to be extracted from the problem. In this coin change problem, the second dimension is the allowed coins: for example, allowing only 1-value coins, allowing 1 and 3-value coins, or allowing 1, 3, and 5-value coins. We denote this with index 1, 2, 3, and use j to represent this variable. If we use i to represent the current problem scale (237), then we want to find c[i][j], which is c[237][3]. For this problem, we can make two assumptions: first, the optimal solution uses at least one 5-value coin; second, the optimal solution uses no 5-value coins. For the second assumption, c[237][3] = c[237][2], because if we don&rsquo;t use any 5-value coins, then the optimal solution should be the same as using only 1 and 3-value coins. For the first assumption, since the solution must contain at least one 5-value coin, after removing this 5-value coin, we have 232 left. Since c[237][3] is the optimal value for making change for 237 using coins of values 1, 3, and 5, and it must contain at least one 5-value coin, the remaining coins that make up 232 must also be in an optimal state (if the subproblem weren&rsquo;t optimal, that is, if there were a better solution for making 232 within the solution for 237, then the solution for 237 wouldn&rsquo;t be optimal, contradicting our assumption). So c[232][3] = c[237][3] - 1.</p>
+<p>This allows us to derive:
+c[i][j] = c[i][j-1] (Assumption 1)
+c[i][j] = c[i-value of denomination j][j] + 1 (Assumption 2)
+When written in the form of min(), this becomes the familiar state transition equation.</p>
+<p>We ultimately want to find c[11][5], and we work from the c[0][0] state towards the bottom right corner of the table to derive the answer.</p>
+<ul>
+<li>Two-Person Singing Difficulty Problem
+<a class="link" href="https://www.nowcoder.com/questionTerminal/fddf64d5757e41ec93f3ef0c0a10b891"  target="_blank" rel="noopener"
+    >https://www.nowcoder.com/questionTerminal/fddf64d5757e41ec93f3ef0c0a10b891</a></li>
+</ul>
+<p>We must remember:</p>
+<blockquote>
+<p>The optimal solution to the problem is not necessarily the value in the bottom-right corner of the state matrix</p>
+</blockquote>
+<p>We must always remember that the bottom-right cell of the state matrix is not necessarily the direct optimal solution. Thinking this way often leads to confusion. Instead, we should think that the matrix indices i and j are definitely related to the two dimensions of the problem, but dp[i][j] does not necessarily represent the value of the optimal solution.</p>
+<p>For example, in this problem, we need to find the optimal difficulty coefficient. If dp[i_max][j_max] were the optimal difficulty coefficient, what would i and j index? This is unsolvable. Looking at it differently, what exactly is the optimal difficulty coefficient? Since state transitions exist, the optimal state must be the minimum value obtained from multiple states. What does i represent? If i represents the current note being sung, what does j represent? J can only represent the note sung by the other person. Then, in the optimal state, how many situations are there? We calculate the optimal value from these situations. In the optimal state, one person must be singing the last note, while the other person might not be singing any note, might be singing the first note, might be singing the second note&hellip; might be singing the second-to-last note. We calculate the minimum value of all these situations to find the optimal solution.</p>
+<p>Another question is whether i and j should be assigned to specific people. If i represents Little Q&rsquo;s notes and j represents Dr. Niu&rsquo;s notes, then the matrix would be symmetric, and we&rsquo;d be calculating half of the content redundantly. Actually, we don&rsquo;t care who is singing what, because they are equivalent. We can only think of it as one person currently singing up to position i, and the other person last sang up to position j.</p>
+<p>What states can c[i][j] transition from?
+For example, if one person has sung up to the 6th note, and the other person last sang up to the 3rd note, if the current total difficulty is minimal, then:
+The 6th, 5th, and 4th notes are all sung by the first person. This is because the second person has only sung up to the 3rd note and cannot sing later notes.
+So c[6][3] = c[5][3] + difficulty difference between notes 5 and 6 = c[4][3] + difficulty difference between notes 4 and 5.
+But how is c[4][3] transitioned? If the first person has sung up to the 4th note, and the other person has sung up to the 3rd note, this means the first person interrupted the second person&rsquo;s singing. Since we don&rsquo;t know from where the first person jumped to the 4th note, we assume all possible notes. If they jumped from the 2nd note, then it&rsquo;s c[3][2] + difference between notes 3 and 4. If they jumped from the 1st note, then it&rsquo;s c[3][1] + difference between notes 1 and 4. If they didn&rsquo;t jump, then it&rsquo;s c[3][0] + difference between notes 0 and 4. Since the last note sung by the second person is always less than the note being sung by the first person, we don&rsquo;t need to consider the case where j &gt;= i.</p>
+<p>Based on this, here&rsquo;s the code:</p>
+<pre tabindex="0"><code>#include &lt;vector&gt;
+#include &lt;iostream&gt;
+#include &lt;algorithm&gt;
+#include &lt;cmath&gt;
+#include &lt;array&gt;
+
+using namespace std;
+
+vector&lt;int&gt; nums;
+array&lt;array&lt;int, 2100&gt;, 2100&gt; dp;
+
+/* Calculate the difficulty between two notes. Note that the index of the first note in the input data is 0, so there&#39;s a difference of 1. If the starting note is 0, it means it&#39;s the first time singing, so no additional difficulty */
+int diffcult(int s, int e)
+{
+    if(s == 0) return 0;
+    // printf(&#34;diffcult %d %d to %d %d is %d \n&#34;, s,nums[s-1], e,nums[e-1], abs(nums[e-1] - nums[s-1]));
+    return abs(nums[e-1] - nums[s-1]);
+}
+
+int main()
+{
+    int n;
+    cin &gt;&gt; n;
+
+    for (int i = 0; i &lt; n; i++)
+    {
+        int num;
+        cin &gt;&gt; num;
+        nums.push_back(num);
+    }
+
+    /* Start from 0 and consider all notes. The worst case for the first person is not singing at all, in which case j also doesn&#39;t sing, and we continue */
+    for (int i = 0; i &lt;= n; i++)
+    {
+        /* Also start from 0 here, because in the worst case, the first person doesn&#39;t sing at all, which is position 0 */
+        for (int j = 0; j &lt;= n; j++)
+        {
+            /* Don&#39;t consider later cases. This could also be incorporated into the range limitation above */
+            if (j &gt;= i)
+                continue;
+            /* In the general case, for example, if the first person is singing the 6th note and the second person is singing the 3rd note, it clearly transitions from dp[5][3] */
+            if (j + 1 &lt; i)
+            {
+                dp[i][j] = dp[i - 1][j] + diffcult(i - 1, i);
+            }
+            /* Otherwise, if the second person just finished singing and the first person took over, the first person&#39;s note could be jumped from earlier */
+            if (j + 1 == i)
+            {
+                /* k represents which note i jumped from */
+                int min_cost = -1;
+                for (int k = 0; k &lt; j; k++)
+                {
+                    int cost = dp[j][k] + diffcult(k, j + 1);
+                    /* Only record the minimum jump difficulty */
+                    if(min_cost == -1 || min_cost &gt; cost){
+                        min_cost = cost;
+                    }
+                }
+                if(min_cost == -1) min_cost = 0;
+                dp[i][j] = min_cost;
+            }
+            // for(int a=0;a&lt;=n;a++){
+            //     for(int b=0;b&lt;=n;b++){
+            //         if(a==i &amp;&amp; b == j){
+            //             printf(&#34;\t【%d】&#34;, dp[a][b]);
+            //         }
+            //         else printf(&#34;\t%d&#34;, dp[a][b]);
+            //     }
+            //     // printf(&#34;\n&#34;);
+            // }
+            // printf(&#34;\n&#34;);
+        }
+    }
+    int min_cost = -1;
+    for(int j=0;j&lt;n;j++){
+        if(min_cost == -1 || min_cost &gt; dp[n][j]){
+            min_cost = dp[n][j];
+        }
+    }
+    printf(&#34;%d&#34;, min_cost);
+}
+</code></pre><ul>
+<li>Longest Palindromic Substring Problem
+<a class="link" href="https://leetcode.com/problems/longest-palindromic-substring/description/"  target="_blank" rel="noopener"
+    >https://leetcode.com/problems/longest-palindromic-substring/description/</a></li>
+</ul>
+<p>I now understand why dynamic programming is presented in this way. The key point of two-dimensional dynamic programming problems is:</p>
+<blockquote>
+<p>The planar expansion of linear growth problems</p>
+</blockquote>
+<p>For example, in the coin change problem, expanding the second dimension represents making change with the current coin type. In the singing problem, it&rsquo;s the minimum difficulty when singing up to the current position while the other person last sang at a certain position. For the longest palindromic substring, it becomes the starting position.</p>
+<p>In the longest palindromic substring, i represents the starting character, and j represents the ending character of the substring. When i is the starting character and j is the ending character, we have the answer to the problem.</p>
+<p>For the smallest subproblem, which is a single character, its length is 1. For longer strings, if the characters at both ends are different, then it equals the smaller value of removing either the right or left character. If the characters at both ends are the same, then it equals the value of the substring with both ends removed plus 2.</p>
+<pre tabindex="0"><code>#include &lt;vector&gt;
+#include &lt;string&gt;
+
+using namespace std;
+
+class Solution {
+public:
+    int longestPalindromeSubseq(string s) {
+        vector&lt;vector&lt;int&gt;&gt; dp;
+        dp.resize(s.size() + 1);
+        for (int i = 0; i &lt; s.size() + 1; i++)
+        {
+            dp[i].resize(s.size() + 1);
+        }
+        int len = s.size();
+        for(int t=0;t&lt;len;t++){
+            for(int j=t; j&lt;len;j++){
+                int i = j-t;
+                if(i==j){
+                    dp[i][j] = 1;
+                    
+                }
+                else if(s[i] == s[j]){
+                    dp[i][j] = dp[i+1][j-1] + 2;
+                    
+                }
+                else{
+                    if(dp[i+1][j]&gt; dp[i][j-1]){
+                        
+                        dp[i][j] = dp[i+1][j];
+                    }
+                    else{
+                        
+                        dp[i][j] = dp[i][j-1];
+                    }
+                }
+            }
+        }
+        return dp[0][len-1];
+    }
+}; 
+</code></pre>
+</section>
+
+
+    <footer class="article-footer">
+    
+
+    </footer>
+
+
+    
+</article>
+
+    
+
+    
+
+     
+    
+        
+    <div class="disqus-container">
+    <div id="disqus_thread"></div>
+<script>
+    window.disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "nansenli" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+<style>
+    .disqus-container {
+        background-color: var(--card-background);
+        border-radius: var(--card-border-radius);
+        box-shadow: var(--shadow-l1);
+        padding: var(--card-padding);
+    }
+</style>
+
+<script>
+    window.addEventListener('onColorSchemeChange', (e) => {
+        if (typeof DISQUS == 'object') {
+            DISQUS.reset({
+                reload: true
+            });
+        }
+    })
+</script>
+
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+        2025 Nansen Li（李楠森）
+    </section>
+    
+    <section class="powerby">
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.30.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.1e9a3bafd846ced4c345d084b355fb8c7bae75701c338f8a1f8a82c780137826.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>

@@ -1,0 +1,1164 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>C&#43;&#43; on Nansen Li</title>
+        <link>https://nansenli.com/zh-cn/categories/c&#43;&#43;/</link>
+        <description>Recent content in C&#43;&#43; on Nansen Li</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>zh-cn</language>
+        <copyright>Nansen Li（李楠森）</copyright>
+        <lastBuildDate>Fri, 02 Nov 2018 06:49:00 +0000</lastBuildDate><atom:link href="https://nansenli.com/zh-cn/categories/c++/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>openssl aes 加密算法 api使用</title>
+        <link>https://nansenli.com/zh-cn/post/jianshu/c&#43;&#43;/openssl-aes-%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95-api%E4%BD%BF%E7%94%A8/</link>
+        <pubDate>Fri, 02 Nov 2018 06:49:00 +0000</pubDate>
+        
+        <guid>https://nansenli.com/zh-cn/post/jianshu/c&#43;&#43;/openssl-aes-%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95-api%E4%BD%BF%E7%94%A8/</guid>
+        <description>&lt;h2 id=&#34;示例-使用-aes-128-cbc加密算法&#34;&gt;示例 使用 AES-128-CBC加密算法
+&lt;/h2&gt;&lt;p&gt;使用了pkcs5_encode padding 方式 pkcs7_encode也是兼容的&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-c++&#34; data-lang=&#34;c++&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;#include&lt;/span&gt; &lt;span style=&#34;color:#75715e&#34;&gt;&amp;lt;stdio.h&amp;gt;&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;#include&lt;/span&gt; &lt;span style=&#34;color:#75715e&#34;&gt;&amp;lt;stdlib.h&amp;gt;&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;#include&lt;/span&gt; &lt;span style=&#34;color:#75715e&#34;&gt;&amp;lt;string.h&amp;gt;&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;#include&lt;/span&gt; &lt;span style=&#34;color:#75715e&#34;&gt;&amp;lt;openssl/aes.h&amp;gt;&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;#include&lt;/span&gt; &lt;span style=&#34;color:#75715e&#34;&gt;&amp;lt;openssl/rand.h&amp;gt;&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;// a simple hex-print routine. could be modified to print 16 bytes-per-line
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;static&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;void&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;hex_print&lt;/span&gt;(&lt;span style=&#34;color:#66d9ef&#34;&gt;const&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;void&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt; pv, size_t len)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;const&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;unsigned&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;char&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt; p &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; (&lt;span style=&#34;color:#66d9ef&#34;&gt;const&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;unsigned&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;char&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt;)pv;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (NULL &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; pv)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        printf(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;NULL&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;else&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        size_t i &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;for&lt;/span&gt; (; i&lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt;len;&lt;span style=&#34;color:#f92672&#34;&gt;++&lt;/span&gt;i)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            printf(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;%02X &amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt;p&lt;span style=&#34;color:#f92672&#34;&gt;++&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    printf(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;\n&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;void&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;pkcs7_encode&lt;/span&gt;(&lt;span style=&#34;color:#66d9ef&#34;&gt;uint8_t&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt;in, &lt;span style=&#34;color:#66d9ef&#34;&gt;uint8_t&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt;out, &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; inlen, &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt;outlen, &lt;span style=&#34;color:#66d9ef&#34;&gt;const&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; enc)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;// uint8_t padchr[16] = {0x10, 0x0f, 0x0e, 0x0d, 0x0c, 0x0b, 0x0a, 0x09, 0x08, 0x07, 0x06, 0x05, 0x04, 0x03, 0x02, 0x01};
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt;(inlen &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;=&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;) &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;// 添加padding
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (enc &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; AES_ENCRYPT) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt;outlen &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; inlen &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;16&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt; inlen &lt;span style=&#34;color:#f92672&#34;&gt;%&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;16&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;for&lt;/span&gt; (&lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; i &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;; i &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt;outlen; i&lt;span style=&#34;color:#f92672&#34;&gt;++&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (i &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt; inlen)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                out[i] &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; in[i];
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#66d9ef&#34;&gt;else&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                out[i] &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;16&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt; inlen &lt;span style=&#34;color:#f92672&#34;&gt;%&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;16&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;// 删除padding
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;else&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (enc &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; AES_DECRYPT) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt;outlen &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; inlen &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt; (in[inlen&lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;]);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;for&lt;/span&gt; (&lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; i&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;; i&lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt;outlen; i&lt;span style=&#34;color:#f92672&#34;&gt;++&lt;/span&gt;) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            out[i] &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; in[i];
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;main&lt;/span&gt;(&lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; argc, &lt;span style=&#34;color:#66d9ef&#34;&gt;char&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;**&lt;/span&gt;argv)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; keylength;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    printf(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Give a key length [only 128 or 192 or 256!]:&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;\n&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    scanf(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;%d&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#f92672&#34;&gt;&amp;amp;&lt;/span&gt;keylength);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;/* generate a key with a given length */&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;unsigned&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;char&lt;/span&gt; aes_key[&lt;span style=&#34;color:#ae81ff&#34;&gt;16&lt;/span&gt;] &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; {&lt;span style=&#34;color:#ae81ff&#34;&gt;0x00&lt;/span&gt;,&lt;span style=&#34;color:#ae81ff&#34;&gt;0x01&lt;/span&gt;,&lt;span style=&#34;color:#ae81ff&#34;&gt;0x02&lt;/span&gt;,&lt;span style=&#34;color:#ae81ff&#34;&gt;0x03&lt;/span&gt;,&lt;span style=&#34;color:#ae81ff&#34;&gt;0x04&lt;/span&gt;,&lt;span style=&#34;color:#ae81ff&#34;&gt;0x05&lt;/span&gt;,&lt;span style=&#34;color:#ae81ff&#34;&gt;0x06&lt;/span&gt;,&lt;span style=&#34;color:#ae81ff&#34;&gt;0x07&lt;/span&gt;,&lt;span style=&#34;color:#ae81ff&#34;&gt;0x08&lt;/span&gt;,&lt;span style=&#34;color:#ae81ff&#34;&gt;0x09&lt;/span&gt;,&lt;span style=&#34;color:#ae81ff&#34;&gt;0x0a&lt;/span&gt;,&lt;span style=&#34;color:#ae81ff&#34;&gt;0x0b&lt;/span&gt;,&lt;span style=&#34;color:#ae81ff&#34;&gt;0x0c&lt;/span&gt;,&lt;span style=&#34;color:#ae81ff&#34;&gt;0x0d&lt;/span&gt;,&lt;span style=&#34;color:#ae81ff&#34;&gt;0x0e&lt;/span&gt;,&lt;span style=&#34;color:#ae81ff&#34;&gt;0x0f&lt;/span&gt;};
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    size_t inputslength &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    printf(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Give an input&amp;#39;s length:&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;\n&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    scanf(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;%lu&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#f92672&#34;&gt;&amp;amp;&lt;/span&gt;inputslength);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;/* generate input with a given length */&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;unsigned&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;char&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt; aes_input &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; malloc(inputslength);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;unsigned&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;char&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt; aes_out &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; malloc(inputslength);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    memset(aes_input, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;X&amp;#39;&lt;/span&gt;, inputslength);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;/* init vector */&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;unsigned&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;char&lt;/span&gt; iv_enc[AES_BLOCK_SIZE] &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; {&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;}, iv_dec[AES_BLOCK_SIZE]&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;{&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;};
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;const&lt;/span&gt; size_t encslength &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; ((inputslength &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; AES_BLOCK_SIZE) &lt;span style=&#34;color:#f92672&#34;&gt;/&lt;/span&gt; AES_BLOCK_SIZE) &lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt; AES_BLOCK_SIZE;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;unsigned&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;char&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt; enc_in &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; malloc(encslength);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    pkcs7_encode(aes_input, enc_in, inputslength, &lt;span style=&#34;color:#f92672&#34;&gt;&amp;amp;&lt;/span&gt;encslength, AES_ENCRYPT);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;unsigned&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;char&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt; enc_out &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; malloc(encslength);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    AES_KEY enc_key;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    AES_set_encrypt_key(aes_key, keylength, &lt;span style=&#34;color:#f92672&#34;&gt;&amp;amp;&lt;/span&gt;enc_key);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    AES_cbc_encrypt(enc_in, enc_out, encslength, &lt;span style=&#34;color:#f92672&#34;&gt;&amp;amp;&lt;/span&gt;enc_key, iv_enc, AES_ENCRYPT);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    printf(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;original:&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;\t&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    hex_print(aes_input, inputslength);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    printf(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;padding:&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;\t&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    hex_print(enc_in, encslength);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    printf(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;encrypt:&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;\t&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    hex_print(enc_out, encslength);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;unsigned&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;char&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt; dec_out &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; malloc(encslength);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    AES_KEY dec_key;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    AES_set_decrypt_key(aes_key, keylength, &lt;span style=&#34;color:#f92672&#34;&gt;&amp;amp;&lt;/span&gt;dec_key);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    AES_cbc_encrypt(enc_out, dec_out, encslength, &lt;span style=&#34;color:#f92672&#34;&gt;&amp;amp;&lt;/span&gt;dec_key, iv_dec, AES_DECRYPT);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    pkcs7_encode(dec_out, aes_out, encslength, &lt;span style=&#34;color:#f92672&#34;&gt;&amp;amp;&lt;/span&gt;inputslength, AES_DECRYPT);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    printf(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;decrypt:&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;\t&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    hex_print(dec_out, encslength);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    printf(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;depadding:&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;\t&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    hex_print(aes_out, inputslength);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;int8_t&lt;/span&gt; buff[&lt;span style=&#34;color:#ae81ff&#34;&gt;100&lt;/span&gt;];
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;long&lt;/span&gt; bufflen;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description>
+        </item>
+        <item>
+        <title>GDB从零学习</title>
+        <link>https://nansenli.com/zh-cn/post/jianshu/c&#43;&#43;/gdb-%E4%BB%8E%E9%9B%B6%E5%AD%A6%E4%B9%A0/</link>
+        <pubDate>Wed, 25 Apr 2018 16:45:00 +0000</pubDate>
+        
+        <guid>https://nansenli.com/zh-cn/post/jianshu/c&#43;&#43;/gdb-%E4%BB%8E%E9%9B%B6%E5%AD%A6%E4%B9%A0/</guid>
+        <description>&lt;p&gt;从例子入手。&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;#include &amp;lt;stdio.h&amp;gt;
+void my_itoa(int n,char s[])  
+{  
+    int i,j,sign;  
+  
+    if((sign=n)&amp;lt;0)    //记录符号  
+        n=-n;         //使n成为正数  
+    i=0;  
+    do{  
+        s[i++]=n%10+&amp;#39;0&amp;#39;;    //取下一个数字  
+    }while((n/=10)&amp;gt;0);      //循环相除  
+  
+    if(sign&amp;lt;0)  
+        s[i++]=&amp;#39;-&amp;#39;;  
+    s[i]=&amp;#39;\0&amp;#39;;  
+    for(j=i-1;j&amp;gt;=0;j--)        //生成的数字是逆序的，所以要逆序输出  
+        printf(&amp;#34;%c&amp;#34;,s[j]);  
+}  
+  
+  
+void main()  
+{  
+    int n;  
+    char str[100];  
+    my_itoa(-123,str);  
+    printf(&amp;#34;\n&amp;#34;);  
+    printf(&amp;#34;%d\n&amp;#34;,my_atoi(&amp;#34;123&amp;#34;));  
+    system(&amp;#34;pause&amp;#34;);  
+}  
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;将上述文件保存到test.cpp文件，然后编译运行。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://upload-images.jianshu.io/upload_images/4388248-365b4bab0dedb77f.gif?imageMogr2/auto-orient/strip&#34;
+	
+	
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;Peek 2018-04-16 17-25.gif&#34;
+	
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;然后我们来调试一下，看看具体应该怎么调试。按照下面的方式来调试代码。&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;linan@linan-PC:~$ gdb test
+GNU gdb (Debian 7.12-6) 7.12.0.20161007-git
+Copyright (C) 2016 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later &amp;lt;http://gnu.org/licenses/gpl.html&amp;gt;
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.  Type &amp;#34;show copying&amp;#34;
+and &amp;#34;show warranty&amp;#34; for details.
+This GDB was configured as &amp;#34;x86_64-linux-gnu&amp;#34;.
+Type &amp;#34;show configuration&amp;#34; for configuration details.
+For bug reporting instructions, please see:
+&amp;lt;http://www.gnu.org/software/gdb/bugs/&amp;gt;.
+Find the GDB manual and other documentation resources online at:
+&amp;lt;http://www.gnu.org/software/gdb/documentation/&amp;gt;.
+For help, type &amp;#34;help&amp;#34;.
+Type &amp;#34;apropos word&amp;#34; to search for commands related to &amp;#34;word&amp;#34;...
+Reading symbols from test...done.
+(gdb) l
+2	
+3	int func(int n)
+4	{
+5	    int sum=0,i;
+6	    for(i=0; i&amp;lt;n; i++)
+7	    {
+8	        sum+=i;
+9	    }
+10	    return sum;
+11	}
+(gdb) 
+12	
+13	main()
+14	{
+15	    int i;
+16	    long result = 0;
+17	    for(i=1; i&amp;lt;=100; i++)
+18	    {
+19	        result += i;
+20	    }
+21	
+(gdb) 
+22	    printf(&amp;#34;result[1-100] = %d \n&amp;#34;, result );
+23	    printf(&amp;#34;result[1-250] = %d \n&amp;#34;, func(250) );
+24	}
+(gdb) 
+Line number 25 out of range; test.cpp has 24 lines.
+(gdb) break 15
+Breakpoint 1 at 0x706: file test.cpp, line 15.
+(gdb) break func
+Breakpoint 2 at 0x6d7: file test.cpp, line 5.
+(gdb) info break
+Num     Type           Disp Enb Address            What
+1       breakpoint     keep y   0x0000000000000706 in main() at test.cpp:15
+2       breakpoint     keep y   0x00000000000006d7 in func(int) at test.cpp:5
+(gdb) run
+Starting program: /home/linan/test 
+
+Breakpoint 1, main () at test.cpp:16
+16	    long result = 0;
+(gdb) next
+17	    for(i=1; i&amp;lt;=100; i++)
+(gdb) next
+19	        result += i;
+(gdb) next
+17	    for(i=1; i&amp;lt;=100; i++)
+(gdb) continue
+Continuing.
+result[1-100] = 5050 
+
+Breakpoint 2, func (n=250) at test.cpp:5
+5	    int sum=0,i;
+(gdb) p sum
+$1 = 32767
+(gdb) n
+6	    for(i=0; i&amp;lt;n; i++)
+(gdb) p sum
+$2 = 0
+(gdb) p i
+$3 = -134225552
+(gdb) print i
+$4 = -134225552
+(gdb) n
+8	        sum+=i;
+(gdb) print i
+$5 = 0
+(gdb) bt
+#0  func (n=250) at test.cpp:8
+#1  0x000055555555474c in main () at test.cpp:23
+(gdb) help bt
+Print backtrace of all stack frames, or innermost COUNT frames.
+With a negative argument, print outermost -COUNT frames.
+Use of the &amp;#39;full&amp;#39; qualifier also prints the values of the local variables.
+Use of the &amp;#39;no-filters&amp;#39; qualifier prohibits frame filters from executing
+on this backtrace.
+
+(gdb) bt
+#0  func (n=250) at test.cpp:8
+#1  0x000055555555474c in main () at test.cpp:23
+(gdb) finish
+Run till exit from #0  func (n=250) at test.cpp:8
+0x000055555555474c in main () at test.cpp:23
+23	    printf(&amp;#34;result[1-250] = %d \n&amp;#34;, func(250) );
+Value returned is $6 = 31125
+(gdb) c
+Continuing.
+result[1-250] = 31125 
+[Inferior 1 (process 11480) exited normally]
+(gdb) 
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;&lt;img src=&#34;https://upload-images.jianshu.io/upload_images/4388248-288cfdbb3c85ce2b.gif?imageMogr2/auto-orient/strip&#34;
+	
+	
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;Peek 2018-04-16 17-39.gif&#34;
+	
+	
+&gt;&lt;/p&gt;
+&lt;h2 id=&#34;使用gdb之前&#34;&gt;使用GDB之前
+&lt;/h2&gt;&lt;p&gt;首先确保你的程序在编译时使用了-g参数。这样才能将相关信息插入到可执行程序中。这些相关信息对程序是没有帮助的，但是对调试有帮助。&lt;/p&gt;
+&lt;h2 id=&#34;使用gdb启动调试&#34;&gt;使用GDB启动调试
+&lt;/h2&gt;&lt;p&gt;启动GDB的方法有以下几种：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;gdb &lt;!-- raw HTML omitted --&gt;
+program也就是你的执行文件，一般在当然目录下。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;gdb &lt;!-- raw HTML omitted --&gt; core
+用gdb同时调试一个运行程序和core文件，core是程序非法执行后core dump后产生的文件。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;gdb &lt;!-- raw HTML omitted --&gt; &lt;!-- raw HTML omitted --&gt;
+如果你的程序是一个服务程序，那么你可以指定这个服务程序运行时的进程ID。gdb会自动 &lt;strong&gt;attach&lt;/strong&gt; 上去，并调试他。program应该在PATH环境变量中搜索得到。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;使用gdb的新手注意事项&#34;&gt;使用GDB的新手注意事项
+&lt;/h2&gt;&lt;p&gt;GDB调试的时候需要知道源码的文件在哪里，在上面的例子中，源码和运行程序在一起。但是实际中不可能这样。在GDB命令加入参数-d或者在运行时使用direcotry 命令来添加源码目录。&lt;/p&gt;
+&lt;p&gt;其他注意点：&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;    -symbols &amp;lt;file&amp;gt; 
+    -s &amp;lt;file&amp;gt; 
+    从指定文件中读取符号表。
+
+    -se file 
+    从指定文件中读取符号表信息，并把他用在可执行文件中。
+
+    -core &amp;lt;file&amp;gt;
+    -c &amp;lt;file&amp;gt; 
+    调试时core dump的core文件。
+&lt;/code&gt;&lt;/pre&gt;</description>
+        </item>
+        <item>
+        <title>effective C&#43;&#43; 笔记</title>
+        <link>https://nansenli.com/zh-cn/post/jianshu/c&#43;&#43;/effective-c&#43;&#43;-%E7%AC%94%E8%AE%B0/</link>
+        <pubDate>Mon, 23 Apr 2018 10:40:00 +0000</pubDate>
+        
+        <guid>https://nansenli.com/zh-cn/post/jianshu/c&#43;&#43;/effective-c&#43;&#43;-%E7%AC%94%E8%AE%B0/</guid>
+        <description>&lt;h2 id=&#34;第一章-从-c-到-c&#34;&gt;第一章 从 C 到 C++
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;条款1 C++是语言联邦
+这条意思是C++支持面向过程、面向对象、泛型编程、函数编程、元编程五中编程方式，但是会令人困惑。所以他是一门综合语言。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;条款2 const enum inline 代替 define
+define不是语言的一部分，而是预处理的部分。const enum inline可以被编译器发现错误&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;条款3 使用const来限制出错的可能
+例如返回const引用对象来防止用户修改。使用const成员函数来防止对类的破坏。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;条款4 使用对象前确保已经初始化
+主要是使用参数初始化列表初始化成员或者父类。另外如果类使用了全局的对象，则无法知道什么时候初始化的这个对象。所以需要使用类内部的static变量。（也是只有一份）&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;第二章-有关对象的构造与析构&#34;&gt;第二章 有关对象的构造与析构
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;条款5 了解对象的默认成员函数
+编译器会根据需要的时候，默认生成的成员函数包括默认构造函数，拷贝构造函数，析构函数，拷贝赋值函数。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;其中，默认拷贝赋值函数会可能无法拷贝引用成员。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;条款6 使用=delete来拒绝默认生成的成员函数
+这个可以防止类被拷贝，组织拷贝&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;条款7 为多态基类声明virtual析构函数
+这个是基本功了。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;条款8 析构函数不要抛出异常
+这个可能导致内存释放不完全，或者导致抛出多个异常&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;条款9 构造函数和析构函数中中不调用虚函数
+这条也比较明显，派生类的构造函数如果进入到基类构造函数中，调用了虚函数，此时派生类的虚函数还没有准备好。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;条款10 operator = 应该返回对象的引用
+这样就可以连续赋值了&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;条款11 在operator = 处理自我赋值
+很难保证你的自我赋值代码没有问题，而且自我赋值是浪费时间的行为。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;条款12 复制对象时记得复制每一个部分
+这个很显然了。你要实现赋值函数，那么就必须拷贝所有内容。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;第三章-有关对象的持有资源&#34;&gt;第三章 有关对象的持有资源
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;条款13 对象是持有资源的基本单位
+要能够获取资源，还要能够正确释放资源。关键在于使用shared_ptr来管理内存。可以自动释放持有的资源&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;条款14 持有资源的对象复制
+要么禁止复制，要么使用shared_ptr成员，要么进行深度拷贝，要么使拷贝过程变为资源的转移。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;条款15 持有资源的对象需要提供一个原始对象的方法
+这个世界并不完美，许多APIs需要传递原始资源的指针才可以。使用shared_ptr会干扰这个对象的使用方式&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;条款16 new数组对象的时候需要delete
+为了避免这种错误，可以使用vector容器来进行操作，避免对new数组的需求&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;条款17 new对象作为参数传入式可能导致内存泄漏
+假如new对象和参数传入shared_ptr中间抛出了异常，那么就会导致内存泄漏&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;第四章-设计与声明&#34;&gt;第四章 设计与声明
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;条款18 让接口容易被正确使用
+接口有的时候难以表述清楚，比如传入三个int值，你得清楚的记得这三个值每一个到底是什么。如果传入的参数反了怎么办？这里书上提到了传入特定对象以及使用explicit来限定参数。其实也可以构建一个日期对象，然后指定成员，我感觉这种还好一点。另外，接口除了参数要设置的合理，返回值也要设置的合理（比如返回智能指针而不是原始指针强迫对方）。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;条款19 设计class是个大工程
+对象的创建、销毁，对象初始化与对象赋值，对象通过值拷贝传递会异常吗，新type的合法值是什么。类型转换函数写了吗。operator呢。哪些函数应该被delete？&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;条款20 传递常量引用代替传值
+传值会带来对象的构造函数的调用，消耗时间，传递引用就是传递指针&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;条款21 返回临时对象时无法返回对临时对象的引用
+如果返回一个由函数创建的对象时，无法返回对该对象的引用。编译器会自己做出正确的优化步骤。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;条款22 成员变量应该声明为private
+如果声明为public，那么删除这个变量会导致所有程序重写。如果声明为private，那么删除这个变量会导致继承类程序重写。所以要声明为private&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;条款23 使用非成员函数替换成员函数
+如果一个方法只是调用了其他几个成员函数，没有必要将其设置为成员函数，把他放在外面，然后用相同的命名空间包裹就可以了&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;条款24 如果成员函数的参数需要支持类型转换，则将其转为非成员函数
+这是因为成员函数在某些情况下可能无法发挥作用。比如operator *只能支持该类型作为第一个参数。如果内置类型作为第一个参数的时候就会失效。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;条款25 swap函数与异常
+swap是个有用的函数。为了实现高效率的swap，你需要设计一个swap成员函数来与另外一个对象进行交换。然后再命名空间设计一个非成员函数雨来调用上面的swap函数。最后特化std::swap来让编译器选择你自己的swap&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;第五章-有关函数的实现&#34;&gt;第五章 有关函数的实现
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;条款26 延迟定义出现的顺序
+C++对于不同行的顺序不能随意更改其顺序，这意味着只有用到什么再去定义什么更能符合过程，如果在刚开始就将所有的定义，但是程序一开始就返回，这就会带来不必要的构造与析构过程。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;条款27 避免类型转换
+四种c++类型转换的使用场景虽然可以使用，但是如果使用了都会带来更大的问题。旧式的类型转换就更不能用了。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;条款28 避免返回handles指向对象内部成分
+尽量避免对象内部的数据的指针被返回到对象外部，这会带来很大的问题。vector []运算符就是这种情况。这种情况是特例&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;条款29 异常安全
+C++异常是最难以处理的一件事情了。但是还是要保证异常。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;条款30 了解inline
+inline是让编译器尽量避免栈的展开，而不是一定。八二法则告诉我们，程序只会花时间在20%的代码上，不一定见了函数就要都用inline。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;条款31 减少依赖——定义与声明相分离
+两种处理方式——实施类与接口类。实施类就是使用另一个类来代理实现该类的功能。接口类就是使用面向对象的方法来将该类设计为接口。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;第六章-面向对象设计&#34;&gt;第六章 面向对象设计
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;条款32 public继承意味着is-a关系
+这意味着所有基类能够办到的事情派生类也能办到。但是派生类能够办到的基类不一定能办到&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;条款33 继承时会发生名称遮掩
+如果在派生类中声明了父类函数的另一个重载版本，会将父类的原始版本也一并覆盖，使得无法正确的链接到父类函数。可以使用using来表示使用父类的函数空间。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;条款34 区分接口继承和实现继承
+纯虚函数是只继承接口，虚函数继承接口和默认实现，非虚函数是继承接口和强制实现&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;条款35 不是只有虚函数一种实现
+可以使用其他设计模式来代替虚函数的实现，例如仿函数&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;条款36 不要重新定义非虚函数
+省的到时候你都不知道具体是哪个被调用了。没错说的就是析构函数。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;条款37 不要重新定义缺省参数
+这是因为缺省参数是静态确定的而不是动态确定的。你定义的那个不一定有用&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;条款38 区分复合与继承
+public继承是is-a关系。复合是has-a关系。例如set的实现，如果继承list就会有一些问题了。set应该复合list。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;条款39 private继承意味着根据其实现
+private的使用频率比复合使用的频率要更低。有两种情况需要这样实现，第一种情况是派生类需要访问基类的protected成员。第二种情况是需要重新定义virtual函数（这种情况难道不应该设计一种中间类吗）。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;条款40 小心的使用多重继承
+多重继承使用的很少。虚继承内最好不要包含任何成员。因为虚继承的成员初始化是在派生类内完成的。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;第七章-泛型编程&#34;&gt;第七章 泛型编程
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;条款41 了解隐式接口与编译器多态
+就是静态多态。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;条款42 typename的双重含义
+typename除了会在模板的template一行中使用，还会模板的处理中出现。当我们使用成员变量或者是成员类型时，编译器不知道用的是哪一个。默认使用的成员变量。加上typename来提醒编译器用的是成员类型&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;条款43 继承一个模板类，对模板类内的符号要显示声明
+这是因为模板类可能特化，如果特化，则可能有的符号不存在。所以需要显示的指示模板类内的符号，例如使用this指针或者是作用域&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;条款44 template导致代码膨胀
+template参数在传入一个非类型参数的时候，会生成多份代码。这些代码有一些方式可以避免重复生成，但是速度不如原来的快。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;条款45 运用成员函数模板接受所有兼容类型
+类可以是模板的，成员函数也可以是模板的。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;条款46 需要类型转换时请为模板定义非成员函数
+不仅要定义成非成员函数，还要定义成为friend函数。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;条款47 使用traits
+traits是使用了模板编程与特化的性质实现的一个triats类，通过triats类可以获得想要的泛化类内的数据类型。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;条款48 template元编程
+元编程指的是在编译期间就知道结果的编程方法。比如在编译期间处理输入。类似于C++的hello world的程序就是阶乘。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;第八章-new-与-delete&#34;&gt;第八章 new 与 delete
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;条款49
+了解new-handler的行为
+就是不断尝试分配内存。我很好奇如果new-handler一直分配失败会不会出现卡死的现象。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;条款50
+了解自定义new和delete的场合
+貌似现在的new和delete性能都很高了。不用替换&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;条款51
+自定义new和delete要保持兼容性&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;条款52
+placement new 和placement delete
+placement delete会在placement new出现错误的时候自动运行&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;第九章-现在的c11&#34;&gt;第九章 现在的c++11
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;条款53
+不要忽视warring&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;条款54
+熟悉tr1的标准程序库&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;条款55
+熟悉boost&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+        </item>
+        <item>
+        <title>c&#43;&#43; new 与 delete</title>
+        <link>https://nansenli.com/zh-cn/post/jianshu/c&#43;&#43;/c&#43;&#43;-new-%E4%B8%8E-delete/</link>
+        <pubDate>Wed, 14 Mar 2018 03:52:00 +0000</pubDate>
+        
+        <guid>https://nansenli.com/zh-cn/post/jianshu/c&#43;&#43;/c&#43;&#43;-new-%E4%B8%8E-delete/</guid>
+        <description>&lt;p&gt;来源 ：&lt;/p&gt;
+&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;https://kelvinh.github.io/blog/2014/04/19/research-on-operator-new-and-delete/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;https://kelvinh.github.io/blog/2014/04/19/research-on-operator-new-and-delete/&lt;/a&gt;&lt;/p&gt;
+&lt;h2 id=&#34;new-与-delete代码意味着什么&#34;&gt;new 与 delete代码意味着什么
+&lt;/h2&gt;&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;Class *pc = new Class;
+// ...
+delete pc;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;上面代码的第一行即为 new operator ，而第三行即为 delete operator ，代码很简单，但对编译器来说，它需要做额外的工作，将上述代码翻译为近似于下面的代码：&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;void *p = operator new(sizeof(Class));
+// 对p指向的内存调用Class的构造函数，此处无法用直观的代码展现
+Class *pc = static_cast&amp;lt;Class*&amp;gt;(p);
+// ...
+pc-&amp;gt;~Class();
+operator delete(pc);
+&lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&#34;operator-new-操作符到底做了什么delete-操作符又做了什么&#34;&gt;operator new 操作符到底做了什么，delete 操作符又做了什么？
+&lt;/h2&gt;&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;void * operator new(std::size_t size) throw(std::bad_alloc) {
+    if (size == 0)
+        size = 1;
+    void* p;
+    while ((p = ::malloc(size)) == 0) {
+        std::new_handler nh = std::get_new_handler();
+        if (nh)
+            nh();
+        else
+            throw std::bad_alloc();
+    }
+    return p;
+}
+
+void operator delete(void* ptr) {
+    if (ptr)
+        ::free(ptr);
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;实际上是malloc的包装，但是至少分配一个字节，并且在内存失败时会尝试获取用户设置的new_handler，如果用户事先设置了new_handler，那么会调用new_handler，否则会执行异常抛出bad_alloc。&lt;/p&gt;
+&lt;h2 id=&#34;placement-new是什么&#34;&gt;placement new是什么
+&lt;/h2&gt;&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;inline _LIBCPP_INLINE_VISIBILITY void* operator new  (std::size_t, void* __p) _NOEXCEPT {return __p;}
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;这个是operator new的一个重载。直接返回指针的值。感觉挺没有用的。那怎么使用呢？&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;void *buf = // 在这里为buf分配内存
+Class *pc = new (buf) Class();
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;上面是将buf的内存分给pc指针。其实就相当于：&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;((* Class)buf)-&amp;gt;Class();
+Class *pc = buf;
+&lt;/code&gt;&lt;/pre&gt;</description>
+        </item>
+        <item>
+        <title>C&#43;&#43;基本问题——指针与引用的区别</title>
+        <link>https://nansenli.com/zh-cn/post/jianshu/c&#43;&#43;/c&#43;&#43;%E5%9F%BA%E6%9C%AC%E9%97%AE%E9%A2%98%E6%8C%87%E9%92%88%E4%B8%8E%E5%BC%95%E7%94%A8%E7%9A%84%E5%8C%BA%E5%88%AB/</link>
+        <pubDate>Wed, 10 Jan 2018 08:44:00 +0000</pubDate>
+        
+        <guid>https://nansenli.com/zh-cn/post/jianshu/c&#43;&#43;/c&#43;&#43;%E5%9F%BA%E6%9C%AC%E9%97%AE%E9%A2%98%E6%8C%87%E9%92%88%E4%B8%8E%E5%BC%95%E7%94%A8%E7%9A%84%E5%8C%BA%E5%88%AB/</guid>
+        <description>&lt;h3 id=&#34;指针与引用的区别&#34;&gt;指针与引用的区别
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;指针可以是空指针，但是引用不能是空引用。这就导致下面一个区别。&lt;/li&gt;
+&lt;li&gt;指针可能是非法的，引用总是合法的。如果指针是空指针，那么就不能合法的使用它。这要求在每次使用指针时都需要判断它的合法性。相反引用则不用判断。&lt;/li&gt;
+&lt;li&gt;指针是可以修改的，引用不可以。指针是变量，他存储的地址所指向的对象可以被修改为其他地址，不再指向原对象。但是引用在初始化时被限定指向对象，可以修改对象的内容，但是不允许引用再引用其他对象。&lt;/li&gt;
+&lt;li&gt;基于上述情况，指针和引用的应用场合不一样。指针可以应用在指向对象存在不同时刻指向不同对象或者需要指向不存在任何对象的场合。如果总是指向一个对象且指向该对象之后不再改变，则应该使用引用。&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+        </item>
+        <item>
+        <title>c&#43;&#43;如何实现 STL 中的vector</title>
+        <link>https://nansenli.com/zh-cn/post/jianshu/c&#43;&#43;/c&#43;&#43;%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0-stl-%E4%B8%AD%E7%9A%84vector/</link>
+        <pubDate>Sat, 30 Dec 2017 08:49:00 +0000</pubDate>
+        
+        <guid>https://nansenli.com/zh-cn/post/jianshu/c&#43;&#43;/c&#43;&#43;%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0-stl-%E4%B8%AD%E7%9A%84vector/</guid>
+        <description>&lt;h2 id=&#34;前言&#34;&gt;前言
+&lt;/h2&gt;&lt;p&gt;面试中可能会考你，怎么去实现一个vector呢？这需要了解vector的底层实现。
+在这之前，需要学习动态内存管理，特别是allocator，在c++ primer一书中有讲解。&lt;/p&gt;
+&lt;h2 id=&#34;要实现的基础内容&#34;&gt;要实现的基础内容
+&lt;/h2&gt;&lt;p&gt;在cplusplus网站上，查看常见用法如下：
+成员函数
+(构造器)
+Construct vector (public member function )
+(析构函数)
+Vector destructor (public member function )&lt;/p&gt;
+&lt;p&gt;迭代器:
+begin
+Return iterator to beginning (public member function )
+end
+Return iterator to end (public member function )&lt;/p&gt;
+&lt;p&gt;容量:
+size
+Return size (public member function )&lt;/p&gt;
+&lt;p&gt;元素访问:
+operator[]
+Access element (public member function )
+at
+Access element (public member function )&lt;/p&gt;
+&lt;p&gt;修改器:
+push_back
+Add element at the end (public member function )
+pop_back
+Delete last element (public member function )&lt;/p&gt;
+&lt;h2 id=&#34;基础的vector的主要结构&#34;&gt;基础的vector的主要结构
+&lt;/h2&gt;&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;#include &amp;lt;cstddef&amp;gt;
+#include &amp;lt;stdexcept&amp;gt;
+#include &amp;lt;memory&amp;gt;
+#include &amp;lt;iterator&amp;gt;
+
+template &amp;lt;typename T&amp;gt;
+class vector
+{
+  public:
+    using value_type = T;
+    using iterator = value_type *;
+    using size_type = std::size_t;
+
+  public:
+    vector() = default;
+    ~vector();
+    iterator begin() const;
+    iterator end() const;
+    size_type size() const;
+    value_type &amp;amp;operator[](size_type i) const;
+    value_type &amp;amp;at(size_type i) const;
+    void push_back(const value_type &amp;amp;new_elem);
+    void pop_back();
+
+  private:
+    iterator startptr = nullptr;
+    iterator endptr = nullptr;
+    iterator capptr = nullptr;
+    std::allocator&amp;lt;value_type&amp;gt; alloc;
+
+  private:
+    void check_cap();
+    void free();
+};
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;在我们这个类中，简单的实现了迭代器，push_back，pop_back，以及[]，at函数，size函数。为了实现内存管理还需要实现构造、析构函数，以及检查容量函数。&lt;/p&gt;
+&lt;h2 id=&#34;基础功能的内部实现&#34;&gt;基础功能的内部实现
+&lt;/h2&gt;&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;template &amp;lt;typename T&amp;gt;
+typename vector&amp;lt;T&amp;gt;::iterator vector&amp;lt;T&amp;gt;::begin() const
+{
+    return startptr;
+}
+
+template &amp;lt;typename T&amp;gt;
+typename vector&amp;lt;T&amp;gt;::iterator vector&amp;lt;T&amp;gt;::end() const
+{
+    return endptr;
+}
+
+template &amp;lt;typename T&amp;gt;
+typename vector&amp;lt;T&amp;gt;::size_type vector&amp;lt;T&amp;gt;::size() const
+{
+    return endptr - startptr;
+}
+
+template &amp;lt;typename T&amp;gt;
+typename vector&amp;lt;T&amp;gt;::value_type &amp;amp;vector&amp;lt;T&amp;gt;::operator[](size_type i) const
+{
+    return *(startptr + i);
+}
+
+template &amp;lt;typename T&amp;gt;
+typename vector&amp;lt;T&amp;gt;::value_type &amp;amp;vector&amp;lt;T&amp;gt;::at(size_type i) const
+{
+    if (startptr + i &amp;gt;= endptr)
+    {
+        throw std::runtime_error(&amp;#34;out of range!&amp;#34;);
+    }
+    return *(startptr + i);
+}
+
+template &amp;lt;typename T&amp;gt;
+vector&amp;lt;T&amp;gt;::~vector()
+{
+    free();
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;上面是简单函数的实现。仅仅是取出内部的数据而已。&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;template &amp;lt;typename T&amp;gt;
+void vector&amp;lt;T&amp;gt;::free()
+{
+    if (startptr)
+    {
+        for (auto p = startptr; p != endptr; p++)
+        {
+            alloc.destroy(p);
+        }
+        alloc.deallocate(startptr, endptr - startptr);
+    }
+}
+
+template &amp;lt;typename T&amp;gt;
+void vector&amp;lt;T&amp;gt;::check_cap()
+{
+    if (endptr == capptr)
+    {
+        int newsize = size() ? size() &amp;lt;&amp;lt; 1 : 1;
+        auto newstartptr = alloc.allocate(newsize);
+        auto newendptr = uninitialized_copy(std::make_move_iterator(startptr), std::make_move_iterator(endptr), newstartptr);
+        free();
+        startptr = newstartptr;
+        endptr = newendptr;
+        capptr = newstartptr + newsize;
+    }
+}
+
+template &amp;lt;typename T&amp;gt;
+void vector&amp;lt;T&amp;gt;::push_back(const value_type &amp;amp;new_elem)
+{
+    check_cap();
+    alloc.construct(endptr, new_elem);
+    endptr++;
+}
+
+template &amp;lt;typename T&amp;gt; 
+void vector&amp;lt;T&amp;gt;::pop_back()
+{
+    if(endptr-startptr&amp;gt;0){
+        alloc.destroy(endptr);
+        endptr--;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;这部分是涉及到内存的部分，使用了allocator来管理内存。构造器将分配空间和构造函数分开，分为分配空间、回收空间、析构过程、构造过程，检查容量这部分涉及到这四个情况，首先分配新空间，然后在新位置上构造新元素，然后析构旧元素，释放旧空间。析构旧元素、释放旧空间使用free函数来完成。这里使用uninitialized_copy函数和make_move_iterator，移动迭代器以及无初始化拷贝函数来实现在新的位置上构造新的元素，以求加速新元素构造的速度。&lt;/p&gt;
+&lt;h2 id=&#34;高级函数与实现&#34;&gt;高级函数与实现
+&lt;/h2&gt;&lt;h3 id=&#34;erase&#34;&gt;erase
+&lt;/h3&gt;&lt;p&gt;接下来完成一些额外的函数的实现，我们先从erase开始吧
+erase删除从指定位置到指定位置的所有内容。函数原型为如下：&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;  public:
+    iterator erase(const_iterator position);
+    iterator erase(const_iterator first, const_iterator last);
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;第一个函数也可以看做是第二个函数的调用而已。我们实现第二个函数如下：&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;template &amp;lt;typename T&amp;gt;
+typename vector&amp;lt;T&amp;gt;::iterator vector&amp;lt;T&amp;gt;::erase(const_iterator first, const_iterator last)
+{
+    if(last &amp;gt;= endptr || first &amp;lt; startptr) throw std::runtime_error(&amp;#34;out of range!&amp;#34;);
+    iterator newendptr = std::copy(last, static_cast&amp;lt;const_iterator&amp;gt;(endptr), first);
+    while(newendptr &amp;lt; endptr){
+        alloc.destroy(--endptr);
+    }
+    return endptr;
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;首先进行合法性检测。然后，使用std::copy将后面的内容部分复制到被删除的部分。注意copy被覆盖的部分会自动调用赋值函数，赋值函数内应该会调用析构函数。然后，如果还有需要析构的内容（这种情况发生在所移动的内容没有删除的内容长时才会发生），析构这些内容。之后返回end指针。&lt;/p&gt;
+&lt;p&gt;另外一个重载函数实现比较简单：&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;template&amp;lt;typename T&amp;gt;
+typename vector&amp;lt;T&amp;gt;::iterator vector&amp;lt;T&amp;gt;::erase(const_iterator position)
+{
+    return erase(position, position+1);
+}
+&lt;/code&gt;&lt;/pre&gt;</description>
+        </item>
+        <item>
+        <title>c&#43;&#43;11 特性 简单介绍</title>
+        <link>https://nansenli.com/zh-cn/post/jianshu/c&#43;&#43;/c&#43;&#43;11-%E7%89%B9%E6%80%A7-%E7%AE%80%E5%8D%95%E4%BB%8B%E7%BB%8D/</link>
+        <pubDate>Thu, 28 Dec 2017 07:31:00 +0000</pubDate>
+        
+        <guid>https://nansenli.com/zh-cn/post/jianshu/c&#43;&#43;/c&#43;&#43;11-%E7%89%B9%E6%80%A7-%E7%AE%80%E5%8D%95%E4%BB%8B%E7%BB%8D/</guid>
+        <description>&lt;h2 id=&#34;根据c-primer第五版总结可以用来快速回顾一下这些性质&#34;&gt;根据c++ primer第五版总结，可以用来快速回顾一下这些性质
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;long long 类型
+定义为至少有32位那么长。一般没用。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;列表初始化
+列表是一组由花括号和逗号组成的元素集合，例如{1,2,3}。
+我们可以使用花括号来进行初始化变量。
+int a{0};
+等号运算符在声明时不是赋值，而是初始化，所以也可以用下面的形式初始化：
+int a = {0};
+这样的效果和int a = 0;是一样的。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;nullptr 常量
+这是由于在c++11之前，为指针赋值空指针用的是0来直接赋值的。现在使用nullptr更好。nullptr实质上是一个只可以有右值并只能类型转换为指针且值为0地址的一个对象，由此可以解决一些问题，相关资料可以查看如何实现nullptr。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;constexpr 变量
+const expressions 常量表达式的意思。和const修饰的区别是，const表示这个变量名在之后使用的时候得是常量，而constexpr不仅如此，还要求初始化该变量时使用的表达式必须也为常量才可以。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;类型别名
+using uint = unsigned int
+typedef uint unsigned int
+这两句是等价的&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;auto 类型说明符
+声明并定义变量时，求助编译器根据定义类型自动推断声明的变量类型。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;decltype 类型指示符
+声明变量时，可以使用decltype(expressions)求出表达式的类型，作为被声明变量的类型&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;类内初始化&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;    class A {
+    public:
+        int a = 7;
+    };
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;这等同于之前版本中的：&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;    class A {
+    public:
+        int a;
+        A() : a(7) {}
+    };
+&lt;/code&gt;&lt;/pre&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;使用auto或decltype推断类型
+auto len = line.size(); 自动推断string::size_type更好&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;范围for语句
+打印字符串中的字符
+for(auto c:str) cout &amp;laquo; c &amp;laquo; endl;
+类似于Python中的for in语句&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;vector嵌套
+vector&amp;lt;vector&lt;!-- raw HTML omitted --&gt;这里在旧的编译器上需要有个空格不能让两个尖尖连在一起&amp;gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;列表初始化vector对象
+vector&lt;!-- raw HTML omitted --&gt; strs = {&amp;ldquo;a&amp;rdquo;, &amp;ldquo;bb&amp;rdquo;, &amp;ldquo;ccc&amp;rdquo;};&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;cbegin 和 cend
+返回类型是const_iterator类型的迭代器&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;在二维数组中使用auto&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;int mat[3][4];
+int main()
+{
+    for (int(*p)[4] = mat; p != mat + 3; p++)
+    {
+        /* ... */
+    }
+    for (auto p = mat; p != mat + 3; p++)
+    {
+        /* ... */
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;除法取整
+c++11规定除法一律向0取整&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;列表赋值vector对象
+vector&lt;!-- raw HTML omitted --&gt; strs;
+strs = {&amp;ldquo;a&amp;rdquo;, &amp;ldquo;bb&amp;rdquo;, &amp;ldquo;ccc&amp;rdquo;};&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;139 使用sizeof获取类的成员的大小
+通常情况下只有通过对象才能访问类的成员。但是sizeof可以直接判断成员大小。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;168 范围for语句
+在范围for语句中不能增加vector对象的元素，这是因为可能导致范围for语句的end元素变得无效了。这和Python中范围循环可能导致的问题是一样的。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;197 initializer_list
+initializer_list是一种模板类型，对象元素永远是常量，类型必须相同。花括号的列表就是这种对象。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;203 列表初始化返回值
+return 一个 initializer_list 列表可以对返回类型为vector的对象进行临时量初始化。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;206 定义尾置返回类型
+声明一个返回数组指针的函数
+int * func(int i)这样是不太对的，因为返回了一个指针而不是数组指针
+int (* func(int i))[10] 这样的话才是返回大小为10的一个数组指针
+也可以这样写：auto func(int i) -&amp;gt; int(*)[10];&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;206 使用decltype简化返回类型
+可以使用decltype来简化返回类型，但是这种需求较少见。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;214 constexpr 函数
+constexpr 函数是返回类型为字面值的函数，且只能有一条return语句。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;237 default默认构造函数
+可以对构造函数赋值等号表示使用编译器提供的默认的构造函数。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;246 类内的初始化
+新标准可以在类内就初始化赋值成员&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;261 委托构造函数
+构造函数初始化时，使用初始值列表来初始化成员。除此之外，还可以使用其他构造函数帮助构造。
+例如构造函数是func(int a,int b)委托构造函数func():func(0,0){}这样就可以当做默认是0,0来构造了。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;268 constexpr 构造函数
+用于生成constexpr对象&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;284 使用string类型来表示文件路径
+在stream类型中，原来只能使用c字符串，现在可以使用string类型的字符串了&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;293 array 与 forward_list
+非常的快，与手写list速度相当，比数组安全&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;300 使用列表初始化容器
+list&lt;!-- raw HTML omitted --&gt; authors = {&amp;ldquo;milton&amp;rdquo;, &amp;ldquo;shakespeare&amp;rdquo;, &amp;ldquo;austen&amp;rdquo;};
+vector&amp;lt;const char*&amp;gt; articles = {&amp;ldquo;a&amp;rdquo;, &amp;ldquo;b&amp;rdquo;, &amp;ldquo;cc&amp;rdquo;};&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;303 容器的非成员swap
+使用swap可以快速交换两个内容的容器&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;308 使用insert的返回之值
+新标准的insert在插入成功之后返回一个迭代器，该迭代器的位置是指向插入的新元素。使用这个特性可以反复在该位置插入多个元素。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;308 使用emplace函数
+使用emplace函数可以实现构造而不是复制。
+使用这个方法可以传入构造函数所所需要的参数而不用构造出对象在2复制一份进取。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;shrink_to_fit
+对容器调用该函数，会释放多余的vector或者是string所占用的空间。一般没什么用&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;string 类型的数值转换函数
+to_string 表示一组重载函数，可以将int、double类型的数据转换为string类型的数据。
+Stoi 可以将string转换为int，类似的还有其他的函数，包括不同基的、还有浮点数的&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;346 lambda 表达式
+简单的lambda表达式
+auto f = []{return 42；};
+这里将一个lambda表达式赋值给f。之后可以调用f()获得42
+如何向lambda表达式传递参数？
+[](int a, int b){return a&amp;gt;b;};
+但是有的时候不想传递参数，仍然使得lambda表达式使用外部的变量怎么办？
+[&amp;amp;out](int a, int b){return a&amp;lt;out &amp;amp;&amp;amp; out &amp;lt; b;};
+但是我不想让上面这个表达式返回int，而是double怎么办？
+[&amp;amp;out](int a, int b)-&amp;gt;double{return a&amp;lt;out &amp;amp;&amp;amp; out &amp;lt; b;}&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;354 bind
+bind函数可以将一个函数的调用改成简单的调用&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;377 关联容器的列表初始化
+map&amp;lt;string, string&amp;gt; authors={ {&amp;ldquo;joncy&amp;rdquo;, &amp;ldquo;james&amp;rdquo;} };
+set&lt;!-- raw HTML omitted --&gt; exclude = {&amp;ldquo;the&amp;rdquo;, &amp;ldquo;but&amp;rdquo; };&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;380 列表初始化pair的返回类型
+return 一个 {}表示的列表到pair类型可以自动转换。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;384 pair的列表初始化
+当向map插入pair时，最简单的方式是插入花括号表示的一对键值。插入的内容会初始化为pair插入。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;394 无序容器
+map和set前面加上unordered就是无序容器。底层使用hash实现。需要实现存储元素的hash模板。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;400 智能指针
+shared_ptr允许多个指针指向同一个对象。unique_ptr则独占所指的对象。
+智能指针是模板，在声明时需要显示提供类型，类似vector的使用。
+shared_ptr&lt;!-- raw HTML omitted --&gt; p1;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+        </item>
+        <item>
+        <title>C&#43;&#43; 面向对象程序设计 总结</title>
+        <link>https://nansenli.com/zh-cn/post/jianshu/c&#43;&#43;/c&#43;&#43;-%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1-%E6%80%BB%E7%BB%93/</link>
+        <pubDate>Thu, 14 Dec 2017 05:53:00 +0000</pubDate>
+        
+        <guid>https://nansenli.com/zh-cn/post/jianshu/c&#43;&#43;/c&#43;&#43;-%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1-%E6%80%BB%E7%BB%93/</guid>
+        <description>&lt;h3 id=&#34;前言&#34;&gt;前言
+&lt;/h3&gt;&lt;p&gt;C++与C最大的不同是面向对象。虽然我了解一些有关面向对象的概念，写过一些函数，可惜实际中很少用到。本文是C++ Primer第15章的快速总结。&lt;/p&gt;
+&lt;h3 id=&#34;概述&#34;&gt;概述
+&lt;/h3&gt;&lt;p&gt;面向对象程序设计又称为OOP，其核心思想是：数据抽象、继承和动态绑定。数据抽象指的是，声明与实现分离，继承指的是子类获得父类的所有成员，动态绑定是调用类的函数时根据类的不同进行区别调用。&lt;/p&gt;
+&lt;h3 id=&#34;声明基类与派生类&#34;&gt;声明基类与派生类
+&lt;/h3&gt;&lt;p&gt;下面的代码进行简单的示例，声明了一个基类animal与派生类cat。&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;#include &amp;lt;stdio.h&amp;gt;
+#include &amp;lt;iostream&amp;gt;
+
+class animal
+{
+  public:
+    virtual void eat(){};
+};
+
+class cat : public animal
+{
+  public:
+    void eat() { std::cout &amp;lt;&amp;lt; &amp;#34;eat fish&amp;#34; &amp;lt;&amp;lt; std::endl; }
+};
+
+int main()
+{
+    cat c;
+    c.eat();
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;类型转换与继承&#34;&gt;类型转换与继承
+&lt;/h3&gt;&lt;p&gt;派生类的指针和引用可以转为基类的指针或引用，基类的指针或引用不能转化为派生类的指针或引用。这意味着，一个基类的指针，指向的对象，有可能是基类，也有可能是派生类，但肯定不是基类的父类。&lt;/p&gt;
+&lt;p&gt;派生类对象可以赋值给基类，但只会拷贝基类的部分。&lt;/p&gt;
+&lt;h3 id=&#34;虚函数&#34;&gt;虚函数
+&lt;/h3&gt;&lt;p&gt;虚函数在运行时进行解析。我们继续上面的例子，假如我们写了一个新的函数，是doeat，内部调用了animal的eat方法。eat对animal是eat meat or grass，但是最后显示的结果是eat fish。这就证明了，在运行时，doeat函数调用animal的eat方法时，eat方法找到了引用对象的真实对象cat的eat方法并进行了调用。&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;class animal
+{
+  public:
+    virtual void eat() { std::cout &amp;lt;&amp;lt; &amp;#34;eat meat or grass&amp;#34; &amp;lt;&amp;lt; std::endl; };
+};
+
+class cat : public animal
+{
+  public:
+    void eat() { std::cout &amp;lt;&amp;lt; &amp;#34;eat fish&amp;#34; &amp;lt;&amp;lt; std::endl; }
+};
+
+void doeat(animal &amp;amp;a) { a.eat(); }
+
+int main()
+{
+    cat c;
+    doeat(c);
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;另外，为了养成良好的习惯，在派生类中最好使用override来显式的声明覆盖的虚函数。&lt;/p&gt;
+&lt;h3 id=&#34;纯虚函数&#34;&gt;纯虚函数
+&lt;/h3&gt;&lt;p&gt;在定义虚函数后赋值为0则声明了纯虚函数，纯虚函数相当于接口，派生类必须实现该接口。&lt;/p&gt;
+&lt;h2 id=&#34;抽象基类&#34;&gt;抽象基类
+&lt;/h2&gt;&lt;p&gt;含有纯虚函数的类是抽象基类。抽象基类不能创建。&lt;/p&gt;
+&lt;h3 id=&#34;示例-文本行查询程序&#34;&gt;示例 文本行查询程序
+&lt;/h3&gt;&lt;p&gt;给定一段文本，要求查询其中的内容。支持单词查询、逻辑查询。&lt;/p&gt;
+</description>
+        </item>
+        <item>
+        <title>C&#43;&#43; 虚函数 总结</title>
+        <link>https://nansenli.com/zh-cn/post/jianshu/c&#43;&#43;/c&#43;&#43;-%E8%99%9A%E5%87%BD%E6%95%B0-%E6%80%BB%E7%BB%93/</link>
+        <pubDate>Thu, 14 Dec 2017 05:53:00 +0000</pubDate>
+        
+        <guid>https://nansenli.com/zh-cn/post/jianshu/c&#43;&#43;/c&#43;&#43;-%E8%99%9A%E5%87%BD%E6%95%B0-%E6%80%BB%E7%BB%93/</guid>
+        <description>&lt;p&gt;虚函数是 C++ 实现多态的方式。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;什么是多态？
+多态性常被视为自封装和继承之后，面向对象的编程的第三个支柱。
+如果举一个简单的例子，比如有动物（Animal）之类别（Class），而且由动物继承出类别鸡（Chicken）和类别狗（Dog），并对同一源自类别动物（父类别）之一消息有不同的响应，如类别动物有“叫()”之动作，而类别鸡会“啼叫()”，类别狗则会“吠叫()”，则称之为多态。
+根据维基百科上所解释，多态可定义为，“一种将不同的特殊行为和单个泛化记号相关联的能力”，是指计算机程序运行时，相同的消息可能会送给多个不同的类别之对象，而系统可依据对象所属类别，引发对应类别的方法，而有不同的行为。简单来说，所谓多态意指相同的消息给予不同的对象会引发不同的动作称之。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;虚函数是动态多态，在运行时决定，只有在程序运行时才决定调用基类的还是子类的，系统会根据基类指针所指向的对象来决定要调用的函数。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;如何声明虚函数？
+在声明前加上virtual关键字来声明虚函数。在父类中声明，在子类中做具体实现。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;什么是纯虚函数？
+纯虚函数是在声明虚函数时赋值为0的函数，使用这种声明方式后，继承类必须对该虚函数做实现。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;虚函数是如何实现的？
+通过虚表来实现的。每个对象里有虚表指针，指向虚表。虚表实质上是一个数组而不是什么链表。虚函数的地址按照声明顺序依次存放在虚表中。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;虚函数表是怎么实现的？
+为了完成虚函数的功能，编译器（注，这就是为什么C++会被叫做面向编译器编程的原因）会对每一个内部成员声明了虚函数的类创建一个表，称为vtable。在vtable中，以声明顺序放置特定类型的虚函数地址。每一个带有虚函数类的内部都会放置一枚指针，称为vpointer，或者叫vptr，指向这个vtable。每当发生对类的虚函数的调用时，编译器转为调用这个vptr指向的vtable中的函数，而不是静态的调用某个具体的函数。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+        </item>
+        
+    </channel>
+</rss>

@@ -1,0 +1,397 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>Go on Nansen Li</title>
+        <link>https://nansenli.com/zh-cn/categories/go/</link>
+        <description>Recent content in Go on Nansen Li</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>zh-cn</language>
+        <copyright>Nansen Li（李楠森）</copyright>
+        <lastBuildDate>Wed, 14 Nov 2018 08:14:00 +0000</lastBuildDate><atom:link href="https://nansenli.com/zh-cn/categories/go/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>Go类型官方参考 中英文对照</title>
+        <link>https://nansenli.com/zh-cn/post/jianshu/go/go%E7%B1%BB%E5%9E%8B%E5%AE%98%E6%96%B9%E5%8F%82%E8%80%83-%E4%B8%AD%E8%8B%B1%E6%96%87%E5%AF%B9%E7%85%A7/</link>
+        <pubDate>Wed, 14 Nov 2018 08:14:00 +0000</pubDate>
+        
+        <guid>https://nansenli.com/zh-cn/post/jianshu/go/go%E7%B1%BB%E5%9E%8B%E5%AE%98%E6%96%B9%E5%8F%82%E8%80%83-%E4%B8%AD%E8%8B%B1%E6%96%87%E5%AF%B9%E7%85%A7/</guid>
+        <description>&lt;h2 id=&#34;官方参考&#34;&gt;官方参考
+&lt;/h2&gt;&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;https://golang.org/ref/spec#Types&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;https://golang.org/ref/spec#Types&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;其中类型有：&lt;/p&gt;
+&lt;p&gt;Method sets 方法集合
+Boolean types 布尔类型
+Numeric types 数字类型
+String types 字符串类型
+Array types 数组类型
+Slice types 切片类型
+Struct types 结构体类型
+Pointer types 指针类型
+Function types 函数类型
+Interface types 接口类型
+Map types 字典类型
+Channel types 通道类型&lt;/p&gt;
+&lt;h2 id=&#34;method-sets-方法集合&#34;&gt;Method sets 方法集合
+&lt;/h2&gt;&lt;p&gt;A type may have a &lt;em&gt;method set&lt;/em&gt; associated with it. The method set of an &lt;a class=&#34;link&#34; href=&#34;https://golang.org/ref/spec#Interface_types&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;interface type&lt;/a&gt; is its interface. The method set of any other type &lt;code&gt;T&lt;/code&gt; consists of all &lt;a class=&#34;link&#34; href=&#34;https://golang.org/ref/spec#Method_declarations&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;methods&lt;/a&gt; declared with receiver type &lt;code&gt;T&lt;/code&gt;. The method set of the corresponding &lt;a class=&#34;link&#34; href=&#34;https://golang.org/ref/spec#Pointer_types&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;pointer type&lt;/a&gt; &lt;code&gt;*T&lt;/code&gt; is the set of all methods declared with receiver &lt;code&gt;*T&lt;/code&gt; or &lt;code&gt;T&lt;/code&gt; (that is, it also contains the method set of &lt;code&gt;T&lt;/code&gt;). Further rules apply to structs containing embedded fields, as described in the section on &lt;a class=&#34;link&#34; href=&#34;https://golang.org/ref/spec#Struct_types&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;struct types&lt;/a&gt;. Any other type has an empty method set. In a method set, each method must have a &lt;a class=&#34;link&#34; href=&#34;https://golang.org/ref/spec#Uniqueness_of_identifiers&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;unique&lt;/a&gt; non-&lt;a class=&#34;link&#34; href=&#34;https://golang.org/ref/spec#Blank_identifier&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;blank&lt;/a&gt;&lt;a class=&#34;link&#34; href=&#34;https://golang.org/ref/spec#MethodName&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;method name&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;The method set of a type determines the interfaces that the type &lt;a class=&#34;link&#34; href=&#34;https://golang.org/ref/spec#Interface_types&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;implements&lt;/a&gt; and the methods that can be &lt;a class=&#34;link&#34; href=&#34;https://golang.org/ref/spec#Calls&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;called&lt;/a&gt;using a receiver of that type.&lt;/p&gt;
+&lt;p&gt;接口类型Interface types的接口就是方法集合。若一组方法的接受参数都为参数T，把这组方法叫T类型的方法集合。T指针的对应方法集合，其接受参数为T或者*T。这意味着T指针的方法集合包含T类型的方法集合。对结构体来说，该规则同样适用。任何类型都有一个空的方法集合。在方法集合中，每个方法都有一个非空的方法名称。&lt;/p&gt;
+&lt;p&gt;类型的方法集合确定了该类型实现的接口，以及可以可以被该类型的接收器调用的方法。&lt;/p&gt;
+&lt;h2 id=&#34;boolean-types-布尔类型&#34;&gt;Boolean types 布尔类型
+&lt;/h2&gt;&lt;p&gt;A &lt;em&gt;boolean type&lt;/em&gt; represents the set of Boolean truth values denoted by the predeclared constants &lt;code&gt;true&lt;/code&gt; and &lt;code&gt;false&lt;/code&gt;. The predeclared boolean type is &lt;code&gt;bool&lt;/code&gt;; it is a &lt;a class=&#34;link&#34; href=&#34;https://golang.org/ref/spec#Type_definitions&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;defined type&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;布尔类型定义了布尔变量，可被赋值为常量true和false。该类型是已定义类型。例如可以使用char类型来定义。&lt;/p&gt;
+&lt;h2 id=&#34;numeric-types-数字类型&#34;&gt;Numeric types 数字类型
+&lt;/h2&gt;&lt;p&gt;A numeric type represents sets of integer or floating-point values. The predeclared architecture-independent numeric types are:&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;uint8       the set of all unsigned  8-bit integers (0 to 255)
+uint16      the set of all unsigned 16-bit integers (0 to 65535)
+uint32      the set of all unsigned 32-bit integers (0 to 4294967295)
+uint64      the set of all unsigned 64-bit integers (0 to 18446744073709551615)
+
+int8        the set of all signed  8-bit integers (-128 to 127)
+int16       the set of all signed 16-bit integers (-32768 to 32767)
+int32       the set of all signed 32-bit integers (-2147483648 to 2147483647)
+int64       the set of all signed 64-bit integers (-9223372036854775808 to 9223372036854775807)
+
+float32     the set of all IEEE-754 32-bit floating-point numbers
+float64     the set of all IEEE-754 64-bit floating-point numbers
+
+complex64   the set of all complex numbers with float32 real and imaginary parts
+complex128  the set of all complex numbers with float64 real and imaginary parts
+
+byte        alias for uint8
+rune        alias for int32
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;The value of an &lt;em&gt;n&lt;/em&gt;-bit integer is &lt;em&gt;n&lt;/em&gt; bits wide and represented using &lt;a class=&#34;link&#34; href=&#34;https://en.wikipedia.org/wiki/Two%27s_complement&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;two&amp;rsquo;s complement arithmetic&lt;/a&gt;.&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;uint     either 32 or 64 bits
+int      same size as uint
+uintptr  an unsigned integer large enough to store the uninterpreted bits of a pointer value
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;There is also a set of predeclared numeric types with implementation-specific sizes:&lt;/p&gt;
+&lt;p&gt;To avoid portability issues all numeric types are &lt;a class=&#34;link&#34; href=&#34;https://golang.org/ref/spec#Type_definitions&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;defined types&lt;/a&gt; and thus distinct except &lt;code&gt;byte&lt;/code&gt;, which is an &lt;a class=&#34;link&#34; href=&#34;https://golang.org/ref/spec#Alias_declarations&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;alias&lt;/a&gt; for &lt;code&gt;uint8&lt;/code&gt;, and &lt;code&gt;rune&lt;/code&gt;, which is an alias for &lt;code&gt;int32&lt;/code&gt;. Conversions are required when different numeric types are mixed in an expression or assignment. For instance, &lt;code&gt;int32&lt;/code&gt; and &lt;code&gt;int&lt;/code&gt; are not the same type even though they may have the same size on a particular architecture.&lt;/p&gt;
+&lt;p&gt;数字类型包括整型和浮点。内置声明包括uint8 uint16 uint32 uint64以及int8 int16 int32 int64 float32 float64 complex64 complex128 byte rune。&lt;/p&gt;
+&lt;p&gt;N位整数是N位宽度，使用二进制补码计算。&lt;/p&gt;
+&lt;p&gt;与平台无关的声明包块uint int uintptr。&lt;/p&gt;
+&lt;p&gt;除了byte和rune外，其他数字类型为已定义类型，而byte是uint8的别名，rune是int32的别名。在数字类型之间的转换需要进行显示转换。&lt;/p&gt;
+&lt;h2 id=&#34;string-types-字符串类型&#34;&gt;String types 字符串类型
+&lt;/h2&gt;&lt;p&gt;A &lt;em&gt;string type&lt;/em&gt; represents the set of string values. A string value is a (possibly empty) sequence of bytes. Strings are immutable: once created, it is impossible to change the contents of a string. The predeclared string type is &lt;code&gt;string&lt;/code&gt;; it is a &lt;a class=&#34;link&#34; href=&#34;https://golang.org/ref/spec#Type_definitions&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;defined type&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;The length of a string &lt;code&gt;s&lt;/code&gt; (its size in bytes) can be discovered using the built-in function &lt;a class=&#34;link&#34; href=&#34;https://golang.org/ref/spec#Length_and_capacity&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;&lt;code&gt;len&lt;/code&gt;&lt;/a&gt;. The length is a compile-time constant if the string is a constant. A string&amp;rsquo;s bytes can be accessed by integer &lt;a class=&#34;link&#34; href=&#34;https://golang.org/ref/spec#Index_expressions&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;indices&lt;/a&gt; 0 through &lt;code&gt;len(s)-1&lt;/code&gt;. It is illegal to take the address of such an element; if &lt;code&gt;s[i]&lt;/code&gt; is the &lt;code&gt;i&lt;/code&gt;&amp;lsquo;th byte of a string, &lt;code&gt;&amp;amp;s[i]&lt;/code&gt; is invalid.&lt;/p&gt;
+&lt;p&gt;字符串类型可以表示所有字符串的值。一个字符串的值是一系列空或不空的字节序列。他的值不能被修改。字符串被创建后就不能修改内容。我们使用string来声明一个string类型。string类型是已定义类型。&lt;/p&gt;
+&lt;p&gt;一个字符串的长度（其包含多少个字节）可以使用内建函数len来计算。在编译器可以计算一个常量string的长度。string类型的变量可以访问其位置0到位置len-1的值。对这些位置的元素，获取其地址是非法的。使用s[i]表示s字符串第i个位置的元素，而&amp;amp;s[i]是非法的。&lt;/p&gt;
+&lt;h2 id=&#34;array-types-数组类型&#34;&gt;Array types 数组类型
+&lt;/h2&gt;&lt;p&gt;An array is a numbered sequence of elements of a single type, called the element type. The number of elements is called the length and is never negative.&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;ArrayType   = &amp;#34;[&amp;#34; ArrayLength &amp;#34;]&amp;#34; ElementType .
+ArrayLength = Expression .
+ElementType = Type .
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;The length is part of the array&amp;rsquo;s type; it must evaluate to a non-negative &lt;a class=&#34;link&#34; href=&#34;https://golang.org/ref/spec#Constants&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;constant&lt;/a&gt; &lt;a class=&#34;link&#34; href=&#34;https://golang.org/ref/spec#Representability&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;representable&lt;/a&gt; by a value of type &lt;code&gt;int&lt;/code&gt;. The length of array &lt;code&gt;a&lt;/code&gt; can be discovered using the built-in function &lt;a class=&#34;link&#34; href=&#34;https://golang.org/ref/spec#Length_and_capacity&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;&lt;code&gt;len&lt;/code&gt;&lt;/a&gt;. The elements can be addressed by integer &lt;a class=&#34;link&#34; href=&#34;https://golang.org/ref/spec#Index_expressions&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;indices&lt;/a&gt; 0 through &lt;code&gt;len(a)-1&lt;/code&gt;. Array types are always one-dimensional but may be composed to form multi-dimensional types.&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;[32]byte
+[2*N] struct { x, y int32 }
+[1000]*float64
+[3][5]int
+[2][2][2]float64  // same as [2]([2]([2]float64))
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;数组类型是多个同类型的元素构成的可数序列。元素的数量是数组的长度。长度不能为负数。&lt;/p&gt;
+&lt;p&gt;数组的长度也是数组的一部分。他的值非负，可以用int表示。数组的长度使用len求出。数组的所有元素可以从位置0到len-1进行访问。数组类型永远是一维的，进行组合可以表示多位类型。&lt;/p&gt;
+&lt;h2 id=&#34;slice-types-切片&#34;&gt;Slice types 切片
+&lt;/h2&gt;&lt;p&gt;A slice is a descriptor for a contiguous segment of an &lt;em&gt;underlying array&lt;/em&gt; and provides access to a numbered sequence of elements from that array. A slice type denotes the set of all slices of arrays of its element type. The value of an uninitialized slice is &lt;code&gt;nil&lt;/code&gt;.&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;SliceType = &amp;#34;[&amp;#34; &amp;#34;]&amp;#34; ElementType .
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Like arrays, slices are indexable and have a length. The length of a slice &lt;code&gt;s&lt;/code&gt; can be discovered by the built-in function &lt;a class=&#34;link&#34; href=&#34;https://golang.org/ref/spec#Length_and_capacity&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;&lt;code&gt;len&lt;/code&gt;&lt;/a&gt;; unlike with arrays it may change during execution. The elements can be addressed by integer &lt;a class=&#34;link&#34; href=&#34;https://golang.org/ref/spec#Index_expressions&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;indices&lt;/a&gt; 0 through &lt;code&gt;len(s)-1&lt;/code&gt;. The slice index of a given element may be less than the index of the same element in the underlying array.&lt;/p&gt;
+&lt;p&gt;A slice, once initialized, is always associated with an underlying array that holds its elements. A slice therefore shares storage with its array and with other slices of the same array; by contrast, distinct arrays always represent distinct storage.&lt;/p&gt;
+&lt;p&gt;The array underlying a slice may extend past the end of the slice. The &lt;em&gt;capacity&lt;/em&gt; is a measure of that extent: it is the sum of the length of the slice and the length of the array beyond the slice; a slice of length up to that capacity can be created by &lt;a class=&#34;link&#34; href=&#34;https://golang.org/ref/spec#Slice_expressions&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;&lt;em&gt;slicing&lt;/em&gt;&lt;/a&gt; a new one from the original slice. The capacity of a slice &lt;code&gt;a&lt;/code&gt; can be discovered using the built-in function &lt;a class=&#34;link&#34; href=&#34;https://golang.org/ref/spec#Length_and_capacity&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;&lt;code&gt;cap(a)&lt;/code&gt;&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;A new, initialized slice value for a given element type &lt;code&gt;T&lt;/code&gt; is made using the built-in function &lt;a class=&#34;link&#34; href=&#34;https://golang.org/ref/spec#Making_slices_maps_and_channels&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;&lt;code&gt;make&lt;/code&gt;&lt;/a&gt;, which takes a slice type and parameters specifying the length and optionally the capacity. A slice created with &lt;code&gt;make&lt;/code&gt; always allocates a new, hidden array to which the returned slice value refers. That is, executing&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;make([]T, length, capacity)
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;produces the same slice as allocating an array and &lt;a class=&#34;link&#34; href=&#34;https://golang.org/ref/spec#Slice_expressions&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;slicing&lt;/a&gt; it, so these two expressions are equivalent:&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;make([]int, 50, 100)
+new([100]int)[0:50]
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Like arrays, slices are always one-dimensional but may be composed to construct higher-dimensional objects. With arrays of arrays, the inner arrays are, by construction, always the same length; however with slices of slices (or arrays of slices), the inner lengths may vary dynamically. Moreover, the inner slices must be initialized individually.&lt;/p&gt;
+&lt;p&gt;切片表示底层数组的连续段，提供对该段位置的元素访问。切片的类型表示其元素的类型。未初始化的切片的值为nil。&lt;/p&gt;
+&lt;p&gt;与数组相同，切片的长度可以使用len来求出。长度通常小于原来的数组。&lt;/p&gt;
+&lt;p&gt;切片自初始化之后与低层数组共享存储空间，多个切片可以共享同一个存储空间。数组通常代表了不同的存储空间。&lt;/p&gt;
+&lt;p&gt;切片的低层数组长度可以超过切片的末端，使用cap可以计算切片的容量，容量是数组超出切片的值加上切片本身的值。可以通过对切片重新切分得到新的超过原长度的切片。&lt;/p&gt;
+&lt;p&gt;使用内建函数make创建指定类型的切片。make接受切片类型和切片的长度，容量作为可选参数。使用make创建出来的切片总是被分配一个切片所引用的隐藏数组，这意味着通过make创建长度50容量100的切片make([]int, 50, 100)与通过new创建一个长度100的数组并对其切片50的长度new([100]int)[0:50]两者的结果相同。&lt;/p&gt;
+&lt;p&gt;与数组相同，切片的长度是一维的，但是可以表示更高的维度。对于数组来说，内部的数组由于构造的长度相同，是不能改变的。复合切片的内部长度会变成动态的，复合切片的内部也需要单独初始化。&lt;/p&gt;
+&lt;h2 id=&#34;struct-types-结构体&#34;&gt;Struct types 结构体
+&lt;/h2&gt;&lt;p&gt;A struct is a sequence of named elements, called fields, each of which has a name and a type. Field names may be specified explicitly (IdentifierList) or implicitly (EmbeddedField). Within a struct, non-&lt;a class=&#34;link&#34; href=&#34;https://golang.org/ref/spec#Blank_identifier&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;blank&lt;/a&gt; field names must be &lt;a class=&#34;link&#34; href=&#34;https://golang.org/ref/spec#Uniqueness_of_identifiers&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;unique&lt;/a&gt;.&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;StructType    = &amp;#34;struct&amp;#34; &amp;#34;{&amp;#34; { FieldDecl &amp;#34;;&amp;#34; } &amp;#34;}&amp;#34; .
+FieldDecl     = (IdentifierList Type | EmbeddedField) [ Tag ] .
+EmbeddedField = [ &amp;#34;*&amp;#34; ] TypeName .
+Tag           = string_lit .
+&lt;/code&gt;&lt;/pre&gt;&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;// An empty struct.
+struct {}
+
+// A struct with 6 fields.
+struct {
+	x, y int
+	u float32
+	_ float32  // padding
+	A *[]int
+	F func()
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;A field declared with a type but no explicit field name is called an embedded field. An embedded field must be specified as a type name T or as a pointer to a non-interface type name *T, and T itself may not be a pointer type. The unqualified type name acts as the field name.&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;// A struct with four embedded fields of types T1, *T2, P.T3 and *P.T4
+struct {
+	T1        // field name is T1
+	*T2       // field name is T2
+	P.T3      // field name is T3
+	*P.T4     // field name is T4
+	x, y int  // field names are x and y
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;The following declaration is illegal because field names must be unique in a struct type:&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;struct {
+	T     // conflicts with embedded field *T and *P.T
+	*T    // conflicts with embedded field T and *P.T
+	*P.T  // conflicts with embedded field T and *T
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;A field or &lt;a class=&#34;link&#34; href=&#34;https://golang.org/ref/spec#Method_declarations&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;method&lt;/a&gt; &lt;code&gt;f&lt;/code&gt; of an embedded field in a struct &lt;code&gt;x&lt;/code&gt; is called &lt;em&gt;promoted&lt;/em&gt; if &lt;code&gt;x.f&lt;/code&gt; is a legal &lt;a class=&#34;link&#34; href=&#34;https://golang.org/ref/spec#Selectors&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;selector&lt;/a&gt; that denotes that field or method &lt;code&gt;f&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;Promoted fields act like ordinary fields of a struct except that they cannot be used as field names in &lt;a class=&#34;link&#34; href=&#34;https://golang.org/ref/spec#Composite_literals&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;composite literals&lt;/a&gt; of the struct.&lt;/p&gt;
+&lt;p&gt;Given a struct type &lt;code&gt;S&lt;/code&gt; and a &lt;a class=&#34;link&#34; href=&#34;https://golang.org/ref/spec#Type_definitions&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;defined type&lt;/a&gt; &lt;code&gt;T&lt;/code&gt;, promoted methods are included in the method set of the struct as follows:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;If &lt;code&gt;S&lt;/code&gt; contains an embedded field &lt;code&gt;T&lt;/code&gt;, the &lt;a class=&#34;link&#34; href=&#34;https://golang.org/ref/spec#Method_sets&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;method sets&lt;/a&gt; of &lt;code&gt;S&lt;/code&gt; and &lt;code&gt;*S&lt;/code&gt; both include promoted methods with receiver &lt;code&gt;T&lt;/code&gt;. The method set of &lt;code&gt;*S&lt;/code&gt; also includes promoted methods with receiver &lt;code&gt;*T&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;If &lt;code&gt;S&lt;/code&gt; contains an embedded field &lt;code&gt;*T&lt;/code&gt;, the method sets of &lt;code&gt;S&lt;/code&gt; and &lt;code&gt;*S&lt;/code&gt; both include promoted methods with receiver &lt;code&gt;T&lt;/code&gt; or&lt;code&gt;*T&lt;/code&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;A field declaration may be followed by an optional string literal &lt;em&gt;tag&lt;/em&gt;, which becomes an attribute for all the fields in the corresponding field declaration. An empty tag string is equivalent to an absent tag. The tags are made visible through a &lt;a class=&#34;link&#34; href=&#34;https://golang.org/pkg/reflect/#StructTag&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;reflection interface&lt;/a&gt; and take part in &lt;a class=&#34;link&#34; href=&#34;https://golang.org/ref/spec#Type_identity&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;type identity&lt;/a&gt; for structs but are otherwise ignored.&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;struct {
+	x, y float64 &amp;#34;&amp;#34;  // an empty tag string is like an absent tag
+	name string  &amp;#34;any string is permitted as a tag&amp;#34;
+	_    [4]byte &amp;#34;ceci n&amp;#39;est pas un champ de structure&amp;#34;
+}
+
+// A struct corresponding to a TimeStamp protocol buffer.
+// The tag strings define the protocol buffer field numbers;
+// they follow the convention outlined by the reflect package.
+struct {
+	microsec  uint64 `protobuf:&amp;#34;1&amp;#34;`
+	serverIP6 uint64 `protobuf:&amp;#34;2&amp;#34;`
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;结构体是一系列字段的集合，每个字段有自己的名称和类型。类型可以隐式指定。在结构中非空字段名称必须是唯一的。&lt;/p&gt;
+&lt;p&gt;结构体可以为空。也可以包含int float等类型。如果使用_表示padding占位。&lt;/p&gt;
+&lt;p&gt;如果结构体的字段只有类型而没有名字，我们表示这个字段是嵌入字段。嵌入字段的类型必须是类型T，或者是一个非接口类型的指针。&lt;/p&gt;
+&lt;p&gt;结构体x中的嵌入字段的字段或方法叫做结构体x的提升。对结构体x，调用其不存在的成员或者方法，会使用嵌入字段的字段或方法来代替。&lt;/p&gt;
+&lt;p&gt;被提升的字段表现的就像原始字段，除了他们不能用在特殊场合。&lt;/p&gt;
+&lt;p&gt;给定结构体类型和定义的类型T，提升方法包含在结构体的方法集中。&lt;/p&gt;
+&lt;p&gt;如果S包含嵌入字段T，使用T为接受着的话，提升方法被包含在S和&lt;em&gt;S的方法集合。使用&lt;/em&gt;T为接受者的话，提升方法被包含在*S的方法集合。&lt;/p&gt;
+&lt;p&gt;结构体的字段后面，可以跟上一个字符串。这个字符串可以通过反射的方式获取。可以用于特殊的场合。例如json转换，protobuf转换。&lt;/p&gt;
+&lt;h2 id=&#34;pointer-types-指针类型&#34;&gt;Pointer types 指针类型
+&lt;/h2&gt;&lt;p&gt;A pointer type denotes the set of all pointers to variables of a given type, called the base type of the pointer. The value of an uninitialized pointer is nil.&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;PointerType = &amp;#34;*&amp;#34; BaseType .
+BaseType    = Type .
+
+*Point
+*[4]int
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;一个指针类型表示指向给定类型所有变量的指针的类型，是指针的基础类型。指针在未被初始化的时候使用nil作为初值。&lt;/p&gt;
+&lt;h2 id=&#34;function-types-函数类型&#34;&gt;Function types 函数类型
+&lt;/h2&gt;&lt;p&gt;A function type denotes the set of all functions with the same parameter and result types. The value of an uninitialized variable of function type is nil.&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;FunctionType   = &amp;#34;func&amp;#34; Signature .
+Signature      = Parameters [ Result ] .
+Result         = Parameters | Type .
+Parameters     = &amp;#34;(&amp;#34; [ ParameterList [ &amp;#34;,&amp;#34; ] ] &amp;#34;)&amp;#34; .
+ParameterList  = ParameterDecl { &amp;#34;,&amp;#34; ParameterDecl } .
+ParameterDecl  = [ IdentifierList ] [ &amp;#34;...&amp;#34; ] Type .
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Within a list of parameters or results, the names (IdentifierList) must either all be present or all be absent. If present, each name stands for one item (parameter or result) of the specified type and all non-blank names in the signature must be unique. If absent, each type stands for one item of that type. Parameter and result lists are always parenthesized except that if there is exactly one unnamed result it may be written as an unparenthesized type.&lt;/p&gt;
+&lt;p&gt;The final incoming parameter in a function signature may have a type prefixed with &amp;hellip;. A function with such a parameter is called variadic and may be invoked with zero or more arguments for that parameter.&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;func()
+func(x int) int
+func(a, _ int, z float32) bool
+func(a, b int, z float32) (bool)
+func(prefix string, values ...int)
+func(a, b int, z float64, opt ...interface{}) (success bool)
+func(int, int, float64) (float64, *[]int)
+func(n int) func(p *T)
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;一个函数类型表示所有拥有相同参数和返回值的函数的类型。未被初始化的函数类型变量的值是nil。&lt;/p&gt;
+&lt;p&gt;在参数列表或者返回列表中，名称必须都被显示的声明出来，或者都没有声明，只写类型。如果写了名称，每个名称都有类型和非空的名字，而名字必须唯一。如果没有声明名字，那就只写类型。参数和返回列表需要使用括号包裹。返回列表在只有一个类型且没有名字时可以不加括号。&lt;/p&gt;
+&lt;p&gt;最后传入的参数的前面可以使用可变参数，前缀可以使用三个点。调用时，需要传入0个或以上的参数。&lt;/p&gt;
+&lt;h2 id=&#34;interface-types-接口类型&#34;&gt;Interface types 接口类型
+&lt;/h2&gt;&lt;p&gt;An interface type specifies a method set called its interface. A variable of interface type can store a value of any type with a method set that is any superset of the interface. Such a type is said to implement the interface. The value of an uninitialized variable of interface type is nil.&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;InterfaceType      = &amp;#34;interface&amp;#34; &amp;#34;{&amp;#34; { MethodSpec &amp;#34;;&amp;#34; } &amp;#34;}&amp;#34; .
+MethodSpec         = MethodName Signature | InterfaceTypeName .
+MethodName         = identifier .
+InterfaceTypeName  = TypeName .
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;As with all method sets, in an interface type, each method must have a unique non-blank name.&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;// A simple File interface
+interface {
+	Read(b Buffer) bool
+	Write(b Buffer) bool
+	Close()
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;More than one type may implement an interface. For instance, if two types S1 and S2 have the method set&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;func (p T) Read(b Buffer) bool { return … }
+func (p T) Write(b Buffer) bool { return … }
+func (p T) Close() { … }
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;(where T stands for either S1 or S2) then the File interface is implemented by both S1 and S2, regardless of what other methods S1 and S2 may have or share.&lt;/p&gt;
+&lt;p&gt;A type implements any interface comprising any subset of its methods and may therefore implement several distinct interfaces. For instance, all types implement the empty interface:&lt;/p&gt;
+&lt;p&gt;interface{}
+Similarly, consider this interface specification, which appears within a type declaration to define an interface called Locker:&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;type Locker interface {
+	Lock()
+	Unlock()
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;If S1 and S2 also implement&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;func (p T) Lock() { … }
+func (p T) Unlock() { … }
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;they implement the Locker interface as well as the File interface.&lt;/p&gt;
+&lt;p&gt;An interface T may use a (possibly qualified) interface type name E in place of a method specification. This is called embedding interface E in T; it adds all (exported and non-exported) methods of E to the interface T.&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;type ReadWriter interface {
+	Read(b Buffer) bool
+	Write(b Buffer) bool
+}
+
+type File interface {
+	ReadWriter  // same as adding the methods of ReadWriter
+	Locker      // same as adding the methods of Locker
+	Close()
+}
+
+type LockedFile interface {
+	Locker
+	File        // illegal: Lock, Unlock not unique
+	Lock()      // illegal: Lock not unique
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;An interface type T may not embed itself or any interface type that embeds T, recursively.&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;// illegal: Bad cannot embed itself
+type Bad interface {
+	Bad
+}
+
+// illegal: Bad1 cannot embed itself using Bad2
+type Bad1 interface {
+	Bad2
+}
+type Bad2 interface {
+	Bad1
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;接口类型表示一个方法集合，该方法集合叫做该类型的接口。接口类型可以存储一个变量，以及该变量的方法集合的任何超集。传入的类型与对应的接口叫做该类型的实现。未被初始化的接口类型变量的值是nil。&lt;/p&gt;
+&lt;p&gt;和方法集合一样，接口类型的内部，每个方法必须油唯一非空名字。&lt;/p&gt;
+&lt;p&gt;如果S1、S2两种类型的方法集和都包含了同样的接口实现，不管方法集合其他的区别是什么，S1和S2都被认为是接口的实现。&lt;/p&gt;
+&lt;p&gt;如果一个类型实现了一个接口，这个接口的子集又是其他接口的实现，那么这个类型也会实现那些接口。举个例子，所有的类型都实现了空接口。&lt;/p&gt;
+&lt;p&gt;接口中也可以内嵌其他接口，但是其内嵌的接口的方法的名字不能冲突。&lt;/p&gt;
+&lt;h2 id=&#34;map-types-字典类型&#34;&gt;Map types 字典类型
+&lt;/h2&gt;&lt;p&gt;A map is an unordered group of elements of one type, called the element type, indexed by a set of unique keys of another type, called the key type. The value of an uninitialized map is nil.&lt;/p&gt;
+&lt;p&gt;MapType     = &amp;ldquo;map&amp;rdquo; &amp;ldquo;[&amp;rdquo; KeyType &amp;ldquo;]&amp;rdquo; ElementType .
+KeyType     = Type .
+The comparison operators == and != must be fully defined for operands of the key type; thus the key type must not be a function, map, or slice. If the key type is an interface type, these comparison operators must be defined for the dynamic key values; failure will cause a run-time panic.&lt;/p&gt;
+&lt;p&gt;map[string]int
+map[*T]struct{ x, y float64 }
+map[string]interface{}
+The number of map elements is called its length. For a map m, it can be discovered using the built-in function len and may change during execution. Elements may be added during execution using assignments and retrieved with index expressions; they may be removed with the delete built-in function.&lt;/p&gt;
+&lt;p&gt;A new, empty map value is made using the built-in function make, which takes the map type and an optional capacity hint as arguments:&lt;/p&gt;
+&lt;p&gt;make(map[string]int)
+make(map[string]int, 100)
+The initial capacity does not bound its size: maps grow to accommodate the number of items stored in them, with the exception of nil maps. A nil map is equivalent to an empty map except that no elements may be added.&lt;/p&gt;
+&lt;p&gt;字典类型的内部是无序元素排序的类型，内部的类型叫元素的类型，使用唯一键值进行索引，键值也有另外一种类型，叫键类型。未被初始化的字典类型的值是nil。&lt;/p&gt;
+&lt;p&gt;键值类型必须完全定义了==运算和！=运算。因此函数、字典、切片都是不允许作为键值的。如果键值是一个接口，比较操作必须被定义为可以接受一个动态的键值。对键值的相关操作失败时会引发程序运行时惊慌。&lt;/p&gt;
+&lt;p&gt;字典元素的数量称为字典的长度。可以通过len函数检查，其值在运行期间可能被更改。元素可能通过指派操作添加，可以通过下标取出，可以通过delete函数移除。&lt;/p&gt;
+&lt;p&gt;一个空的map的值可以通过内建函数make来创建，make的第一个参数是map的类型，第二个参数是容量。&lt;/p&gt;
+&lt;p&gt;字典的容量不限制大小，字典的容量会增长以容纳其中项目的数量。但nil字典不是这样的，nil字典基本上和空字典是一样的，除了不能添加任何元素。&lt;/p&gt;
+&lt;h2 id=&#34;channel-types-通道类型&#34;&gt;Channel types 通道类型
+&lt;/h2&gt;&lt;p&gt;A channel provides a mechanism for concurrently executing functions to communicate by sending and receiving values of a specified element type. The value of an uninitialized channel is nil.&lt;/p&gt;
+&lt;p&gt;ChannelType = ( &amp;ldquo;chan&amp;rdquo; | &amp;ldquo;chan&amp;rdquo; &amp;ldquo;&amp;lt;-&amp;rdquo; | &amp;ldquo;&amp;lt;-&amp;rdquo; &amp;ldquo;chan&amp;rdquo; ) ElementType .
+The optional &amp;lt;- operator specifies the channel direction, send or receive. If no direction is given, the channel is bidirectional. A channel may be constrained only to send or only to receive by conversion or assignment.&lt;/p&gt;
+&lt;p&gt;chan T          // can be used to send and receive values of type T
+chan&amp;lt;- float64  // can only be used to send float64s
+&amp;lt;-chan int      // can only be used to receive ints
+The &amp;lt;- operator associates with the leftmost chan possible:&lt;/p&gt;
+&lt;p&gt;chan&amp;lt;- chan int    // same as chan&amp;lt;- (chan int)
+chan&amp;lt;- &amp;lt;-chan int  // same as chan&amp;lt;- (&amp;lt;-chan int)
+&amp;lt;-chan &amp;lt;-chan int  // same as &amp;lt;-chan (&amp;lt;-chan int)
+chan (&amp;lt;-chan int)
+A new, initialized channel value can be made using the built-in function make, which takes the channel type and an optional capacity as arguments:&lt;/p&gt;
+&lt;p&gt;make(chan int, 100)
+The capacity, in number of elements, sets the size of the buffer in the channel. If the capacity is zero or absent, the channel is unbuffered and communication succeeds only when both a sender and receiver are ready. Otherwise, the channel is buffered and communication succeeds without blocking if the buffer is not full (sends) or not empty (receives). A nil channel is never ready for communication.&lt;/p&gt;
+&lt;p&gt;A channel may be closed with the built-in function close. The multi-valued assignment form of the receive operator reports whether a received value was sent before the channel was closed.&lt;/p&gt;
+&lt;p&gt;A single channel may be used in send statements, receive operations, and calls to the built-in functions cap and len by any number of goroutines without further synchronization. Channels act as first-in-first-out queues. For example, if one goroutine sends values on a channel and a second goroutine receives them, the values are received in the order sent.&lt;/p&gt;
+&lt;p&gt;通道提供了并行执行程序之间的通信方式，该方式使用发送和接受特定类型的值来实现。未被初始化的通道的值是nil。&lt;/p&gt;
+&lt;p&gt;标记&amp;lt;-用来指示通道的方向，例如是接受还是发送。如果不指定方向，则通道从是双向的。&lt;/p&gt;
+&lt;p&gt;通道的&amp;lt;-标记，转换或指派通道的方向，成为发送或接收。&lt;/p&gt;
+&lt;p&gt;通道所传递的内容也可以是通道。&lt;/p&gt;
+&lt;p&gt;使用make也可以创建初始化的通道，make的第二个参数可以设置通道的容量。&lt;/p&gt;
+&lt;p&gt;通道的容量是通道中元素的缓存数量。如果容量是0或者不设置，通道是没有缓存的，只有接收者和发送者都准备好时才进行通信。否则，通道在缓存没有满时，是不阻塞的。如果通道的值是0，则永远无法通信。&lt;/p&gt;
+&lt;p&gt;通道使用系统调用close来关闭。使用多值接受的第二个参数来判断通道是否关闭。&lt;/p&gt;
+&lt;p&gt;单向通道用于发送表达式，接收操作。cap与len也可以调用，并且无须担心多个同步的协程同时运行。通道是先入先出的，如果第一个协成放入了一个值，第二个协成取出的一定是先放入的值。&lt;/p&gt;
+</description>
+        </item>
+        <item>
+        <title>2018-09-20 Go学习拾贝</title>
+        <link>https://nansenli.com/zh-cn/post/jianshu/go/2018-09-20-go%E5%AD%A6%E4%B9%A0%E6%8B%BE%E8%B4%9D/</link>
+        <pubDate>Wed, 07 Nov 2018 06:54:00 +0000</pubDate>
+        
+        <guid>https://nansenli.com/zh-cn/post/jianshu/go/2018-09-20-go%E5%AD%A6%E4%B9%A0%E6%8B%BE%E8%B4%9D/</guid>
+        <description>&lt;h2 id=&#34;go的指针与值在作为接受者和参数时的表现不同&#34;&gt;Go的指针与值在作为接受者和参数时的表现不同
+&lt;/h2&gt;&lt;p&gt;方法与指针重定向
+比较前两个程序，你大概会注意到带指针参数的函数必须接受一个指针：&lt;/p&gt;
+&lt;p&gt;var v Vertex
+ScaleFunc(v, 5)  // 编译错误！
+ScaleFunc(&amp;amp;v, 5) // OK
+而以指针为接收者的方法被调用时，接收者既能为值又能为指针：&lt;/p&gt;
+&lt;p&gt;var v Vertex
+v.Scale(5)  // OK
+p := &amp;amp;v
+p.Scale(10) // OK
+对于语句 v.Scale(5)，即便 v 是个值而非指针，带指针接收者的方法也能被直接调用。 也就是说，由于 Scale 方法有一个指针接收者，为方便起见，Go 会将语句 v.Scale(5) 解释为 (&amp;amp;v).Scale(5)。&lt;/p&gt;
+&lt;p&gt;另外，Go会将指针的.运算自动解释为(*).&lt;/p&gt;
+</description>
+        </item>
+        <item>
+        <title>2018-08-30 Go学习拾贝</title>
+        <link>https://nansenli.com/zh-cn/post/jianshu/go/2018-08-30-go%E5%AD%A6%E4%B9%A0%E6%8B%BE%E8%B4%9D/</link>
+        <pubDate>Sat, 01 Sep 2018 13:40:00 +0000</pubDate>
+        
+        <guid>https://nansenli.com/zh-cn/post/jianshu/go/2018-08-30-go%E5%AD%A6%E4%B9%A0%E6%8B%BE%E8%B4%9D/</guid>
+        <description>&lt;ul&gt;
+&lt;li&gt;在函数中，简洁赋值语句 := 可在类型明确的地方代替 var 声明。但是常量必须使用const来声明&lt;/li&gt;
+&lt;li&gt;函数外的每个语句都必须以关键字开始（var, func 等等），因此 := 结构不能在函数外使用。&lt;/li&gt;
+&lt;li&gt;为什么Go使用后置类型生命 &lt;a class=&#34;link&#34; href=&#34;https://blog.go-zh.org/gos-declaration-syntax&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;https://blog.go-zh.org/gos-declaration-syntax&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Go的类型有如下：&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;bool
+
+string
+
+int  int8  int16  int32  int64
+uint uint8 uint16 uint32 uint64 uintptr
+
+byte // uint8 的别名
+
+rune // int32 的别名
+    // 表示一个 Unicode 码点
+
+float32 float64
+
+complex64 complex128
+&lt;/code&gt;&lt;/pre&gt;&lt;ul&gt;
+&lt;li&gt;当你需要一个整数值时应使用 int 类型，除非你有特殊的理由使用固定大小或无符号的整数类型。&lt;/li&gt;
+&lt;li&gt;Go不存在隐式转换&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+        </item>
+        
+    </channel>
+</rss>

@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="第一章 从 C 到 C++ 条款1 C++是语言联邦 这条意思是C++支持面向过程、面向对象、泛型编程、函数编程、元编程五中编程方式，但是会令人困惑。所以他是一门综合语言。 条款2 const enum inline 代替 define define不是语言的一部分，而是预处理的部分。const enum inline可以被编译器发现错误 条款3 使用const来限制出错的可能 例如返回const引用对象来防止用户修改。使用const成员函数来防止对类的破坏。 条款4 使用对象前确保已经初始化 主要是使用参数初始化列表初始化成员或者父类。另外如果类使用了全局的对象，则无法知道什么时候初始化的这个对象。所以需要使用类内部的static变量。（也是只有一份） 第二章 有关对象的构造与析构 条款5 了解对象的默认成员函数 编译器会根据需要的时候，默认生成的成员函数包括默认构造函数，拷贝构造函数，析构函数，拷贝赋值函数。 其中，默认拷贝赋值函数会可能无法拷贝引用成员。 条款6 使用=delete来拒绝默认生成的成员函数 这个可以防止类被拷贝，组织拷贝 条款7 为多态基类声明virtual析构函数 这个是基本功了。 条款8 析构函数不要抛出异常 这个可能导致内存释放不完全，或者导致抛出多个异常 条款9 构造函数和析构函数中中不调用虚函数 这条也比较明显，派生类的构造函数如果进入到基类构造函数中，调用了虚函数，此时派生类的虚函数还没有准备好。 条款10 operator = 应该返回对象的引用 这样就可以连续赋值了 条款11 在operator = 处理自我赋值 很难保证你的自我赋值代码没有问题，而且自我赋值是浪费时间的行为。 条款12 复制对象时记得复制每一个部分 这个很显然了。你要实现赋值函数，那么就必须拷贝所有内容。 第三章 有关对象的持有资源 条款13 对象是持有资源的基本单位 要能够获取资源，还要能够正确释放资源。关键在于使用shared_ptr来管理内存。可以自动释放持有的资源 条款14 持有资源的对象复制 要么禁止复制，要么使用shared_ptr成员，要么进行深度拷贝，要么使拷贝过程变为资源的转移。 条款15 持有资源的对象需要提供一个原始对象的方法 这个世界并不完美，许多APIs需要传递原始资源的指针才可以。使用shared_ptr会干扰这个对象的使用方式 条款16 new数组对象的时候需要delete 为了避免这种错误，可以使用vector容器来进行操作，避免对new数组的需求 条款17 new对象作为参数传入式可能导致内存泄漏 假如new对象和参数传入shared_ptr中间抛出了异常，那么就会导致内存泄漏">
+<title>effective C&#43;&#43; 笔记</title>
+
+<link rel='canonical' href='https://nansenli.com/zh-cn/post/jianshu/c&#43;&#43;/effective-c&#43;&#43;-%E7%AC%94%E8%AE%B0/'>
+
+<link rel="stylesheet" href="/scss/style.min.1084ac713783b88e0bd9807a58068e10aae22e99420f94a9234654a4e199baa4.css"><meta property='og:title' content="effective C++ 笔记">
+<meta property='og:description' content="第一章 从 C 到 C++ 条款1 C++是语言联邦 这条意思是C++支持面向过程、面向对象、泛型编程、函数编程、元编程五中编程方式，但是会令人困惑。所以他是一门综合语言。 条款2 const enum inline 代替 define define不是语言的一部分，而是预处理的部分。const enum inline可以被编译器发现错误 条款3 使用const来限制出错的可能 例如返回const引用对象来防止用户修改。使用const成员函数来防止对类的破坏。 条款4 使用对象前确保已经初始化 主要是使用参数初始化列表初始化成员或者父类。另外如果类使用了全局的对象，则无法知道什么时候初始化的这个对象。所以需要使用类内部的static变量。（也是只有一份） 第二章 有关对象的构造与析构 条款5 了解对象的默认成员函数 编译器会根据需要的时候，默认生成的成员函数包括默认构造函数，拷贝构造函数，析构函数，拷贝赋值函数。 其中，默认拷贝赋值函数会可能无法拷贝引用成员。 条款6 使用=delete来拒绝默认生成的成员函数 这个可以防止类被拷贝，组织拷贝 条款7 为多态基类声明virtual析构函数 这个是基本功了。 条款8 析构函数不要抛出异常 这个可能导致内存释放不完全，或者导致抛出多个异常 条款9 构造函数和析构函数中中不调用虚函数 这条也比较明显，派生类的构造函数如果进入到基类构造函数中，调用了虚函数，此时派生类的虚函数还没有准备好。 条款10 operator = 应该返回对象的引用 这样就可以连续赋值了 条款11 在operator = 处理自我赋值 很难保证你的自我赋值代码没有问题，而且自我赋值是浪费时间的行为。 条款12 复制对象时记得复制每一个部分 这个很显然了。你要实现赋值函数，那么就必须拷贝所有内容。 第三章 有关对象的持有资源 条款13 对象是持有资源的基本单位 要能够获取资源，还要能够正确释放资源。关键在于使用shared_ptr来管理内存。可以自动释放持有的资源 条款14 持有资源的对象复制 要么禁止复制，要么使用shared_ptr成员，要么进行深度拷贝，要么使拷贝过程变为资源的转移。 条款15 持有资源的对象需要提供一个原始对象的方法 这个世界并不完美，许多APIs需要传递原始资源的指针才可以。使用shared_ptr会干扰这个对象的使用方式 条款16 new数组对象的时候需要delete 为了避免这种错误，可以使用vector容器来进行操作，避免对new数组的需求 条款17 new对象作为参数传入式可能导致内存泄漏 假如new对象和参数传入shared_ptr中间抛出了异常，那么就会导致内存泄漏">
+<meta property='og:url' content='https://nansenli.com/zh-cn/post/jianshu/c&#43;&#43;/effective-c&#43;&#43;-%E7%AC%94%E8%AE%B0/'>
+<meta property='og:site_name' content='Nansen Li'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2018-04-23T10:40:00&#43;00:00'/><meta property='article:modified_time' content='2018-04-23T10:40:00&#43;00:00'/>
+<meta name="twitter:title" content="effective C++ 笔记">
+<meta name="twitter:description" content="第一章 从 C 到 C++ 条款1 C++是语言联邦 这条意思是C++支持面向过程、面向对象、泛型编程、函数编程、元编程五中编程方式，但是会令人困惑。所以他是一门综合语言。 条款2 const enum inline 代替 define define不是语言的一部分，而是预处理的部分。const enum inline可以被编译器发现错误 条款3 使用const来限制出错的可能 例如返回const引用对象来防止用户修改。使用const成员函数来防止对类的破坏。 条款4 使用对象前确保已经初始化 主要是使用参数初始化列表初始化成员或者父类。另外如果类使用了全局的对象，则无法知道什么时候初始化的这个对象。所以需要使用类内部的static变量。（也是只有一份） 第二章 有关对象的构造与析构 条款5 了解对象的默认成员函数 编译器会根据需要的时候，默认生成的成员函数包括默认构造函数，拷贝构造函数，析构函数，拷贝赋值函数。 其中，默认拷贝赋值函数会可能无法拷贝引用成员。 条款6 使用=delete来拒绝默认生成的成员函数 这个可以防止类被拷贝，组织拷贝 条款7 为多态基类声明virtual析构函数 这个是基本功了。 条款8 析构函数不要抛出异常 这个可能导致内存释放不完全，或者导致抛出多个异常 条款9 构造函数和析构函数中中不调用虚函数 这条也比较明显，派生类的构造函数如果进入到基类构造函数中，调用了虚函数，此时派生类的虚函数还没有准备好。 条款10 operator = 应该返回对象的引用 这样就可以连续赋值了 条款11 在operator = 处理自我赋值 很难保证你的自我赋值代码没有问题，而且自我赋值是浪费时间的行为。 条款12 复制对象时记得复制每一个部分 这个很显然了。你要实现赋值函数，那么就必须拷贝所有内容。 第三章 有关对象的持有资源 条款13 对象是持有资源的基本单位 要能够获取资源，还要能够正确释放资源。关键在于使用shared_ptr来管理内存。可以自动释放持有的资源 条款14 持有资源的对象复制 要么禁止复制，要么使用shared_ptr成员，要么进行深度拷贝，要么使拷贝过程变为资源的转移。 条款15 持有资源的对象需要提供一个原始对象的方法 这个世界并不完美，许多APIs需要传递原始资源的指针才可以。使用shared_ptr会干扰这个对象的使用方式 条款16 new数组对象的时候需要delete 为了避免这种错误，可以使用vector容器来进行操作，避免对new数组的需求 条款17 new对象作为参数传入式可能导致内存泄漏 假如new对象和参数传入shared_ptr中间抛出了异常，那么就会导致内存泄漏">
+    <link rel="shortcut icon" href="/favicon.ico" />
+
+  
+    
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-WC38C3XE3J"></script>
+      <script>
+        var doNotTrack = false;
+        if ( false ) {
+          var dnt = (navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack);
+          var doNotTrack = (dnt == "1" || dnt == "yes");
+        }
+        if (!doNotTrack) {
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-WC38C3XE3J');
+        }
+      </script>
+    
+  
+
+
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="切换菜单">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/zh-cn/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/avatar_hu96777ff80939aaa7d938dddcc232fcc6_1414962_300x0_resize_box_3.png" width="300"
+                            height="300" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+                    <span class="emoji">🌈</span>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/zh-cn">Nansen Li</a></h1>
+            <h2 class="site-description"></h2>
+        </div>
+    </header><ol class="menu-social">
+            
+                <li>
+                    <a 
+                        href='https://github.com/linanwx'
+                        target="_blank"
+                        title="GitHub"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://www.linkedin.com/in/nansen-li-3bb0a3146/'
+                        target="_blank"
+                        title="LinkedIn"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-brand-linkedin"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M8 11v5" /><path d="M8 8v.01" /><path d="M12 16v-5" /><path d="M16 16v-3a2 2 0 1 0 -4 0" /><path d="M3 7a4 4 0 0 1 4 -4h10a4 4 0 0 1 4 4v10a4 4 0 0 1 -4 4h-10a4 4 0 0 1 -4 -4z" /></svg>
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='index.xml'
+                        target="_blank"
+                        title="RSS"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-rss" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="5" cy="19" r="1" />
+  <path d="M4 4a16 16 0 0 1 16 16" />
+  <path d="M4 11a9 9 0 0 1 9 9" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/zh-cn/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+</svg>
+
+
+
+                
+                <span>主页</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/zh-cn/page/archives/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>归档</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/zh-cn/page/search/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
+
+
+
+                
+                <span>搜索</span>
+            </a>
+        </li>
+        
+        <li class="menu-bottom-section">
+            <ol class="menu">
+                    
+                        <li id="i18n-switch">  
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-language" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M4 5h7" />
+  <path d="M9 3v2c0 4.418 -2.239 8 -5 8" />
+  <path d="M5 9c-.003 2.144 2.952 3.908 6.7 4" />
+  <path d="M12 20l4 -9l4 9" />
+  <path d="M19.1 18h-6.2" />
+</svg>
+
+
+
+                            <select name="language" title="language" onchange="window.location.href = this.selectedOptions[0].value">
+                                
+                                    <option value="https://nansenli.com/" >English</option>
+                                
+                                    <option value="https://nansenli.com/zh-cn/" selected>中文</option>
+                                
+                            </select>
+                        </li>
+                    
+                
+
+                
+                    <li id="dark-mode-toggle">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <span>暗色模式</span>
+                    </li>
+                
+            </ol>
+        </li>
+    </ol>
+</aside>
+
+    
+
+            <main class="main full-width">
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/zh-cn/categories/c&#43;&#43;/" >
+                C&#43;&#43;
+            </a>
+        
+    </header>
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/zh-cn/post/jianshu/c&#43;&#43;/effective-c&#43;&#43;-%E7%AC%94%E8%AE%B0/">effective C&#43;&#43; 笔记</a>
+        </h2>
+    
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">Apr 23, 2018</time>
+            </div>
+        
+
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+                <time class="article-time--reading">
+                    阅读时长: 1 分钟
+                </time>
+            </div>
+        
+    </footer>
+    
+
+    
+        <footer class="article-translations">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-language" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M4 5h7" />
+  <path d="M9 3v2c0 4.418 -2.239 8 -5 8" />
+  <path d="M5 9c-.003 2.144 2.952 3.908 6.7 4" />
+  <path d="M12 20l4 -9l4 9" />
+  <path d="M19.1 18h-6.2" />
+</svg>
+
+
+
+            <div>
+                
+                    <a href="https://nansenli.com/post/jianshu/c&#43;&#43;/effective-c&#43;&#43;-%E7%AC%94%E8%AE%B0/" class="link">English</a>
+                
+            </div>
+        </footer>
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <h2 id="第一章-从-c-到-c">第一章 从 C 到 C++
+</h2><ul>
+<li>
+<p>条款1 C++是语言联邦
+这条意思是C++支持面向过程、面向对象、泛型编程、函数编程、元编程五中编程方式，但是会令人困惑。所以他是一门综合语言。</p>
+</li>
+<li>
+<p>条款2 const enum inline 代替 define
+define不是语言的一部分，而是预处理的部分。const enum inline可以被编译器发现错误</p>
+</li>
+<li>
+<p>条款3 使用const来限制出错的可能
+例如返回const引用对象来防止用户修改。使用const成员函数来防止对类的破坏。</p>
+</li>
+<li>
+<p>条款4 使用对象前确保已经初始化
+主要是使用参数初始化列表初始化成员或者父类。另外如果类使用了全局的对象，则无法知道什么时候初始化的这个对象。所以需要使用类内部的static变量。（也是只有一份）</p>
+</li>
+</ul>
+<h2 id="第二章-有关对象的构造与析构">第二章 有关对象的构造与析构
+</h2><ul>
+<li>条款5 了解对象的默认成员函数
+编译器会根据需要的时候，默认生成的成员函数包括默认构造函数，拷贝构造函数，析构函数，拷贝赋值函数。</li>
+</ul>
+<p>其中，默认拷贝赋值函数会可能无法拷贝引用成员。</p>
+<ul>
+<li>
+<p>条款6 使用=delete来拒绝默认生成的成员函数
+这个可以防止类被拷贝，组织拷贝</p>
+</li>
+<li>
+<p>条款7 为多态基类声明virtual析构函数
+这个是基本功了。</p>
+</li>
+<li>
+<p>条款8 析构函数不要抛出异常
+这个可能导致内存释放不完全，或者导致抛出多个异常</p>
+</li>
+<li>
+<p>条款9 构造函数和析构函数中中不调用虚函数
+这条也比较明显，派生类的构造函数如果进入到基类构造函数中，调用了虚函数，此时派生类的虚函数还没有准备好。</p>
+</li>
+<li>
+<p>条款10 operator = 应该返回对象的引用
+这样就可以连续赋值了</p>
+</li>
+<li>
+<p>条款11 在operator = 处理自我赋值
+很难保证你的自我赋值代码没有问题，而且自我赋值是浪费时间的行为。</p>
+</li>
+<li>
+<p>条款12 复制对象时记得复制每一个部分
+这个很显然了。你要实现赋值函数，那么就必须拷贝所有内容。</p>
+</li>
+</ul>
+<h2 id="第三章-有关对象的持有资源">第三章 有关对象的持有资源
+</h2><ul>
+<li>
+<p>条款13 对象是持有资源的基本单位
+要能够获取资源，还要能够正确释放资源。关键在于使用shared_ptr来管理内存。可以自动释放持有的资源</p>
+</li>
+<li>
+<p>条款14 持有资源的对象复制
+要么禁止复制，要么使用shared_ptr成员，要么进行深度拷贝，要么使拷贝过程变为资源的转移。</p>
+</li>
+<li>
+<p>条款15 持有资源的对象需要提供一个原始对象的方法
+这个世界并不完美，许多APIs需要传递原始资源的指针才可以。使用shared_ptr会干扰这个对象的使用方式</p>
+</li>
+<li>
+<p>条款16 new数组对象的时候需要delete
+为了避免这种错误，可以使用vector容器来进行操作，避免对new数组的需求</p>
+</li>
+<li>
+<p>条款17 new对象作为参数传入式可能导致内存泄漏
+假如new对象和参数传入shared_ptr中间抛出了异常，那么就会导致内存泄漏</p>
+</li>
+</ul>
+<h2 id="第四章-设计与声明">第四章 设计与声明
+</h2><ul>
+<li>
+<p>条款18 让接口容易被正确使用
+接口有的时候难以表述清楚，比如传入三个int值，你得清楚的记得这三个值每一个到底是什么。如果传入的参数反了怎么办？这里书上提到了传入特定对象以及使用explicit来限定参数。其实也可以构建一个日期对象，然后指定成员，我感觉这种还好一点。另外，接口除了参数要设置的合理，返回值也要设置的合理（比如返回智能指针而不是原始指针强迫对方）。</p>
+</li>
+<li>
+<p>条款19 设计class是个大工程
+对象的创建、销毁，对象初始化与对象赋值，对象通过值拷贝传递会异常吗，新type的合法值是什么。类型转换函数写了吗。operator呢。哪些函数应该被delete？</p>
+</li>
+<li>
+<p>条款20 传递常量引用代替传值
+传值会带来对象的构造函数的调用，消耗时间，传递引用就是传递指针</p>
+</li>
+<li>
+<p>条款21 返回临时对象时无法返回对临时对象的引用
+如果返回一个由函数创建的对象时，无法返回对该对象的引用。编译器会自己做出正确的优化步骤。</p>
+</li>
+<li>
+<p>条款22 成员变量应该声明为private
+如果声明为public，那么删除这个变量会导致所有程序重写。如果声明为private，那么删除这个变量会导致继承类程序重写。所以要声明为private</p>
+</li>
+<li>
+<p>条款23 使用非成员函数替换成员函数
+如果一个方法只是调用了其他几个成员函数，没有必要将其设置为成员函数，把他放在外面，然后用相同的命名空间包裹就可以了</p>
+</li>
+<li>
+<p>条款24 如果成员函数的参数需要支持类型转换，则将其转为非成员函数
+这是因为成员函数在某些情况下可能无法发挥作用。比如operator *只能支持该类型作为第一个参数。如果内置类型作为第一个参数的时候就会失效。</p>
+</li>
+<li>
+<p>条款25 swap函数与异常
+swap是个有用的函数。为了实现高效率的swap，你需要设计一个swap成员函数来与另外一个对象进行交换。然后再命名空间设计一个非成员函数雨来调用上面的swap函数。最后特化std::swap来让编译器选择你自己的swap</p>
+</li>
+</ul>
+<h2 id="第五章-有关函数的实现">第五章 有关函数的实现
+</h2><ul>
+<li>
+<p>条款26 延迟定义出现的顺序
+C++对于不同行的顺序不能随意更改其顺序，这意味着只有用到什么再去定义什么更能符合过程，如果在刚开始就将所有的定义，但是程序一开始就返回，这就会带来不必要的构造与析构过程。</p>
+</li>
+<li>
+<p>条款27 避免类型转换
+四种c++类型转换的使用场景虽然可以使用，但是如果使用了都会带来更大的问题。旧式的类型转换就更不能用了。</p>
+</li>
+<li>
+<p>条款28 避免返回handles指向对象内部成分
+尽量避免对象内部的数据的指针被返回到对象外部，这会带来很大的问题。vector []运算符就是这种情况。这种情况是特例</p>
+</li>
+<li>
+<p>条款29 异常安全
+C++异常是最难以处理的一件事情了。但是还是要保证异常。</p>
+</li>
+<li>
+<p>条款30 了解inline
+inline是让编译器尽量避免栈的展开，而不是一定。八二法则告诉我们，程序只会花时间在20%的代码上，不一定见了函数就要都用inline。</p>
+</li>
+<li>
+<p>条款31 减少依赖——定义与声明相分离
+两种处理方式——实施类与接口类。实施类就是使用另一个类来代理实现该类的功能。接口类就是使用面向对象的方法来将该类设计为接口。</p>
+</li>
+</ul>
+<h2 id="第六章-面向对象设计">第六章 面向对象设计
+</h2><ul>
+<li>
+<p>条款32 public继承意味着is-a关系
+这意味着所有基类能够办到的事情派生类也能办到。但是派生类能够办到的基类不一定能办到</p>
+</li>
+<li>
+<p>条款33 继承时会发生名称遮掩
+如果在派生类中声明了父类函数的另一个重载版本，会将父类的原始版本也一并覆盖，使得无法正确的链接到父类函数。可以使用using来表示使用父类的函数空间。</p>
+</li>
+<li>
+<p>条款34 区分接口继承和实现继承
+纯虚函数是只继承接口，虚函数继承接口和默认实现，非虚函数是继承接口和强制实现</p>
+</li>
+<li>
+<p>条款35 不是只有虚函数一种实现
+可以使用其他设计模式来代替虚函数的实现，例如仿函数</p>
+</li>
+<li>
+<p>条款36 不要重新定义非虚函数
+省的到时候你都不知道具体是哪个被调用了。没错说的就是析构函数。</p>
+</li>
+<li>
+<p>条款37 不要重新定义缺省参数
+这是因为缺省参数是静态确定的而不是动态确定的。你定义的那个不一定有用</p>
+</li>
+<li>
+<p>条款38 区分复合与继承
+public继承是is-a关系。复合是has-a关系。例如set的实现，如果继承list就会有一些问题了。set应该复合list。</p>
+</li>
+<li>
+<p>条款39 private继承意味着根据其实现
+private的使用频率比复合使用的频率要更低。有两种情况需要这样实现，第一种情况是派生类需要访问基类的protected成员。第二种情况是需要重新定义virtual函数（这种情况难道不应该设计一种中间类吗）。</p>
+</li>
+<li>
+<p>条款40 小心的使用多重继承
+多重继承使用的很少。虚继承内最好不要包含任何成员。因为虚继承的成员初始化是在派生类内完成的。</p>
+</li>
+</ul>
+<h2 id="第七章-泛型编程">第七章 泛型编程
+</h2><ul>
+<li>
+<p>条款41 了解隐式接口与编译器多态
+就是静态多态。</p>
+</li>
+<li>
+<p>条款42 typename的双重含义
+typename除了会在模板的template一行中使用，还会模板的处理中出现。当我们使用成员变量或者是成员类型时，编译器不知道用的是哪一个。默认使用的成员变量。加上typename来提醒编译器用的是成员类型</p>
+</li>
+<li>
+<p>条款43 继承一个模板类，对模板类内的符号要显示声明
+这是因为模板类可能特化，如果特化，则可能有的符号不存在。所以需要显示的指示模板类内的符号，例如使用this指针或者是作用域</p>
+</li>
+<li>
+<p>条款44 template导致代码膨胀
+template参数在传入一个非类型参数的时候，会生成多份代码。这些代码有一些方式可以避免重复生成，但是速度不如原来的快。</p>
+</li>
+<li>
+<p>条款45 运用成员函数模板接受所有兼容类型
+类可以是模板的，成员函数也可以是模板的。</p>
+</li>
+<li>
+<p>条款46 需要类型转换时请为模板定义非成员函数
+不仅要定义成非成员函数，还要定义成为friend函数。</p>
+</li>
+<li>
+<p>条款47 使用traits
+traits是使用了模板编程与特化的性质实现的一个triats类，通过triats类可以获得想要的泛化类内的数据类型。</p>
+</li>
+<li>
+<p>条款48 template元编程
+元编程指的是在编译期间就知道结果的编程方法。比如在编译期间处理输入。类似于C++的hello world的程序就是阶乘。</p>
+</li>
+</ul>
+<h2 id="第八章-new-与-delete">第八章 new 与 delete
+</h2><ul>
+<li>
+<p>条款49
+了解new-handler的行为
+就是不断尝试分配内存。我很好奇如果new-handler一直分配失败会不会出现卡死的现象。</p>
+</li>
+<li>
+<p>条款50
+了解自定义new和delete的场合
+貌似现在的new和delete性能都很高了。不用替换</p>
+</li>
+<li>
+<p>条款51
+自定义new和delete要保持兼容性</p>
+</li>
+<li>
+<p>条款52
+placement new 和placement delete
+placement delete会在placement new出现错误的时候自动运行</p>
+</li>
+</ul>
+<h2 id="第九章-现在的c11">第九章 现在的c++11
+</h2><ul>
+<li>
+<p>条款53
+不要忽视warring</p>
+</li>
+<li>
+<p>条款54
+熟悉tr1的标准程序库</p>
+</li>
+<li>
+<p>条款55
+熟悉boost</p>
+</li>
+</ul>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+
+    </footer>
+
+
+    
+</article>
+
+    
+
+    
+
+     
+    
+        
+    <div class="disqus-container">
+    <div id="disqus_thread"></div>
+<script>
+    window.disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "nansenli" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+<style>
+    .disqus-container {
+        background-color: var(--card-background);
+        border-radius: var(--card-border-radius);
+        box-shadow: var(--shadow-l1);
+        padding: var(--card-padding);
+    }
+</style>
+
+<script>
+    window.addEventListener('onColorSchemeChange', (e) => {
+        if (typeof DISQUS == 'object') {
+            DISQUS.reset({
+                reload: true
+            });
+        }
+    })
+</script>
+
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+        2025 Nansen Li（李楠森）
+    </section>
+    
+    <section class="powerby">
+        使用 <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> 构建 <br />
+        主题 <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.30.0">Stack</a></b> 由 <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a> 设计
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.1e9a3bafd846ced4c345d084b355fb8c7bae75701c338f8a1f8a82c780137826.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>

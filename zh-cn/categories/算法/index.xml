@@ -1,0 +1,1005 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>算法 on Nansen Li</title>
+        <link>https://nansenli.com/zh-cn/categories/%E7%AE%97%E6%B3%95/</link>
+        <description>Recent content in 算法 on Nansen Li</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>zh-cn</language>
+        <copyright>Nansen Li（李楠森）</copyright>
+        <lastBuildDate>Mon, 26 Mar 2018 03:57:00 +0000</lastBuildDate><atom:link href="https://nansenli.com/zh-cn/categories/%E7%AE%97%E6%B3%95/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>腾讯模拟考试之找零问题</title>
+        <link>https://nansenli.com/zh-cn/post/jianshu/%E7%AE%97%E6%B3%95/%E8%85%BE%E8%AE%AF%E6%A8%A1%E6%8B%9F%E8%80%83%E8%AF%95%E4%B9%8B%E6%89%BE%E9%9B%B6%E9%97%AE%E9%A2%98/</link>
+        <pubDate>Mon, 26 Mar 2018 03:57:00 +0000</pubDate>
+        
+        <guid>https://nansenli.com/zh-cn/post/jianshu/%E7%AE%97%E6%B3%95/%E8%85%BE%E8%AE%AF%E6%A8%A1%E6%8B%9F%E8%80%83%E8%AF%95%E4%B9%8B%E6%89%BE%E9%9B%B6%E9%97%AE%E9%A2%98/</guid>
+        <description>&lt;blockquote&gt;
+&lt;p&gt;小Q非常富有，拥有非常多的硬币，小Q的拥有的硬币是有规律的，对于所有的非负整数K,小Q恰好&amp;gt; 各有两个数值为2^k，的硬币，所以小Q拥有的硬币是1，1，2，2，4，4……，小Q卖东西需要支付元钱，请问小Q想知道有多少种组合方案。
+输入：一个n (1&amp;lt;=n&amp;lt;=10^18),代表要付的钱
+输出：表示小Q可以拼凑的方案数目&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;参考答案&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;#coding=utf-8
+import math
+
+n = int(input())
+
+def getMaxCoin(n):
+    tmp = int(math.log(n,2))
+    return 2**tmp
+
+buff = {}
+
+def dp(n, coin):
+    if (n, coin) in buff:
+        return buff[(n,coin)]
+    if n == 0: # 找0块钱，必然可以
+        return 1
+    if coin == 1: # 只用1元找
+        if n == 1 or n == 2:
+            return 1
+        return 0 # 当前面值无解
+    if n &amp;gt; coin * 4 -2:
+        return 0
+    ret = 0
+    # 只用了一枚
+    if n &amp;gt;= coin:
+        ret += dp(n-coin, coin//2)
+    if n &amp;gt;= coin*2:
+    # 用了两枚
+        ret += dp(n-coin*2, coin//2)
+    # 没有用
+    ret += dp(n, coin//2)
+    buff[(n,coin)] = ret
+    return ret
+
+print(dp(n,getMaxCoin(n)))
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;思路：
+对于当前的面额，最大可能用到的硬币面额可以通过getMaxCoin函数计算得到。
+对于问题面额n和可以使用的最大硬币面额，求dp(n, coin)的值。
+coin会不断减小，对于coin为1时，面额为1或2只有1种情况。对于面额为0时，不需要硬币就可以有解。对于面额大于coin*4-2时，超过了能找的上限，无解。对于其他情况，分三种情况，coin用了一枚，coin用了两枚，coin用了零枚。分别计算对应的dp值即可。使用buff缓存已经计算出来的面值。&lt;/p&gt;
+</description>
+        </item>
+        <item>
+        <title>算法题目——射击游戏</title>
+        <link>https://nansenli.com/zh-cn/post/jianshu/%E7%AE%97%E6%B3%95/%E7%AE%97%E6%B3%95%E9%A2%98%E7%9B%AE%E5%B0%84%E5%87%BB%E6%B8%B8%E6%88%8F/</link>
+        <pubDate>Tue, 23 Jan 2018 01:39:00 +0000</pubDate>
+        
+        <guid>https://nansenli.com/zh-cn/post/jianshu/%E7%AE%97%E6%B3%95/%E7%AE%97%E6%B3%95%E9%A2%98%E7%9B%AE%E5%B0%84%E5%87%BB%E6%B8%B8%E6%88%8F/</guid>
+        <description>&lt;p&gt;链接：&lt;a class=&#34;link&#34; href=&#34;https://www.nowcoder.com/questionTerminal/d3f26db0325444078717cc802e0056d8&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;https://www.nowcoder.com/questionTerminal/d3f26db0325444078717cc802e0056d8&lt;/a&gt;
+来源：牛客网&lt;/p&gt;
+&lt;p&gt;小易正在玩一款新出的射击游戏,这个射击游戏在一个二维平面进行,小易在坐标原点(0,0),平面上有n只怪物,每个怪物有所在的坐标(x[i], y[i])。小易进行一次射击会把x轴和y轴上(包含坐标原点)的怪物一次性消灭。
+小易是这个游戏的VIP玩家,他拥有两项特权操作:
+1、让平面内的所有怪物同时向任意同一方向移动任意同一距离
+2、让平面内的所有怪物同时对于小易(0,0)旋转任意同一角度
+小易要进行一次射击。小易在进行射击前,可以使用这两项特权操作任意次。&lt;/p&gt;
+&lt;p&gt;小易想知道在他射击的时候最多可以同时消灭多少只怪物,请你帮帮小易。&lt;/p&gt;
+&lt;p&gt;如样例所示:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;http://upload-images.jianshu.io/upload_images/4388248-5380c067eb9eaa62?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&#34;
+	
+	
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;image&#34;
+	
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;所有点对于坐标原点(0,0)顺时针或者逆时针旋转45°,可以让所有点都在坐标轴上,所以5个怪物都可以消灭。&lt;/p&gt;
+&lt;h5 id=&#34;输入描述&#34;&gt;&lt;strong&gt;输入描述:&lt;/strong&gt;
+&lt;/h5&gt;&lt;p&gt;输入包括三行。
+第一行中有一个正整数n(1 ≤ n ≤ 50),表示平面内的怪物数量。
+第二行包括n个整数x[i](-1,000,000 ≤ x[i] ≤ 1,000,000),表示每只怪物所在坐标的横坐标,以空格分割。
+第二行包括n个整数y[i](-1,000,000 ≤ y[i] ≤ 1,000,000),表示每只怪物所在坐标的纵坐标,以空格分割。&lt;/p&gt;
+&lt;h5 id=&#34;输出描述&#34;&gt;&lt;strong&gt;输出描述:&lt;/strong&gt;
+&lt;/h5&gt;&lt;p&gt;输出一个整数表示小易最多能消灭多少只怪物。&lt;/p&gt;
+&lt;p&gt;示例1&lt;/p&gt;
+&lt;h2 id=&#34;输入&#34;&gt;输入
+&lt;/h2&gt;&lt;p&gt;5
+0 -1 1 1 -1
+0 -1 -1 1 1&lt;/p&gt;
+&lt;h2 id=&#34;输出&#34;&gt;输出
+&lt;/h2&gt;&lt;p&gt;5&lt;/p&gt;
+&lt;h2 id=&#34;分析&#34;&gt;分析
+&lt;/h2&gt;&lt;p&gt;题目等价于，找一个十字架能够尽可能多的覆盖所有节点。
+考虑到一根线至少能够覆盖到两个点，再加一根垂直于这条线至少能够覆盖3个点，在此基础上进行遍历。对任意三个点，我们选择其中两个点做一条直线(三种情况)，对于第三个点，我们做一条垂线到这条直线上。这样的十字架已经经过了三个点。对于剩下的点，我们判断是否在这个十字架上。要判断是否在十字架上，首先判断是否和第一条直线在同一条直线上。否则，判断这个点和第三个点所构成的直线是否和第二条直线垂直。
+当点数小于等于3个点，则可以把所有点都覆盖到。&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;#include &amp;lt;vector&amp;gt;
+#include &amp;lt;iostream&amp;gt;
+#include &amp;lt;algorithm&amp;gt;
+
+using namespace std;
+
+struct point{
+    int x = 0;
+    int y = 0;
+};
+
+bool is_sameline(point p1, point p2, point p3){
+    return ((p1.x - p2.x) * (p2.y - p3.y) - (p2.x - p3.x) * (p1.y - p2.y)) == 0;
+}
+
+bool is_vertical(point p1, point p2){
+    return (p1.x * p2.x + p1.y * p2.y) == 0;
+}
+
+bool is_vertical(point p1, point p2, point p3, point p4){
+    point v1, v2;
+    v1.x = p1.x - p2.x;
+    v1.y = p1.y - p2.y;
+    v2.x = p3.x - p4.x;
+    v2.y = p3.y - p4.y;
+    return is_vertical(v1, v2);
+}
+
+int main()
+{
+    int n, ret = 0;
+    cin &amp;gt;&amp;gt; n;
+    point inputs[n];
+    for (int i = 0; i &amp;lt; n; i++)
+        cin &amp;gt;&amp;gt; inputs[i].x;
+    for (int i = 0; i &amp;lt; n; i++)
+        cin &amp;gt;&amp;gt; inputs[i].y;
+    if (n &amp;lt; 4)
+    {
+        cout &amp;lt;&amp;lt; n &amp;lt;&amp;lt; endl;
+        return 0;
+    };
+    vector&amp;lt;int&amp;gt; select = {1, 1, 1};
+    for (int i = 0; i &amp;lt; n - 3; i++)
+        select.push_back(0);
+    do
+    {
+        vector&amp;lt;point&amp;gt; shizi;
+        for (int i = 0; i &amp;lt; n; i++)
+        {
+            if (select[i])
+            {
+                shizi.push_back(inputs[i]);
+            }
+        }
+        vector&amp;lt;vector&amp;lt;point&amp;gt;&amp;gt; status;
+        status.push_back({shizi[0], shizi[1], shizi[2]});
+        status.push_back({shizi[0], shizi[2], shizi[1]});
+        status.push_back({shizi[1], shizi[2], shizi[0]});
+        for (auto points : status)
+        {
+            int count = 0;
+            for (int i = 0; i &amp;lt; n; i++)
+            {
+                if (!select[i])
+                {
+                    if (is_sameline(points[0], points[1], inputs[i]))
+                        count++;
+                    if (is_vertical(points[0], points[1], points[2], inputs[i]))
+                        count++;
+                }
+            }
+            ret = max(ret, count);
+    
+        }
+    } while (prev_permutation(select.begin(), select.end()));
+    cout &amp;lt;&amp;lt; ret + 3 &amp;lt;&amp;lt; endl;
+    return 0;
+}
+&lt;/code&gt;&lt;/pre&gt;</description>
+        </item>
+        <item>
+        <title>算法题目——最长公共子括号序列</title>
+        <link>https://nansenli.com/zh-cn/post/jianshu/%E7%AE%97%E6%B3%95/%E7%AE%97%E6%B3%95%E9%A2%98%E7%9B%AE%E6%9C%80%E9%95%BF%E5%85%AC%E5%85%B1%E5%AD%90%E6%8B%AC%E5%8F%B7%E5%BA%8F%E5%88%97/</link>
+        <pubDate>Sun, 21 Jan 2018 14:05:00 +0000</pubDate>
+        
+        <guid>https://nansenli.com/zh-cn/post/jianshu/%E7%AE%97%E6%B3%95/%E7%AE%97%E6%B3%95%E9%A2%98%E7%9B%AE%E6%9C%80%E9%95%BF%E5%85%AC%E5%85%B1%E5%AD%90%E6%8B%AC%E5%8F%B7%E5%BA%8F%E5%88%97/</guid>
+        <description>&lt;p&gt;链接：&lt;a class=&#34;link&#34; href=&#34;https://www.nowcoder.com/questionTerminal/504ad6420b314e5bb614e1684ad46d4d&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;https://www.nowcoder.com/questionTerminal/504ad6420b314e5bb614e1684ad46d4d&lt;/a&gt;
+来源：牛客网&lt;/p&gt;
+&lt;p&gt;一个合法的括号匹配序列被定义为:
+1. 空串&amp;quot;&amp;ldquo;是合法的括号序列
+2. 如果&amp;quot;X&amp;quot;和&amp;quot;Y&amp;quot;是合法的序列,那么&amp;quot;XY&amp;quot;也是一个合法的括号序列
+3. 如果&amp;quot;X&amp;quot;是一个合法的序列,那么&amp;rdquo;(X)&amp;ldquo;也是一个合法的括号序列
+4. 每个合法的括号序列都可以由上面的规则生成
+例如&amp;rdquo;&amp;quot;, &amp;ldquo;()&amp;rdquo;, &amp;ldquo;()()()&amp;rdquo;, &amp;ldquo;(()())&amp;rdquo;, &amp;ldquo;(((()))&amp;ldquo;都是合法的。
+从一个字符串S中移除零个或者多个字符得到的序列称为S的子序列。
+例如&amp;quot;abcde&amp;quot;的子序列有&amp;quot;abe&amp;rdquo;,&amp;rdquo;&amp;quot;,&amp;ldquo;abcde&amp;quot;等。
+定义LCS(S,T)为字符串S和字符串T最长公共子序列的长度,即一个最长的序列W既是S的子序列也是T的子序列的长度。
+小易给出一个合法的括号匹配序列s,小易希望你能找出具有以下特征的括号序列t:
+1、t跟s不同,但是长度相同
+2、t也是一个合法的括号匹配序列
+3、LCS(s, t)是满足上述两个条件的t中最大的
+因为这样的t可能存在多个,小易需要你计算出满足条件的t有多少个。&lt;/p&gt;
+&lt;p&gt;如样例所示: s = &amp;ldquo;(())()&amp;quot;,跟字符串s长度相同的合法括号匹配序列有:
+&amp;ldquo;()(())&amp;rdquo;, &amp;ldquo;((()))&amp;rdquo;, &amp;ldquo;()()()&amp;rdquo;, &amp;ldquo;(()())&amp;quot;,其中LCS( &amp;ldquo;(())()&amp;rdquo;, &amp;ldquo;()(())&amp;rdquo; )为4,其他三个都为5,所以输出3.&lt;/p&gt;
+&lt;h5 id=&#34;输入描述&#34;&gt;&lt;strong&gt;输入描述:&lt;/strong&gt;
+&lt;/h5&gt;&lt;!-- raw HTML omitted --&gt;
+&lt;h5 id=&#34;输出描述&#34;&gt;&lt;strong&gt;输出描述:&lt;/strong&gt;
+&lt;/h5&gt;&lt;p&gt;输出一个正整数,满足条件的t的个数。&lt;/p&gt;
+&lt;p&gt;示例1&lt;/p&gt;
+&lt;h2 id=&#34;输入&#34;&gt;输入
+&lt;/h2&gt;&lt;p&gt;(())()&lt;/p&gt;
+&lt;h2 id=&#34;输出&#34;&gt;输出
+&lt;/h2&gt;&lt;p&gt;3&lt;/p&gt;
+&lt;h2 id=&#34;分析&#34;&gt;分析
+&lt;/h2&gt;&lt;p&gt;题目要求对所有的相同长度的括号序列进行遍历，并计算每一个括号序列与题目中给定的字符串的最长公共子序列的长度。然后，计算长度最大的值出现了多少次。&lt;/p&gt;
+&lt;p&gt;如果真的按照题目的描述去做，显然是不可能做出来的。光是生成长达50个字符串的括号序列可能花的时间就超了。&lt;/p&gt;
+&lt;p&gt;既然要搜索最长的出现了多少次，不如假设出现了最长的子串是原串长度-1，然后求所有由这个子串所构成的括号序列。如果不存在，则求子串长是原串长度-2的串所能构成的括号序列。依次递减这个子串的长度，直到能求出来为止。&lt;/p&gt;
+&lt;p&gt;其实，一定存在子串长度为原串长度-1的串通过添加新的括号所构成的另一个和原串不同的括号序列。这是因为，任何一个括号序列都可以只移动一个括号构成另外一个和原来不同的括号序列(思考为什么)。如果可以这样，那么新串和原串的最长公共括号子序列就是n-1个。因为你只移动了一个括号并插入到其他地方。那么除了这个括号外，其他的顺序都没有变。那么，每次将其中一个括号拿掉，然后插入到新的地方。我们统计一下总共能构成多少个合法的括号序列，将这个数字减去原来的那个串，也就是减去1，就是题目的答案。&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;#include &amp;lt;vector&amp;gt;
+#include &amp;lt;iostream&amp;gt;
+#include &amp;lt;algorithm&amp;gt;
+#include &amp;lt;set&amp;gt;
+
+using namespace std;
+
+bool isKuohao(const string &amp;amp; str)
+{
+    int count=0;
+    for(auto c:str)
+    {
+        if(c == &amp;#39;(&amp;#39;)
+            count ++;
+        if(c == &amp;#39;)&amp;#39;)
+            count --;
+        if(count&amp;lt;0)
+            return false;
+    }
+    return count == 0;
+}
+
+int main()
+{
+    int ret=0;
+    string input;
+    cin &amp;gt;&amp;gt; input;
+    set&amp;lt;string&amp;gt; haveChose;
+    set&amp;lt;string&amp;gt; haveBuild;
+    /* 选出其中任意一个括号 */
+    for (int i = 0; i &amp;lt; input.size(); i++)
+    {
+        char q[] = {input[i], &amp;#39;\0&amp;#39;};
+        /* 删除该括号 */
+        string delete_char(input);
+        delete_char.erase(delete_char.begin() + i);
+        if (haveChose.count(delete_char))
+            continue;
+        else
+            haveChose.insert(delete_char);
+        /* 将原来的括号插入新的数组中 */
+        for (int j = 0; j &amp;lt; delete_char.size() + 1; j++)
+        {
+            string add_delete_char(delete_char);
+            add_delete_char.insert(j, q);
+            if (haveBuild.count(add_delete_char))
+                continue;
+            else
+                haveBuild.insert(add_delete_char);
+            if(isKuohao(add_delete_char)){
+                ret ++;
+            }
+        }
+    }
+    cout &amp;lt;&amp;lt; ret-1 &amp;lt;&amp;lt; endl;
+}
+&lt;/code&gt;&lt;/pre&gt;</description>
+        </item>
+        <item>
+        <title>算法题目——游历魔法王国</title>
+        <link>https://nansenli.com/zh-cn/post/jianshu/%E7%AE%97%E6%B3%95/%E7%AE%97%E6%B3%95%E9%A2%98%E7%9B%AE%E6%B8%B8%E5%8E%86%E9%AD%94%E6%B3%95%E7%8E%8B%E5%9B%BD/</link>
+        <pubDate>Fri, 19 Jan 2018 10:05:00 +0000</pubDate>
+        
+        <guid>https://nansenli.com/zh-cn/post/jianshu/%E7%AE%97%E6%B3%95/%E7%AE%97%E6%B3%95%E9%A2%98%E7%9B%AE%E6%B8%B8%E5%8E%86%E9%AD%94%E6%B3%95%E7%8E%8B%E5%9B%BD/</guid>
+        <description>&lt;p&gt;链接：&lt;a class=&#34;link&#34; href=&#34;https://www.nowcoder.com/questionTerminal/f58859adc39f4edc9cd8e40ba4160339&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;https://www.nowcoder.com/questionTerminal/f58859adc39f4edc9cd8e40ba4160339&lt;/a&gt;
+来源：牛客网&lt;/p&gt;
+&lt;p&gt;魔法王国一共有n个城市,编号为0~n-1号,n个城市之间的道路连接起来恰好构成一棵树。
+小易现在在0号城市,每次行动小易会从当前所在的城市走到与其相邻的一个城市,小易最多能行动L次。
+如果小易到达过某个城市就视为小易游历过这个城市了,小易现在要制定好的旅游计划使他能游历最多的城市,请你帮他计算一下他最多能游历过多少个城市(注意0号城市已经游历了,游历过的城市不重复计算)。&lt;/p&gt;
+&lt;h5 id=&#34;输入描述&#34;&gt;&lt;strong&gt;输入描述:&lt;/strong&gt;
+&lt;/h5&gt;&lt;p&gt;输入包括两行,第一行包括两个正整数&lt;code&gt;n(2 ≤ n ≤ 50)&lt;/code&gt;和&lt;code&gt;L(1 ≤ L ≤ 100)&lt;/code&gt;,表示城市个数和小易能行动的次数。
+第二行包括&lt;code&gt;n-1&lt;/code&gt;个整数&lt;code&gt;parent[i](0 ≤ parent[i] ≤ i)&lt;/code&gt;, 对于每个合法的&lt;code&gt;i(0 ≤ i ≤ n - 2)&lt;/code&gt;,在&lt;code&gt;(i+1)&lt;/code&gt;号城市和&lt;code&gt;parent[i]&lt;/code&gt;间有一条道路连接。&lt;/p&gt;
+&lt;h5 id=&#34;输出描述&#34;&gt;&lt;strong&gt;输出描述:&lt;/strong&gt;
+&lt;/h5&gt;&lt;p&gt;输出一个整数,表示小易最多能游历的城市数量。&lt;/p&gt;
+&lt;h2 id=&#34;分析&#34;&gt;分析
+&lt;/h2&gt;&lt;p&gt;题目经过抽象之后，意思是在一个树中进行遍历，经过指定步数，可以获取最长经过节点树量的路径。如果把这个树按照根节点进行悬挂，可能更好理解一些。虽然有些答案是从低向上生长，但是我还是重建了树，采用悬挂树来做的。&lt;/p&gt;
+&lt;p&gt;从这个根节点开始遍历，先判断左树深度大还是右树深度大，先遍历树深度大的那个节点。直到步数用完为止。&lt;/p&gt;
+&lt;p&gt;树的深度通过后序遍历很容易求出来，结果发现这样的答案只能通过60%。&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;45 73
+0 0 0 1 0 0 3 5 6 8 7 9 1 10 1 2 15 6 8 11 14 17 8 14 3 21 23 3 21 15 12 5 21 31 11 13 7 17 20 26 28 16 36 26
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;错在这个用例上了。这个正确答案是41，通过简单的贪心算法只能得到39个城市。&lt;/p&gt;
+&lt;p&gt;后来看了解析也是看不太懂。总之之后看到正确答案中是求出来深度后直接获得最终答案。&lt;/p&gt;
+&lt;p&gt;假设我们已经求出了每一个节点的最大深度，用deep[i]来表示，树的最下面一层的深度是1。&lt;/p&gt;
+&lt;p&gt;显然，根节点到任意一个节点的最长路径=deep[0]-1。&lt;/p&gt;
+&lt;p&gt;以这条路径为基础，我们可以额外访问一些节点。但是每次访问完这些节点的时候，我们必须回来这个路径。这一来一回，每次访问一个节点都必须额外走两步，访问两个节点就必须走4步。&lt;/p&gt;
+&lt;p&gt;看图就容易明白一些：&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;http://upload-images.jianshu.io/upload_images/4388248-7f071c51246c0d0e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&#34;
+	
+	
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;image.png&#34;
+	
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;参考代码&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;
+#include &amp;lt;vector&amp;gt;
+#include &amp;lt;iostream&amp;gt;
+using namespace std;
+
+vector&amp;lt;vector&amp;lt;int&amp;gt; &amp;gt; tree;
+vector&amp;lt;int&amp;gt; deep;
+
+void calc_deep(int i)
+{
+    int max_deep = 0;
+    for(auto j:tree[i])
+    {
+        calc_deep(j);
+        max_deep = max(deep[j], max_deep);
+    }
+    deep[i] = max_deep + 1;
+}
+
+
+int main()
+{
+    int n, L;
+    cin &amp;gt;&amp;gt; n &amp;gt;&amp;gt; L;
+    /* 建立树 */
+    tree.resize(n);
+    deep.resize(n);
+    for(int i=0;i&amp;lt;n-1;i++)
+    {
+        int num;
+        cin &amp;gt;&amp;gt; num;
+        tree[num].push_back(i+1);
+    }
+    /* 计算深度 */
+    calc_deep(0);
+    // int validpath = min(deep[0] -1,L);
+    // cout &amp;lt;&amp;lt; min(n, 1 + validpath + (L - validpath)/2) &amp;lt;&amp;lt; endl;
+    int long_path = deep[0] - 1;
+    if(long_path &amp;gt; L)  cout &amp;lt;&amp;lt; L + 1;
+    else cout &amp;lt;&amp;lt; 1 + long_path + (L - long_path)/2;
+    
+}
+&lt;/code&gt;&lt;/pre&gt;</description>
+        </item>
+        <item>
+        <title>动态规划算法学习与思考</title>
+        <link>https://nansenli.com/zh-cn/post/jianshu/%E7%AE%97%E6%B3%95/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92%E7%AE%97%E6%B3%95%E5%AD%A6%E4%B9%A0%E4%B8%8E%E6%80%9D%E8%80%83/</link>
+        <pubDate>Thu, 18 Jan 2018 08:52:00 +0000</pubDate>
+        
+        <guid>https://nansenli.com/zh-cn/post/jianshu/%E7%AE%97%E6%B3%95/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92%E7%AE%97%E6%B3%95%E5%AD%A6%E4%B9%A0%E4%B8%8E%E6%80%9D%E8%80%83/</guid>
+        <description>&lt;h2 id=&#34;前言&#34;&gt;前言
+&lt;/h2&gt;&lt;p&gt;动态规划是笔试中经常出现的一类题目。掌握他很关键。&lt;/p&gt;
+&lt;h2 id=&#34;网易题目&#34;&gt;网易题目
+&lt;/h2&gt;&lt;p&gt;小Q和牛博士合唱一首歌曲,这首歌曲由n个音调组成,每个音调由一个正整数表示。
+对于每个音调要么由小Q演唱要么由牛博士演唱,对于一系列音调演唱的难度等于所有相邻音调变化幅度之和, 例如一个音调序列是8, 8, 13, 12, 那么它的难度等于|8 - 8| + |13 - 8| + |12 - 13| = 6(其中||表示绝对值)。
+现在要对把这n个音调分配给小Q或牛博士,让他们演唱的难度之和最小,请你算算最小的难度和是多少。
+如样例所示: 小Q选择演唱{5, 6}难度为1, 牛博士选择演唱{1, 2, 1}难度为2,难度之和为3,这一个是最小难度和的方案了。&lt;/p&gt;
+&lt;h2 id=&#34;贪心解法错误&#34;&gt;贪心解法（错误）
+&lt;/h2&gt;&lt;p&gt;将所有数字进行排序，取最大的两个数字差作为间隔，取其中一下半作为小Q的音符，取另一上半作为牛博士的音符，然后计算结果。最终能过通过60%的用例。
+如果时间不够，或者不会的情况可以使用这种解法。&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;#include &amp;lt;vector&amp;gt;
+#include &amp;lt;iostream&amp;gt;
+#include &amp;lt;algorithm&amp;gt;
+#include &amp;lt;cmath&amp;gt;
+ 
+using namespace std;
+ 
+int main(){
+    int n;
+    cin &amp;gt;&amp;gt; n;
+    vector&amp;lt;int&amp;gt; nums;
+    for(int i=0;i&amp;lt;n;i++)
+    {
+        int num;
+        cin &amp;gt;&amp;gt; num;
+        nums.push_back(num);
+    }
+    vector&amp;lt;int&amp;gt; nums_sort(nums.begin(), nums.end());
+    sort(nums_sort.begin(), nums_sort.end());
+    int max_gap = 0;
+    auto max_gap_it = nums_sort.begin();
+    for(auto it=nums_sort.begin(); it!=nums_sort.end()-1; it++){
+        if(*(it+1) - *it &amp;gt; max_gap){
+            max_gap = *(it+1) - *it;
+            max_gap_it = it;
+        }
+    }
+    int max_gap_num = *max_gap_it;
+     
+    int ret = 0;
+    int last_1 = -1;
+    int last_2 = -1;
+    for(auto it = nums.begin(); it!=nums.end(); it++){
+         
+        if(*it &amp;lt;= max_gap_num){
+            if(last_1 != -1){
+                ret += abs(*it - last_1);
+            }
+            last_1 = *it;
+        }
+        else{
+            if(last_2 != -1){
+                ret += abs(*it - last_2);
+            }
+            last_2 = *it;
+        }
+    }
+    cout &amp;lt;&amp;lt; ret;
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&#34;动态规划小思&#34;&gt;动态规划小思
+&lt;/h2&gt;&lt;p&gt;由于我对动态规划一点也不了解，先从找零开始。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;找零问题&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;动态规划的核心在于问题的分解和子问题递归组合变成原问题。&lt;/p&gt;
+&lt;p&gt;举个例子，假设我们有面值为1元、3元和5元的硬币若干枚，如何用最少的硬币凑够11元？
+如果你是个人类的话，你会说，我大眼一瞪，两个五元和一个一元，总共3个硬币。我们换个例子，假设题目是237元呢？你可能会说，我先用5块钱换出200元，然后找到剩下37元的最优组合。这种方法实际上是默认了将237元分成了两份，并假设两份的组合是最优组合。如果真是这样的话，那么就没什么问题了。可问题就出在分的200和37元，没有方法能证明这是有效的分割，所以动态规划就是建立在有效分割上的。&lt;/p&gt;
+&lt;p&gt;分治算法与动态规划也是建立在分割上的。只是动态规划涉及到状态转移，而分治算法没有状态转移。分治算法可以由上向下分解，而动态规划通常由下向上构建。&lt;/p&gt;
+&lt;p&gt;动态规划会涉及到两个维度，第一个维度通常和问题的规模相关，第二个维度需要从题目中提取出来。在本题目中，第二个维度是允许使用的硬币，例如，允许使用1元、允许使用1元和3元、允许使用1元3元5元。我们把他记为下标1,2,3，我们用j来代表这个变量，如果用i来表示当前题目的规模，也就是237，那么我们要求的是c[i][j] 为 c[237][3]的值。对于这个问题，我们可以分两种假设，第一种假设，这个最优解中5元的数量&amp;gt;0，第二种假设，这个最优值中5元的数量=0.对于第一种假设c[237][3]=c[237][2]，因为没有使用5元，那么就不需要5元了，这个最优解的解应该和只是用1元和3元的情况一致。对于第二种情况，由于这个解中必然有一个5元（因为你假设他大于0），那么，除了这枚5元钱，剩下的钱数是232元钱。由于原来c[237][3]是135元找237元的最优值，又因为其中必然有一枚5元，在最优值状态下拿掉其中必然存在的一枚硬币，剩下的钱所组成的钱数必然也是最优状态，(假设子问题不是最优的，即237元找135元的硬币数中构成232元的解有更优解，则237找135元也有更有解，和c[237][3]为最优解矛盾)，那么c[232][3]的值就是c[237][3]-1的值。&lt;/p&gt;
+&lt;p&gt;这样我们可以推导出
+c[i][j] = c[i][j-1] 假设1
+c[i][j] = c[i-j下标代表的钱数][j]+1 假设2
+如果写成min的形式，就是熟知的状态转移方程了。&lt;/p&gt;
+&lt;p&gt;最终求的是c[11][5]，使用表格从c[0][0]状态开始向右下角推，最终可以推出答案。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;双人合唱难度问题
+&lt;a class=&#34;link&#34; href=&#34;https://www.nowcoder.com/questionTerminal/fddf64d5757e41ec93f3ef0c0a10b891&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;https://www.nowcoder.com/questionTerminal/fddf64d5757e41ec93f3ef0c0a10b891&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;我们要记住&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;题目的最优解不一定是状态矩阵的右下角的值&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;我们必须时刻记住，状态矩阵的右下角方格不一定就是直接的最优解。如果这样想的话，往往会陷入困境。为此，我们只能这样设想，矩阵i，j一定和题目中的两个维度有关，但是dp[i][j]不一定代表了最优解的值。&lt;/p&gt;
+&lt;p&gt;例如本题目，题目要求求出最优难度系数。假如dp[i_max][j_max]就是最优难度系数，那i和j是什么的下标呢？？是无解的。反过来想，最优难度系数到底是什么呢？我们想想看，因为存在状态转移，最优状态必然是从多个状态中获取到的最小值。i代表什么呢？i如果代表当前唱的音符，那么j代表什么呢？j就只能代表另外一个人唱的音符了。那么最优状态下，一共会有多少种情况，就从这些情况来推算最优的值是哪个。在最优状态下，必然有一个人在唱最后一个音符，那么另一个人可能一个都没有唱，可能在唱第一个音符，可能在唱第二个音符。。。可能在唱倒数第二个音符。然后我们计算所有情况的最小值，就知道了问题的最优解。&lt;/p&gt;
+&lt;p&gt;还有一个问题，i和j是不是要分人？如果i代表小Q唱的，j代表牛博士唱的，那么这个矩阵就是对称的，我们多计算了一半的内容。其实我们不关心到底是谁唱的，因为都一样。我们只能这样想，其中一个i是当前人唱的，j是上一个人唱到哪里了。&lt;/p&gt;
+&lt;p&gt;c[i][j]可能由哪些状态转移过来呢？
+例如某人唱到了第6个音符，另一个人最后一次唱到了第3个音符，此时如果当前的总的难度是最小的，那么有以下结论：
+第6个音符、第5、第4个音符都是第一个人唱的。因为第二个人才唱到了第三个音符，他不可能去唱后面的音符。
+所以c[6][3] = c[5][3] + 56难度差 = c[4][3] + 45难度差。
+但是c[4][3]是怎么转移来的呢？如果此时第一个人唱到了第4个音符，另一个人唱到了第3个音符，这说明第一个人唱第4个音符中断了第二个人唱的音符。由于不知道上一次第一个人是从哪里跳到第4个音符的，所以我们分别假设是从可能的所有音符跳过来的，如果是从第二个音符跳过来的，那么就是c[3][2]+ 34差。如果是从第一个音符跳过来的，那么就是c[3][1]+14差。如果是从没有跳过来的，那么就是c[3][0]+04差。由于第一个人唱的时候，第二个人上一次唱的总是比第一个人唱的要小，所以我们不需要考虑j&amp;gt;=i的时候。&lt;/p&gt;
+&lt;p&gt;基于此，有以下代码&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;#include &amp;lt;vector&amp;gt;
+#include &amp;lt;iostream&amp;gt;
+#include &amp;lt;algorithm&amp;gt;
+#include &amp;lt;cmath&amp;gt;
+#include &amp;lt;array&amp;gt;
+
+using namespace std;
+
+vector&amp;lt;int&amp;gt; nums;
+array&amp;lt;array&amp;lt;int, 2100&amp;gt;, 2100&amp;gt; dp;
+
+/* 计算两个音符之间的难度。注意第一个音符的下标在输入数据里面是0，有个差1的关系。如果起始音符是0，说明第一次唱，不增加难度 */
+int diffcult(int s, int e)
+{
+    if(s == 0) return 0;
+    // printf(&amp;#34;diffcult %d %d to %d %d is %d \n&amp;#34;, s,nums[s-1], e,nums[e-1], abs(nums[e-1] - nums[s-1]));
+    return abs(nums[e-1] - nums[s-1]);
+}
+
+int main()
+{
+    int n;
+    cin &amp;gt;&amp;gt; n;
+
+    for (int i = 0; i &amp;lt; n; i++)
+    {
+        int num;
+        cin &amp;gt;&amp;gt; num;
+        nums.push_back(num);
+    }
+
+    /* 从0开始向后考虑，直到考虑完所有音符，第一个人最差的情况是没有唱，此时j也没有唱，直接continue了 */
+    for (int i = 0; i &amp;lt;= n; i++)
+    {
+        /* 这里也是从0开始考虑，因为第一个人最差一个都不唱，就是处于0 */
+        for (int j = 0; j &amp;lt;= n; j++)
+        {
+            /* 不考虑后面的情况。当然也可以直接写到上面的范围限制里面 */
+            if (j &amp;gt;= i)
+                continue;
+            /* 如果是一般情况下，比如第一个人在唱6音符时，第二个人在唱3音符，显然是从dp[5][3]转移来的 */
+            if (j + 1 &amp;lt; i)
+            {
+                dp[i][j] = dp[i - 1][j] + diffcult(i - 1, i);
+            }
+            /* 否则，如果第二个人刚唱完就被第一个人抢唱了，那么第一个人唱的音符就可能是前面跳过来的 */
+            if (j + 1 == i)
+            {
+                /* k表示i是从第几个跳过来的 */
+                int min_cost = -1;
+                for (int k = 0; k &amp;lt; j; k++)
+                {
+                    int cost = dp[j][k] + diffcult(k, j + 1);
+                    /* 只用记录最小跳唱难度 */
+                    if(min_cost == -1 || min_cost &amp;gt; cost){
+                        min_cost = cost;
+                    }
+                }
+                if(min_cost == -1) min_cost = 0;
+                dp[i][j] = min_cost;
+            }
+            // for(int a=0;a&amp;lt;=n;a++){
+            //     for(int b=0;b&amp;lt;=n;b++){
+            //         if(a==i &amp;amp;&amp;amp; b == j){
+            //             printf(&amp;#34;\t【%d】&amp;#34;, dp[a][b]);
+            //         }
+            //         else printf(&amp;#34;\t%d&amp;#34;, dp[a][b]);
+            //     }
+            //     // printf(&amp;#34;\n&amp;#34;);
+            // }
+            // printf(&amp;#34;\n&amp;#34;);
+        }
+    }
+    int min_cost = -1;
+    for(int j=0;j&amp;lt;n;j++){
+        if(min_cost == -1 || min_cost &amp;gt; dp[n][j]){
+            min_cost = dp[n][j];
+        }
+    }
+    printf(&amp;#34;%d&amp;#34;, min_cost);
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;ul&gt;
+&lt;li&gt;最长回文子串问题
+&lt;a class=&#34;link&#34; href=&#34;https://leetcode.com/problems/longest-palindromic-substring/description/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;https://leetcode.com/problems/longest-palindromic-substring/description/&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;其实已经明白了为什么动态规划会以这种方式进行呈现了。二维动态规划问题的最关键的点在于：&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;线性增长问题的平面展开&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;例如找零问题，展开第二个维度就是以当前硬币种类找零。而合唱问题，则是以唱到当前位置时且上一个唱到某个位置时的难度最小值。最长回文子串，则变得是起始位置。&lt;/p&gt;
+&lt;p&gt;最长回文子串的i表示从第i个字符开始，第j个字符结束时的最长子串问题。当i是起始字符，j是终止字符，则是问题的答案。&lt;/p&gt;
+&lt;p&gt;对于最小的子问题来说，就是单个字符了，他的长度就是1，对于长字符串来说，如果他两边的字符不一样，那么等于去掉右边或者左边的字符中小的那一个。如果两边的字符一样，那么就等于去掉两边的子串的值加2。&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;
+#include &amp;lt;vector&amp;gt;
+#include &amp;lt;string&amp;gt;
+
+using namespace std;
+
+class Solution {
+public:
+    int longestPalindromeSubseq(string s) {
+        vector&amp;lt;vector&amp;lt;int&amp;gt;&amp;gt; dp;
+        dp.resize(s.size() + 1);
+        for (int i = 0; i &amp;lt; s.size() + 1; i++)
+        {
+            dp[i].resize(s.size() + 1);
+        }
+        int len = s.size();
+        for(int t=0;t&amp;lt;len;t++){
+            for(int j=t; j&amp;lt;len;j++){
+                int i = j-t;
+                if(i==j){
+                    dp[i][j] = 1;
+                    
+                }
+                else if(s[i] == s[j]){
+                    dp[i][j] = dp[i+1][j-1] + 2;
+                    
+                }
+                else{
+                    if(dp[i+1][j]&amp;gt; dp[i][j-1]){
+                        
+                        dp[i][j] = dp[i+1][j];
+                    }
+                    else{
+                        
+                        dp[i][j] = dp[i][j-1];
+                    }
+                }
+            }
+        }
+        return dp[0][len-1];
+    }
+    
+};
+&lt;/code&gt;&lt;/pre&gt;&lt;ul&gt;
+&lt;li&gt;最大子串问题&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;这个题目也很经典，按照上一个题目的思路，我们依次求出所有串的长度，就得到了最大的子串。&lt;/p&gt;
+&lt;p&gt;然而事情不是这么简单，这个题目可以用一维来做。（注意其中有负数）。&lt;/p&gt;
+&lt;p&gt;我们的记得，最后一个方格内存的不一定就是最优解。往往我们会认为dp[i]就是从开始到这个位置中，能够找到的最大的子串的值。但是这个最大的子串与i又没有什么关系，似乎i往左一位和往右移一位没有什么区别。如果我们的下标与题目中的最优解产生了“松弛”的关系，我们一定要警惕起来。我们需要紧紧把下标和最优解绑在一起。最优解必然和i产生直接关系。那么i是最优的什么。你会想到，i就是必须以第i个数字为结尾的串的最大值。最大子串就是遍历dp矩阵，找到那个最大的值。&lt;/p&gt;
+&lt;p&gt;状态方程也容易写出来了，每当我们多考虑一个数字，以这个数字为结尾的子串的最大值有两种情况，第一种就是以上一个数字为结尾的最大子串加上这个数字，第二种情况就是不以上一个数字 为结尾。显然第二种情况就是以这个数字为开头的情况，并且只有这一个数字。&lt;/p&gt;
+&lt;p&gt;input表示输入矩阵，dp表示状态矩阵
+我们有 dp[i] = max (dp[i-1] + input[i] , input[i])&lt;/p&gt;
+</description>
+        </item>
+        <item>
+        <title>红黑树实现原理</title>
+        <link>https://nansenli.com/zh-cn/post/jianshu/%E7%AE%97%E6%B3%95/%E7%BA%A2%E9%BB%91%E6%A0%91%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86/</link>
+        <pubDate>Mon, 15 Jan 2018 10:00:00 +0000</pubDate>
+        
+        <guid>https://nansenli.com/zh-cn/post/jianshu/%E7%AE%97%E6%B3%95/%E7%BA%A2%E9%BB%91%E6%A0%91%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86/</guid>
+        <description>&lt;h2 id=&#34;前言&#34;&gt;前言
+&lt;/h2&gt;&lt;p&gt;二叉排序树存在劣化情况
+二叉平衡树为了维持查找性能在插入和删除的时候开销太大
+红黑树就出现了。红黑树不像二叉平衡树在任意时刻两个子树高度差相差最多1
+参考自 &lt;a class=&#34;link&#34; href=&#34;http://www.sohu.com/a/201923614_466939&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;http://www.sohu.com/a/201923614_466939&lt;/a&gt;&lt;/p&gt;
+&lt;h2 id=&#34;性质&#34;&gt;性质
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;节点由红色和黑色构成，根节点为黑色&lt;/li&gt;
+&lt;li&gt;叶子节点由黑色的NIL节点构成&lt;/li&gt;
+&lt;li&gt;红色节点的子节点一定是黑色节点，并且一定包含两个叶子节点。这意味着不存在连续的两个红色节点。&lt;/li&gt;
+&lt;li&gt;从任意一个节点出发，到任意一个NIL节点，都经历了相同数目的黑色节点&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img src=&#34;https://upload-images.jianshu.io/upload_images/4388248-765b0b4cf292df8b.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&#34;
+	
+	
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;image.png&#34;
+	
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;这意味着从根节点出发，到任意一个叶子节点，最长路径和最短路径差不超过最长路径的一半。这种情况下，最长路径和最短路径的黑色数目一样，最长路径最多多黑色个红色节点。&lt;/p&gt;
+&lt;h2 id=&#34;变色与旋转&#34;&gt;变色与旋转
+&lt;/h2&gt;&lt;p&gt;当插入一个节点（或删除一个节点），红黑树的性质被破坏。使用变色和旋转来调整。&lt;/p&gt;
+&lt;h3 id=&#34;变色&#34;&gt;变色
+&lt;/h3&gt;&lt;p&gt;如果两个节点连续为红色，需要变色&lt;/p&gt;
+&lt;h3 id=&#34;旋转&#34;&gt;旋转
+&lt;/h3&gt;&lt;p&gt;如果有一条路径上的黑色节点太多，需要旋转&lt;/p&gt;
+&lt;h2 id=&#34;变色与旋转的条件&#34;&gt;变色与旋转的条件
+&lt;/h2&gt;&lt;p&gt;这个之后在总结&lt;/p&gt;
+</description>
+        </item>
+        <item>
+        <title>每周一道Leetcode—— 501. Find Mode in Binary Search Tree</title>
+        <link>https://nansenli.com/zh-cn/post/jianshu/%E7%AE%97%E6%B3%95/%E6%AF%8F%E5%91%A8%E4%B8%80%E9%81%93leetcode-501--find-mode-in-binary-search-tree/</link>
+        <pubDate>Mon, 26 Jun 2017 10:54:00 +0000</pubDate>
+        
+        <guid>https://nansenli.com/zh-cn/post/jianshu/%E7%AE%97%E6%B3%95/%E6%AF%8F%E5%91%A8%E4%B8%80%E9%81%93leetcode-501--find-mode-in-binary-search-tree/</guid>
+        <description>&lt;h2 id=&#34;题目&#34;&gt;题目
+&lt;/h2&gt;&lt;p&gt;给定一个BST二分查找树，求众数。
+要求，除去递归的空间占用，其他代码空间复杂度为O(1)。&lt;/p&gt;
+&lt;h2 id=&#34;分析&#34;&gt;分析
+&lt;/h2&gt;&lt;p&gt;很显然，二分查找树的中序遍历就是一个有序数组。
+有序数组查找最长的连续重复的数字，就是众数了。需要注意的是，题目要求返回重复的数字。另外，空间复杂度必须为O(1)。要写出这样的代码并不困难。&lt;/p&gt;
+&lt;p&gt;运行16ms，击败62%&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+
+
+class Solution {
+private:
+    vector&amp;lt;int&amp;gt; mode;
+    int last;
+    int lastCount;
+    int modeCount;
+public:
+    vector&amp;lt;int&amp;gt; findMode(TreeNode* root) {
+        last = 0;
+        lastCount = 0;
+        modeCount = 0;
+        mode.clear();
+        runMode(root);
+        return mode;
+    }
+
+    void runMode(TreeNode* root){
+        if(root != NULL){
+            runMode(root -&amp;gt; left);
+            int nowValue = root-&amp;gt;val;
+            int nowCount = nowValue != last? 1 : lastCount + 1;
+            if(modeCount == nowCount){
+                mode.push_back(nowValue);
+            }
+            if(modeCount &amp;lt; nowCount){
+                modeCount = nowCount;
+                mode.clear();
+                mode.push_back(nowValue);
+            }
+            last = nowValue;
+            lastCount = nowCount;
+            runMode(root -&amp;gt; right);
+        }
+    }
+    
+};
+&lt;/code&gt;&lt;/pre&gt;</description>
+        </item>
+        <item>
+        <title>每周一道leetcode—— 3. Longest Substring Without Repeating Characters</title>
+        <link>https://nansenli.com/zh-cn/post/jianshu/%E7%AE%97%E6%B3%95/%E6%AF%8F%E5%91%A8%E4%B8%80%E9%81%93leetcode-3--longest-substring-without-repeating-characters/</link>
+        <pubDate>Sat, 24 Jun 2017 08:21:00 +0000</pubDate>
+        
+        <guid>https://nansenli.com/zh-cn/post/jianshu/%E7%AE%97%E6%B3%95/%E6%AF%8F%E5%91%A8%E4%B8%80%E9%81%93leetcode-3--longest-substring-without-repeating-characters/</guid>
+        <description>&lt;h2 id=&#34;题目&#34;&gt;题目
+&lt;/h2&gt;&lt;p&gt;求一个字符串的一个满足要求的最长子字符串，该子字符串不得含有重复的字符，返回该子字符串的长度。&lt;/p&gt;
+&lt;h2 id=&#34;思路&#34;&gt;思路
+&lt;/h2&gt;&lt;p&gt;很容易想到一个时间复杂度为&lt;code&gt;O(n^2)&lt;/code&gt;的算法。遍历每一个字符，从该字符开始看看以这个字符为起点的最长字符串是多长，最后输出所有字符的最长子字符串长度。&lt;/p&gt;
+&lt;p&gt;运行时间600ms，击败0%提交&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;class Solution {
+public:
+    int lengthOfLongestSubstring(string s) {
+        int ret = 0;
+        for(int i=0; i&amp;lt;s.size(); i++){
+            unordered_set&amp;lt;char&amp;gt; buff;
+            for(int j=i; j&amp;lt;s.size(); j++){
+                if(buff.count(s[j]) == 0) buff.insert(s[j]);
+                else break;
+            }
+            if(buff.size() &amp;gt; ret) ret = buff.size();
+        }
+        return ret;
+    }
+};
+&lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&#34;改进&#34;&gt;改进
+&lt;/h2&gt;&lt;p&gt;可以看到上面那个算法非常搞笑，是世界上速度最慢的算法。在查找字符串中，我们需要设置一个起点，这个起点是到目前为止，遍历的位置往前最长没有重复出现字符的位置。然后通过与遍历的位置相减，就可以得到最长的子字符串长度了。&lt;/p&gt;
+&lt;p&gt;运行时间15ms，击败96%提交&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;class Solution {
+public:
+    int lengthOfLongestSubstring(string s) {
+        vector&amp;lt;int&amp;gt; lastPos(260, -1);
+        int length = s.size();
+        int ret = 0;
+        int start = 0;
+        for(int i=0; i&amp;lt;length; i++)
+        {
+            char c = s[i];
+            if(lastPos[c]+1 &amp;gt; start) start = lastPos[c] + 1;
+            if(i-start+1 &amp;gt; ret) ret = i-start+1;
+            lastPos[c] = i;
+        }
+        
+        return ret;
+    }
+};
+&lt;/code&gt;&lt;/pre&gt;</description>
+        </item>
+        <item>
+        <title>每周一道leetcode—— 260. Single Number III</title>
+        <link>https://nansenli.com/zh-cn/post/jianshu/%E7%AE%97%E6%B3%95/%E6%AF%8F%E5%91%A8%E4%B8%80%E9%81%93leetcode-260--single-number-iii/</link>
+        <pubDate>Thu, 22 Jun 2017 03:49:00 +0000</pubDate>
+        
+        <guid>https://nansenli.com/zh-cn/post/jianshu/%E7%AE%97%E6%B3%95/%E6%AF%8F%E5%91%A8%E4%B8%80%E9%81%93leetcode-260--single-number-iii/</guid>
+        <description>&lt;h2 id=&#34;题目&#34;&gt;题目
+&lt;/h2&gt;&lt;p&gt;给定一个数组，在这个数组中，包含了一些整形数字，除了有两个数字重复了一次，其他数字都重复了两次。找出这两个数字。空间复杂度尽可能做到O(1)。&lt;/p&gt;
+&lt;h2 id=&#34;分析&#34;&gt;分析
+&lt;/h2&gt;&lt;p&gt;尽管解决方案中要求空间复杂度为O(1)，这个方法确实有点复杂和难想，而且很难写出常数小的算法。
+&lt;a class=&#34;link&#34; href=&#34;https://www.lijinma.com/blog/2014/05/29/amazing-xor/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;感受异或的神奇&lt;/a&gt;
+上面这个链接中给出了这道题的标准做法。在这个方法中，首先将所有字母进行异或操作，然后，结果就是两个只出现了一次的数字的异或。这个数字的每一位1意味着这两个数字的哪几位是不同的。任取一位，在这一位上，将数组分为两类，一类是这一位上是1，另一类是这一位上是0，这样对这两个数组分别异或结果就是这两个数字了。&lt;/p&gt;
+&lt;p&gt;这利用了异或的性质。&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;a ^ b ^ c = a ^ c ^ b
+a ^ a = 0
+0 ^ a = a
+a ^ b = c =&amp;gt; a ^ c = b&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;运行13ms，击败68%提交。&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;class Solution {
+public:
+    vector&amp;lt;int&amp;gt; singleNumber(vector&amp;lt;int&amp;gt;&amp;amp; nums) {
+        int axorb = 0, last = 0;
+        vector&amp;lt;int&amp;gt; ret(2, 0);
+        
+        for(auto it = nums.begin(); it!=nums.end() ; it++)
+        {
+            axorb ^= *it;
+        }
+        
+        last = axorb &amp;amp; (~(axorb - 1));
+        
+        for(auto it = nums.begin(); it!=nums.end() ; it++)
+        {
+            if ((last &amp;amp; *it) != 0)
+                ret[0] ^= *it;
+        }
+        
+        ret[1] = axorb ^ ret[0];
+        
+        return ret;
+    }
+};
+&lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&#34;其他方法&#34;&gt;其他方法
+&lt;/h2&gt;&lt;p&gt;如果不要求空间复杂度为常数，其实也可以用哈希表来做。这样算法的扩展性很好，而且也不晦涩。&lt;/p&gt;
+&lt;p&gt;运行16ms，击败%34提交&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;class Solution {
+public:
+    vector&amp;lt;int&amp;gt; singleNumber(vector&amp;lt;int&amp;gt;&amp;amp; nums) {
+        unordered_set&amp;lt;int&amp;gt; buff(nums.size());
+        for(auto i = nums.begin(); i!=nums.end() ; i++)
+        {
+            auto it = buff.find(*i);
+            if(it == buff.end()){
+                buff.insert(*i);
+            }
+            else{
+                buff.erase(it);
+            }
+        }
+        vector&amp;lt;int&amp;gt; ret;
+        for(const int &amp;amp; i : buff){
+            ret.push_back(i);
+        }
+        return ret;
+    }
+};
+&lt;/code&gt;&lt;/pre&gt;</description>
+        </item>
+        <item>
+        <title>每周一道leetcode—— 43. Multiply Strings</title>
+        <link>https://nansenli.com/zh-cn/post/jianshu/%E7%AE%97%E6%B3%95/%E6%AF%8F%E5%91%A8%E4%B8%80%E9%81%93leetcode-43--multiply-strings-/</link>
+        <pubDate>Mon, 19 Jun 2017 06:39:00 +0000</pubDate>
+        
+        <guid>https://nansenli.com/zh-cn/post/jianshu/%E7%AE%97%E6%B3%95/%E6%AF%8F%E5%91%A8%E4%B8%80%E9%81%93leetcode-43--multiply-strings-/</guid>
+        <description>&lt;h2 id=&#34;题目&#34;&gt;题目：
+&lt;/h2&gt;&lt;p&gt;给定两个字符串十进制数字，给出字符串为他们的乘积。要求如下：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;禁止使用内置大数算法。&lt;/li&gt;
+&lt;li&gt;字符串长度110&lt;/li&gt;
+&lt;li&gt;输入无前置0&lt;/li&gt;
+&lt;li&gt;字符串仅含有数字&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id=&#34;思考&#34;&gt;思考
+&lt;/h2&gt;&lt;p&gt;在一开始没有看到禁止使用内置函数，我直接使用python的&lt;code&gt;str&lt;/code&gt;和&lt;code&gt;int&lt;/code&gt;这两个函数，结果直接前10%了。。。后来我看了下题目原来是不能用内置函数的，不知道这个python语言的特性算不算内置大数算法。这是一个大数乘法问题，大数乘法有很多现成的算法。&lt;/p&gt;
+&lt;p&gt;最开始提交的python版本，击败88%&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;class Solution(object):
+    def multiply(self, num1, num2):
+        return str(int(num1)*int(num2))
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;最原始的算法就是模拟手算了吧，首先你得实现&lt;strong&gt;字符串的加法计算&lt;/strong&gt;，&lt;strong&gt;多位乘法乘一位乘法&lt;/strong&gt;，这样应该可以计算多位乘以多位了。例如计算&lt;code&gt;12345*67890&lt;/code&gt;，就是计算&lt;code&gt;12345*6 + 12345*7 + 12345 *8 + 12345 * 9 + 12345 * 0&lt;/code&gt;， 然后每一个计算结果后面补0，再相加就会得到结果。不过这样的速度会比较慢。&lt;/p&gt;
+&lt;p&gt;况且，CPU本身就可以计算一些不会溢出的加法，所以，我们得好好利用这一点。首先我们得改进一下上面的算法，计算&lt;code&gt;12345*67890&lt;/code&gt;这个数字的结果，我们可以这样算：&lt;code&gt;12345*67890 = (12300 + 45)*(67800 + 90)&lt;/code&gt; ，显然可以拆解成为4个乘法计算，而且对于低位为0的，可以直接去掉，然后计算结果再补回来就行了，如果这四个乘法分别计算的时候不会溢出，那就没有问题了。否则，我们可以继续分解。&lt;/p&gt;
+&lt;p&gt;使用karatsuba乘法可以继续改进上面一点。
+我们注意到加法中有&lt;code&gt;12300*90+45*67800&lt;/code&gt;，我们可以利用已经计算过的结果，也就是&lt;code&gt;12300*67800&lt;/code&gt;和&lt;code&gt;45*90&lt;/code&gt;，然后只需要计算&lt;code&gt;(12300+45)*(67800+90) - 12300*67800 - 45*90&lt;/code&gt; 就可以得到 &lt;code&gt;12300*90 + 45*67800&lt;/code&gt;。这样，乘法的计算次数就减少了一次。&lt;/p&gt;
+&lt;p&gt;karatsuba乘法写起来会复杂一点，先不实现。首先提交一版n^2的算法也就是普通版，看看效果怎么样，然后再改进。（结果表明，手算版的速度已经很快了）&lt;/p&gt;
+&lt;h2 id=&#34;第一版&#34;&gt;第一版
+&lt;/h2&gt;&lt;p&gt;首先我们得写一个字符串相加的算法。我们首先观察一下输入的数据类型和输出的数据类型。是string类型的，那么按照一位一位加起来也是可以的。可以直接用两个整形数组保存一下每一位数，然后相加算出来第三个数组，这时第三个数组会有一些数字超出了10，我们按照从低位开始向高位进一位。最后将这个数组转成字符串就可以了。&lt;/p&gt;
+&lt;p&gt;虽然本地测试还可以，但是提交后速度很慢，排名很后，只击败10%。&lt;/p&gt;
+&lt;h2 id=&#34;改进&#34;&gt;改进
+&lt;/h2&gt;&lt;p&gt;我觉得理论上这个算法应该是不慢的,但是实际过程是很慢，可能是由于多余的整形和字符串互相转换有关。上面的算法里面，在计算乘法的时候将字符串转成了数字但是之后又转换回字符串，可能是这里产生了多余的时间。所以，应该直接在这里将结果加在最终结果上面。&lt;/p&gt;
+&lt;p&gt;提交后运行时间为9ms，击败50%。&lt;/p&gt;
+&lt;h2 id=&#34;改进2&#34;&gt;改进2
+&lt;/h2&gt;&lt;p&gt;算法中相同的字符串重复转化，可能会消耗时间。
+对字符串转化进行缓存，第一次转换成功就进行缓存，以后如果需要直接取出不需要进行额外的计算。&lt;/p&gt;
+&lt;p&gt;最终代码，可直接编译运行。运行时间6ms，击败76%提交。看来字符串转化反而成了性能瓶颈。&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;#include &amp;lt;stdio.h&amp;gt;
+#include &amp;lt;string&amp;gt;
+#include &amp;lt;stdlib.h&amp;gt;
+#include &amp;lt;iostream&amp;gt;
+#include &amp;lt;vector&amp;gt;
+
+
+using namespace std;
+
+const int BINARY = 10;
+
+class Solution
+{
+  private:
+    vector&amp;lt;int&amp;gt; result;
+    string _num1, _num2;
+    long num1buff[120];
+    long num2buff[120];
+
+  public:
+    string multiply(string num1, string num2)
+    {
+        result.clear();
+        result.resize(num1.length() + num2.length() + 1);
+        memset(num1buff, -1 , sizeof(long)*120);
+        memset(num2buff, -1 , sizeof(long)*120);
+        _num1 = num1;
+        _num2 = num2;
+        for(auto &amp;amp;c : _num1){
+            c-=&amp;#39;0&amp;#39;;
+        }
+        for(auto &amp;amp;c : _num2){
+            c-=&amp;#39;0&amp;#39;;
+        }
+        //这个过程是递归的过程,我们先看下什么时候终止吧.
+        //终止的时候,是两个数相乘不会溢出的时候
+        //我们假设int是二进制30位的,相乘要30位,原来两个数字必然是15位的, 也就是32768.
+        //也就是说两个四位数相乘通常都不会溢出了吧.
+
+        //使用递归来计算乘积
+        addMultiply(0,num1.length(), 0, num2.length());
+
+        string ret;
+        int i = result.size() -1;
+        for(; i&amp;gt;0; i--)
+        {
+            if(result[i] != 0) break;
+        }
+        for(; i&amp;gt;=0; i--)
+        {
+            ret.push_back(result[i] + &amp;#39;0&amp;#39;);
+        }
+        return ret;
+    }
+
+    void addMultiply(int a1, int a2, int b1, int b2 )
+    {;
+        //判断是否可以直接计算
+        if (a1 == a2 || b1 == b2)
+            return;
+        if (a2 - a1 &amp;lt; 10 &amp;amp;&amp;amp; b2 - b1 &amp;lt; 10)
+        {
+            long int_num1 = getLong1(a1, a2);
+            long int_num2 = getLong2(b1, b2);
+            long output = int_num1 * int_num2;
+            int pos = _num1.length() + _num2.length() - a2 - b2;
+            while (output != 0 || result[pos] &amp;gt;= BINARY)
+            {
+                long a = output % BINARY;
+                result[pos] += a;
+                result[pos + 1] += result[pos] / BINARY;
+                result[pos] %= BINARY;
+                output /= BINARY;
+                pos++;
+            }
+            return;
+        }
+        //否则,拆开较长的那个数字
+        if(a2 - a1 &amp;gt;= 10){
+            addMultiply(a1, (a2 + a1)/2, b1, b2);
+            addMultiply((a2 + a1)/2, a2, b1, b2);
+        }
+        else {
+            addMultiply(a1, a2, (b1+b2)/2, b2);
+            addMultiply(a1, a2, b1, (b1+b2)/2);
+        }
+    }
+    long getLong1(int a, int b){
+        long ret = 0;
+        if(num1buff[a] != -1) return num1buff[a];
+        for(int i=a; i!=b;i++){
+            ret *= BINARY;
+            ret += _num1[i] ;
+        }
+        num1buff[a] = ret;
+        return ret;
+    }
+    long getLong2(int a, int b){
+        long ret = 0;
+        if(num2buff[a] != -1) return num2buff[a];
+        for(int i=a; i!=b;i++){
+            ret *= BINARY;
+            ret += _num2[i] ;
+        }
+        num2buff[a] = ret;
+        return ret;
+    }
+};
+
+int main(void)
+{
+    Solution s;
+    for(int i=0;i&amp;lt;10000;i++){
+        cout &amp;lt;&amp;lt; s.multiply(&amp;#34;12345678901&amp;#34;, &amp;#34;100&amp;#34;) &amp;lt;&amp;lt; endl;
+        cout &amp;lt;&amp;lt; s.multiply(&amp;#34;100&amp;#34;, &amp;#34;100&amp;#34;) &amp;lt;&amp;lt; endl;
+    }
+    return 0;
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;最终排名击败70%&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;http://upload-images.jianshu.io/upload_images/4388248-a0745beb2a29152e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&#34;
+	
+	
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;排名&#34;
+	
+	
+&gt;&lt;/p&gt;
+</description>
+        </item>
+        
+    </channel>
+</rss>

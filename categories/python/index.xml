@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>Python on Nansen Li</title>
+        <link>https://nansenli.com/categories/python/</link>
+        <description>Recent content in Python on Nansen Li</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>en</language>
+        <copyright>Nansen Li（李楠森）</copyright>
+        <lastBuildDate>Tue, 04 Sep 2018 08:54:00 +0000</lastBuildDate><atom:link href="https://nansenli.com/categories/python/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>A Discussion on Python Decorators</title>
+        <link>https://nansenli.com/post/jianshu/python/python-%E8%A3%85%E9%A5%B0%E5%99%A8%E6%BC%AB%E8%B0%88/</link>
+        <pubDate>Tue, 04 Sep 2018 08:54:00 +0000</pubDate>
+        
+        <guid>https://nansenli.com/post/jianshu/python/python-%E8%A3%85%E9%A5%B0%E5%99%A8%E6%BC%AB%E8%B0%88/</guid>
+        <description>&lt;p&gt;Reference: &lt;a class=&#34;link&#34; href=&#34;http://python.jobbole.com/81683/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;http://python.jobbole.com/81683/&lt;/a&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Python&amp;rsquo;s Namespace
+Any variable is created within its own namespace. If your own namespace doesn&amp;rsquo;t contain this name, a new one will be created, rather than overriding the upper namespace. When accessing, if your namespace doesn&amp;rsquo;t contain it, the upper namespace will be accessed.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Python&amp;rsquo;s Closures
+Any function is an object. You can create a callable object. If you create a callable function that uses a local variable in its internal process, this involves a closure: a function nested and defined in a non-global scope can remember the enclosing namespace where it was defined.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;In simple terms: a child function can use local variables from its parent function, and this behavior is called a closure.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Closure Details in C++ vs Python
+In most languages, a parent function&amp;rsquo;s local variables end their lifecycle when the parent function exits. When lambda functions or function objects reference these local variables, problems can arise. If a lambda or function object can remember the current namespace during its definition, that&amp;rsquo;s a closure. In C++, local variable lifecycles are the same as their parent function, so what to do? Use the mutable modifier, which makes the variable&amp;rsquo;s lifecycle as long as the function object or lambda expression, otherwise capturing these variables might cause problems. Python captures all objects in the closure, preventing their release until the function object is collected.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Decorators
+Sometimes we need to modify functions in similar ways. For example, we might want to calculate a function&amp;rsquo;s execution time by adding timestamps at the beginning and end, then printing at the end. Or we might need to validate parameters and return values. We could call validation functions at the start and end of each function.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Decorators can accomplish this. For example, if we have a function:&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;def func():
+    time.sleep(1)
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;We can use another function that returns a function object with closure to achieve this:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;def&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;addTimePrint&lt;/span&gt;(func):
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;def&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;retFuncObj&lt;/span&gt;(&lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt;args, &lt;span style=&#34;color:#f92672&#34;&gt;**&lt;/span&gt;kwargs):
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        starttime &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; time()
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        func(&lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt;args, &lt;span style=&#34;color:#f92672&#34;&gt;**&lt;/span&gt;kwargs)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        print(time() &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt; starttime)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; retFuncObj
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Then we need to replace the original func function:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;func &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; addTimePrint(func)
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Python provides syntactic sugar: after defining addTimePrint, use @addTimePrint to complete both function definition and decoration:&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;@addTimePrint
+def func():
+    time.sleep(1)
+&lt;/code&gt;&lt;/pre&gt;</description>
+        </item>
+        
+    </channel>
+</rss>

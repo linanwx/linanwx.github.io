@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="前言 提前批有两次电话一面，这里略过了。 首发于：https://www.jianshu.com/p/d5aa63a27172 一面 成都4月11日 介绍自己的项目、难点在哪里、怎么解决的 介绍C++11特性 介绍fork函数 介绍time_wait状态 为什么tcp连接握手需要三次 介绍迭代器失效。push_back会导致迭代器失效吗。 红黑树的特征，介绍 哈希冲突的解决方法。 进程和线程的区别 你都使用什么线程模型 介绍协程 介绍快排算法 什么是稳定性排序，快排是稳定性的吗，为什么 快排算法最差情况推导公式 析构函数虚函数为什么 构造函数为什么不能是虚函数 打印在纸上的题目，考察：new [] 对象。static 成员。子类构造函数具体调用了啥。拷贝构造函数与赋值函数的区别。等号在拷贝构造函数出现的时机。什么时候需要赋值函数。深拷贝与浅拷贝。虚函数的调用时机。 下面是其中一道题目，请写出运行结果 #include &lt;iostream&gt; using namespace std; struct A{ A(){ local_var++; } virtual void func(){ cout &lt;&lt; &#34;A&#34; &lt;&lt; endl; } static int local_var; }; int A::local_var = 0; struct B : A{ B(){ local_var+=2; } virtual void func(){ cout &lt;&lt; &#34;B&#34; &lt;&lt; endl; } }; int main(){ A* a1 = new B[3]; cout &lt;&lt; a1[0].">
+<title>腾讯校招随笔</title>
+
+<link rel='canonical' href='https://nansenli.com/zh-cn/post/jianshu/%E9%9A%8F%E7%AC%94/%E8%85%BE%E8%AE%AF%E6%A0%A1%E6%8B%9B%E9%9A%8F%E7%AC%94/'>
+
+<link rel="stylesheet" href="/scss/style.min.1084ac713783b88e0bd9807a58068e10aae22e99420f94a9234654a4e199baa4.css"><meta property='og:title' content="腾讯校招随笔">
+<meta property='og:description' content="前言 提前批有两次电话一面，这里略过了。 首发于：https://www.jianshu.com/p/d5aa63a27172 一面 成都4月11日 介绍自己的项目、难点在哪里、怎么解决的 介绍C++11特性 介绍fork函数 介绍time_wait状态 为什么tcp连接握手需要三次 介绍迭代器失效。push_back会导致迭代器失效吗。 红黑树的特征，介绍 哈希冲突的解决方法。 进程和线程的区别 你都使用什么线程模型 介绍协程 介绍快排算法 什么是稳定性排序，快排是稳定性的吗，为什么 快排算法最差情况推导公式 析构函数虚函数为什么 构造函数为什么不能是虚函数 打印在纸上的题目，考察：new [] 对象。static 成员。子类构造函数具体调用了啥。拷贝构造函数与赋值函数的区别。等号在拷贝构造函数出现的时机。什么时候需要赋值函数。深拷贝与浅拷贝。虚函数的调用时机。 下面是其中一道题目，请写出运行结果 #include &lt;iostream&gt; using namespace std; struct A{ A(){ local_var++; } virtual void func(){ cout &lt;&lt; &#34;A&#34; &lt;&lt; endl; } static int local_var; }; int A::local_var = 0; struct B : A{ B(){ local_var+=2; } virtual void func(){ cout &lt;&lt; &#34;B&#34; &lt;&lt; endl; } }; int main(){ A* a1 = new B[3]; cout &lt;&lt; a1[0].">
+<meta property='og:url' content='https://nansenli.com/zh-cn/post/jianshu/%E9%9A%8F%E7%AC%94/%E8%85%BE%E8%AE%AF%E6%A0%A1%E6%8B%9B%E9%9A%8F%E7%AC%94/'>
+<meta property='og:site_name' content='Nansen Li'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2018-04-11T08:39:00&#43;00:00'/><meta property='article:modified_time' content='2018-04-11T08:39:00&#43;00:00'/>
+<meta name="twitter:title" content="腾讯校招随笔">
+<meta name="twitter:description" content="前言 提前批有两次电话一面，这里略过了。 首发于：https://www.jianshu.com/p/d5aa63a27172 一面 成都4月11日 介绍自己的项目、难点在哪里、怎么解决的 介绍C++11特性 介绍fork函数 介绍time_wait状态 为什么tcp连接握手需要三次 介绍迭代器失效。push_back会导致迭代器失效吗。 红黑树的特征，介绍 哈希冲突的解决方法。 进程和线程的区别 你都使用什么线程模型 介绍协程 介绍快排算法 什么是稳定性排序，快排是稳定性的吗，为什么 快排算法最差情况推导公式 析构函数虚函数为什么 构造函数为什么不能是虚函数 打印在纸上的题目，考察：new [] 对象。static 成员。子类构造函数具体调用了啥。拷贝构造函数与赋值函数的区别。等号在拷贝构造函数出现的时机。什么时候需要赋值函数。深拷贝与浅拷贝。虚函数的调用时机。 下面是其中一道题目，请写出运行结果 #include &lt;iostream&gt; using namespace std; struct A{ A(){ local_var++; } virtual void func(){ cout &lt;&lt; &#34;A&#34; &lt;&lt; endl; } static int local_var; }; int A::local_var = 0; struct B : A{ B(){ local_var+=2; } virtual void func(){ cout &lt;&lt; &#34;B&#34; &lt;&lt; endl; } }; int main(){ A* a1 = new B[3]; cout &lt;&lt; a1[0].">
+    <link rel="shortcut icon" href="/favicon.ico" />
+
+  
+    
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-WC38C3XE3J"></script>
+      <script>
+        var doNotTrack = false;
+        if ( false ) {
+          var dnt = (navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack);
+          var doNotTrack = (dnt == "1" || dnt == "yes");
+        }
+        if (!doNotTrack) {
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-WC38C3XE3J');
+        }
+      </script>
+    
+  
+
+
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="切换菜单">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/zh-cn/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/avatar_hu96777ff80939aaa7d938dddcc232fcc6_1414962_300x0_resize_box_3.png" width="300"
+                            height="300" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+                    <span class="emoji">🌈</span>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/zh-cn">Nansen Li</a></h1>
+            <h2 class="site-description"></h2>
+        </div>
+    </header><ol class="menu-social">
+            
+                <li>
+                    <a 
+                        href='https://github.com/linanwx'
+                        target="_blank"
+                        title="GitHub"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://www.linkedin.com/in/nansen-li-3bb0a3146/'
+                        target="_blank"
+                        title="LinkedIn"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-brand-linkedin"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M8 11v5" /><path d="M8 8v.01" /><path d="M12 16v-5" /><path d="M16 16v-3a2 2 0 1 0 -4 0" /><path d="M3 7a4 4 0 0 1 4 -4h10a4 4 0 0 1 4 4v10a4 4 0 0 1 -4 4h-10a4 4 0 0 1 -4 -4z" /></svg>
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='index.xml'
+                        target="_blank"
+                        title="RSS"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-rss" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="5" cy="19" r="1" />
+  <path d="M4 4a16 16 0 0 1 16 16" />
+  <path d="M4 11a9 9 0 0 1 9 9" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/zh-cn/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+</svg>
+
+
+
+                
+                <span>主页</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/zh-cn/page/archives/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>归档</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/zh-cn/page/search/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
+
+
+
+                
+                <span>搜索</span>
+            </a>
+        </li>
+        
+        <li class="menu-bottom-section">
+            <ol class="menu">
+                    
+                        <li id="i18n-switch">  
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-language" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M4 5h7" />
+  <path d="M9 3v2c0 4.418 -2.239 8 -5 8" />
+  <path d="M5 9c-.003 2.144 2.952 3.908 6.7 4" />
+  <path d="M12 20l4 -9l4 9" />
+  <path d="M19.1 18h-6.2" />
+</svg>
+
+
+
+                            <select name="language" title="language" onchange="window.location.href = this.selectedOptions[0].value">
+                                
+                                    <option value="https://nansenli.com/" >English</option>
+                                
+                                    <option value="https://nansenli.com/zh-cn/" selected>中文</option>
+                                
+                            </select>
+                        </li>
+                    
+                
+
+                
+                    <li id="dark-mode-toggle">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <span>暗色模式</span>
+                    </li>
+                
+            </ol>
+        </li>
+    </ol>
+</aside>
+
+    
+
+            <main class="main full-width">
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/zh-cn/categories/%E9%9A%8F%E7%AC%94/" >
+                随笔
+            </a>
+        
+    </header>
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/zh-cn/post/jianshu/%E9%9A%8F%E7%AC%94/%E8%85%BE%E8%AE%AF%E6%A0%A1%E6%8B%9B%E9%9A%8F%E7%AC%94/">腾讯校招随笔</a>
+        </h2>
+    
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">Apr 11, 2018</time>
+            </div>
+        
+
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+                <time class="article-time--reading">
+                    阅读时长: 1 分钟
+                </time>
+            </div>
+        
+    </footer>
+    
+
+    
+        <footer class="article-translations">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-language" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M4 5h7" />
+  <path d="M9 3v2c0 4.418 -2.239 8 -5 8" />
+  <path d="M5 9c-.003 2.144 2.952 3.908 6.7 4" />
+  <path d="M12 20l4 -9l4 9" />
+  <path d="M19.1 18h-6.2" />
+</svg>
+
+
+
+            <div>
+                
+                    <a href="https://nansenli.com/post/jianshu/%E9%9A%8F%E7%AC%94/%E8%85%BE%E8%AE%AF%E6%A0%A1%E6%8B%9B%E9%9A%8F%E7%AC%94/" class="link">English</a>
+                
+            </div>
+        </footer>
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <h2 id="前言">前言
+</h2><p>提前批有两次电话一面，这里略过了。
+首发于：https://www.jianshu.com/p/d5aa63a27172</p>
+<h2 id="一面">一面
+</h2><p>成都4月11日</p>
+<ul>
+<li>介绍自己的项目、难点在哪里、怎么解决的</li>
+<li>介绍C++11特性</li>
+<li>介绍fork函数</li>
+<li>介绍time_wait状态</li>
+<li>为什么tcp连接握手需要三次</li>
+<li>介绍迭代器失效。push_back会导致迭代器失效吗。</li>
+<li>红黑树的特征，介绍</li>
+<li>哈希冲突的解决方法。</li>
+<li>进程和线程的区别</li>
+<li>你都使用什么线程模型</li>
+<li>介绍协程</li>
+<li>介绍快排算法</li>
+<li>什么是稳定性排序，快排是稳定性的吗，为什么</li>
+<li>快排算法最差情况推导公式</li>
+<li>析构函数虚函数为什么</li>
+<li>构造函数为什么不能是虚函数</li>
+<li>打印在纸上的题目，考察：new [] 对象。static 成员。子类构造函数具体调用了啥。拷贝构造函数与赋值函数的区别。等号在拷贝构造函数出现的时机。什么时候需要赋值函数。深拷贝与浅拷贝。虚函数的调用时机。</li>
+</ul>
+<p>下面是其中一道题目，请写出运行结果</p>
+<pre tabindex="0"><code>#include &lt;iostream&gt;
+using namespace std;
+
+struct A{
+    A(){
+        local_var++;
+    }
+    virtual void func(){
+        cout &lt;&lt; &#34;A&#34; &lt;&lt; endl;
+    }
+    static int local_var;
+};
+
+int A::local_var = 0;
+
+struct B : A{
+    B(){
+        local_var+=2;
+    }
+    virtual void func(){
+        cout &lt;&lt; &#34;B&#34; &lt;&lt; endl;
+    }
+};
+
+int main(){
+    A* a1 = new B[3]; 
+    cout &lt;&lt; a1[0].local_var &lt;&lt; endl;
+    a1-&gt;func();
+    A a2 = a1[0];
+    cout &lt;&lt; a2.local_var &lt;&lt; endl;
+    a2.func();
+    A a3;
+    a3 = a1[0];
+    cout &lt;&lt; a3.local_var &lt;&lt; endl;
+    a3.func();
+}
+</code></pre><p>以下代码会出现什么问题。</p>
+<pre tabindex="0"><code>#include &lt;iostream&gt;
+using namespace std;
+
+struct A{
+    virtual void func1(){
+        cout &lt;&lt; a &lt;&lt; endl;
+    }
+    void func2(){
+        cout &lt;&lt; a &lt;&lt; endl;
+    }
+    void func3(){
+        cout &lt;&lt; &#34;a&#34; &lt;&lt; endl;
+    }
+    int a;
+};
+
+int main(){
+    A * a = (A*)malloc(sizeof(A));
+    a-&gt;func1();
+    a-&gt;func2();
+    a-&gt;func3();
+}
+</code></pre><ul>
+<li>笔试过程中（之前牛客笔试。面试官居然打印了我的笔试所有答案和结果，包括选择题和算法题，提交了多少次，失败了多少次）一道题的思路。考察虚指针的初始化时机。</li>
+<li>随机出一道纸上的题目。给定前序遍历ABC后序遍历CBA，求中序遍历是什么，画出来两种情况。</li>
+<li>笔试过程中（之前牛客笔试），第一道算法题的思路</li>
+<li>有100个弹珠，双方轮流拿，每个人只能拿1~5个，无法拿的人输，必胜解法。</li>
+<li>最近学什么（服务器编程）。之前学什么（TensorFlow），怎么学习的。你对Tensorflow强大的神经网络是怎么看待的。</li>
+<li>家庭情况了解。</li>
+<li>离开后在大厅手写代码，求char a数组中有的元素和char b数组中没有的元素，放到char c数组。这里我忘记把char字符转成unsigned char类型。</li>
+</ul>
+<h2 id="二面">二面
+</h2><p>成都4月13日</p>
+<ul>
+<li>自我介绍</li>
+<li>系统调用是什么。你用过哪些系统调用。什么系统调用会耗时长。</li>
+<li>gdb调试用过吗。什么是条件断点。</li>
+<li>函数指针和指针函数的区别。写个例子出来。</li>
+<li>手写fork调用示例。你在哪些场合使用过fork调用。</li>
+<li>介绍udp的connect函数。</li>
+<li>索引是什么。多加索引一定会好吗？（索引这个承认了看面经，但是后一个问题自己想出来了）</li>
+<li>上一次面试中，你有哪些问题你回去查了。</li>
+<li>上一次面试中，你的代码有问题，你知道吗。</li>
+<li>你回答的问题是从哪里学习的。你这两天在干什么？</li>
+<li>给你提一些建议，看下gdb调试，看下数据库知识，看下网络编程，多实践。</li>
+</ul>
+<h2 id="后续">后续
+</h2><p>4月20日收到腾讯的电话offer确认。</p>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+
+    </footer>
+
+
+    
+</article>
+
+    
+
+    
+
+     
+    
+        
+    <div class="disqus-container">
+    <div id="disqus_thread"></div>
+<script>
+    window.disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "nansenli" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+<style>
+    .disqus-container {
+        background-color: var(--card-background);
+        border-radius: var(--card-border-radius);
+        box-shadow: var(--shadow-l1);
+        padding: var(--card-padding);
+    }
+</style>
+
+<script>
+    window.addEventListener('onColorSchemeChange', (e) => {
+        if (typeof DISQUS == 'object') {
+            DISQUS.reset({
+                reload: true
+            });
+        }
+    })
+</script>
+
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+        2025 Nansen Li（李楠森）
+    </section>
+    
+    <section class="powerby">
+        使用 <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> 构建 <br />
+        主题 <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.30.0">Stack</a></b> 由 <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a> 设计
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.1e9a3bafd846ced4c345d084b355fb8c7bae75701c338f8a1f8a82c780137826.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>

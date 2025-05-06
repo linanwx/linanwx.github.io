@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>数据库 on Nansen Li</title>
+        <link>http://localhost:1313/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/</link>
+        <description>Recent content in 数据库 on Nansen Li</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>en</language>
+        <copyright>Nansen Li（李楠森）</copyright><atom:link href="http://localhost:1313/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>MySQL学习笔记</title>
+        <link>http://localhost:1313/post/jianshu/%E6%95%B0%E6%8D%AE%E5%BA%93/mysql%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/</link>
+        <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+        
+        <guid>http://localhost:1313/post/jianshu/%E6%95%B0%E6%8D%AE%E5%BA%93/mysql%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/</guid>
+        <description>&lt;h2 id=&#34;前言&#34;&gt;前言
+&lt;/h2&gt;&lt;p&gt;这里使用docker进行学习。配置了docker-cn的镜像。&lt;/p&gt;
+&lt;h2 id=&#34;mysql集群建立&#34;&gt;Mysql集群建立
+&lt;/h2&gt;&lt;p&gt;使用下面的命令拉取mysql镜像&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;docker pull mysql
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;使用下面的命令建立一个master和一个slave&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;docker run --name mysql-master -P -d -e MYSQL_ROOT_PASSWORD=ln mysql
+docker run --name mysql-slave1 -P -d -e MYSQL_ROOT_PASSWORD=ln mysql
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;其中-d是配置成为守护进程。-P暴露所有端口。设置root密码为ln。&lt;/p&gt;
+&lt;p&gt;使用下面命令分别进入两个docker中&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;docker exec -it mysql-master bash
+docker exec -it mysql-slave1 bash
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;查看网卡ip。这里首先要安装net-tools，安装前要update，update前要换源&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;sed -i &amp;#39;s/deb.debian.org/mirrors.ustc.edu.cn/g&amp;#39; /etc/apt/sources.list
+apt updaet
+apt install net-tools
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;输入ifconfig查看ip。
+其中master是172.17.0.2，slave1是172.17.0.3&lt;/p&gt;
+&lt;p&gt;设置登录权限
+在master中的mysql中按照如下步骤操作，首先登录，然后设置名称为root用户都可以无密码访问。&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;mysql -uroot -p
+mysql&amp;gt; grant all privileges on *.* to root@&amp;#39;%&amp;#39; identified by &amp;#39;&amp;#39;;
+Query OK, 0 rows affected (0.02 sec)
+
+mysql&amp;gt;  flush privileges;
+Query OK, 0 rows affected (0.02 sec)
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;在slave1中使用master的数据库，密码为空&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;mysql -uroot -p -h 172.17.0.2
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;在master中创建一个database&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;create database test_docker;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;在slave1中查看该数据库是否存在。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;show databases;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2 id=&#34;琐事&#34;&gt;琐事
+&lt;/h2&gt;&lt;p&gt;sql对大小写不敏感，SELECT与select是一样的。
+sql语句后面最好加上分号。
+use用于选择数据库。set用于设置值。
+添加用户的方式使用create来添加。
+然后授权用户使用数据库与表。&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;mysql -u root -p
+Enter password:**
+mysql&amp;gt; use mysql;
+mysql&amp;gt; create user &amp;#39;linanwx&amp;#39;@&amp;#39;%&amp;#39; identified by &amp;#39;ln&amp;#39;;
+mysql&amp;gt; grant all on *.* to &amp;#39;linanwx&amp;#39;@&amp;#39;%&amp;#39;;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;SHOW DATABASES用于展示当前数据库中的数据。
+SHOW TABLES则用于展示当前的表。&lt;/p&gt;
+</description>
+        </item>
+        <item>
+        <title>Redis 集群学习</title>
+        <link>http://localhost:1313/post/jianshu/%E6%95%B0%E6%8D%AE%E5%BA%93/redis-%E9%9B%86%E7%BE%A4%E5%AD%A6%E4%B9%A0/</link>
+        <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+        
+        <guid>http://localhost:1313/post/jianshu/%E6%95%B0%E6%8D%AE%E5%BA%93/redis-%E9%9B%86%E7%BE%A4%E5%AD%A6%E4%B9%A0/</guid>
+        <description>&lt;h2 id=&#34;前言&#34;&gt;前言
+&lt;/h2&gt;&lt;p&gt;回顾一下Redis集群的相关知识点&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;配置&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;一个Redis数据库系统有一个主数据库，多个从数据库&lt;/li&gt;
+&lt;li&gt;主数据库不需要做任何配置，从数据库在配置中加入&amp;ndash;slaveof ip port即可&lt;/li&gt;
+&lt;li&gt;从数据库默认只读，就算改成可写也没有实际用处&lt;/li&gt;
+&lt;li&gt;除了在配置文件中添加，也可以在运行时使用slaveof命令，来修改主数据库&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;持久化回顾&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;RDB 该方式将Redis进程fork一份，子进程将内存写入文件，然后替换之前的RDB快照&lt;/li&gt;
+&lt;li&gt;AOF  该方式Redis将每条命令都写入文件中。当AOF文件太大的时候，每追加一定数量的命令时，需要重写一次AOF文件，因为其中有些命令时冗余的。写入文件由于操作系统有缓存，可以进行配置。不配置的情况下30s写入磁盘一次。可以配置为每条命令都同步缓存，也可以配置为每秒同步一次。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;原理&#34;&gt;原理
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;初始化复制
+&lt;ul&gt;
+&lt;li&gt;
+&lt;ol&gt;
+&lt;li&gt;当从数据库启动后，向主数据库发送SYNC命令&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;ol start=&#34;2&#34;&gt;
+&lt;li&gt;主数据库进行一次快照保存，同时在保存快照时将命令缓存下来，然后将快照与保存快照期间的命令一起发送给从数据库&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;ol start=&#34;3&#34;&gt;
+&lt;li&gt;如果断线之后，Redis2.6以及以前的版本会重新进行初始化复制。Redis2.8之后的版本可以近传输断线期间的命令。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;ol start=&#34;4&#34;&gt;
+&lt;li&gt;从数据库将接受到的临时快照替换为配置中设定的RDB快照文件。之后的操作和RDB持久化恢复的过程一致。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;复制同步
+&lt;ul&gt;
+&lt;li&gt;之后，主数据库会将导致数据库变化的命令发送给从数据库&lt;/li&gt;
+&lt;li&gt;Redis复制策略使用的是乐观复制，存在不一致时间窗。主数据库可以配置当有多少数据库连接时可写，以及允许数据库最长失去链接时间。可以降低一定程度的数据不一致问题。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;读写分离提高性能&#34;&gt;读写分离提高性能
+&lt;/h2&gt;&lt;p&gt;一些带有耗时的读操作可以通过复制功能建立多个数据库从节点来加快速度&lt;/p&gt;
+&lt;h2 id=&#34;slave数据库持久化&#34;&gt;slave数据库持久化
+&lt;/h2&gt;&lt;p&gt;使用从数据库时可以关闭主数据库的持久化。但是主数据库崩溃的时候，主从数据库需要进行身份转换才可以恢复主数据库的内容。从数据库使用slaveof no one，主数据库使用slaveof命令设置为从数据库。&lt;/p&gt;
+&lt;p&gt;这种情况下，如果主数据库崩溃后，不能立刻重新启动。因为如果此时从新启动，主数据库因为没有持久化，就会将从数据库中的内容清空。&lt;/p&gt;
+&lt;h2 id=&#34;无硬盘复制&#34;&gt;无硬盘复制
+&lt;/h2&gt;&lt;p&gt;主从复制可以通过RDB持久化方式来实现初始化同步。
+当主数据库禁用RDB快照，但是当执行了初始化复制，仍然会生成RDB快照。此时主数据库重启动时将会使用RDB快照进行恢复。因为同步时间点不确定，甚至可能很久都没有进行初始化同步。这可能导致恢复的时间点可能是任意的。&lt;/p&gt;
+&lt;p&gt;另外，初始化同步时需要创建RDB快照，如果磁盘速度太慢可能会影响同步的效率。&lt;/p&gt;
+&lt;p&gt;从Redis2.8.18开始，Redis引入了无硬盘复制，开启该选项的时候，初始化复制将不再创建RDB快照，而是直接通过网络将RDB快照内容发送走。&lt;/p&gt;
+&lt;h2 id=&#34;增量复制&#34;&gt;增量复制
+&lt;/h2&gt;&lt;p&gt;主数据库和从数据库如果断开链接后，下一次重新链接如果使用初始化复制，开销会比较高。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;数据库在每次运行时，会生成唯一ID。&lt;/li&gt;
+&lt;li&gt;复制同步阶段，主数据库会将每一个命令放入回放日志中。并记下当前命令的偏移量。&lt;/li&gt;
+&lt;li&gt;从数据库接受命令时，也需要记录下命令偏移量。&lt;/li&gt;
+&lt;li&gt;当主从连接准备就绪之后，从数据库发送psync来告诉主数据库可以使用增量复制。&lt;/li&gt;
+&lt;li&gt;主数据库判断从数据库发送的id和自己是否相同。不相同的情况下，主数据库可能已经重启过了。&lt;/li&gt;
+&lt;li&gt;然后判断从数据库的命令偏移量是否和在backlog回放日志中，如果在，将回放日志中的命令发给从数据库。&lt;/li&gt;
+&lt;li&gt;backlog的大小可以配置，默认时1MB。越大可以使断线重连后的容忍程度越长。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;哨兵&#34;&gt;哨兵
+&lt;/h2&gt;&lt;p&gt;哨兵系统的出现，目的是为了解决之前的主从数据库的维护的不方便。以前存在两个问题，主数据库挂了无法感知。主数据库挂了之后，主从转换问题。&lt;/p&gt;
+&lt;p&gt;哨兵进程启动时，会读取配置文件。配置文件中有master-name ip port 。当主节点故障时，哨兵将自动转换其中一个从节点，变为主节点。当之前的主节点恢复后，会自动转变为从节点。&lt;/p&gt;
+&lt;p&gt;哨兵启动之后，会定时执行下面3个操作：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;10秒向master、slave发送INFO&lt;/li&gt;
+&lt;li&gt;2秒向master、slave的&lt;code&gt;__sentinel__:hello&lt;/code&gt;发送自己的信息&lt;/li&gt;
+&lt;li&gt;1秒向主数据库、从数据库、和其他哨兵发送PING&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;INFO信息使得哨兵可以获取当前数据库的相关信息。向master发送INFO可以获取其从数据库。
+向频道发送自己的信息，所有哨兵可以收到监控同一个数据库的其他哨兵的信息。
+哨兵之间建立连接目的是为了发送ping信息。
+哨兵发送ping命令时没有进行回复，就会认为其主观下线。如果发现一个主数据库主观下线，就会询问其他哨兵是否认为其主观下线。如果达到一定数量的时候，超过哨兵启动参数中设置的quorum，哨兵认为其客观下线。&lt;/p&gt;
+&lt;p&gt;RAFT选举：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;发现主数据库客观下线的哨兵A向其他哨兵发送命令，请求选自己成为领头哨兵。&lt;/li&gt;
+&lt;li&gt;如果被请求的哨兵还没有选过其他人，则会同意&lt;/li&gt;
+&lt;li&gt;如果A发现同意的数量超过了哨兵数量的一半和quorum参数，则A成为领头哨兵。&lt;/li&gt;
+&lt;li&gt;否则，随机等待一个时间重新发起请求，进行下一轮选举&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;领头哨兵会进行如下操作：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;查看从数据库的优先级，优先级越高的选他&lt;/li&gt;
+&lt;li&gt;查看从数据库的复制命令偏移量，偏移量越大的选他&lt;/li&gt;
+&lt;li&gt;选择ID小的从数据库&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;被选中的数据库会被领头哨兵发送slaveof no one成为主数据库，其他从数据库会收到slaveof命令更改其主数据库。最后，更改内部记录，将已经停止的数据库更新为主数据库的从数据库，使当其恢复服务时以从数据库的身份恢复。&lt;/p&gt;
+&lt;h2 id=&#34;部署&#34;&gt;部署
+&lt;/h2&gt;&lt;p&gt;哨兵一般部署在每个节点上，如果redis集群很大，所有哨兵与一个从数据库之间的连接数量太多会影响redis对所有哨兵的回复。所以部署的数量不能太多。&lt;/p&gt;
+&lt;h2 id=&#34;集群&#34;&gt;集群
+&lt;/h2&gt;&lt;p&gt;水平扩容这块，在腾讯实习期间解除了codis。codis分为redis proxy和从节点。主要原理就是对key进行hash之后，放入到具体的redis slave中。脚本在执行的过程中，被分配到具体的slave中执行，可能会遇到找不到其他key的情况。&lt;/p&gt;
+&lt;p&gt;除了codis，还有redis cluster。&lt;/p&gt;
+&lt;p&gt;在启动redis实例时，配置中cluster-enables改为yes，即可打开集群配置。&lt;/p&gt;
+&lt;p&gt;使用脚本可以方便的创建集群。增加新节点可以使用cluster meet命令添加ip和端口。该节点添加新节点后，会使用gossip协议将该节点的信息广播到所有节点。&lt;/p&gt;
+&lt;p&gt;插槽的分配。新的节点加入集群后有两种选择，要么使用cluster replicate命令复制每个主数据库来以从数据库的形式运行，要么向集群申请分配插槽slot来以主数据库的形式运行。&lt;/p&gt;
+&lt;p&gt;key使用crc16做hash运算，如果存在{*}，则使用该部分做hash运算，然后分给16384个槽中的一个。集群在创建的开始时就有一个槽分配的映射表。最终数据会存在对应的redis节点中。&lt;/p&gt;
+</description>
+        </item>
+        <item>
+        <title>牛客数据库笔记</title>
+        <link>http://localhost:1313/post/jianshu/%E6%95%B0%E6%8D%AE%E5%BA%93/%E7%89%9B%E5%AE%A2%E6%95%B0%E6%8D%AE%E5%BA%93%E7%AC%94%E8%AE%B0/</link>
+        <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+        
+        <guid>http://localhost:1313/post/jianshu/%E6%95%B0%E6%8D%AE%E5%BA%93/%E7%89%9B%E5%AE%A2%E6%95%B0%E6%8D%AE%E5%BA%93%E7%AC%94%E8%AE%B0/</guid>
+        <description>&lt;h2 id=&#34;前言&#34;&gt;前言
+&lt;/h2&gt;&lt;p&gt;对SQL不熟悉，但是又不想花时间学习。那就以题代学吧。&lt;/p&gt;
+&lt;h2 id=&#34;事务&#34;&gt;事务
+&lt;/h2&gt;&lt;p&gt;事务(Transaction)是并发控制的基本单位。所谓事务,它是一个操作序列，这些操作要么都执行，要么都不执行，它是一个不可分割的工作单位。例如，银行转帐工作：从一个帐号扣款并使另一个帐号增款，这两个操作要么都执行，要么都不执行。所以，应该把他们看成一个事务。事务是数据库维护数据一致性的单位，在每个事务结束时，都能保持数据一致性。&lt;/p&gt;
+&lt;p&gt;说白了事务就是原子操作，不可分割。&lt;/p&gt;
+&lt;h2 id=&#34;视图&#34;&gt;视图
+&lt;/h2&gt;&lt;p&gt;视图是一个虚拟的表，实际上不存在。只是为了方便给某些人看的时候，从数据库中摘出来的部分表。视图由select查询所定义—— 当创建一个视图时，实际上是在数据库里执行了一个select语句&lt;/p&gt;
+&lt;h2 id=&#34;instead-of-触发器&#34;&gt;instead of 触发器
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;触发器定义
+触发器实际上是一种特殊的存储的过程。触发器的主要功能是监视用户对数据的修改。如果针对一个数据表建了触发器，则 当数据表被修改（插入、更新或者删除）时，SQL Server便使触发器自动执行，以便对数据的修改采用一些适当的措施，从而保证数据的完整性和安全性。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;INSTEAD OF触发器指定执行触发器而不是执行触发 的SQL 语句，从而替代触发语句的操作。&lt;/p&gt;
+&lt;h2 id=&#34;存储过程&#34;&gt;存储过程
+&lt;/h2&gt;&lt;p&gt;存储过程是数据库中，一组为了完成特定功能的SQL 语句集，存储在数据库中，经过第一次编译后再次调用不需要再次编译，用户通过指定存储过程的名字并给出参数（如果该存储过程带有参数）来执行它。存储过程是数据库中的一个重要对象。&lt;/p&gt;
+&lt;h2 id=&#34;sql-关系代数&#34;&gt;sql 关系代数
+&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;五个基本操作：&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;    并(∪)、差(-)、笛卡尔积(×)、投影(σ)、选择(π)&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;四个组合操作：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;交(∩)、联接(等值联接)、自然联接、除法(÷)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;并是在两个表中都有的记录。差是在第一个表中有在第二个表中没有。笛卡尔积是两个表记录一对一的所有组合。投影是纵向选择，选择是横向选择。交和并类型，连接是通过共同属性联接。除法是一种复杂的运算。&lt;/p&gt;
+&lt;h2 id=&#34;关系模式&#34;&gt;关系模式
+&lt;/h2&gt;&lt;p&gt;关系模式是指关系的描述，现实世界随着时间在不断地变化，因而在不同的时刻，关系模式的关系也会有所变化。但是，现实世界的许多己有事实限定了关系模式所有可能的关系必须满足一定的完整性约束条件。这些约束或者通过对属性&lt;a class=&#34;link&#34; href=&#34;https://baike.baidu.com/item/%E5%8F%96%E5%80%BC%E8%8C%83%E5%9B%B4&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;取值范围&lt;/a&gt;的限定，例如职工年龄小于65岁（65岁以后必须退休），或者通过&lt;a class=&#34;link&#34; href=&#34;https://baike.baidu.com/item/%E5%B1%9E%E6%80%A7%E5%80%BC&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;属性值&lt;/a&gt;间的相互关连（主要体现于值的相等与否）反映出来。关系模式应当刻画出这些完整性约束条件。&lt;/p&gt;
+&lt;h2 id=&#34;非关系数据库&#34;&gt;非关系数据库
+&lt;/h2&gt;&lt;p&gt;NoSQL(NoSQL = Not Only SQL )，意即&amp;quot;不仅仅是SQL&amp;quot;。用于超大规模数据的存储。&lt;/p&gt;
+</description>
+        </item>
+        
+    </channel>
+</rss>

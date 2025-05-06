@@ -1,0 +1,1089 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>机器学习 on Nansen Li</title>
+        <link>http://localhost:1313/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/</link>
+        <description>Recent content in 机器学习 on Nansen Li</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>en</language>
+        <copyright>Nansen Li（李楠森）</copyright><atom:link href="http://localhost:1313/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>Deepin 安装 GPU版 Tensorflow 要点</title>
+        <link>http://localhost:1313/post/jianshu/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/deepin-%E5%AE%89%E8%A3%85-gpu%E7%89%88-tensorflow-%E8%A6%81%E7%82%B9/</link>
+        <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+        
+        <guid>http://localhost:1313/post/jianshu/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/deepin-%E5%AE%89%E8%A3%85-gpu%E7%89%88-tensorflow-%E8%A6%81%E7%82%B9/</guid>
+        <description>&lt;h2 id=&#34;前言&#34;&gt;前言
+&lt;/h2&gt;&lt;p&gt;虽然有很多教程都给出了如何在Ubuntu上安装Tensorflow，但是却没有一篇文章讲如何在Deepin系统安装Tensorflow，这里将安装过程的几个要点讲解一下&lt;/p&gt;
+&lt;h2 id=&#34;流程&#34;&gt;流程
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;首先下载Nvidia的Linux驱动。在官网可以下载。然后运行，如果不能运行，则需要修改驱动运行权限，使用chmod u+x来添加运行权限。关于deepin安装显卡驱动，可以参考这个文章 &lt;a class=&#34;link&#34; href=&#34;https://wiki.deepin.org/index.php?title=%E6%98%BE%E5%8D%A1&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;https://wiki.deepin.org/index.php?title=%E6%98%BE%E5%8D%A1&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;安装Docker-ce。这里一定要遵循官方的安装方案，只此一个方法可以正常安装最新版docker。https://wiki.deepin.org/index.php?title=Docker&lt;/li&gt;
+&lt;li&gt;下载Nvidia-docker。在Github的Nvidia-Docker页面找到Ubuntu的安装包和安装步骤，安装即可&lt;/li&gt;
+&lt;li&gt;接下来运行 &lt;code&gt;docker run -it -p 8888:8888 tensorflow/tensorflow:latest-gpu &lt;/code&gt; 此时可以进入官方的tensorflow带GPU版本的镜像啦，打开localhost:8888可以看到jupyter的页面&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;坑&#34;&gt;坑
+&lt;/h2&gt;&lt;p&gt;在安装Nvidia显卡驱动的时候，根据安装软件的提示，需要关闭Linux的桌面系统X server，此时可以通过tty1~6来进行终端操作。但是如果Deepin已经安装了自带的Nvidia驱动，要停止lightdm服务时，在Deepin在关闭X server的同时，显示器也关闭了，无法显示tty1 ~6的屏幕，由于这个问题，导致Nvidia驱动无法安装。即使手动卸载安装的Deepin官方Nvidia驱动，经过了繁琐的卸载指令，在切换到tty1 ~6后，在关闭图形界面的时候，仍然会导致tty屏幕被关闭，黑屏一片，无法继续后面的驱动卸载和重新安装官方Nvidia驱动。&lt;/p&gt;
+&lt;h2 id=&#34;解决方案&#34;&gt;解决方案
+&lt;/h2&gt;&lt;p&gt;为了避免Nvidia驱动无法安装，又能简洁科学的操作，所以必须在第一次安装Deepin系统的时候，在未安装显卡驱动的情况下对电脑进行操作进行安装Nvidia显卡官方linux驱动，首先按下快捷键“Ctrl+Alt+F2”，进入tty2，然后输入&lt;code&gt;sudo systemctl stop lightdm&lt;/code&gt; 停止lightdm服务，此时电脑关闭X server的时候不会导致显示器的关闭，之后运行&lt;code&gt;chmod u+x NVIDIA-Linux-x86_64-352.55.run&lt;/code&gt; #赋予可执行权限 以及&lt;code&gt;sudo ./NVIDIA-Linux-x86_64-352.55.run&lt;/code&gt; #安装驱动文件 然后重启就可以正常的使用官方闭源驱动啦。&lt;/p&gt;
+&lt;h2 id=&#34;后续&#34;&gt;后续
+&lt;/h2&gt;&lt;p&gt;使用GPU来运行Tensorflow程序是非常快的。一般的程序可以提速10倍以上，有些程序可以提速50到100倍的速度，所以使用GPU来进行Tensorflow编程是非常有必要的。
+另外，不知道是Deepin的问题还是Nvidia-Dcoker的问题还是驱动的问题，在电脑待机之后会导致Tensorflow镜像出错，所以在训练的时候不要让机器进行待机动作。&lt;/p&gt;
+</description>
+        </item>
+        <item>
+        <title>TensorFlow Hello World 入门</title>
+        <link>http://localhost:1313/post/jianshu/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/tensorflow-hello-world-%E5%85%A5%E9%97%A8/</link>
+        <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+        
+        <guid>http://localhost:1313/post/jianshu/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/tensorflow-hello-world-%E5%85%A5%E9%97%A8/</guid>
+        <description>&lt;h2 id=&#34;快速安装教程&#34;&gt;快速安装教程
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;一、安装docker&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;https://www.docker-cn.com/community-edition#/download&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;https://www.docker-cn.com/community-edition#/download&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;然后配置官方中国镜像。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;http://upload-images.jianshu.io/upload_images/4388248-74cf522af0bc0d30.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&#34;
+	
+	
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;image.png&#34;
+	
+	
+&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;二、tensorflow环境搭建&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;code&gt;$ docker run -it -p 8888:8888 tensorflow/tensorflow&lt;/code&gt;
+运行上述命令会自动下载tensorflow镜像，前提是仓库镜像设置成中国的镜像，否则下载很慢。运行命令后，命令行会出现一个网址，会提示你打开网页，打开这个网址以后会显示tensorflow的jupyter编辑环境，之后我们将在网页中输入所有代码。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;挂载docker的文件目录
+如果我们需要打开本地文件，需要挂载本地的文件夹到容器目录中。关闭容器，重新打开容器，使用&lt;code&gt;-v 主机目录:容器目录&lt;/code&gt;来进行挂载。
+&lt;code&gt;docker run -v /Users/hahaha/tensorflow/:/notebooks -it -p 8888:8888 tensorflow/tensorflow&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;其中/Users/hahaha/tensorflow/是我的mac的一个文件夹，根目录下的notebooks是tensorflow中的jupyter默认编辑目录。&lt;/p&gt;
+&lt;h2 id=&#34;运行hello-world-代码&#34;&gt;运行hello world 代码
+&lt;/h2&gt;&lt;p&gt;&lt;img src=&#34;http://upload-images.jianshu.io/upload_images/4388248-37ff525dfa0133b7.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&#34;
+	
+	
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;image.png&#34;
+	
+	
+&gt;
+新建一个Python2 Jupyter文件，在文件中输入如下的代码，然后点击播放按钮，此时在下方应该会出现一段Hello, TensorFlow!字符串。说明程序运行成功了。&lt;/p&gt;
+&lt;h2 id=&#34;程序解释&#34;&gt;程序解释
+&lt;/h2&gt;&lt;p&gt;从这段简单的代码可以了解到TensorFlow的使用非常方便，通过Python标准库的形式导入，不需要启动额外的服务。第一次接触TensorFlow可能比较疑惑，输出一段helloworld Python本身可以实现，为什么要使用tf.constant()和tf.Session()呢？其实TensorFlow通过Graph和Session来定义运行的模型和训练，这在复杂的模型和分布式训练上有非常大好处。
+首先，在TensorFlow中，有Graph和Operation这两个概念。Operation代表需要计算的内容。一个Graph中有很多Operation。通过Session来执行Graph中的Operation。&lt;/p&gt;
+&lt;h2 id=&#34;基本使用&#34;&gt;基本使用
+&lt;/h2&gt;&lt;p&gt;使用 TensorFlow, 你必须明白 TensorFlow:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;使用 &lt;code&gt;图 (graph)&lt;/code&gt; 来表示计算任务.&lt;/li&gt;
+&lt;li&gt;在被称之为 &lt;code&gt;会话 (Session)&lt;/code&gt; 的 &lt;code&gt;上下文 (context)&lt;/code&gt; 中执行图.&lt;/li&gt;
+&lt;li&gt;使用 &lt;code&gt;tensor&lt;/code&gt; 表示数据.&lt;/li&gt;
+&lt;li&gt;通过 &lt;code&gt;变量 (Variable)&lt;/code&gt; 维护状态.
+使用 &lt;code&gt;feed&lt;/code&gt; 和 &lt;code&gt;fetch&lt;/code&gt; 可以为&lt;code&gt;任意的操作(arbitrary operation) &lt;/code&gt;赋值或者从其中获取数据.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;综述&#34;&gt;综述
+&lt;/h2&gt;&lt;p&gt;TensorFlow 是一个编程系统, 使用图来表示计算任务. 图中的节点被称之为 &lt;strong&gt;op&lt;/strong&gt; (operation 的缩写)。 一个 op 使用 0 个或多个 Tensor ，执行计算产生0个或多个 Tensor。 每个 Tensor 是一个类型化的多维数组。 例如，你可以将一小组图像集表示为一个四维浮点数数组，这四个维度分别是 [batch, height, width, channels]。&lt;/p&gt;
+&lt;p&gt;一个 TensorFlow 图 &lt;strong&gt;描述&lt;/strong&gt; 了计算的过程。 为了进行计算，图必须在&lt;code&gt;会话&lt;/code&gt; 里被启动。 &lt;code&gt;会话&lt;/code&gt; 将图的 op 分发到诸如 CPU 或 GPU 之类的设备上，同时提供执行 op 的方法。这些方法执行后， 将产生的 tensor 返回。 在 Python 语言中, 返回的类型是 tensor 是&lt;a class=&#34;link&#34; href=&#34;http://www.numpy.org/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;numpy&lt;/a&gt;中的&lt;code&gt;ndarray&lt;/code&gt;对象。在 C 和 C++ 语言中, 返回的 tensor 是 tensorflow::Tensor
+ 实例。&lt;/p&gt;
+</description>
+        </item>
+        <item>
+        <title>TensorFlow 一个简单的入门用例</title>
+        <link>http://localhost:1313/post/jianshu/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/tensorflow-%E4%B8%80%E4%B8%AA%E7%AE%80%E5%8D%95%E7%9A%84%E5%85%A5%E9%97%A8%E7%94%A8%E4%BE%8B/</link>
+        <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+        
+        <guid>http://localhost:1313/post/jianshu/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/tensorflow-%E4%B8%80%E4%B8%AA%E7%AE%80%E5%8D%95%E7%9A%84%E5%85%A5%E9%97%A8%E7%94%A8%E4%BE%8B/</guid>
+        <description>&lt;h2 id=&#34;案例&#34;&gt;案例
+&lt;/h2&gt;&lt;p&gt;假如我有一系列的数据x-y，x-y之间是呈线性关系的，如果我们需要用一条直线拟合这条直线，我们该如何做？&lt;/p&gt;
+&lt;p&gt;下面的程序中，train_x是一系列从-1到1之间的数字，train_y是x的两倍加10，然后随机加了一个0~1之间的数字
+接下来我们建立模型，X和Y是一个待初始化的张量占位符，在优化过程中，模型中的XY会一直改变为train_x和train_y中的数据，然后优化器会进行优化，使得w斜率和b截距按照使误差减小的方向变化，这样，w和b经过迭代最终就使模型满足数据了&lt;/p&gt;
+&lt;p&gt;模型建立好了以后，我们开始运行模型。首先打开一个会话，然后一定要记得初始化全部变量。接下来我们对全体数据进行10次遍历，在每一次迭代过程中，将一个坐标输入，并计算误差，然后利用梯度下降更正w和b。最后，我们输出解出来的w和b。&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;import tensorflow as tf
+import numpy as np
+
+train_x = np.linspace(-1, 1, 101)
+train_y = 2 * train_x + np.random.rand(train_x.shape[0])  + 10
+
+X = tf.placeholder(&amp;#34;float&amp;#34;)
+Y = tf.placeholder(&amp;#34;float&amp;#34;)
+w = tf.Variable(0.0, name = &amp;#34;w&amp;#34;)
+b = tf.Variable(0.0, name = &amp;#34;b&amp;#34;)
+loss = tf.square(Y - tf.multiply(X,w) - b)
+train_op = tf.train.GradientDescentOptimizer(0.01).minimize(loss)
+
+with tf.Session() as session:
+    session.run(tf.global_variables_initializer())
+    for i in range(10):
+        for x,y in zip(train_x, train_y):
+            session.run(train_op, feed_dict={X:x, Y:y})
+    print(&amp;#34;w: &amp;#34;, session.run(w))
+    print(&amp;#34;b: &amp;#34;, session.run(b))
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;运行效果：
+&lt;img src=&#34;http://otwwkzjm5.bkt.clouddn.com/17-8-9/99539186.jpg&#34;
+	
+	
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;效果&#34;
+	
+	
+&gt;&lt;/p&gt;
+</description>
+        </item>
+        <item>
+        <title>使用Tensorflow完成Kaggle任务——泰坦尼克号Titanic: Machine Learning from Disaster</title>
+        <link>http://localhost:1313/post/jianshu/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E4%BD%BF%E7%94%A8tensorflow%E5%AE%8C%E6%88%90kaggle%E4%BB%BB%E5%8A%A1%E6%B3%B0%E5%9D%A6%E5%B0%BC%E5%85%8B%E5%8F%B7titanic--machine-learning-from-disaster/</link>
+        <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+        
+        <guid>http://localhost:1313/post/jianshu/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E4%BD%BF%E7%94%A8tensorflow%E5%AE%8C%E6%88%90kaggle%E4%BB%BB%E5%8A%A1%E6%B3%B0%E5%9D%A6%E5%B0%BC%E5%85%8B%E5%8F%B7titanic--machine-learning-from-disaster/</guid>
+        <description>&lt;h2 id=&#34;引入必要库&#34;&gt;引入必要库
+&lt;/h2&gt;&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;import csv
+import tensorflow as tf
+import numpy as np
+import random
+import sys
+import pandas as pd
+from pandas import DataFrame
+
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+&lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&#34;读取源文件并打印&#34;&gt;读取源文件并打印
+&lt;/h2&gt;&lt;p&gt;在这部分，我们接触了基本的csv操作，并显示结果。
+我们读入kaggle上下载的train.csv文件，并展示内容&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;trainFilePath = &amp;#39;./train.csv&amp;#39;
+
+trainSize = 0
+
+def testCSV(filePath):
+    with open(filePath, &amp;#39;rb&amp;#39;) as trainFile:
+        global trainSize
+        csvReader = csv.reader(trainFile)
+        dataList = [data for data in csvReader]
+        df = DataFrame(dataList[1:], columns=dataList[0])
+        trainSize = len(df)
+        print(df)
+        print(&amp;#34;trainSize&amp;#34;, trainSize)
+
+testCSV(trainFilePath)
+&lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&#34;读取源文件并提取数据建立神经网络&#34;&gt;读取源文件并提取数据，建立神经网络
+&lt;/h2&gt;&lt;p&gt;在这部分，我们读取源文件中的性别，阶级，船费以及SibSp，用于拟合最终的生存概率
+然后我们建立一个总共5层，中间3层的神经网络，神经元的个数分别是4-10-20-10-2。
+然后运行读取函数。&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;def readTrainDataCSV(filePath):
+    global trainData, targetData, classifier
+    with open(filePath, &amp;#39;rb&amp;#39;) as trainFile:
+        csvReader = csv.reader(trainFile)
+        dataList = [data for data in csvReader]
+        dataSize = len(dataList) - 1
+        trainData = np.ndarray((dataSize, 4), dtype=np.float32)
+        targetData = np.ndarray((dataSize, 1), dtype=np.int32)
+        trainDataFrame = DataFrame(dataList[1:], columns=dataList[0])
+        trainDataFrame_fliter = trainDataFrame.loc[:,[&amp;#39;Pclass&amp;#39;,&amp;#39;Sex&amp;#39;,&amp;#39;SibSp&amp;#39;,&amp;#39;Fare&amp;#39;,&amp;#39;Survived&amp;#39;]]
+        for i in range(dataSize):
+            thisData = np.array(trainDataFrame_fliter.iloc[i])
+            Pclass,Sex,SibSp,Fare,Survived = thisData
+            Pclass = float(Pclass)
+            Sex = 0 if Sex == &amp;#39;female&amp;#39; else 1
+            SibSp = float(SibSp)
+            Fare = float(Fare)
+            Survived = int(Survived)
+            print(Pclass,Sex,SibSp,Fare,Survived)
+            trainData[i,:] = [Pclass,Sex,SibSp,Fare]
+            targetData[i,:] = [Survived]
+            print(thisData)
+        print(trainData)
+        print(targetData)
+        feature_columns = [tf.contrib.layers.real_valued_column(&amp;#34;&amp;#34;, dimension=4)]
+        classifier = tf.contrib.learn.DNNClassifier(feature_columns=feature_columns,
+                                              hidden_units=[10, 20, 10],
+                                              n_classes=2)
+#                                               model_dir=&amp;#34;/tmp/titanic_model&amp;#34;)
+
+readTrainDataCSV(trainFilePath)
+&lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&#34;创建输入数据&#34;&gt;创建输入数据
+&lt;/h2&gt;&lt;p&gt;我们将训练数据和标签包装成一个二元组，并返回&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;def get_train_inputs():
+    x = tf.constant(trainData)
+    y = tf.constant(targetData)
+    print(x)
+    print(y)
+    return x, y
+
+get_train_inputs()
+&lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&#34;训练数据&#34;&gt;训练数据
+&lt;/h2&gt;&lt;p&gt;我们开始训练神经网络&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;def train():
+    classifier.fit(input_fn=get_train_inputs, steps=2000)
+
+train()
+&lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&#34;检查准确度&#34;&gt;检查准确度
+&lt;/h2&gt;&lt;p&gt;我们使用整个数据集来查看准确度。注意，我们应该使用验证集来完成这件事。但是由于我们只是用来演示，所以就算了&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;accuracy_score = classifier.evaluate(input_fn=get_train_inputs,
+                                       steps=1)[&amp;#34;accuracy&amp;#34;]
+print(&amp;#34;accuracy:&amp;#34;,accuracy_score)
+&lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&#34;读入测试集并输出结果&#34;&gt;读入测试集，并输出结果
+&lt;/h2&gt;&lt;p&gt;在这一部分，我们将读入kaggle中的数据，并输出到文件中，最终提交官网&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;testFilePath = &amp;#39;./test.csv&amp;#39;
+
+def readTestDataCSV(filePath):
+    global testData, PassengerIdStart
+    with open(filePath, &amp;#39;rb&amp;#39;) as testFile:
+        csvReader = csv.reader(testFile)
+        dataList = [data for data in csvReader]
+        dataSize = len(dataList)-1
+        trainDataFrame = DataFrame(dataList[1:], columns=dataList[0])
+        trainDataFrame_fliter = trainDataFrame.loc[:,[&amp;#39;Pclass&amp;#39;,&amp;#39;Sex&amp;#39;,&amp;#39;SibSp&amp;#39;,&amp;#39;Fare&amp;#39;]]
+        testData = np.ndarray((dataSize, 4), dtype=np.float32)
+        PassengerIdStart = trainDataFrame[&amp;#39;PassengerId&amp;#39;][0]
+        PassengerIdStart = int(PassengerIdStart)
+        print(&amp;#39;PassengerId&amp;#39;,PassengerIdStart)
+        for i in range(dataSize):
+            thisData = np.array(trainDataFrame_fliter.iloc[i])
+            Pclass,Sex,SibSp,Fare = thisData
+            Pclass = float(Pclass)
+            Sex = 0 if Sex == &amp;#39;female&amp;#39; else 1
+            SibSp = float(SibSp)
+            Fare = 0 if Fare==&amp;#39;&amp;#39; else float(Fare)
+            print(Pclass,Sex,SibSp,Fare)
+            testData[i,:] = [Pclass,Sex,SibSp,Fare]
+            print(thisData)
+        print(testData)
+        
+def testData_samples():
+    return testData
+
+readTestDataCSV(testFilePath)
+predictions = list(classifier.predict(input_fn=testData_samples))
+print(predictions)
+
+
+with open(&amp;#39;predictions.csv&amp;#39;, &amp;#39;wb&amp;#39;) as csvfile:
+    writer = csv.writer(csvfile, dialect=&amp;#39;excel&amp;#39;)
+    writer.writerow([&amp;#39;PassengerId&amp;#39;,&amp;#39;Survived&amp;#39;])
+    PassengerId = PassengerIdStart 
+    for i in predictions:
+        writer.writerow([PassengerId, i])
+        PassengerId += 1
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;最终在只使用了4个特征值的情况下，准确率有75%。接下来的目标是将其他数据进行利用。&lt;/p&gt;
+</description>
+        </item>
+        <item>
+        <title>深度学习零基础学习笔记一（优达学城）</title>
+        <link>http://localhost:1313/post/jianshu/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E9%9B%B6%E5%9F%BA%E7%A1%80%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%E4%B8%80%E4%BC%98%E8%BE%BE%E5%AD%A6%E5%9F%8E/</link>
+        <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+        
+        <guid>http://localhost:1313/post/jianshu/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E9%9B%B6%E5%9F%BA%E7%A1%80%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%E4%B8%80%E4%BC%98%E8%BE%BE%E5%AD%A6%E5%9F%8E/</guid>
+        <description>&lt;h2 id=&#34;前言&#34;&gt;前言
+&lt;/h2&gt;&lt;p&gt;突发奇想想学机器学习，这里是学习过程的笔记&lt;/p&gt;
+&lt;h2 id=&#34;准备&#34;&gt;准备
+&lt;/h2&gt;&lt;p&gt;我做了这些准备工作&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;MacBook 一台，搭建好Python环境，安装numpy和matplotlib&lt;/li&gt;
+&lt;li&gt;优达学城注册免费的《深度学习》课程（Google合作）&lt;/li&gt;
+&lt;li&gt;廖雪峰Python入门教程学习&lt;/li&gt;
+&lt;li&gt;花费两天时间大致浏览《机器学习实战》&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;学习这些知识应该足以进行接下来的优达学城的学习&lt;/p&gt;
+&lt;h2 id=&#34;课程一-从机器学习到深度学习&#34;&gt;课程一 从机器学习到深度学习
+&lt;/h2&gt;&lt;p&gt;&lt;img src=&#34;http://upload-images.jianshu.io/upload_images/4388248-deb922c5a6a30e32.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&#34;
+	
+	
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;前言&#34;
+	
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;小节1-8，主要介绍了深度学习的发展现状等等知识。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;http://upload-images.jianshu.io/upload_images/4388248-881aa1d922b7aadf.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&#34;
+	
+	
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;image.png&#34;
+	
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;小节9-12介绍了softmax模型。&lt;/p&gt;
+&lt;p&gt;粗略浏览机器学习实战后，在机器学习实战这本书中，大致介绍了机器学习的几种算法。从表面上来看，机器学习是一些分类和聚类算法。在这些算法中，介绍了一种算法，叫做逻辑回归分类。&lt;/p&gt;
+&lt;p&gt;在小节9-12中，主要介绍了分类器模型——逻辑回归，分类函数使用的是softmax函数。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;什么是softmax函数&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img src=&#34;http://upload-images.jianshu.io/upload_images/4388248-81791b221c81e509.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&#34;
+	
+	
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;softmax&#34;
+	
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;这张图片可以表明什么是softmax函数了。对原来数列中的每个数z求exp(z)，新数的大小所占的比例就是新数的softmax概率。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;性质&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;如果输入同比例扩大，则分类器的结果越两极化，越自信，如果输入同比例缩小，分类器结果趋于平均，不自信。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;算法&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; numpy &lt;span style=&#34;color:#66d9ef&#34;&gt;as&lt;/span&gt; np
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;def&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;softmax&lt;/span&gt;(x):
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&amp;#34;&amp;#34;Compute softmax values for each sets of scores in x.&amp;#34;&amp;#34;&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    expList &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; [np&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;exp(i) &lt;span style=&#34;color:#66d9ef&#34;&gt;for&lt;/span&gt; i &lt;span style=&#34;color:#f92672&#34;&gt;in&lt;/span&gt; x]
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    expSum &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; sum(expList)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    x &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; [i&lt;span style=&#34;color:#f92672&#34;&gt;/&lt;/span&gt;expSum &lt;span style=&#34;color:#66d9ef&#34;&gt;for&lt;/span&gt; i &lt;span style=&#34;color:#f92672&#34;&gt;in&lt;/span&gt; expList]
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; np&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;array(x)
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;img src=&#34;http://upload-images.jianshu.io/upload_images/4388248-ee072532fdf320cf.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&#34;
+	
+	
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;image.png&#34;
+	
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;13-14节主要讲One-Hot编码。在softmax函数给出一组概率数列之后，如何确定分类呢？例如概率最高的为1，其他的为0，这样的一个数列，属于One-Hot编码。这种编码是已经确定了分类。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;http://upload-images.jianshu.io/upload_images/4388248-d17a8063ae1224a0.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&#34;
+	
+	
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;交叉熵&#34;
+	
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;15-16节讲了交叉熵。softmax可以计算概率数列，OneHot是已经确定的分类，那如何计算概率数列到某个分类的距离呢？使用交叉熵来度量这个距离。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;http://upload-images.jianshu.io/upload_images/4388248-17cca85ebc74d0ab.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&#34;
+	
+	
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;image.png&#34;
+	
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;http://upload-images.jianshu.io/upload_images/4388248-f28d86a84703d49e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&#34;
+	
+	
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;image.png&#34;
+	
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;17-20 节讲解了如何使用这个分类器。其中，18节讲了为什么需要采用一种特殊的初始数据。&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;sum = 1000000000
+
+for i in range(1000000):
+    sum += 0.000001
+
+sum -= 1000000000
+print(sum)
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;这段代码运行结果不是1。如果把sum换成一个很小的数字，例如1，而不是1000000000，我们发现结果误差变小了。基于这个原因，我们希望初始数据总是均值为0，并且各个方向的方差为一致的。例如一个灰度图片的像素值0-255，我们需要把它减去128，然后除以128，这样每一个数字都是-1到1之间的数字，这样的初始数据更适合用来训练。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;http://upload-images.jianshu.io/upload_images/4388248-5e75673ff68468cb.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&#34;
+	
+	
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;image.png&#34;
+	
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;这样，我们就可以进行训练了。回顾一下视频内容，xi是训练数据矩阵，w是随机权重矩阵，为了性能，随机值取自正态分布中轴为0，方差很小的分布函数，然后计算概率数列，和目标的距离。然后求出到所有目标的平均距离。我们的目的是让距离变小，所以我们沿着梯度下降的方向优化权重矩阵，同时优化截距b。不断重复这一个过程，直到局部最优为止。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;安装docker&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;https://www.docker-cn.com/community-edition#/download&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;https://www.docker-cn.com/community-edition#/download&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;配置官方中国镜像。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;http://upload-images.jianshu.io/upload_images/4388248-5f5ea990dda40440.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&#34;
+	
+	
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;image.png&#34;
+	
+	
+&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;安装jupyter notebook&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;code&gt;$ pip3 install jupyter&lt;/code&gt;
+&lt;code&gt;$ jupyter notebook&lt;/code&gt;
+此时可以使用命令jupyter notebook打开一个jupyter编辑器&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;tensorflow环境搭建&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;code&gt;$ docker run -it -p 8888:8888 tensorflow/tensorflow&lt;/code&gt;
+运行上述命令会自动下载tensorflow镜像，前提是仓库镜像设置成中国的镜像，否则下载很慢。运行命令后，会提示你打开网页，打开这个网址以后会显示tensorflow的jupyter编辑环境，前提是jupyter notebook安装正确&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;挂载docker的文件目录
+我们需要把官方的作业导进去。关闭容器，重新打开容器，使用&lt;code&gt;-v 主机目录:容器目录&lt;/code&gt;来进行挂载。
+&lt;code&gt;docker run -v /Users/hahaha/tensorflow/:/notebooks -it -p 8888:8888 tensorflow/tensorflow&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;其中/Users/hahaha/tensorflow/是我的mac的一个文件夹，notebooks是tensorflow中的jupyter默认编辑目录。&lt;/p&gt;
+&lt;p&gt;在主机目录的挂载目录下面粘贴第一个作业文件，1_notmnist.ipynb。这个文件可以在这里找到： &lt;a class=&#34;link&#34; href=&#34;https://github.com/tensorflow/tensorflow/blob/master/tensorflow/examples/udacity/1_notmnist.ipynb&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;1_notmnist.ipynb&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;http://upload-images.jianshu.io/upload_images/4388248-1a87bebfcc977690.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&#34;
+	
+	
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;作业一内容&#34;
+	
+	
+&gt;&lt;/p&gt;
+&lt;h2 id=&#34;作业代码段一&#34;&gt;作业代码段一
+&lt;/h2&gt;&lt;p&gt;首先运行一下第一段代码的import，应该是没有任何出错的，此时什么也不会发生，如果出现了红色的输出错误，那就说明这些from import没有导入成功。&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;# These are all the modules we&amp;#39;ll be using later. Make sure you can import them
+# before proceeding further.
+from __future__ import print_function
+# print函数
+import matplotlib.pyplot as plt
+# 绘图工具
+import numpy as np
+# 矩阵计算
+import os
+# 文件路径
+import sys
+# 文件输出
+import tarfile
+# 解压缩
+from IPython.display import display, Image
+# 显示图片
+from scipy import ndimage
+# 图像处理
+from sklearn.linear_model import LogisticRegression
+# 逻辑回归模块线性模型
+from six.moves.urllib.request import urlretrieve
+# url处理
+from six.moves import cPickle as pickle
+# 数据处理
+
+# Config the matplotlib backend as plotting inline in IPython
+%matplotlib inline
+# matplotlib是最著名的Python图表绘制扩展库，
+# 它支持输出多种格式的图形图像，并且可以使用多种GUI界面库交互式地显示图表。
+# 使用%matplotlib命令可以将matplotlib的图表直接嵌入到Notebook之中，
+# 或者使用指定的界面库显示图表，它有一个参数指定matplotlib图表的显示方式。
+# inline表示将图表嵌入到Notebook中。
+&lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&#34;作业代码段二&#34;&gt;作业代码段二
+&lt;/h2&gt;&lt;p&gt;接下来是第二段代码，会进行下载用于训练和测试的字母集合，大概是300mb大小。下载成功后，可以看到挂载目录下面的这两个文件。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;http://upload-images.jianshu.io/upload_images/4388248-e1cc51d654c2800a.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&#34;
+	
+	
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;作业&#34;
+	
+	
+&gt;&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;url = &amp;#39;https://commondatastorage.googleapis.com/books1000/&amp;#39;
+last_percent_reported = None
+data_root = &amp;#39;.&amp;#39; # Change me to store data elsewhere
+
+def download_progress_hook(count, blockSize, totalSize):
+  &amp;#34;&amp;#34;&amp;#34;A hook to report the progress of a download. This is mostly intended for users with
+  slow internet connections. Reports every 5% change in download progress.
+  &amp;#34;&amp;#34;&amp;#34;
+# 钩子函数用来实时显示下载进度
+  global last_percent_reported
+  percent = int(count * blockSize * 100 / totalSize)
+
+  if last_percent_reported != percent:
+    if percent % 5 == 0:
+      sys.stdout.write(&amp;#34;%s%%&amp;#34; % percent)
+      sys.stdout.flush()
+    else:
+      sys.stdout.write(&amp;#34;.&amp;#34;)
+      sys.stdout.flush()
+      
+    last_percent_reported = percent
+        
+def maybe_download(filename, expected_bytes, force=False):
+  &amp;#34;&amp;#34;&amp;#34;Download a file if not present, and make sure it&amp;#39;s the right size.&amp;#34;&amp;#34;&amp;#34;
+  dest_filename = os.path.join(data_root, filename)
+#   data_root是当前目录，在这个目录上加上文件名，设置为要保存的文件位置
+  if force or not os.path.exists(dest_filename):
+#         force是强制下载，忽略已经下载的文件
+    print(&amp;#39;Attempting to download:&amp;#39;, filename) 
+    filename, _ = urlretrieve(url + filename, dest_filename, reporthook=download_progress_hook)
+#     使用urlretrieve来下载文件，挂上钩子
+    print(&amp;#39;\nDownload Complete!&amp;#39;)
+  statinfo = os.stat(dest_filename)
+# 获取下载到的文件的信息
+  if statinfo.st_size == expected_bytes:
+#         正确大小
+    print(&amp;#39;Found and verified&amp;#39;, dest_filename)
+  else:
+#     错误大小，提示用户使用浏览器下载
+    raise Exception(
+      &amp;#39;Failed to verify &amp;#39; + dest_filename + &amp;#39;. Can you get to it with a browser?&amp;#39;)
+  return dest_filename
+
+train_filename = maybe_download(&amp;#39;notMNIST_large.tar.gz&amp;#39;, 247336696)
+test_filename = maybe_download(&amp;#39;notMNIST_small.tar.gz&amp;#39;, 8458043)
+&lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&#34;作业代码段三&#34;&gt;作业代码段三
+&lt;/h2&gt;&lt;p&gt;解压缩用例&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;num_classes = 10
+# 数字总共有多少个
+np.random.seed(133)
+# 初始化随机种子
+def maybe_extract(filename, force=False):
+#     假设已经解压缩了
+  root = os.path.splitext(os.path.splitext(filename)[0])[0]  # remove .tar.gz
+#     splitext(filename)[0]用于去除一个后缀，用两次就是去除两次后缀，也就是去除.tar.gz这个后缀
+  if os.path.isdir(root) and not force:
+    # You may override by setting force=True.
+#     已经解压缩了就不再解压缩了
+    print(&amp;#39;%s already present - Skipping extraction of %s.&amp;#39; % (root, filename))
+  else:
+    print(&amp;#39;Extracting data for %s. This may take a while. Please wait.&amp;#39; % root)
+    tar = tarfile.open(filename)
+    sys.stdout.flush()
+    tar.extractall(data_root)
+    tar.close()
+#     解压缩到当前目录下面
+  data_folders = [
+    os.path.join(root, d) for d in sorted(os.listdir(root))
+    if os.path.isdir(os.path.join(root, d))]
+  if len(data_folders) != num_classes:
+    raise Exception(
+      &amp;#39;Expected %d folders, one per class. Found %d instead.&amp;#39; % (
+        num_classes, len(data_folders)))
+  print(data_folders)
+# 检查解压缩文件目录的数量与期待是否一致，并且打印解压缩出来文件的目录
+  return data_folders
+  
+train_folders = maybe_extract(train_filename)
+test_folders = maybe_extract(test_filename)
+&lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&#34;问题一&#34;&gt;问题一
+&lt;/h2&gt;&lt;p&gt;写出代码显示解压缩的文件内容信息&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;参考答案&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;import random
+import matplotlib.image as mpimg
+
+
+def plot_samples(data_folders, sample_size, title=None):
+    fig = plt.figure()
+#     建立空图像
+    if title: fig.suptitle(title, fontsize=16, fontweight=&amp;#39;bold&amp;#39;)
+#         加入标题
+    for folder in data_folders:
+#         遍历每个字母
+        image_files = os.listdir(folder)
+        image_sample = random.sample(image_files, sample_size)
+#         从该字母中随机选取一定数量的图片
+        for image in image_sample:
+            image_file = os.path.join(folder, image)
+            ax = fig.add_subplot(len(data_folders), sample_size, sample_size * data_folders.index(folder) +
+                                 image_sample.index(image) + 1)
+#             创建一个子图
+            image = mpimg.imread(image_file)
+#     加载子图图片
+            ax.imshow(image)
+#     显示子图图片
+            ax.set_axis_off() 
+#     关闭子图坐标线
+
+    fig.set_size_inches(18.5, 10.5)
+#     设置图片显示的大小
+    plt.show()
+
+
+plot_samples(train_folders, 20, &amp;#39;Train&amp;#39;)
+plot_samples(test_folders, 20, &amp;#39;Test&amp;#39;)
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;运行效果如下&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;http://upload-images.jianshu.io/upload_images/4388248-89f6aa390dfd06a3.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&#34;
+	
+	
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;训练.png&#34;
+	
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;http://upload-images.jianshu.io/upload_images/4388248-0dbfe7c00c15e9e8.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&#34;
+	
+	
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;测试.png&#34;
+	
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;可以看出，部分训练数据是有问题的&lt;/p&gt;
+&lt;h2 id=&#34;作业代码段四&#34;&gt;作业代码段四
+&lt;/h2&gt;&lt;p&gt;这之后需要进行数据的归一化处理，就是让图像的每一个像素由0&lt;del&gt;255变换到-1.0&lt;/del&gt;1.0，并且持久化到文件中&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;image_size = 28  # Pixel width and height.
+pixel_depth = 255.0  # Number of levels per pixel.
+# 图片长宽和图片像素深度
+def load_letter(folder, min_num_images):
+  &amp;#34;&amp;#34;&amp;#34;Load the data for a single letter label.&amp;#34;&amp;#34;&amp;#34;
+# 处理一个属于一个字母文件夹下面的文件
+  image_files = os.listdir(folder)
+#     列出该文件夹目录下面的所有文件
+  dataset = np.ndarray(shape=(len(image_files), image_size, image_size),
+                         dtype=np.float32)
+#     创建一个长度为文件个数，宽度和高度为28的
+    
+  print(folder)
+# 打印目录
+  num_images = 0
+# 初始化num_images
+  for image in image_files:
+#   对每一个文件处理
+    image_file = os.path.join(folder, image)
+#     获取完整文件路径
+    try:
+      image_data = (ndimage.imread(image_file).astype(float) - 
+                    pixel_depth / 2) / pixel_depth
+#     读入图像，并且归一化处理
+      if image_data.shape != (image_size, image_size):
+#         检查图像的宽高
+        raise Exception(&amp;#39;Unexpected image shape: %s&amp;#39; % str(image_data.shape))
+      dataset[num_images, :, :] = image_data
+#         读入到数据集合中
+      num_images = num_images + 1
+#     图片序号加一
+    except IOError as e:
+#         如果无法读取文件的话，则忽略该文件
+      print(&amp;#39;Could not read:&amp;#39;, image_file, &amp;#39;:&amp;#39;, e, &amp;#39;- it\&amp;#39;s ok, skipping.&amp;#39;)
+    
+  dataset = dataset[0:num_images, :, :]
+# 如果读进来的文件数量少于最小需要文件数量
+  if num_images &amp;lt; min_num_images:
+    raise Exception(&amp;#39;Many fewer images than expected: %d &amp;lt; %d&amp;#39; %
+                    (num_images, min_num_images))
+#     显示缺少的文件数量
+  print(&amp;#39;Full dataset tensor:&amp;#39;, dataset.shape)
+#     显示文件数量，图片长宽
+  print(&amp;#39;Mean:&amp;#39;, np.mean(dataset))
+#     平均值
+  print(&amp;#39;Standard deviation:&amp;#39;, np.std(dataset))
+#     标准差
+  return dataset
+        
+def maybe_pickle(data_folders, min_num_images_per_class, force=False):
+  dataset_names = []
+  for folder in data_folders:
+#         对每一个字母文件夹处理
+    set_filename = folder + &amp;#39;.pickle&amp;#39;
+#     设置输出的文件
+    dataset_names.append(set_filename)
+#     设置处理过的文件夹
+    if os.path.exists(set_filename) and not force:
+      # You may override by setting force=True.
+#     检查是否存在已处理过的文件
+      print(&amp;#39;%s already present - Skipping pickling.&amp;#39; % set_filename)
+    else:
+      print(&amp;#39;Pickling %s.&amp;#39; % set_filename)
+      dataset = load_letter(folder, min_num_images_per_class)
+#         归一化处理这个文件夹下面的所有图片
+      try:
+        with open(set_filename, &amp;#39;wb&amp;#39;) as f:
+          pickle.dump(dataset, f, pickle.HIGHEST_PROTOCOL)
+#         持久化数据，将数据保存在硬盘上，而不是一直放在内存中
+      except Exception as e:
+        print(&amp;#39;Unable to save data to&amp;#39;, set_filename, &amp;#39;:&amp;#39;, e)
+  
+  return dataset_names
+
+train_datasets = maybe_pickle(train_folders, 45000)
+test_datasets = maybe_pickle(test_folders, 1800)
+&lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&#34;问题2&#34;&gt;问题2
+&lt;/h2&gt;&lt;p&gt;显示处理过的图片&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;参考答案&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;def plot_samples_2(data_folders, sample_size, title=None):
+    fig = plt.figure()
+#     建立空图像
+    if title: fig.suptitle(title, fontsize=16, fontweight=&amp;#39;bold&amp;#39;)
+#         加入标题
+    for folder in data_folders:
+#         遍历每个字母
+        with open(folder, &amp;#39;rb&amp;#39;) as pk_f:
+            data = pickle.load(pk_f)
+            for index, image in enumerate(data):
+                if index &amp;lt; sample_size :
+#         从该字母中随机选取一定数量的图片
+                    ax = fig.add_subplot(len(data_folders), sample_size, sample_size * data_folders.index(folder) +
+                                 index + 1)
+#     加载子图图片
+                    ax.imshow(image)
+#     显示子图图片
+                    ax.set_axis_off() 
+#     关闭子图坐标线
+
+    fig.set_size_inches(18.5, 10.5)
+#     设置图片显示的大小
+    plt.show()
+    
+
+plot_samples_2(train_datasets, 20, &amp;#39;Train&amp;#39;)
+plot_samples_2(test_datasets, 20, &amp;#39;Test&amp;#39;)
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;&lt;img src=&#34;http://upload-images.jianshu.io/upload_images/4388248-e3406390a28cd9b0.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&#34;
+	
+	
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;image.png&#34;
+	
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;http://upload-images.jianshu.io/upload_images/4388248-135416c384df602a.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&#34;
+	
+	
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;image.png&#34;
+	
+	
+&gt;&lt;/p&gt;
+&lt;h2 id=&#34;问题3&#34;&gt;问题3
+&lt;/h2&gt;&lt;p&gt;检查每个字母下面的文件数目是否相似。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;参考答案&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;file_path = &amp;#39;notMNIST_large/{0}.pickle&amp;#39;
+for ele in &amp;#39;ABCDEFJHIJ&amp;#39;:
+    with open(file_path.format(ele), &amp;#39;rb&amp;#39;) as pk_f:
+#         遍历每一个目录
+        dat = pickle.load(pk_f)
+#     加载这个目录下面的持久化文件
+    print(&amp;#39;number of pictures in {}.pickle = &amp;#39;.format(ele), dat.shape[0])
+#     打印相关信息
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;结果表明数目基本一致。
+&lt;img src=&#34;http://upload-images.jianshu.io/upload_images/4388248-dbeceed47af0c6d8.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&#34;
+	
+	
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;问题3效果&#34;
+	
+	
+&gt;&lt;/p&gt;
+&lt;h2 id=&#34;代码段数据分割&#34;&gt;代码段——数据分割
+&lt;/h2&gt;&lt;p&gt;数据不可能一次性就全部加载到内存中，这里对这些数据进行分割，接下来的这份代码对数据进行了分割&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;def make_arrays(nb_rows, img_size):
+  if nb_rows:
+    dataset = np.ndarray((nb_rows, img_size, img_size), dtype=np.float32)
+#     创建一个空集合，数据类型是长rows宽img_size高img_size的矩阵，数据类型是浮点32位
+    labels = np.ndarray(nb_rows, dtype=np.int32)
+#     创建一个标签，数据类型是32位整型，长度是rows
+  else:
+    dataset, labels = None, None
+  return dataset, labels
+# 返回创建的数据类型
+
+def merge_datasets(pickle_files, train_size, valid_size=0):
+  num_classes = len(pickle_files)
+#     需要处理的类别数量
+  valid_dataset, valid_labels = make_arrays(valid_size, image_size)
+#     建立有效数据集合，长度为有效长度
+  train_dataset, train_labels = make_arrays(train_size, image_size)
+#     建立训练数据集合，长度为训练长度
+  vsize_per_class = valid_size // num_classes
+  tsize_per_class = train_size // num_classes
+# 计算给定训练长度和有效长度下每个类别的平均长度
+
+  start_v, start_t = 0, 0
+# 初始化下标，start_v是有效数据的开始，start_t是训练数据的开始
+  end_v, end_t = vsize_per_class, tsize_per_class
+# 初始化下标，end_v是有效数据的结束，end_t是训练数据的结束
+  end_l = vsize_per_class + tsize_per_class
+# 初始化下标，end_l是字母集合的结束，等于每个类别有效数据的长度+训练数据的长度
+  for label, pickle_file in enumerate(pickle_files):  
+#         遍历每一个pickle_file
+    try:
+      with open(pickle_file, &amp;#39;rb&amp;#39;) as f:
+#         打开这个持久化文件
+        letter_set = pickle.load(f)
+#       加载数据集
+        # let&amp;#39;s shuffle the letters to have random validation and training set
+        np.random.shuffle(letter_set)
+#       打乱数据集的顺序
+        if valid_dataset is not None:
+#         如果不是测试集的话，更新测试集，否则 valid_dataset 不更新
+          valid_letter = letter_set[:vsize_per_class, :, :]
+#         numpy切片     http://brieflyx.me/2015/python-module/numpy-array-split/
+#         从打乱的数据中选择 每类有效数据 数量的数据进行处理，放到 valid_letter 中
+          valid_dataset[start_v:end_v, :, :] = valid_letter
+#         把这份数据放到valid_dataset中
+          valid_labels[start_v:end_v] = label
+#         标记label 应该是 0~9中的一种
+          start_v += vsize_per_class
+          end_v += vsize_per_class
+#         更新下标
+#       循环结束时， valid_dataset 应该总长度为 valid_size 的一份数据， valid_labels是对应位置的标签
+
+        train_letter = letter_set[vsize_per_class:end_l, :, :]
+#       除去valid部分的随机其他元素，长度为 end_l - vsize_per_class = tsize_per_class
+        train_dataset[start_t:end_t, :, :] = train_letter
+#       循环结束时，train_dataset应该是总长为 train_size 的 一份数据
+        
+#       
+        train_labels[start_t:end_t] = label
+        start_t += tsize_per_class
+        end_t += tsize_per_class
+#       更新下标
+    except Exception as e:
+      print(&amp;#39;Unable to process data from&amp;#39;, pickle_file, &amp;#39;:&amp;#39;, e)
+      raise
+    
+  return valid_dataset, valid_labels, train_dataset, train_labels
+            
+            
+train_size = 200000
+valid_size = 10000
+test_size = 10000
+
+valid_dataset, valid_labels, train_dataset, train_labels = merge_datasets(
+  train_datasets, train_size, valid_size)
+_, _, test_dataset, test_labels = merge_datasets(test_datasets, test_size)
+
+print(&amp;#39;Training:&amp;#39;, train_dataset.shape, train_labels.shape)
+print(&amp;#39;Validation:&amp;#39;, valid_dataset.shape, valid_labels.shape)
+print(&amp;#39;Testing:&amp;#39;, test_dataset.shape, test_labels.shape)
+&lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&#34;代码段打散数据&#34;&gt;代码段——打散数据
+&lt;/h2&gt;&lt;p&gt;permutation函数介绍：http://www.jianshu.com/p/f0eb10acaa2d&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;def randomize(dataset, labels):
+#     labels.shape[0] 是 labels 的长度
+  permutation = np.random.permutation(labels.shape[0])
+#     随机取出这么多数字的打乱
+  print(labels.shape[0])
+  shuffled_dataset = dataset[permutation,:,:]
+# 打乱数据
+  shuffled_labels = labels[permutation]
+# 打乱标签
+  return shuffled_dataset, shuffled_labels
+train_dataset, train_labels = randomize(train_dataset, train_labels)
+test_dataset, test_labels = randomize(test_dataset, test_labels)
+valid_dataset, valid_labels = randomize(valid_dataset, valid_labels)
+&lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&#34;问题4&#34;&gt;问题4
+&lt;/h2&gt;&lt;p&gt;检验打散后的数据是否正确&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;参考答案&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;import random
+def plot_sample_3(dataset, labels, title):
+    fig = plt.figure()
+    plt.suptitle(title, fontsize=16, fontweight=&amp;#39;bold&amp;#39;)
+#     设置标题样式
+    items = random.sample(range(len(labels)), 200)
+#     打散 labels 长的顺序序列
+    for i, item in enumerate(items):
+#         随机取一个
+        plt.subplot(10, 20, i + 1)
+#     画子图
+        plt.axis(&amp;#39;off&amp;#39;)
+#     关闭坐标轴
+        plt.title(chr(ord(&amp;#39;A&amp;#39;) + labels[item]))
+#     加标题
+        plt.imshow(dataset[item])
+#     显示对应位置的子图
+    fig.set_size_inches(18.5, 10.5)
+    plt.show()
+#     显示图片
+ 
+plot_sample_3(train_dataset, train_labels, &amp;#39;train dataset suffled&amp;#39;)
+plot_sample_3(valid_dataset, valid_labels, &amp;#39;valid dataset suffled&amp;#39;)
+plot_sample_3(test_dataset, test_labels, &amp;#39;test dataset suffled&amp;#39;)
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;&lt;img src=&#34;http://upload-images.jianshu.io/upload_images/4388248-c33532945864acd9.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&#34;
+	
+	
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;问题4&#34;
+	
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;省略类似的两图&lt;/p&gt;
+&lt;h2 id=&#34;代码段保存数据&#34;&gt;代码段——保存数据
+&lt;/h2&gt;&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;pickle_file = os.path.join(data_root, &amp;#39;notMNIST.pickle&amp;#39;)
+# 输出文件路径
+try:
+  f = open(pickle_file, &amp;#39;wb&amp;#39;)
+# 打开这个文件
+  save = {
+    &amp;#39;train_dataset&amp;#39;: train_dataset,
+    &amp;#39;train_labels&amp;#39;: train_labels,
+    &amp;#39;valid_dataset&amp;#39;: valid_dataset,
+    &amp;#39;valid_labels&amp;#39;: valid_labels,
+    &amp;#39;test_dataset&amp;#39;: test_dataset,
+    &amp;#39;test_labels&amp;#39;: test_labels,
+    }
+#     写入一个字典 string-ndarray
+  pickle.dump(save, f, pickle.HIGHEST_PROTOCOL)
+  f.close()
+except Exception as e:
+  print(&amp;#39;Unable to save data to&amp;#39;, pickle_file, &amp;#39;:&amp;#39;, e)
+  raise
+&lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&#34;代码段显示保存数据的大小&#34;&gt;代码段——显示保存数据的大小
+&lt;/h2&gt;&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;statinfo = os.stat(pickle_file)
+print(&amp;#39;Compressed pickle size:&amp;#39;, statinfo.st_size)
+&lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&#34;问题5&#34;&gt;问题5
+&lt;/h2&gt;&lt;p&gt;题目的Google翻译&lt;/p&gt;
+&lt;p&gt;通过构建，此数据集可能包含大量重叠样本，包括验证和测试集中也包含的训练数据！ 训练和测试之间的重叠可能会使结果偏斜，如果您希望在没有重叠的环境中使用您的模型，但如果您希望在使用训练样本时再次看到训练样本，那么实际上是可以的。 测量培训，验证和测试样本之间的重叠程度。
+可选问题：
+数据集之间的重复数据怎么样？ （几乎相同的图像）
+创建一个消毒验证和测试集，并比较您在随后的作业中的准确性。&lt;/p&gt;
+&lt;p&gt;大概意思是训练数据不能和测试用的数据重合，否则导致准确度不准&lt;/p&gt;
+&lt;p&gt;参考代码：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;仅仅查看重复的图片数量&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;import hashlib
+
+pickle_file = os.path.join(&amp;#39;.&amp;#39;, &amp;#39;notMNIST.pickle&amp;#39;)
+try:
+    with open(pickle_file, &amp;#39;rb&amp;#39;) as f:
+        data = pickle.load(f)
+except Exception as e:
+  print(&amp;#39;Unable to open data from&amp;#39;, pickle_file, &amp;#39;:&amp;#39;, e)
+  raise
+# 自从保存数据后，如果kernel挂了，就可以从本地直接读取，不用重新运行之前的代码
+# 如果报错的话，可以在网上搜索报错的异常
+
+def calcOverlap(sourceSet, targetSet, description):
+    sourceSetMd5 = np.array([hashlib.md5(img).hexdigest() for img in sourceSet])
+#     建立一个md5表格
+    targetSetMd5 = np.array([hashlib.md5(img).hexdigest() for img in targetSet])
+#     建立一个md5表格
+    overlap = np.intersect1d(sourceSetMd5, targetSetMd5, assume_unique=False)
+#     去重
+    print(description)
+    print(&amp;#34;overlap&amp;#34;,overlap.shape[0], &amp;#34;from&amp;#34;,sourceSetMd5.shape[0],&amp;#34;to&amp;#34;, targetSetMd5.shape[0])
+    print(&amp;#34;rate&amp;#34;,overlap.shape[0]*100.0/sourceSetMd5.shape[0],&amp;#34;% and&amp;#34;, overlap.shape[0]*100.0/targetSetMd5.shape[0],&amp;#34;%&amp;#34;)
+#     打印重叠数量
+
+
+calcOverlap(data[&amp;#39;train_dataset&amp;#39;], data[&amp;#39;valid_dataset&amp;#39;], &amp;#34;train_dataset &amp;amp; valid_dataset&amp;#34;)
+calcOverlap(data[&amp;#39;train_dataset&amp;#39;], data[&amp;#39;test_dataset&amp;#39;], &amp;#34;train_dataset &amp;amp; test_dataset&amp;#34;)
+calcOverlap(data[&amp;#39;test_dataset&amp;#39;], data[&amp;#39;valid_dataset&amp;#39;], &amp;#34;test_dataset &amp;amp; valid_dataset&amp;#34;)```
+
+![运行效果](http://upload-images.jianshu.io/upload_images/4388248-2882159fe68dc672.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
+- 去除重复图片资源
+待更新
+
+## 问题6
+使用逻辑回归训练模型并且进行测试
+
+- 参考代码
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;import random
+def disp_sample_dataset(dataset, labels,trueLabels, title=None):&lt;/p&gt;
+&lt;h1 id=&#34;展示训练的结果&#34;&gt;展示训练的结果
+&lt;/h1&gt;&lt;pre&gt;&lt;code&gt;fig = plt.figure()
+if title: fig.suptitle(title, fontsize=16, fontweight=&#39;bold&#39;)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1 id=&#34;设置标题样式&#34;&gt;设置标题样式
+&lt;/h1&gt;&lt;pre&gt;&lt;code&gt;items = random.sample(range(len(labels)), 200)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1 id=&#34;随机选择一系列图片&#34;&gt;随机选择一系列图片
+&lt;/h1&gt;&lt;pre&gt;&lt;code&gt;for i, item in enumerate(items):
+    plt.subplot(10, 20, i + 1)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1 id=&#34;设置一个子图&#34;&gt;设置一个子图
+&lt;/h1&gt;&lt;pre&gt;&lt;code&gt;    plt.axis(&#39;off&#39;)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1 id=&#34;关闭坐标线&#34;&gt;关闭坐标线
+&lt;/h1&gt;&lt;pre&gt;&lt;code&gt;    lab = str(chr(ord(&#39;A&#39;) + labels[item]))
+    trueLab = str(chr(ord(&#39;A&#39;) + trueLabels[item]))
+    if lab == trueLab:
+        plt.title( lab )
+    else:
+        plt.title(lab + &amp;quot; but &amp;quot; + trueLab)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1 id=&#34;加上标题&#34;&gt;加上标题
+&lt;/h1&gt;&lt;pre&gt;&lt;code&gt;    plt.imshow(dataset[item])
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1 id=&#34;显示这个图片&#34;&gt;显示这个图片
+&lt;/h1&gt;&lt;pre&gt;&lt;code&gt;fig.set_size_inches(18.5, 10.5)
+plt.show()
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;def train_and_predict(train_dataset, train_labels, test_dataset, test_labels ,sample_size):
+regr = LogisticRegression()&lt;/p&gt;
+&lt;h1 id=&#34;生成训练器&#34;&gt;生成训练器
+&lt;/h1&gt;&lt;pre&gt;&lt;code&gt;X_train = train_dataset[:sample_size].reshape(sample_size, 784)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1 id=&#34;根据sample_size选择要训练的数据量&#34;&gt;根据sample_size选择要训练的数据量
+&lt;/h1&gt;&lt;h1 id=&#34;把二维向量压缩到一维向量&#34;&gt;把二维向量压缩到一维向量
+&lt;/h1&gt;&lt;pre&gt;&lt;code&gt;y_train = train_labels[:sample_size]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1 id=&#34;取出训练数据&#34;&gt;取出训练数据
+&lt;/h1&gt;&lt;pre&gt;&lt;code&gt;regr.fit(X_train, y_train)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1 id=&#34;训练数据&#34;&gt;训练数据
+&lt;/h1&gt;&lt;pre&gt;&lt;code&gt;X_test = test_dataset.reshape(test_dataset.shape[0], 28 * 28)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1 id=&#34;将测试数据压缩到一维向量&#34;&gt;将测试数据压缩到一维向量
+&lt;/h1&gt;&lt;pre&gt;&lt;code&gt;y_test = test_labels
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1 id=&#34;测试数据所对应的真实标签&#34;&gt;测试数据所对应的真实标签
+&lt;/h1&gt;&lt;pre&gt;&lt;code&gt;pred_labels = regr.predict(X_test)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1 id=&#34;生成预测数据&#34;&gt;生成预测数据
+&lt;/h1&gt;&lt;pre&gt;&lt;code&gt;print(&#39;Accuracy:&#39;, regr.score(X_test, y_test), &#39;when sample_size=&#39;, sample_size)
+disp_sample_dataset(test_dataset, pred_labels, test_labels, &#39;sample_size=&#39; + str(sample_size))
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;train_and_predict(data[&amp;rsquo;train_dataset&amp;rsquo;],data[&amp;rsquo;train_labels&amp;rsquo;],data[&amp;rsquo;test_dataset&amp;rsquo;],data[&amp;rsquo;test_labels&amp;rsquo;], 1000)&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;
+![image.png](http://upload-images.jianshu.io/upload_images/4388248-6b3fb8a1d1b1ce34.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
+
+## 模型性能
+
+小节22~27提到了模型性能的相关知识。我们通常希望模型的性能能够达到100%，显然是不可能的。并且，为了使训练集的准确性提高，模型可能会发生过拟合。这时要遵循两点。
+- 不要将训练数据一次性使用，而是分块使用，每次训练一部分
+- 当模型参数使30个以上的用例由错误变成正确，则这个参数的改变是有效果的。
+
+
+![模型性能](http://upload-images.jianshu.io/upload_images/4388248-033910ba1d5c09e3.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
+## 随机梯度下降
+小节29~31讲解了什么是随机梯度下降
+在训练过程中，为了让模型朝着最优的方向走，需要计算该点的导数。1.导数的计算量比较大，我们需要随机选择一部分样本来计算导数，来代替真实的导数。这就是随机梯度下降。2.为了减缓随机选择的随机性，我们使用动量的惯性来减少随机性。3.为了让后期模型能够稳定，我们减少学习的步长。
+
+课程一结束
+
+
+&amp;gt; 作业代码参考
+&amp;gt; http://www.hankcs.com/ml/notmnist.html
+&lt;/code&gt;&lt;/pre&gt;</description>
+        </item>
+        
+    </channel>
+</rss>
