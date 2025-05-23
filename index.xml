@@ -7,7 +7,44 @@
         <generator>Hugo -- gohugo.io</generator>
         <language>en</language>
         <copyright>Nansen Li（李楠森）</copyright>
-        <lastBuildDate>Sun, 04 May 2025 12:00:00 +0000</lastBuildDate><atom:link href="https://nansenli.com/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Sun, 11 May 2025 21:02:53 +0100</lastBuildDate><atom:link href="https://nansenli.com/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>Learning Python uv Package</title>
+        <link>https://nansenli.com/post/2025/05/pythonuv/</link>
+        <pubDate>Sun, 11 May 2025 21:02:53 +0100</pubDate>
+        
+        <guid>https://nansenli.com/post/2025/05/pythonuv/</guid>
+        <description>&lt;p&gt;Recently, I&amp;rsquo;ve been looking into MCP-related content, and many sources mention using uv to manage Python package dependencies. After learning more about it, uv appears to be a very useful tool. Here&amp;rsquo;s a summary of its functionality.&lt;/p&gt;
+&lt;h3 id=&#34;what-exactly-is-uv&#34;&gt;What exactly is uv?
+&lt;/h3&gt;&lt;p&gt;First of all, uv is a package written in Rust for Python. After installation, you can use the uv command.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-javascript&#34; data-lang=&#34;javascript&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;pip&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;install&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;uv&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id=&#34;what-can-uv-do&#34;&gt;What can uv do?
+&lt;/h3&gt;&lt;ol&gt;
+&lt;li&gt;It can replace pip&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Simply add uv before your regular pip commands. But why use uv instead of pip? The answer is speed - according to statistics, it&amp;rsquo;s 77 times faster than pip.&lt;/p&gt;
+&lt;ol start=&#34;2&#34;&gt;
+&lt;li&gt;It can replace venv or virtualenv&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;You need one less package, and the commands are cleaner. uv is much faster than &lt;code&gt;venv&lt;/code&gt; and &lt;code&gt;virtualenv&lt;/code&gt; when creating virtual environments and installing packages.&lt;/p&gt;
+&lt;ol start=&#34;3&#34;&gt;
+&lt;li&gt;It can replace poetry&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;You might ask, what is poetry? Poetry is a tool for more convenient management of Python dependencies. So why not just use pip + requirements? The answer is that it&amp;rsquo;s cumbersome. Additionally, requirements files cannot lock the dependencies of dependencies. For example, if I lock package A to a specific version, but A depends on B, C, and D, this often leads to the &amp;ldquo;works on my machine but not on others&amp;rdquo; problem. Now, with uv, poetry can also be replaced.&lt;/p&gt;
+&lt;ol start=&#34;4&#34;&gt;
+&lt;li&gt;It can replace pipx&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Another question: what is pipx? pipx is a tool for installing Python utilities without polluting your environment.&lt;/p&gt;
+&lt;p&gt;For example, if I need to install a command-line tool, I would run:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-javascript&#34; data-lang=&#34;javascript&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;pip&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;install&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;httpie&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;But this might pollute my environment, and uninstalling could have side effects. Now, I can run:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-javascript&#34; data-lang=&#34;javascript&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;pipx&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;install&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;httpie&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;This won&amp;rsquo;t pollute the environment.&lt;/p&gt;
+&lt;p&gt;However, this command has also been replaced. Now you can run:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-javascript&#34; data-lang=&#34;javascript&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;uv&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;tool&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;install&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;To summarize uv in one sentence: Python dependency management&amp;rsquo;s &amp;ldquo;next-generation de facto standard.&amp;rdquo;&lt;/p&gt;
+</description>
+        </item>
+        <item>
         <title>Dublin City University MSc in Computing: Secure Software Engineering Exam Cookbook</title>
         <link>https://nansenli.com/post/2025/04/dcu-secure-software-exam-cookbook/</link>
         <pubDate>Sun, 04 May 2025 12:00:00 +0000</pubDate>

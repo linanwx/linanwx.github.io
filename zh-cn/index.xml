@@ -7,7 +7,44 @@
         <generator>Hugo -- gohugo.io</generator>
         <language>zh-cn</language>
         <copyright>Nansen Li（李楠森）</copyright>
-        <lastBuildDate>Sun, 04 May 2025 12:00:00 +0000</lastBuildDate><atom:link href="https://nansenli.com/zh-cn/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Sun, 11 May 2025 21:02:54 +0100</lastBuildDate><atom:link href="https://nansenli.com/zh-cn/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>Python uv 包学习</title>
+        <link>https://nansenli.com/zh-cn/post/2025/05/pythonuv/</link>
+        <pubDate>Sun, 11 May 2025 21:02:54 +0100</pubDate>
+        
+        <guid>https://nansenli.com/zh-cn/post/2025/05/pythonuv/</guid>
+        <description>&lt;p&gt;最近在看MCP相关的内容，其中很多都提到了使用uv来管理Python的包依赖。通过了解，uv看起来是一个很有用的工具，这里总结一下功能。&lt;/p&gt;
+&lt;h3 id=&#34;uv到底是什么呢&#34;&gt;uv到底是什么呢？
+&lt;/h3&gt;&lt;p&gt;uv首先是一个包，是使用rust语言写的一个Python包，安装后，可以使用uv命令。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-javascript&#34; data-lang=&#34;javascript&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;pip&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;install&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;uv&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id=&#34;uv能做什么&#34;&gt;uv能做什么？
+&lt;/h3&gt;&lt;ol&gt;
+&lt;li&gt;能代替pip&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;在平时使用的pip命令前，加上uv就好了。既然如此，为什么一定要用uv，而不是pip？答案是因为非常块，据统计，是pip的77倍。&lt;/p&gt;
+&lt;ol start=&#34;2&#34;&gt;
+&lt;li&gt;能代替venv或virtualenv&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;少装一个包，命令更整洁。uv 在创建虚拟环境和安装包方面比 &lt;code&gt;venv&lt;/code&gt; 和 &lt;code&gt;virtualenv&lt;/code&gt; 快很多。&lt;/p&gt;
+&lt;ol start=&#34;3&#34;&gt;
+&lt;li&gt;能代替poetry&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;问题来了，poetry是什么？poetry是用来更方便的管理Python的依赖问题。那为什么不用pip + requirements 呢？答案是麻烦。另外，requirements文件，不能锁住依赖的依赖，比如，我锁住了A这个包的版本，但是A又依赖B、C、D，而这使得“在我电脑上能运行但在别人的电脑上无法运行”问题很常见。现在，有了uv，poetry也被代替了。&lt;/p&gt;
+&lt;ol start=&#34;4&#34;&gt;
+&lt;li&gt;能用来代替pipx&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;问题又来了，pipx是啥？pipx是一个安装Python工具但是不污染环境的工具。&lt;/p&gt;
+&lt;p&gt;举个例子，假如我需要安装一个命令行工具，我会运行&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-javascript&#34; data-lang=&#34;javascript&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;pip&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;install&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;httpie&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;但是它可能会污染我的环境，卸载还会有副作用。而现在，我可以运行&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-javascript&#34; data-lang=&#34;javascript&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;pipx&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;install&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;httpie&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;不会污染环境。&lt;/p&gt;
+&lt;p&gt;不过呢，现在这条命令也被代替了，现在可以运行&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-javascript&#34; data-lang=&#34;javascript&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;uv&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;tool&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;install&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;一句话总结uv：Python 依赖管理的“下一代事实标准”。&lt;/p&gt;
+</description>
+        </item>
+        <item>
         <title>Dublin City University MSc in Computing: Secure Software Engineering 考试经验</title>
         <link>https://nansenli.com/zh-cn/post/2025/04/dcu-secure-software-exam-cookbook/</link>
         <pubDate>Sun, 04 May 2025 12:00:00 +0000</pubDate>

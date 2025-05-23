@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html lang="zh-cn" dir="ltr">
-    <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset='utf-8'>
+    <head><meta charset='utf-8'>
 <meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="最近在看MCP相关的内容，其中很多都提到了使用uv来管理Python的包依赖。通过了解，uv看起来是一个很有用的工具，这里总结一下功能。 uv到底是什么呢？ uv首先是一个包，是使用rust语言写的一个Python包，安装后，可以使用uv命令。 pip install uv uv能做什么？ 能代替pip 在平时使用的pip命令前，加上uv就好了。既然如此，为什么一定要用uv，而不是pip？答案是因为非常块，据统计，是pip的77倍。 能代替venv或virtualenv 少装一个包，命令更整洁。uv 在创建虚拟环境和安装包方面比 venv 和 virtualenv 快很多。 能代替poetry 问题来了，poetry是什么？poetry是用来更方便的管理Python的依赖问题。那为什么不用pip + requirements 呢？答案是麻烦。另外，requirements文件，不能锁住依赖的依赖，比如，我锁住了A这个包的版本，但是A又依赖B、C、D，而这使得“在我电脑上能运行但在别人的电脑上无法运行”问题很常见。现在，有了uv，poetry也被代替了。 能用来代替pipx 问题又来了，pipx是啥？pipx是一个安装Python工具但是不污染环境的工具。 举个例子，假如我需要安装一个命令行工具，我会运行 pip install httpie 但是它可能会污染我的环境，卸载还会有副作用。而现在，我可以运行 pipx install httpie 不会污染环境。 不过呢，现在这条命令也被代替了，现在可以运行 uv tool install 一句话总结uv：Python 依赖管理的“下一代事实标准”。">
 <title>Python uv 包学习</title>
 
-<link rel='canonical' href='http://localhost:1313/zh-cn/post/2025/05/pythonuv/'>
+<link rel='canonical' href='https://nansenli.com/zh-cn/post/2025/05/pythonuv/'>
 
 <link rel="stylesheet" href="/scss/style.min.1084ac713783b88e0bd9807a58068e10aae22e99420f94a9234654a4e199baa4.css"><meta property='og:title' content="Python uv 包学习">
 <meta property='og:description' content="最近在看MCP相关的内容，其中很多都提到了使用uv来管理Python的包依赖。通过了解，uv看起来是一个很有用的工具，这里总结一下功能。 uv到底是什么呢？ uv首先是一个包，是使用rust语言写的一个Python包，安装后，可以使用uv命令。 pip install uv uv能做什么？ 能代替pip 在平时使用的pip命令前，加上uv就好了。既然如此，为什么一定要用uv，而不是pip？答案是因为非常块，据统计，是pip的77倍。 能代替venv或virtualenv 少装一个包，命令更整洁。uv 在创建虚拟环境和安装包方面比 venv 和 virtualenv 快很多。 能代替poetry 问题来了，poetry是什么？poetry是用来更方便的管理Python的依赖问题。那为什么不用pip + requirements 呢？答案是麻烦。另外，requirements文件，不能锁住依赖的依赖，比如，我锁住了A这个包的版本，但是A又依赖B、C、D，而这使得“在我电脑上能运行但在别人的电脑上无法运行”问题很常见。现在，有了uv，poetry也被代替了。 能用来代替pipx 问题又来了，pipx是啥？pipx是一个安装Python工具但是不污染环境的工具。 举个例子，假如我需要安装一个命令行工具，我会运行 pip install httpie 但是它可能会污染我的环境，卸载还会有副作用。而现在，我可以运行 pipx install httpie 不会污染环境。 不过呢，现在这条命令也被代替了，现在可以运行 uv tool install 一句话总结uv：Python 依赖管理的“下一代事实标准”。">
-<meta property='og:url' content='http://localhost:1313/zh-cn/post/2025/05/pythonuv/'>
+<meta property='og:url' content='https://nansenli.com/zh-cn/post/2025/05/pythonuv/'>
 <meta property='og:site_name' content='Nansen Li'>
 <meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2025-05-11T21:02:54&#43;01:00'/><meta property='article:modified_time' content='2025-05-11T21:02:54&#43;01:00'/>
 <meta name="twitter:title" content="Python uv 包学习">
@@ -231,9 +231,9 @@
 
                             <select name="language" title="language" onchange="window.location.href = this.selectedOptions[0].value">
                                 
-                                    <option value="http://localhost:1313/" >English</option>
+                                    <option value="https://nansenli.com/" >English</option>
                                 
-                                    <option value="http://localhost:1313/zh-cn/" selected>中文</option>
+                                    <option value="https://nansenli.com/zh-cn/" selected>中文</option>
                                 
                             </select>
                         </li>
@@ -336,7 +336,7 @@
 
             <div>
                 
-                    <a href="http://localhost:1313/post/2025/05/pythonuv/" class="link">English</a>
+                    <a href="https://nansenli.com/post/2025/05/pythonuv/" class="link">English</a>
                 
             </div>
         </footer>
@@ -539,7 +539,7 @@
                 src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
                 
                 >
-            </script><script type="text/javascript" src="/ts/main.82b0ae53811e811c05e2f6cbd29afb29624a46d610555aaa96f4687ca24b7860.js" defer></script>
+            </script><script type="text/javascript" src="/ts/main.1e9a3bafd846ced4c345d084b355fb8c7bae75701c338f8a1f8a82c780137826.js" defer></script>
 <script>
     (function () {
         const customFont = document.createElement('link');
