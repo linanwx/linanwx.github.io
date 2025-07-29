@@ -6,10 +6,12 @@
 
 <link rel='canonical' href='https://nansenli.com/zh-cn/post/jianshu/%E7%AE%97%E6%B3%95/%E7%BA%A2%E9%BB%91%E6%A0%91%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86/'>
 
-<link rel="stylesheet" href="/scss/style.min.1084ac713783b88e0bd9807a58068e10aae22e99420f94a9234654a4e199baa4.css"><meta property='og:title' content="红黑树实现原理">
+<link rel="stylesheet" href="/scss/style.min.b9b97e7c3f7f078f7ec4f60195f6139d30ad5972cc05950321ee04a9e98c542f.css"><meta property='og:title' content="红黑树实现原理">
 <meta property='og:description' content="前言 二叉排序树存在劣化情况 二叉平衡树为了维持查找性能在插入和删除的时候开销太大 红黑树就出现了。红黑树不像二叉平衡树在任意时刻两个子树高度差相差最多1 参考自 http://www.sohu.com/a/201923614_466939 性质 节点由红色和黑色构成，根节点为黑色 叶子节点由黑色的NIL节点构成 红色节点的子节点一定是黑色节点，并且一定包含两个叶子节点。这意味着不存在连续的两个红色节点。 从任意一个节点出发，到任意一个NIL节点，都经历了相同数目的黑色节点 这意味着从根节点出发，到任意一个叶子节点，最长路径和最短路径差不超过最长路径的一半。这种情况下，最长路径和最短路径的黑色数目一样，最长路径最多多黑色个红色节点。 变色与旋转 当插入一个节点（或删除一个节点），红黑树的性质被破坏。使用变色和旋转来调整。 变色 如果两个节点连续为红色，需要变色 旋转 如果有一条路径上的黑色节点太多，需要旋转 变色与旋转的条件 这个之后在总结">
 <meta property='og:url' content='https://nansenli.com/zh-cn/post/jianshu/%E7%AE%97%E6%B3%95/%E7%BA%A2%E9%BB%91%E6%A0%91%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86/'>
-<meta property='og:site_name' content='Nansen Li'>
+<meta property='og:site_name' content='Nansen Li&#39;s Blog
+李楠森的博客
+'>
 <meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2018-01-15T10:00:00&#43;00:00'/><meta property='article:modified_time' content='2018-01-15T10:00:00&#43;00:00'/>
 <meta name="twitter:title" content="红黑树实现原理">
 <meta name="twitter:description" content="前言 二叉排序树存在劣化情况 二叉平衡树为了维持查找性能在插入和删除的时候开销太大 红黑树就出现了。红黑树不像二叉平衡树在任意时刻两个子树高度差相差最多1 参考自 http://www.sohu.com/a/201923614_466939 性质 节点由红色和黑色构成，根节点为黑色 叶子节点由黑色的NIL节点构成 红色节点的子节点一定是黑色节点，并且一定包含两个叶子节点。这意味着不存在连续的两个红色节点。 从任意一个节点出发，到任意一个NIL节点，都经历了相同数目的黑色节点 这意味着从根节点出发，到任意一个叶子节点，最长路径和最短路径差不超过最长路径的一半。这种情况下，最长路径和最短路径的黑色数目一样，最长路径最多多黑色个红色节点。 变色与旋转 当插入一个节点（或删除一个节点），红黑树的性质被破坏。使用变色和旋转来调整。 变色 如果两个节点连续为红色，需要变色 旋转 如果有一条路径上的黑色节点太多，需要旋转 变色与旋转的条件 这个之后在总结">
@@ -91,7 +93,9 @@
         
         
         <div class="site-meta">
-            <h1 class="site-name"><a href="/zh-cn">Nansen Li</a></h1>
+            <h1 class="site-name"><a href="/zh-cn">Nansen Li&#39;s Blog
+李楠森的博客
+</a></h1>
             <h2 class="site-description"></h2>
         </div>
     </header><ol class="menu-social">

@@ -6,10 +6,12 @@
 
 <link rel='canonical' href='https://nansenli.com/zh-cn/post/jianshu/%E7%BD%91%E7%BB%9C/epoll-tcp%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B8%8E%E5%AE%A2%E6%88%B7%E7%AB%AF%E7%AE%80%E6%98%8E%E4%BE%8B%E5%AD%90/'>
 
-<link rel="stylesheet" href="/scss/style.min.1084ac713783b88e0bd9807a58068e10aae22e99420f94a9234654a4e199baa4.css"><meta property='og:title' content="epoll TCP服务器与客户端简明例子">
+<link rel="stylesheet" href="/scss/style.min.b9b97e7c3f7f078f7ec4f60195f6139d30ad5972cc05950321ee04a9e98c542f.css"><meta property='og:title' content="epoll TCP服务器与客户端简明例子">
 <meta property='og:description' content="前言 epoll是Linux专有API，提供高效的文件描述符管理，常用于批量监听文件描述符的可读情况，是高并发服务器的有效手段之一。下面是一个简单的epoll服务器与客户端例子。 服务器端 #include &lt;fcntl.h&gt; #include &lt;unistd.h&gt; #include &lt;sys/socket.h&gt; #include &lt;netinet/in.h&gt; #include &lt;arpa/inet.h&gt; #include &lt;stdio.h&gt; #include &lt;stdlib.h&gt; #include &lt;sys/epoll.h&gt; using namespace std; const int MAX_EPOLL_EVENTS = 1000; const int MAX_MSG_LEN = 1024; void setFdNonblock(int fd) { fcntl(fd, F_SETFL, fcntl(fd, F_GETFL) | O_NONBLOCK); } void err_exit(const char *s){ printf(&#34;error: %s\\n&#34;,s); exit(0); } int create_socket(const char *ip, const int port_number) { struct sockaddr_in server_addr = {0}; /* 设置ipv4模式 */ server_addr.sin_family = AF_INET; /* ipv4 */ /* 设置端口号 */ server_addr.">
 <meta property='og:url' content='https://nansenli.com/zh-cn/post/jianshu/%E7%BD%91%E7%BB%9C/epoll-tcp%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B8%8E%E5%AE%A2%E6%88%B7%E7%AB%AF%E7%AE%80%E6%98%8E%E4%BE%8B%E5%AD%90/'>
-<meta property='og:site_name' content='Nansen Li'>
+<meta property='og:site_name' content='Nansen Li&#39;s Blog
+李楠森的博客
+'>
 <meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2017-12-25T02:52:00&#43;00:00'/><meta property='article:modified_time' content='2017-12-25T02:52:00&#43;00:00'/>
 <meta name="twitter:title" content="epoll TCP服务器与客户端简明例子">
 <meta name="twitter:description" content="前言 epoll是Linux专有API，提供高效的文件描述符管理，常用于批量监听文件描述符的可读情况，是高并发服务器的有效手段之一。下面是一个简单的epoll服务器与客户端例子。 服务器端 #include &lt;fcntl.h&gt; #include &lt;unistd.h&gt; #include &lt;sys/socket.h&gt; #include &lt;netinet/in.h&gt; #include &lt;arpa/inet.h&gt; #include &lt;stdio.h&gt; #include &lt;stdlib.h&gt; #include &lt;sys/epoll.h&gt; using namespace std; const int MAX_EPOLL_EVENTS = 1000; const int MAX_MSG_LEN = 1024; void setFdNonblock(int fd) { fcntl(fd, F_SETFL, fcntl(fd, F_GETFL) | O_NONBLOCK); } void err_exit(const char *s){ printf(&#34;error: %s\\n&#34;,s); exit(0); } int create_socket(const char *ip, const int port_number) { struct sockaddr_in server_addr = {0}; /* 设置ipv4模式 */ server_addr.sin_family = AF_INET; /* ipv4 */ /* 设置端口号 */ server_addr.">
@@ -91,7 +93,9 @@
         
         
         <div class="site-meta">
-            <h1 class="site-name"><a href="/zh-cn">Nansen Li</a></h1>
+            <h1 class="site-name"><a href="/zh-cn">Nansen Li&#39;s Blog
+李楠森的博客
+</a></h1>
             <h2 class="site-description"></h2>
         </div>
     </header><ol class="menu-social">

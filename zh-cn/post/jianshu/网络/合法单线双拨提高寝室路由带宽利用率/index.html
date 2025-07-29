@@ -6,10 +6,12 @@
 
 <link rel='canonical' href='https://nansenli.com/zh-cn/post/jianshu/%E7%BD%91%E7%BB%9C/%E5%90%88%E6%B3%95%E5%8D%95%E7%BA%BF%E5%8F%8C%E6%8B%A8%E6%8F%90%E9%AB%98%E5%AF%9D%E5%AE%A4%E8%B7%AF%E7%94%B1%E5%B8%A6%E5%AE%BD%E5%88%A9%E7%94%A8%E7%8E%87/'>
 
-<link rel="stylesheet" href="/scss/style.min.1084ac713783b88e0bd9807a58068e10aae22e99420f94a9234654a4e199baa4.css"><meta property='og:title' content="合法单线双拨——提高寝室路由带宽利用率">
+<link rel="stylesheet" href="/scss/style.min.b9b97e7c3f7f078f7ec4f60195f6139d30ad5972cc05950321ee04a9e98c542f.css"><meta property='og:title' content="合法单线双拨——提高寝室路由带宽利用率">
 <meta property='og:description' content="前言 本人寝室有两个移动宽带，使用光纤入户方式，其中一个是20M，另一个是30M，使用pppoe方式拨号上网。希望能够将两个带宽进行合并。 方案一 在京东上搜索多wan口路由，价格比较贵。pass。 方案二 将手上的小米路由器mini进行改造。刷入OpenWrt。 刷入OpenWrt 不是本篇得重点。但是有一点，OpenWrt的固件可以在官方网站查询到并下载，其源也齐全并新潮，不需要刷入旧的Pandorabox等源不可靠得固件。路由需要刷入开发版固件和ssh固件，然后通过命令行刷入OpenWrt固件。不需要刷入breed的u-boot，这种行为太危险了，还会丢失SN。 第一次拨号，设置国内源 首先开启路由器，插上网线，访问192.168.1.1，在页面中设置root密码。 在system software页面中，点击configuration，将downloads.openwrt.org进行替换，换成openwrt.proxy.ustclug.org，并提交。在network - interface页面编辑 wan配置，更改协议并配置pppoe上网。 使用ssh连接路由器，在命令行输入opkg update。注意有没有成功。 然后输入opkg install kmod-macvlan mwan3 luci-app-mwan3。没成功多试几次。 设置虚拟网卡 在interface中查看wan的interface绑定的vlan，是eth0.2。在终端输入 ip link add link eth0.2 name veth0 type macvlan，并输入ifconfig veth0 up。 绑定网卡到接口 方便起见，修改WAN6作为我们的第二个接口，设置第二个账号得pppoe的上网账号，然后修改其physical setting为veth0。 如果此时两个账户无法同时拨号，说明不支持单线双拨。 设置跃点数 在wan和wan6两个页面中设置use gateway metric，注意要不一样。例如一个10一个11. 设置负载均衡 在load balance依次设置。 重启服务 点击重启服务 测试 参考 https://acris.me/2017/06/25/Load-balancing-multiple-PPPoE-on-LEDE/">
 <meta property='og:url' content='https://nansenli.com/zh-cn/post/jianshu/%E7%BD%91%E7%BB%9C/%E5%90%88%E6%B3%95%E5%8D%95%E7%BA%BF%E5%8F%8C%E6%8B%A8%E6%8F%90%E9%AB%98%E5%AF%9D%E5%AE%A4%E8%B7%AF%E7%94%B1%E5%B8%A6%E5%AE%BD%E5%88%A9%E7%94%A8%E7%8E%87/'>
-<meta property='og:site_name' content='Nansen Li'>
+<meta property='og:site_name' content='Nansen Li&#39;s Blog
+李楠森的博客
+'>
 <meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2018-11-10T18:08:00&#43;00:00'/><meta property='article:modified_time' content='2018-11-10T18:08:00&#43;00:00'/>
 <meta name="twitter:title" content="合法单线双拨——提高寝室路由带宽利用率">
 <meta name="twitter:description" content="前言 本人寝室有两个移动宽带，使用光纤入户方式，其中一个是20M，另一个是30M，使用pppoe方式拨号上网。希望能够将两个带宽进行合并。 方案一 在京东上搜索多wan口路由，价格比较贵。pass。 方案二 将手上的小米路由器mini进行改造。刷入OpenWrt。 刷入OpenWrt 不是本篇得重点。但是有一点，OpenWrt的固件可以在官方网站查询到并下载，其源也齐全并新潮，不需要刷入旧的Pandorabox等源不可靠得固件。路由需要刷入开发版固件和ssh固件，然后通过命令行刷入OpenWrt固件。不需要刷入breed的u-boot，这种行为太危险了，还会丢失SN。 第一次拨号，设置国内源 首先开启路由器，插上网线，访问192.168.1.1，在页面中设置root密码。 在system software页面中，点击configuration，将downloads.openwrt.org进行替换，换成openwrt.proxy.ustclug.org，并提交。在network - interface页面编辑 wan配置，更改协议并配置pppoe上网。 使用ssh连接路由器，在命令行输入opkg update。注意有没有成功。 然后输入opkg install kmod-macvlan mwan3 luci-app-mwan3。没成功多试几次。 设置虚拟网卡 在interface中查看wan的interface绑定的vlan，是eth0.2。在终端输入 ip link add link eth0.2 name veth0 type macvlan，并输入ifconfig veth0 up。 绑定网卡到接口 方便起见，修改WAN6作为我们的第二个接口，设置第二个账号得pppoe的上网账号，然后修改其physical setting为veth0。 如果此时两个账户无法同时拨号，说明不支持单线双拨。 设置跃点数 在wan和wan6两个页面中设置use gateway metric，注意要不一样。例如一个10一个11. 设置负载均衡 在load balance依次设置。 重启服务 点击重启服务 测试 参考 https://acris.me/2017/06/25/Load-balancing-multiple-PPPoE-on-LEDE/">
@@ -91,7 +93,9 @@
         
         
         <div class="site-meta">
-            <h1 class="site-name"><a href="/zh-cn">Nansen Li</a></h1>
+            <h1 class="site-name"><a href="/zh-cn">Nansen Li&#39;s Blog
+李楠森的博客
+</a></h1>
             <h2 class="site-description"></h2>
         </div>
     </header><ol class="menu-social">

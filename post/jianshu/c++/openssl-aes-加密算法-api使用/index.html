@@ -6,10 +6,12 @@
 
 <link rel='canonical' href='https://nansenli.com/post/jianshu/c&#43;&#43;/openssl-aes-%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95-api%E4%BD%BF%E7%94%A8/'>
 
-<link rel="stylesheet" href="/scss/style.min.1084ac713783b88e0bd9807a58068e10aae22e99420f94a9234654a4e199baa4.css"><meta property='og:title' content="Using OpenSSL AES Encryption Algorithm API">
+<link rel="stylesheet" href="/scss/style.min.b9b97e7c3f7f078f7ec4f60195f6139d30ad5972cc05950321ee04a9e98c542f.css"><meta property='og:title' content="Using OpenSSL AES Encryption Algorithm API">
 <meta property='og:description' content="Example: Using AES-128-CBC Encryption Algorithm This example uses pkcs5_encode padding method, which is also compatible with pkcs7_encode #include &lt;stdio.h&gt; #include &lt;stdlib.h&gt; #include &lt;string.h&gt; #include &lt;openssl/aes.h&gt; #include &lt;openssl/rand.h&gt; // a simple hex-print routine. could be modified to print 16 bytes-per-line static void hex_print(const void* pv, size_t len) { const unsigned char * p = (const unsigned char*)pv; if (NULL == pv) printf(&#34;NULL&#34;); else { size_t i = 0; for (; i&lt;len;++i) printf(&#34;%02X &#34;, *p++); } printf(&#34;\\n&#34;); } void pkcs7_encode(uint8_t *in, uint8_t *out, int inlen, int *outlen, const int enc) { // uint8_t padchr[16] = {0x10, 0x0f, 0x0e, 0x0d, 0x0c, 0x0b, 0x0a, 0x09, 0x08, 0x07, 0x06, 0x05, 0x04, 0x03, 0x02, 0x01}; if(inlen &lt;=0) return; // Add padding if (enc == AES_ENCRYPT) { *outlen = inlen + 16 - inlen % 16; for (int i = 0; i &lt; *outlen; i++) { if (i &lt; inlen) out[i] = in[i]; else out[i] = 16 - inlen % 16; } } // Remove padding else if (enc == AES_DECRYPT) { *outlen = inlen - (in[inlen-1]); for (int i=0; i&lt; *outlen; i++) { out[i] = in[i]; } } } int main(int argc, char **argv) { int keylength; printf(&#34;Give a key length [only 128 or 192 or 256!">
 <meta property='og:url' content='https://nansenli.com/post/jianshu/c&#43;&#43;/openssl-aes-%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95-api%E4%BD%BF%E7%94%A8/'>
-<meta property='og:site_name' content='Nansen Li'>
+<meta property='og:site_name' content='Nansen Li&#39;s Blog
+李楠森的博客
+'>
 <meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2018-11-02T06:49:00&#43;00:00'/><meta property='article:modified_time' content='2018-11-02T06:49:00&#43;00:00'/>
 <meta name="twitter:title" content="Using OpenSSL AES Encryption Algorithm API">
 <meta name="twitter:description" content="Example: Using AES-128-CBC Encryption Algorithm This example uses pkcs5_encode padding method, which is also compatible with pkcs7_encode #include &lt;stdio.h&gt; #include &lt;stdlib.h&gt; #include &lt;string.h&gt; #include &lt;openssl/aes.h&gt; #include &lt;openssl/rand.h&gt; // a simple hex-print routine. could be modified to print 16 bytes-per-line static void hex_print(const void* pv, size_t len) { const unsigned char * p = (const unsigned char*)pv; if (NULL == pv) printf(&#34;NULL&#34;); else { size_t i = 0; for (; i&lt;len;++i) printf(&#34;%02X &#34;, *p++); } printf(&#34;\\n&#34;); } void pkcs7_encode(uint8_t *in, uint8_t *out, int inlen, int *outlen, const int enc) { // uint8_t padchr[16] = {0x10, 0x0f, 0x0e, 0x0d, 0x0c, 0x0b, 0x0a, 0x09, 0x08, 0x07, 0x06, 0x05, 0x04, 0x03, 0x02, 0x01}; if(inlen &lt;=0) return; // Add padding if (enc == AES_ENCRYPT) { *outlen = inlen + 16 - inlen % 16; for (int i = 0; i &lt; *outlen; i++) { if (i &lt; inlen) out[i] = in[i]; else out[i] = 16 - inlen % 16; } } // Remove padding else if (enc == AES_DECRYPT) { *outlen = inlen - (in[inlen-1]); for (int i=0; i&lt; *outlen; i++) { out[i] = in[i]; } } } int main(int argc, char **argv) { int keylength; printf(&#34;Give a key length [only 128 or 192 or 256!">
@@ -91,7 +93,9 @@
         
         
         <div class="site-meta">
-            <h1 class="site-name"><a href="/">Nansen Li</a></h1>
+            <h1 class="site-name"><a href="/">Nansen Li&#39;s Blog
+李楠森的博客
+</a></h1>
             <h2 class="site-description"></h2>
         </div>
     </header><ol class="menu-social">

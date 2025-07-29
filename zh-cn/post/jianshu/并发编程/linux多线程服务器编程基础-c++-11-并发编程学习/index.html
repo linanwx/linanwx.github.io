@@ -6,10 +6,12 @@
 
 <link rel='canonical' href='https://nansenli.com/zh-cn/post/jianshu/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/linux%E5%A4%9A%E7%BA%BF%E7%A8%8B%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%BC%96%E7%A8%8B%E5%9F%BA%E7%A1%80-c&#43;&#43;-11-%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E5%AD%A6%E4%B9%A0/'>
 
-<link rel="stylesheet" href="/scss/style.min.1084ac713783b88e0bd9807a58068e10aae22e99420f94a9234654a4e199baa4.css"><meta property='og:title' content="Linux多线程服务器编程基础 C++ 11 并发编程学习">
+<link rel="stylesheet" href="/scss/style.min.b9b97e7c3f7f078f7ec4f60195f6139d30ad5972cc05950321ee04a9e98c542f.css"><meta property='og:title' content="Linux多线程服务器编程基础 C++ 11 并发编程学习">
 <meta property='og:description' content="前言 C++中在以往版本中不支持线程。需要使用pthread之类的使用线程。如果能够使用C++自身的线程则可以使程序变得统一简洁。 头文件 该头文件包含有std::thread类与std::this_thread类。以及管理线程的函数。是实现线程的主要文件。 该头文件包含有std::atomic和std::atomic_flag类，是实现原子操作的的主要文件。 包含互斥相关的类与函数。 包含有future类及相关的函数。 &lt;condition_variable&gt; 包含有条件变量的类。 以上就是c++11 的线程部分了。虽然有关pthread与c++ thread有很多争议，但是对于跨平台的c++ thread来说，似乎更为标准一些。 推荐此书来学习c++11的线程。 https://www.gitbook.com/book/chenxiaowei/cpp_concurrency_in_action/details hello world 线程 简单认识thread类 #include &lt;thread&gt; using namespace std; // 下面这个函数是一个我们想要运行的线程任务 void hello() { printf(&#34;%s&#34;, &#34;hello\\n&#34;); } // 使用thread类，传入一个函数作为我们的初始任务。不仅如此，还能传入类等其他的参数 int main() { thread t(hello); // 使用join来等待结束 t.join(); } 除了join来等待结束，可以使用detach来不等待线程结束。 struct func { int&amp; i; func(int&amp; i_) : i(i_) {} void operator() () { for (unsigned j=0 ; j&lt;1000000 ; ++j) { do_something(i); // 1. 潜在访问隐患：悬空引用 } } }; void oops() { int some_local_state=0; func my_func(some_local_state); std::thread my_thread(my_func); my_thread.">
 <meta property='og:url' content='https://nansenli.com/zh-cn/post/jianshu/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/linux%E5%A4%9A%E7%BA%BF%E7%A8%8B%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%BC%96%E7%A8%8B%E5%9F%BA%E7%A1%80-c&#43;&#43;-11-%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E5%AD%A6%E4%B9%A0/'>
-<meta property='og:site_name' content='Nansen Li'>
+<meta property='og:site_name' content='Nansen Li&#39;s Blog
+李楠森的博客
+'>
 <meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2018-03-18T08:29:00&#43;00:00'/><meta property='article:modified_time' content='2018-03-18T08:29:00&#43;00:00'/>
 <meta name="twitter:title" content="Linux多线程服务器编程基础 C++ 11 并发编程学习">
 <meta name="twitter:description" content="前言 C++中在以往版本中不支持线程。需要使用pthread之类的使用线程。如果能够使用C++自身的线程则可以使程序变得统一简洁。 头文件 该头文件包含有std::thread类与std::this_thread类。以及管理线程的函数。是实现线程的主要文件。 该头文件包含有std::atomic和std::atomic_flag类，是实现原子操作的的主要文件。 包含互斥相关的类与函数。 包含有future类及相关的函数。 &lt;condition_variable&gt; 包含有条件变量的类。 以上就是c++11 的线程部分了。虽然有关pthread与c++ thread有很多争议，但是对于跨平台的c++ thread来说，似乎更为标准一些。 推荐此书来学习c++11的线程。 https://www.gitbook.com/book/chenxiaowei/cpp_concurrency_in_action/details hello world 线程 简单认识thread类 #include &lt;thread&gt; using namespace std; // 下面这个函数是一个我们想要运行的线程任务 void hello() { printf(&#34;%s&#34;, &#34;hello\\n&#34;); } // 使用thread类，传入一个函数作为我们的初始任务。不仅如此，还能传入类等其他的参数 int main() { thread t(hello); // 使用join来等待结束 t.join(); } 除了join来等待结束，可以使用detach来不等待线程结束。 struct func { int&amp; i; func(int&amp; i_) : i(i_) {} void operator() () { for (unsigned j=0 ; j&lt;1000000 ; ++j) { do_something(i); // 1. 潜在访问隐患：悬空引用 } } }; void oops() { int some_local_state=0; func my_func(some_local_state); std::thread my_thread(my_func); my_thread.">
@@ -91,7 +93,9 @@
         
         
         <div class="site-meta">
-            <h1 class="site-name"><a href="/zh-cn">Nansen Li</a></h1>
+            <h1 class="site-name"><a href="/zh-cn">Nansen Li&#39;s Blog
+李楠森的博客
+</a></h1>
             <h2 class="site-description"></h2>
         </div>
     </header><ol class="menu-social">

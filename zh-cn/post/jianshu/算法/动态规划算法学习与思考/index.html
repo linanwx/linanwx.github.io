@@ -6,10 +6,12 @@
 
 <link rel='canonical' href='https://nansenli.com/zh-cn/post/jianshu/%E7%AE%97%E6%B3%95/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92%E7%AE%97%E6%B3%95%E5%AD%A6%E4%B9%A0%E4%B8%8E%E6%80%9D%E8%80%83/'>
 
-<link rel="stylesheet" href="/scss/style.min.1084ac713783b88e0bd9807a58068e10aae22e99420f94a9234654a4e199baa4.css"><meta property='og:title' content="动态规划算法学习与思考">
+<link rel="stylesheet" href="/scss/style.min.b9b97e7c3f7f078f7ec4f60195f6139d30ad5972cc05950321ee04a9e98c542f.css"><meta property='og:title' content="动态规划算法学习与思考">
 <meta property='og:description' content="前言 动态规划是笔试中经常出现的一类题目。掌握他很关键。 网易题目 小Q和牛博士合唱一首歌曲,这首歌曲由n个音调组成,每个音调由一个正整数表示。 对于每个音调要么由小Q演唱要么由牛博士演唱,对于一系列音调演唱的难度等于所有相邻音调变化幅度之和, 例如一个音调序列是8, 8, 13, 12, 那么它的难度等于|8 - 8| + |13 - 8| + |12 - 13| = 6(其中||表示绝对值)。 现在要对把这n个音调分配给小Q或牛博士,让他们演唱的难度之和最小,请你算算最小的难度和是多少。 如样例所示: 小Q选择演唱{5, 6}难度为1, 牛博士选择演唱{1, 2, 1}难度为2,难度之和为3,这一个是最小难度和的方案了。 贪心解法（错误） 将所有数字进行排序，取最大的两个数字差作为间隔，取其中一下半作为小Q的音符，取另一上半作为牛博士的音符，然后计算结果。最终能过通过60%的用例。 如果时间不够，或者不会的情况可以使用这种解法。 #include &lt;vector&gt; #include &lt;iostream&gt; #include &lt;algorithm&gt; #include &lt;cmath&gt; using namespace std; int main(){ int n; cin &gt;&gt; n; vector&lt;int&gt; nums; for(int i=0;i&lt;n;i++) { int num; cin &gt;&gt; num; nums.push_back(num); } vector&lt;int&gt; nums_sort(nums.begin(), nums.end()); sort(nums_sort.begin(), nums_sort.end()); int max_gap = 0; auto max_gap_it = nums_sort.">
 <meta property='og:url' content='https://nansenli.com/zh-cn/post/jianshu/%E7%AE%97%E6%B3%95/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92%E7%AE%97%E6%B3%95%E5%AD%A6%E4%B9%A0%E4%B8%8E%E6%80%9D%E8%80%83/'>
-<meta property='og:site_name' content='Nansen Li'>
+<meta property='og:site_name' content='Nansen Li&#39;s Blog
+李楠森的博客
+'>
 <meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2018-01-18T08:52:00&#43;00:00'/><meta property='article:modified_time' content='2018-01-18T08:52:00&#43;00:00'/>
 <meta name="twitter:title" content="动态规划算法学习与思考">
 <meta name="twitter:description" content="前言 动态规划是笔试中经常出现的一类题目。掌握他很关键。 网易题目 小Q和牛博士合唱一首歌曲,这首歌曲由n个音调组成,每个音调由一个正整数表示。 对于每个音调要么由小Q演唱要么由牛博士演唱,对于一系列音调演唱的难度等于所有相邻音调变化幅度之和, 例如一个音调序列是8, 8, 13, 12, 那么它的难度等于|8 - 8| + |13 - 8| + |12 - 13| = 6(其中||表示绝对值)。 现在要对把这n个音调分配给小Q或牛博士,让他们演唱的难度之和最小,请你算算最小的难度和是多少。 如样例所示: 小Q选择演唱{5, 6}难度为1, 牛博士选择演唱{1, 2, 1}难度为2,难度之和为3,这一个是最小难度和的方案了。 贪心解法（错误） 将所有数字进行排序，取最大的两个数字差作为间隔，取其中一下半作为小Q的音符，取另一上半作为牛博士的音符，然后计算结果。最终能过通过60%的用例。 如果时间不够，或者不会的情况可以使用这种解法。 #include &lt;vector&gt; #include &lt;iostream&gt; #include &lt;algorithm&gt; #include &lt;cmath&gt; using namespace std; int main(){ int n; cin &gt;&gt; n; vector&lt;int&gt; nums; for(int i=0;i&lt;n;i++) { int num; cin &gt;&gt; num; nums.push_back(num); } vector&lt;int&gt; nums_sort(nums.begin(), nums.end()); sort(nums_sort.begin(), nums_sort.end()); int max_gap = 0; auto max_gap_it = nums_sort.">
@@ -91,7 +93,9 @@
         
         
         <div class="site-meta">
-            <h1 class="site-name"><a href="/zh-cn">Nansen Li</a></h1>
+            <h1 class="site-name"><a href="/zh-cn">Nansen Li&#39;s Blog
+李楠森的博客
+</a></h1>
             <h2 class="site-description"></h2>
         </div>
     </header><ol class="menu-social">

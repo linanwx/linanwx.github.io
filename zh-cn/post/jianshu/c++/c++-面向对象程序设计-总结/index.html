@@ -6,10 +6,12 @@
 
 <link rel='canonical' href='https://nansenli.com/zh-cn/post/jianshu/c&#43;&#43;/c&#43;&#43;-%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1-%E6%80%BB%E7%BB%93/'>
 
-<link rel="stylesheet" href="/scss/style.min.1084ac713783b88e0bd9807a58068e10aae22e99420f94a9234654a4e199baa4.css"><meta property='og:title' content="C++ 面向对象程序设计 总结">
+<link rel="stylesheet" href="/scss/style.min.b9b97e7c3f7f078f7ec4f60195f6139d30ad5972cc05950321ee04a9e98c542f.css"><meta property='og:title' content="C++ 面向对象程序设计 总结">
 <meta property='og:description' content="前言 C++与C最大的不同是面向对象。虽然我了解一些有关面向对象的概念，写过一些函数，可惜实际中很少用到。本文是C++ Primer第15章的快速总结。 概述 面向对象程序设计又称为OOP，其核心思想是：数据抽象、继承和动态绑定。数据抽象指的是，声明与实现分离，继承指的是子类获得父类的所有成员，动态绑定是调用类的函数时根据类的不同进行区别调用。 声明基类与派生类 下面的代码进行简单的示例，声明了一个基类animal与派生类cat。 #include &lt;stdio.h&gt; #include &lt;iostream&gt; class animal { public: virtual void eat(){}; }; class cat : public animal { public: void eat() { std::cout &lt;&lt; &#34;eat fish&#34; &lt;&lt; std::endl; } }; int main() { cat c; c.eat(); } 类型转换与继承 派生类的指针和引用可以转为基类的指针或引用，基类的指针或引用不能转化为派生类的指针或引用。这意味着，一个基类的指针，指向的对象，有可能是基类，也有可能是派生类，但肯定不是基类的父类。 派生类对象可以赋值给基类，但只会拷贝基类的部分。 虚函数 虚函数在运行时进行解析。我们继续上面的例子，假如我们写了一个新的函数，是doeat，内部调用了animal的eat方法。eat对animal是eat meat or grass，但是最后显示的结果是eat fish。这就证明了，在运行时，doeat函数调用animal的eat方法时，eat方法找到了引用对象的真实对象cat的eat方法并进行了调用。 class animal { public: virtual void eat() { std::cout &lt;&lt; &#34;eat meat or grass&#34; &lt;&lt; std::endl; }; }; class cat : public animal { public: void eat() { std::cout &lt;&lt; &#34;eat fish&#34; &lt;&lt; std::endl; } }; void doeat(animal &amp;a) { a.">
 <meta property='og:url' content='https://nansenli.com/zh-cn/post/jianshu/c&#43;&#43;/c&#43;&#43;-%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1-%E6%80%BB%E7%BB%93/'>
-<meta property='og:site_name' content='Nansen Li'>
+<meta property='og:site_name' content='Nansen Li&#39;s Blog
+李楠森的博客
+'>
 <meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2017-12-14T05:53:00&#43;00:00'/><meta property='article:modified_time' content='2017-12-14T05:53:00&#43;00:00'/>
 <meta name="twitter:title" content="C++ 面向对象程序设计 总结">
 <meta name="twitter:description" content="前言 C++与C最大的不同是面向对象。虽然我了解一些有关面向对象的概念，写过一些函数，可惜实际中很少用到。本文是C++ Primer第15章的快速总结。 概述 面向对象程序设计又称为OOP，其核心思想是：数据抽象、继承和动态绑定。数据抽象指的是，声明与实现分离，继承指的是子类获得父类的所有成员，动态绑定是调用类的函数时根据类的不同进行区别调用。 声明基类与派生类 下面的代码进行简单的示例，声明了一个基类animal与派生类cat。 #include &lt;stdio.h&gt; #include &lt;iostream&gt; class animal { public: virtual void eat(){}; }; class cat : public animal { public: void eat() { std::cout &lt;&lt; &#34;eat fish&#34; &lt;&lt; std::endl; } }; int main() { cat c; c.eat(); } 类型转换与继承 派生类的指针和引用可以转为基类的指针或引用，基类的指针或引用不能转化为派生类的指针或引用。这意味着，一个基类的指针，指向的对象，有可能是基类，也有可能是派生类，但肯定不是基类的父类。 派生类对象可以赋值给基类，但只会拷贝基类的部分。 虚函数 虚函数在运行时进行解析。我们继续上面的例子，假如我们写了一个新的函数，是doeat，内部调用了animal的eat方法。eat对animal是eat meat or grass，但是最后显示的结果是eat fish。这就证明了，在运行时，doeat函数调用animal的eat方法时，eat方法找到了引用对象的真实对象cat的eat方法并进行了调用。 class animal { public: virtual void eat() { std::cout &lt;&lt; &#34;eat meat or grass&#34; &lt;&lt; std::endl; }; }; class cat : public animal { public: void eat() { std::cout &lt;&lt; &#34;eat fish&#34; &lt;&lt; std::endl; } }; void doeat(animal &amp;a) { a.">
@@ -91,7 +93,9 @@
         
         
         <div class="site-meta">
-            <h1 class="site-name"><a href="/zh-cn">Nansen Li</a></h1>
+            <h1 class="site-name"><a href="/zh-cn">Nansen Li&#39;s Blog
+李楠森的博客
+</a></h1>
             <h2 class="site-description"></h2>
         </div>
     </header><ol class="menu-social">

@@ -6,10 +6,12 @@
 
 <link rel='canonical' href='https://nansenli.com/zh-cn/post/jianshu/%E7%BD%91%E7%BB%9C/%E5%85%B6%E4%BB%96-i-o-%E6%A8%A1%E5%9E%8B%E6%80%BB%E7%BB%93/'>
 
-<link rel="stylesheet" href="/scss/style.min.1084ac713783b88e0bd9807a58068e10aae22e99420f94a9234654a4e199baa4.css"><meta property='og:title' content="其他 I/O 模型总结">
+<link rel="stylesheet" href="/scss/style.min.b9b97e7c3f7f078f7ec4f60195f6139d30ad5972cc05950321ee04a9e98c542f.css"><meta property='og:title' content="其他 I/O 模型总结">
 <meta property='og:description' content="I/O 多路复用 信号驱动I/O Linux专有epoll I/O多路复用 通过select系统调用或者poll系统调用，来对文件描述符进行检查。 select函数 int select(int nfds, fd_set *readfds, fd_set *writefds, fd_set *errorfds, struct timeval *timeout); 参数分别的意思是：需要测试的fd范围0～fd-1，满足三种情况要求的文件描述符号，超时时间。 poll函数 int poll(struct pollfd fds[], nfds_t nfds, int timeout); 参数分别是：元素包含文件描述符、需要检查的状态、返回的状态的一个数组，数组长度以及超时时间。 二者的区别在于poll里面传进去的数组大小不受fd_set定义的大小限制。poll的events和revents更丰富一些。select用的更为广泛一些。新版中select的性能经过优化与poll差不多。 epoll函数 epoll函数包括三个API：epoll_create()、epoll_ctl()、epoll_wait()三个调用。 epoll是三个调用中性能最好，效果最多的。但是只有Linux才可以使用。 主要是因为服务器上面会连接多个socket链接，如果为每一个套接字建立一个线程的话，会比较占用资源，所以需要使用epoll来优化性能。">
 <meta property='og:url' content='https://nansenli.com/zh-cn/post/jianshu/%E7%BD%91%E7%BB%9C/%E5%85%B6%E4%BB%96-i-o-%E6%A8%A1%E5%9E%8B%E6%80%BB%E7%BB%93/'>
-<meta property='og:site_name' content='Nansen Li'>
+<meta property='og:site_name' content='Nansen Li&#39;s Blog
+李楠森的博客
+'>
 <meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2017-12-21T06:18:00&#43;00:00'/><meta property='article:modified_time' content='2017-12-21T06:18:00&#43;00:00'/>
 <meta name="twitter:title" content="其他 I/O 模型总结">
 <meta name="twitter:description" content="I/O 多路复用 信号驱动I/O Linux专有epoll I/O多路复用 通过select系统调用或者poll系统调用，来对文件描述符进行检查。 select函数 int select(int nfds, fd_set *readfds, fd_set *writefds, fd_set *errorfds, struct timeval *timeout); 参数分别的意思是：需要测试的fd范围0～fd-1，满足三种情况要求的文件描述符号，超时时间。 poll函数 int poll(struct pollfd fds[], nfds_t nfds, int timeout); 参数分别是：元素包含文件描述符、需要检查的状态、返回的状态的一个数组，数组长度以及超时时间。 二者的区别在于poll里面传进去的数组大小不受fd_set定义的大小限制。poll的events和revents更丰富一些。select用的更为广泛一些。新版中select的性能经过优化与poll差不多。 epoll函数 epoll函数包括三个API：epoll_create()、epoll_ctl()、epoll_wait()三个调用。 epoll是三个调用中性能最好，效果最多的。但是只有Linux才可以使用。 主要是因为服务器上面会连接多个socket链接，如果为每一个套接字建立一个线程的话，会比较占用资源，所以需要使用epoll来优化性能。">
@@ -91,7 +93,9 @@
         
         
         <div class="site-meta">
-            <h1 class="site-name"><a href="/zh-cn">Nansen Li</a></h1>
+            <h1 class="site-name"><a href="/zh-cn">Nansen Li&#39;s Blog
+李楠森的博客
+</a></h1>
             <h2 class="site-description"></h2>
         </div>
     </header><ol class="menu-social">

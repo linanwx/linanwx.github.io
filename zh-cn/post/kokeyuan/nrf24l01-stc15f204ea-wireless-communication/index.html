@@ -6,10 +6,12 @@
 
 <link rel='canonical' href='https://nansenli.com/zh-cn/post/kokeyuan/nrf24l01-stc15f204ea-wireless-communication/'>
 
-<link rel="stylesheet" href="/scss/style.min.1084ac713783b88e0bd9807a58068e10aae22e99420f94a9234654a4e199baa4.css"><meta property='og:title' content="NRF24L01 + STC15F204EA 无线通信 源代码">
+<link rel="stylesheet" href="/scss/style.min.b9b97e7c3f7f078f7ec4f60195f6139d30ad5972cc05950321ee04a9e98c542f.css"><meta property='og:title' content="NRF24L01 + STC15F204EA 无线通信 源代码">
 <meta property='og:description' content="本代码适用于 NRF24L01 STC15F204EA(STC15L204EA) 组合成的小型无线收发模块,也可以适用于一般51单片机于NRF24L01通信 前几天在网上购买的一个小型的无线收发模块,卖家发的源代码很简单,没有什么实用的地方,于是移植了原子的STM3224l01程序过来,该程序更完备,更实用 由于几乎没有管脚用来显示收发的内容,所以使用串口通信来完成显示的内容 适用模块图片: 主要接线图: 首先为了串口显示,在网上搜集了如下代码,之所以这样复杂,是因为这块芯片没有串口功能 首先是H文件: #ifndef _UART_H #define _UART_H #define MCU_FREQ 11059200 // 设置晶振频率 #define UART_BUAD 38400 #define ON 1 #define OFF 0 #define UART_TX_PIN P31 #define UART_TX_SET(n) UART_TX_PIN = n #define UART_TX_HIGH() UART_TX_SET(1) #define UART_TX_LOW() UART_TX_SET(0) #define UART_TX_FLIP() UART_TX_PIN = !UART_TX_PIN #define UART_RX_PIN P30 #define UART_RX_SET(n) UART_RX_PIN = n #define UART_RX_HIGH() UART_RX_SET(1) #define UART_RX_LOW() UART_RX_SET(0) #define UART_RX_FLIP() UART_RX_PIN = !UART_RX_PIN void uartInit(void); void uartSendString(char *pS); void uartSendNum(int num); #endif 文件中要设定好晶振的频率和串号的频率,分别为MCU_FREQ和UART_BUAD,设定好以后才能正确收发">
 <meta property='og:url' content='https://nansenli.com/zh-cn/post/kokeyuan/nrf24l01-stc15f204ea-wireless-communication/'>
-<meta property='og:site_name' content='Nansen Li'>
+<meta property='og:site_name' content='Nansen Li&#39;s Blog
+李楠森的博客
+'>
 <meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:tag' content='NRF24L01' /><meta property='article:tag' content='NRF24L01&#43;' /><meta property='article:tag' content='STC15F204EA' /><meta property='article:tag' content='STC15L204EA' /><meta property='article:tag' content='51单片机' /><meta property='article:tag' content='单片机' /><meta property='article:tag' content='通信' /><meta property='article:tag' content='无线通信' /><meta property='article:published_time' content='2013-09-01T00:55:00&#43;00:00'/><meta property='article:modified_time' content='2013-09-01T00:55:00&#43;00:00'/>
 <meta name="twitter:title" content="NRF24L01 + STC15F204EA 无线通信 源代码">
 <meta name="twitter:description" content="本代码适用于 NRF24L01 STC15F204EA(STC15L204EA) 组合成的小型无线收发模块,也可以适用于一般51单片机于NRF24L01通信 前几天在网上购买的一个小型的无线收发模块,卖家发的源代码很简单,没有什么实用的地方,于是移植了原子的STM3224l01程序过来,该程序更完备,更实用 由于几乎没有管脚用来显示收发的内容,所以使用串口通信来完成显示的内容 适用模块图片: 主要接线图: 首先为了串口显示,在网上搜集了如下代码,之所以这样复杂,是因为这块芯片没有串口功能 首先是H文件: #ifndef _UART_H #define _UART_H #define MCU_FREQ 11059200 // 设置晶振频率 #define UART_BUAD 38400 #define ON 1 #define OFF 0 #define UART_TX_PIN P31 #define UART_TX_SET(n) UART_TX_PIN = n #define UART_TX_HIGH() UART_TX_SET(1) #define UART_TX_LOW() UART_TX_SET(0) #define UART_TX_FLIP() UART_TX_PIN = !UART_TX_PIN #define UART_RX_PIN P30 #define UART_RX_SET(n) UART_RX_PIN = n #define UART_RX_HIGH() UART_RX_SET(1) #define UART_RX_LOW() UART_RX_SET(0) #define UART_RX_FLIP() UART_RX_PIN = !UART_RX_PIN void uartInit(void); void uartSendString(char *pS); void uartSendNum(int num); #endif 文件中要设定好晶振的频率和串号的频率,分别为MCU_FREQ和UART_BUAD,设定好以后才能正确收发">
@@ -91,7 +93,9 @@
         
         
         <div class="site-meta">
-            <h1 class="site-name"><a href="/zh-cn">Nansen Li</a></h1>
+            <h1 class="site-name"><a href="/zh-cn">Nansen Li&#39;s Blog
+李楠森的博客
+</a></h1>
             <h2 class="site-description"></h2>
         </div>
     </header><ol class="menu-social">

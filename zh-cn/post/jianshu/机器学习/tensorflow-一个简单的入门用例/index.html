@@ -6,10 +6,12 @@
 
 <link rel='canonical' href='https://nansenli.com/zh-cn/post/jianshu/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/tensorflow-%E4%B8%80%E4%B8%AA%E7%AE%80%E5%8D%95%E7%9A%84%E5%85%A5%E9%97%A8%E7%94%A8%E4%BE%8B/'>
 
-<link rel="stylesheet" href="/scss/style.min.1084ac713783b88e0bd9807a58068e10aae22e99420f94a9234654a4e199baa4.css"><meta property='og:title' content="TensorFlow 一个简单的入门用例">
+<link rel="stylesheet" href="/scss/style.min.b9b97e7c3f7f078f7ec4f60195f6139d30ad5972cc05950321ee04a9e98c542f.css"><meta property='og:title' content="TensorFlow 一个简单的入门用例">
 <meta property='og:description' content="案例 假如我有一系列的数据x-y，x-y之间是呈线性关系的，如果我们需要用一条直线拟合这条直线，我们该如何做？ 下面的程序中，train_x是一系列从-1到1之间的数字，train_y是x的两倍加10，然后随机加了一个0~1之间的数字 接下来我们建立模型，X和Y是一个待初始化的张量占位符，在优化过程中，模型中的XY会一直改变为train_x和train_y中的数据，然后优化器会进行优化，使得w斜率和b截距按照使误差减小的方向变化，这样，w和b经过迭代最终就使模型满足数据了 模型建立好了以后，我们开始运行模型。首先打开一个会话，然后一定要记得初始化全部变量。接下来我们对全体数据进行10次遍历，在每一次迭代过程中，将一个坐标输入，并计算误差，然后利用梯度下降更正w和b。最后，我们输出解出来的w和b。 import tensorflow as tf import numpy as np train_x = np.linspace(-1, 1, 101) train_y = 2 * train_x + np.random.rand(train_x.shape[0]) + 10 X = tf.placeholder(&#34;float&#34;) Y = tf.placeholder(&#34;float&#34;) w = tf.Variable(0.0, name = &#34;w&#34;) b = tf.Variable(0.0, name = &#34;b&#34;) loss = tf.square(Y - tf.multiply(X,w) - b) train_op = tf.train.GradientDescentOptimizer(0.01).minimize(loss) with tf.Session() as session: session.run(tf.global_variables_initializer()) for i in range(10): for x,y in zip(train_x, train_y): session.run(train_op, feed_dict={X:x, Y:y}) print(&#34;w: &#34;, session.">
 <meta property='og:url' content='https://nansenli.com/zh-cn/post/jianshu/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/tensorflow-%E4%B8%80%E4%B8%AA%E7%AE%80%E5%8D%95%E7%9A%84%E5%85%A5%E9%97%A8%E7%94%A8%E4%BE%8B/'>
-<meta property='og:site_name' content='Nansen Li'>
+<meta property='og:site_name' content='Nansen Li&#39;s Blog
+李楠森的博客
+'>
 <meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2017-08-09T07:08:00&#43;00:00'/><meta property='article:modified_time' content='2017-08-09T07:08:00&#43;00:00'/>
 <meta name="twitter:title" content="TensorFlow 一个简单的入门用例">
 <meta name="twitter:description" content="案例 假如我有一系列的数据x-y，x-y之间是呈线性关系的，如果我们需要用一条直线拟合这条直线，我们该如何做？ 下面的程序中，train_x是一系列从-1到1之间的数字，train_y是x的两倍加10，然后随机加了一个0~1之间的数字 接下来我们建立模型，X和Y是一个待初始化的张量占位符，在优化过程中，模型中的XY会一直改变为train_x和train_y中的数据，然后优化器会进行优化，使得w斜率和b截距按照使误差减小的方向变化，这样，w和b经过迭代最终就使模型满足数据了 模型建立好了以后，我们开始运行模型。首先打开一个会话，然后一定要记得初始化全部变量。接下来我们对全体数据进行10次遍历，在每一次迭代过程中，将一个坐标输入，并计算误差，然后利用梯度下降更正w和b。最后，我们输出解出来的w和b。 import tensorflow as tf import numpy as np train_x = np.linspace(-1, 1, 101) train_y = 2 * train_x + np.random.rand(train_x.shape[0]) + 10 X = tf.placeholder(&#34;float&#34;) Y = tf.placeholder(&#34;float&#34;) w = tf.Variable(0.0, name = &#34;w&#34;) b = tf.Variable(0.0, name = &#34;b&#34;) loss = tf.square(Y - tf.multiply(X,w) - b) train_op = tf.train.GradientDescentOptimizer(0.01).minimize(loss) with tf.Session() as session: session.run(tf.global_variables_initializer()) for i in range(10): for x,y in zip(train_x, train_y): session.run(train_op, feed_dict={X:x, Y:y}) print(&#34;w: &#34;, session.">
@@ -91,7 +93,9 @@
         
         
         <div class="site-meta">
-            <h1 class="site-name"><a href="/zh-cn">Nansen Li</a></h1>
+            <h1 class="site-name"><a href="/zh-cn">Nansen Li&#39;s Blog
+李楠森的博客
+</a></h1>
             <h2 class="site-description"></h2>
         </div>
     </header><ol class="menu-social">

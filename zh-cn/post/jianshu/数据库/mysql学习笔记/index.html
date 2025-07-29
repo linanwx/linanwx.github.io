@@ -6,10 +6,12 @@
 
 <link rel='canonical' href='https://nansenli.com/zh-cn/post/jianshu/%E6%95%B0%E6%8D%AE%E5%BA%93/mysql%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/'>
 
-<link rel="stylesheet" href="/scss/style.min.1084ac713783b88e0bd9807a58068e10aae22e99420f94a9234654a4e199baa4.css"><meta property='og:title' content="MySQL学习笔记">
+<link rel="stylesheet" href="/scss/style.min.b9b97e7c3f7f078f7ec4f60195f6139d30ad5972cc05950321ee04a9e98c542f.css"><meta property='og:title' content="MySQL学习笔记">
 <meta property='og:description' content="前言 这里使用docker进行学习。配置了docker-cn的镜像。 Mysql集群建立 使用下面的命令拉取mysql镜像 docker pull mysql 使用下面的命令建立一个master和一个slave docker run --name mysql-master -P -d -e MYSQL_ROOT_PASSWORD=ln mysql docker run --name mysql-slave1 -P -d -e MYSQL_ROOT_PASSWORD=ln mysql 其中-d是配置成为守护进程。-P暴露所有端口。设置root密码为ln。 使用下面命令分别进入两个docker中 docker exec -it mysql-master bash docker exec -it mysql-slave1 bash 查看网卡ip。这里首先要安装net-tools，安装前要update，update前要换源 sed -i &#39;s/deb.debian.org/mirrors.ustc.edu.cn/g&#39; /etc/apt/sources.list apt updaet apt install net-tools 输入ifconfig查看ip。 其中master是172.17.0.2，slave1是172.17.0.3 设置登录权限 在master中的mysql中按照如下步骤操作，首先登录，然后设置名称为root用户都可以无密码访问。 mysql -uroot -p mysql&gt; grant all privileges on *.* to root@&#39;%&#39; identified by &#39;&#39;; Query OK, 0 rows affected (0.">
 <meta property='og:url' content='https://nansenli.com/zh-cn/post/jianshu/%E6%95%B0%E6%8D%AE%E5%BA%93/mysql%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/'>
-<meta property='og:site_name' content='Nansen Li'>
+<meta property='og:site_name' content='Nansen Li&#39;s Blog
+李楠森的博客
+'>
 <meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2018-03-05T07:04:00&#43;00:00'/><meta property='article:modified_time' content='2018-03-05T07:04:00&#43;00:00'/>
 <meta name="twitter:title" content="MySQL学习笔记">
 <meta name="twitter:description" content="前言 这里使用docker进行学习。配置了docker-cn的镜像。 Mysql集群建立 使用下面的命令拉取mysql镜像 docker pull mysql 使用下面的命令建立一个master和一个slave docker run --name mysql-master -P -d -e MYSQL_ROOT_PASSWORD=ln mysql docker run --name mysql-slave1 -P -d -e MYSQL_ROOT_PASSWORD=ln mysql 其中-d是配置成为守护进程。-P暴露所有端口。设置root密码为ln。 使用下面命令分别进入两个docker中 docker exec -it mysql-master bash docker exec -it mysql-slave1 bash 查看网卡ip。这里首先要安装net-tools，安装前要update，update前要换源 sed -i &#39;s/deb.debian.org/mirrors.ustc.edu.cn/g&#39; /etc/apt/sources.list apt updaet apt install net-tools 输入ifconfig查看ip。 其中master是172.17.0.2，slave1是172.17.0.3 设置登录权限 在master中的mysql中按照如下步骤操作，首先登录，然后设置名称为root用户都可以无密码访问。 mysql -uroot -p mysql&gt; grant all privileges on *.* to root@&#39;%&#39; identified by &#39;&#39;; Query OK, 0 rows affected (0.">
@@ -91,7 +93,9 @@
         
         
         <div class="site-meta">
-            <h1 class="site-name"><a href="/zh-cn">Nansen Li</a></h1>
+            <h1 class="site-name"><a href="/zh-cn">Nansen Li&#39;s Blog
+李楠森的博客
+</a></h1>
             <h2 class="site-description"></h2>
         </div>
     </header><ol class="menu-social">

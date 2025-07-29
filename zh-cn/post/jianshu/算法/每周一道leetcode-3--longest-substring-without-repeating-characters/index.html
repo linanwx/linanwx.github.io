@@ -6,10 +6,12 @@
 
 <link rel='canonical' href='https://nansenli.com/zh-cn/post/jianshu/%E7%AE%97%E6%B3%95/%E6%AF%8F%E5%91%A8%E4%B8%80%E9%81%93leetcode-3--longest-substring-without-repeating-characters/'>
 
-<link rel="stylesheet" href="/scss/style.min.1084ac713783b88e0bd9807a58068e10aae22e99420f94a9234654a4e199baa4.css"><meta property='og:title' content="每周一道leetcode—— 3. Longest Substring Without Repeating Characters">
+<link rel="stylesheet" href="/scss/style.min.b9b97e7c3f7f078f7ec4f60195f6139d30ad5972cc05950321ee04a9e98c542f.css"><meta property='og:title' content="每周一道leetcode—— 3. Longest Substring Without Repeating Characters">
 <meta property='og:description' content="题目 求一个字符串的一个满足要求的最长子字符串，该子字符串不得含有重复的字符，返回该子字符串的长度。 思路 很容易想到一个时间复杂度为O(n^2)的算法。遍历每一个字符，从该字符开始看看以这个字符为起点的最长字符串是多长，最后输出所有字符的最长子字符串长度。 运行时间600ms，击败0%提交 class Solution { public: int lengthOfLongestSubstring(string s) { int ret = 0; for(int i=0; i&lt;s.size(); i++){ unordered_set&lt;char&gt; buff; for(int j=i; j&lt;s.size(); j++){ if(buff.count(s[j]) == 0) buff.insert(s[j]); else break; } if(buff.size() &gt; ret) ret = buff.size(); } return ret; } }; 改进 可以看到上面那个算法非常搞笑，是世界上速度最慢的算法。在查找字符串中，我们需要设置一个起点，这个起点是到目前为止，遍历的位置往前最长没有重复出现字符的位置。然后通过与遍历的位置相减，就可以得到最长的子字符串长度了。 运行时间15ms，击败96%提交 class Solution { public: int lengthOfLongestSubstring(string s) { vector&lt;int&gt; lastPos(260, -1); int length = s.size(); int ret = 0; int start = 0; for(int i=0; i&lt;length; i++) { char c = s[i]; if(lastPos[c]+1 &gt; start) start = lastPos[c] + 1; if(i-start+1 &gt; ret) ret = i-start+1; lastPos[c] = i; } return ret; } }; ">
 <meta property='og:url' content='https://nansenli.com/zh-cn/post/jianshu/%E7%AE%97%E6%B3%95/%E6%AF%8F%E5%91%A8%E4%B8%80%E9%81%93leetcode-3--longest-substring-without-repeating-characters/'>
-<meta property='og:site_name' content='Nansen Li'>
+<meta property='og:site_name' content='Nansen Li&#39;s Blog
+李楠森的博客
+'>
 <meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2017-06-24T08:21:00&#43;00:00'/><meta property='article:modified_time' content='2017-06-24T08:21:00&#43;00:00'/>
 <meta name="twitter:title" content="每周一道leetcode—— 3. Longest Substring Without Repeating Characters">
 <meta name="twitter:description" content="题目 求一个字符串的一个满足要求的最长子字符串，该子字符串不得含有重复的字符，返回该子字符串的长度。 思路 很容易想到一个时间复杂度为O(n^2)的算法。遍历每一个字符，从该字符开始看看以这个字符为起点的最长字符串是多长，最后输出所有字符的最长子字符串长度。 运行时间600ms，击败0%提交 class Solution { public: int lengthOfLongestSubstring(string s) { int ret = 0; for(int i=0; i&lt;s.size(); i++){ unordered_set&lt;char&gt; buff; for(int j=i; j&lt;s.size(); j++){ if(buff.count(s[j]) == 0) buff.insert(s[j]); else break; } if(buff.size() &gt; ret) ret = buff.size(); } return ret; } }; 改进 可以看到上面那个算法非常搞笑，是世界上速度最慢的算法。在查找字符串中，我们需要设置一个起点，这个起点是到目前为止，遍历的位置往前最长没有重复出现字符的位置。然后通过与遍历的位置相减，就可以得到最长的子字符串长度了。 运行时间15ms，击败96%提交 class Solution { public: int lengthOfLongestSubstring(string s) { vector&lt;int&gt; lastPos(260, -1); int length = s.size(); int ret = 0; int start = 0; for(int i=0; i&lt;length; i++) { char c = s[i]; if(lastPos[c]+1 &gt; start) start = lastPos[c] + 1; if(i-start+1 &gt; ret) ret = i-start+1; lastPos[c] = i; } return ret; } }; ">
@@ -91,7 +93,9 @@
         
         
         <div class="site-meta">
-            <h1 class="site-name"><a href="/zh-cn">Nansen Li</a></h1>
+            <h1 class="site-name"><a href="/zh-cn">Nansen Li&#39;s Blog
+李楠森的博客
+</a></h1>
             <h2 class="site-description"></h2>
         </div>
     </header><ol class="menu-social">

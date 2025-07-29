@@ -6,10 +6,12 @@
 
 <link rel='canonical' href='https://nansenli.com/zh-cn/post/jianshu/%E7%AE%97%E6%B3%95/%E6%AF%8F%E5%91%A8%E4%B8%80%E9%81%93leetcode-260--single-number-iii/'>
 
-<link rel="stylesheet" href="/scss/style.min.1084ac713783b88e0bd9807a58068e10aae22e99420f94a9234654a4e199baa4.css"><meta property='og:title' content="每周一道leetcode—— 260. Single Number III">
+<link rel="stylesheet" href="/scss/style.min.b9b97e7c3f7f078f7ec4f60195f6139d30ad5972cc05950321ee04a9e98c542f.css"><meta property='og:title' content="每周一道leetcode—— 260. Single Number III">
 <meta property='og:description' content="题目 给定一个数组，在这个数组中，包含了一些整形数字，除了有两个数字重复了一次，其他数字都重复了两次。找出这两个数字。空间复杂度尽可能做到O(1)。 分析 尽管解决方案中要求空间复杂度为O(1)，这个方法确实有点复杂和难想，而且很难写出常数小的算法。 感受异或的神奇 上面这个链接中给出了这道题的标准做法。在这个方法中，首先将所有字母进行异或操作，然后，结果就是两个只出现了一次的数字的异或。这个数字的每一位1意味着这两个数字的哪几位是不同的。任取一位，在这一位上，将数组分为两类，一类是这一位上是1，另一类是这一位上是0，这样对这两个数组分别异或结果就是这两个数字了。 这利用了异或的性质。 a ^ b ^ c = a ^ c ^ b a ^ a = 0 0 ^ a = a a ^ b = c =&gt; a ^ c = b 运行13ms，击败68%提交。 class Solution { public: vector&lt;int&gt; singleNumber(vector&lt;int&gt;&amp; nums) { int axorb = 0, last = 0; vector&lt;int&gt; ret(2, 0); for(auto it = nums.begin(); it!=nums.end() ; it++) { axorb ^= *it; } last = axorb &amp; (~(axorb - 1)); for(auto it = nums.">
 <meta property='og:url' content='https://nansenli.com/zh-cn/post/jianshu/%E7%AE%97%E6%B3%95/%E6%AF%8F%E5%91%A8%E4%B8%80%E9%81%93leetcode-260--single-number-iii/'>
-<meta property='og:site_name' content='Nansen Li'>
+<meta property='og:site_name' content='Nansen Li&#39;s Blog
+李楠森的博客
+'>
 <meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2017-06-22T03:49:00&#43;00:00'/><meta property='article:modified_time' content='2017-06-22T03:49:00&#43;00:00'/>
 <meta name="twitter:title" content="每周一道leetcode—— 260. Single Number III">
 <meta name="twitter:description" content="题目 给定一个数组，在这个数组中，包含了一些整形数字，除了有两个数字重复了一次，其他数字都重复了两次。找出这两个数字。空间复杂度尽可能做到O(1)。 分析 尽管解决方案中要求空间复杂度为O(1)，这个方法确实有点复杂和难想，而且很难写出常数小的算法。 感受异或的神奇 上面这个链接中给出了这道题的标准做法。在这个方法中，首先将所有字母进行异或操作，然后，结果就是两个只出现了一次的数字的异或。这个数字的每一位1意味着这两个数字的哪几位是不同的。任取一位，在这一位上，将数组分为两类，一类是这一位上是1，另一类是这一位上是0，这样对这两个数组分别异或结果就是这两个数字了。 这利用了异或的性质。 a ^ b ^ c = a ^ c ^ b a ^ a = 0 0 ^ a = a a ^ b = c =&gt; a ^ c = b 运行13ms，击败68%提交。 class Solution { public: vector&lt;int&gt; singleNumber(vector&lt;int&gt;&amp; nums) { int axorb = 0, last = 0; vector&lt;int&gt; ret(2, 0); for(auto it = nums.begin(); it!=nums.end() ; it++) { axorb ^= *it; } last = axorb &amp; (~(axorb - 1)); for(auto it = nums.">
@@ -91,7 +93,9 @@
         
         
         <div class="site-meta">
-            <h1 class="site-name"><a href="/zh-cn">Nansen Li</a></h1>
+            <h1 class="site-name"><a href="/zh-cn">Nansen Li&#39;s Blog
+李楠森的博客
+</a></h1>
             <h2 class="site-description"></h2>
         </div>
     </header><ol class="menu-social">

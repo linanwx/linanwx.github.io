@@ -6,10 +6,12 @@
 
 <link rel='canonical' href='https://nansenli.com/zh-cn/post/jianshu/%E7%BD%91%E7%BB%9C/socket-%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/'>
 
-<link rel="stylesheet" href="/scss/style.min.1084ac713783b88e0bd9807a58068e10aae22e99420f94a9234654a4e199baa4.css"><meta property='og:title' content="SOCKET 学习笔记">
+<link rel="stylesheet" href="/scss/style.min.b9b97e7c3f7f078f7ec4f60195f6139d30ad5972cc05950321ee04a9e98c542f.css"><meta property='og:title' content="SOCKET 学习笔记">
 <meta property='og:description' content="前言 面经中提到的epoll，涉及到了socket编程。为了深入了解epoll原理，需要首先了解socket编程。socket是进程间通信IPC，就算在网络中也是如此，所以说网络中通信的主体是进程，而不是计算机。socket学习内容一个是如何建立服务器和客户端，一个是如何使用socket API。 fd=socket(domain, type, protocol); socket调用可以用来创建一个socket，例如 domain可以用来指定ipv4，type可以用来指定tcp，protocol一般是0。 domain domain是通信范围与通信地址的类型。有下面几个经典类型： UNIX IPV4 IPV6，分别对应的参数是AF_UNIX AF_INET AF_INET6。 domain 的参数都是以AF开头的代表地址簇。PF开头的代表协议簇。本来设计是地址簇和协议簇是多对多的，但是后来实现过程中，一个协议簇和地址簇是一一对应的。所以基本上domain就是指定了协议簇，地址簇也被指定了。 type socket表示是流还是数据包，其实就是TCP还是UDP。如果是TCP就是SOCK_STREAM，如果是UDP就是SOCK_DGRAM bind(int sockfd, const struct sockaddr *addr, socklen_t addrlen); 该调用用于将socket绑定到一个地址上。之后可以发送TCP报文，在一些场合下也可以通过write发送UDP报文，但是只能在该socket上读取对等socket数据。 sockaddr 该结构体有一个整形表示地址类型，然后后面跟着一个char数组。后面可以看到具体传进来的是根据使用场合的其他数据结构，但是是通用的 listen(int sockfd, int backlog) 将一个socket描述符标记为被动。可以被主动socket连接。backlog是用于限制等待连接的数量。 accept(int sockfd, struct sockaddr *addr, socklen_t * addrlen); accept调用会阻塞并等待在文件描述符sockfd上的接入请求。一旦请求成功，会创建一个新的socket，这个新的socket与对方进行连接。 addr 返回对方的地址 addrlen 传入addr的长度，用于告知能够写入输入的最大长度。 connect(int sockfd, const struct sockaddr * addr, socklen_t addrlen); 将sockfd连接到addr所述的地址上。 close(int fd) 用于关闭连接 read write 用于对sockfd进行读入或读出 recvfrom(int sockfd, void *buffer, size_t length, int flags, struct sockaddr *src_addr, socklen_t *addrlen); sendto(int sockfd, const void *buffer, size_t length, int flags, const struct sockaddr *dest_addr, socklen_t addrlen); 用于发送和接受udp报文。服务器端不能使用listen函数和accept函数，客户端不能使用connect函数。">
 <meta property='og:url' content='https://nansenli.com/zh-cn/post/jianshu/%E7%BD%91%E7%BB%9C/socket-%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/'>
-<meta property='og:site_name' content='Nansen Li'>
+<meta property='og:site_name' content='Nansen Li&#39;s Blog
+李楠森的博客
+'>
 <meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2017-12-25T02:34:00&#43;00:00'/><meta property='article:modified_time' content='2017-12-25T02:34:00&#43;00:00'/>
 <meta name="twitter:title" content="SOCKET 学习笔记">
 <meta name="twitter:description" content="前言 面经中提到的epoll，涉及到了socket编程。为了深入了解epoll原理，需要首先了解socket编程。socket是进程间通信IPC，就算在网络中也是如此，所以说网络中通信的主体是进程，而不是计算机。socket学习内容一个是如何建立服务器和客户端，一个是如何使用socket API。 fd=socket(domain, type, protocol); socket调用可以用来创建一个socket，例如 domain可以用来指定ipv4，type可以用来指定tcp，protocol一般是0。 domain domain是通信范围与通信地址的类型。有下面几个经典类型： UNIX IPV4 IPV6，分别对应的参数是AF_UNIX AF_INET AF_INET6。 domain 的参数都是以AF开头的代表地址簇。PF开头的代表协议簇。本来设计是地址簇和协议簇是多对多的，但是后来实现过程中，一个协议簇和地址簇是一一对应的。所以基本上domain就是指定了协议簇，地址簇也被指定了。 type socket表示是流还是数据包，其实就是TCP还是UDP。如果是TCP就是SOCK_STREAM，如果是UDP就是SOCK_DGRAM bind(int sockfd, const struct sockaddr *addr, socklen_t addrlen); 该调用用于将socket绑定到一个地址上。之后可以发送TCP报文，在一些场合下也可以通过write发送UDP报文，但是只能在该socket上读取对等socket数据。 sockaddr 该结构体有一个整形表示地址类型，然后后面跟着一个char数组。后面可以看到具体传进来的是根据使用场合的其他数据结构，但是是通用的 listen(int sockfd, int backlog) 将一个socket描述符标记为被动。可以被主动socket连接。backlog是用于限制等待连接的数量。 accept(int sockfd, struct sockaddr *addr, socklen_t * addrlen); accept调用会阻塞并等待在文件描述符sockfd上的接入请求。一旦请求成功，会创建一个新的socket，这个新的socket与对方进行连接。 addr 返回对方的地址 addrlen 传入addr的长度，用于告知能够写入输入的最大长度。 connect(int sockfd, const struct sockaddr * addr, socklen_t addrlen); 将sockfd连接到addr所述的地址上。 close(int fd) 用于关闭连接 read write 用于对sockfd进行读入或读出 recvfrom(int sockfd, void *buffer, size_t length, int flags, struct sockaddr *src_addr, socklen_t *addrlen); sendto(int sockfd, const void *buffer, size_t length, int flags, const struct sockaddr *dest_addr, socklen_t addrlen); 用于发送和接受udp报文。服务器端不能使用listen函数和accept函数，客户端不能使用connect函数。">
@@ -91,7 +93,9 @@
         
         
         <div class="site-meta">
-            <h1 class="site-name"><a href="/zh-cn">Nansen Li</a></h1>
+            <h1 class="site-name"><a href="/zh-cn">Nansen Li&#39;s Blog
+李楠森的博客
+</a></h1>
             <h2 class="site-description"></h2>
         </div>
     </header><ol class="menu-social">

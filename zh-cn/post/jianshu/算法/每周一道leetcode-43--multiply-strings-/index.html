@@ -6,10 +6,12 @@
 
 <link rel='canonical' href='https://nansenli.com/zh-cn/post/jianshu/%E7%AE%97%E6%B3%95/%E6%AF%8F%E5%91%A8%E4%B8%80%E9%81%93leetcode-43--multiply-strings-/'>
 
-<link rel="stylesheet" href="/scss/style.min.1084ac713783b88e0bd9807a58068e10aae22e99420f94a9234654a4e199baa4.css"><meta property='og:title' content="每周一道leetcode—— 43. Multiply Strings">
+<link rel="stylesheet" href="/scss/style.min.b9b97e7c3f7f078f7ec4f60195f6139d30ad5972cc05950321ee04a9e98c542f.css"><meta property='og:title' content="每周一道leetcode—— 43. Multiply Strings">
 <meta property='og:description' content="题目： 给定两个字符串十进制数字，给出字符串为他们的乘积。要求如下： 禁止使用内置大数算法。 字符串长度110 输入无前置0 字符串仅含有数字 思考 在一开始没有看到禁止使用内置函数，我直接使用python的str和int这两个函数，结果直接前10%了。。。后来我看了下题目原来是不能用内置函数的，不知道这个python语言的特性算不算内置大数算法。这是一个大数乘法问题，大数乘法有很多现成的算法。 最开始提交的python版本，击败88% class Solution(object): def multiply(self, num1, num2): return str(int(num1)*int(num2)) 最原始的算法就是模拟手算了吧，首先你得实现字符串的加法计算，多位乘法乘一位乘法，这样应该可以计算多位乘以多位了。例如计算12345*67890，就是计算12345*6 + 12345*7 + 12345 *8 + 12345 * 9 + 12345 * 0， 然后每一个计算结果后面补0，再相加就会得到结果。不过这样的速度会比较慢。 况且，CPU本身就可以计算一些不会溢出的加法，所以，我们得好好利用这一点。首先我们得改进一下上面的算法，计算12345*67890这个数字的结果，我们可以这样算：12345*67890 = (12300 + 45)*(67800 + 90) ，显然可以拆解成为4个乘法计算，而且对于低位为0的，可以直接去掉，然后计算结果再补回来就行了，如果这四个乘法分别计算的时候不会溢出，那就没有问题了。否则，我们可以继续分解。 使用karatsuba乘法可以继续改进上面一点。 我们注意到加法中有12300*90+45*67800，我们可以利用已经计算过的结果，也就是12300*67800和45*90，然后只需要计算(12300+45)*(67800+90) - 12300*67800 - 45*90 就可以得到 12300*90 + 45*67800。这样，乘法的计算次数就减少了一次。 karatsuba乘法写起来会复杂一点，先不实现。首先提交一版n^2的算法也就是普通版，看看效果怎么样，然后再改进。（结果表明，手算版的速度已经很快了） 第一版 首先我们得写一个字符串相加的算法。我们首先观察一下输入的数据类型和输出的数据类型。是string类型的，那么按照一位一位加起来也是可以的。可以直接用两个整形数组保存一下每一位数，然后相加算出来第三个数组，这时第三个数组会有一些数字超出了10，我们按照从低位开始向高位进一位。最后将这个数组转成字符串就可以了。 虽然本地测试还可以，但是提交后速度很慢，排名很后，只击败10%。 改进 我觉得理论上这个算法应该是不慢的,但是实际过程是很慢，可能是由于多余的整形和字符串互相转换有关。上面的算法里面，在计算乘法的时候将字符串转成了数字但是之后又转换回字符串，可能是这里产生了多余的时间。所以，应该直接在这里将结果加在最终结果上面。 提交后运行时间为9ms，击败50%。 改进2 算法中相同的字符串重复转化，可能会消耗时间。 对字符串转化进行缓存，第一次转换成功就进行缓存，以后如果需要直接取出不需要进行额外的计算。 最终代码，可直接编译运行。运行时间6ms，击败76%提交。看来字符串转化反而成了性能瓶颈。 #include &lt;stdio.h&gt; #include &lt;string&gt; #include &lt;stdlib.h&gt; #include &lt;iostream&gt; #include &lt;vector&gt; using namespace std; const int BINARY = 10; class Solution { private: vector&lt;int&gt; result; string _num1, _num2; long num1buff[120]; long num2buff[120]; public: string multiply(string num1, string num2) { result.">
 <meta property='og:url' content='https://nansenli.com/zh-cn/post/jianshu/%E7%AE%97%E6%B3%95/%E6%AF%8F%E5%91%A8%E4%B8%80%E9%81%93leetcode-43--multiply-strings-/'>
-<meta property='og:site_name' content='Nansen Li'>
+<meta property='og:site_name' content='Nansen Li&#39;s Blog
+李楠森的博客
+'>
 <meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2017-06-19T06:39:00&#43;00:00'/><meta property='article:modified_time' content='2017-06-19T06:39:00&#43;00:00'/>
 <meta name="twitter:title" content="每周一道leetcode—— 43. Multiply Strings">
 <meta name="twitter:description" content="题目： 给定两个字符串十进制数字，给出字符串为他们的乘积。要求如下： 禁止使用内置大数算法。 字符串长度110 输入无前置0 字符串仅含有数字 思考 在一开始没有看到禁止使用内置函数，我直接使用python的str和int这两个函数，结果直接前10%了。。。后来我看了下题目原来是不能用内置函数的，不知道这个python语言的特性算不算内置大数算法。这是一个大数乘法问题，大数乘法有很多现成的算法。 最开始提交的python版本，击败88% class Solution(object): def multiply(self, num1, num2): return str(int(num1)*int(num2)) 最原始的算法就是模拟手算了吧，首先你得实现字符串的加法计算，多位乘法乘一位乘法，这样应该可以计算多位乘以多位了。例如计算12345*67890，就是计算12345*6 + 12345*7 + 12345 *8 + 12345 * 9 + 12345 * 0， 然后每一个计算结果后面补0，再相加就会得到结果。不过这样的速度会比较慢。 况且，CPU本身就可以计算一些不会溢出的加法，所以，我们得好好利用这一点。首先我们得改进一下上面的算法，计算12345*67890这个数字的结果，我们可以这样算：12345*67890 = (12300 + 45)*(67800 + 90) ，显然可以拆解成为4个乘法计算，而且对于低位为0的，可以直接去掉，然后计算结果再补回来就行了，如果这四个乘法分别计算的时候不会溢出，那就没有问题了。否则，我们可以继续分解。 使用karatsuba乘法可以继续改进上面一点。 我们注意到加法中有12300*90+45*67800，我们可以利用已经计算过的结果，也就是12300*67800和45*90，然后只需要计算(12300+45)*(67800+90) - 12300*67800 - 45*90 就可以得到 12300*90 + 45*67800。这样，乘法的计算次数就减少了一次。 karatsuba乘法写起来会复杂一点，先不实现。首先提交一版n^2的算法也就是普通版，看看效果怎么样，然后再改进。（结果表明，手算版的速度已经很快了） 第一版 首先我们得写一个字符串相加的算法。我们首先观察一下输入的数据类型和输出的数据类型。是string类型的，那么按照一位一位加起来也是可以的。可以直接用两个整形数组保存一下每一位数，然后相加算出来第三个数组，这时第三个数组会有一些数字超出了10，我们按照从低位开始向高位进一位。最后将这个数组转成字符串就可以了。 虽然本地测试还可以，但是提交后速度很慢，排名很后，只击败10%。 改进 我觉得理论上这个算法应该是不慢的,但是实际过程是很慢，可能是由于多余的整形和字符串互相转换有关。上面的算法里面，在计算乘法的时候将字符串转成了数字但是之后又转换回字符串，可能是这里产生了多余的时间。所以，应该直接在这里将结果加在最终结果上面。 提交后运行时间为9ms，击败50%。 改进2 算法中相同的字符串重复转化，可能会消耗时间。 对字符串转化进行缓存，第一次转换成功就进行缓存，以后如果需要直接取出不需要进行额外的计算。 最终代码，可直接编译运行。运行时间6ms，击败76%提交。看来字符串转化反而成了性能瓶颈。 #include &lt;stdio.h&gt; #include &lt;string&gt; #include &lt;stdlib.h&gt; #include &lt;iostream&gt; #include &lt;vector&gt; using namespace std; const int BINARY = 10; class Solution { private: vector&lt;int&gt; result; string _num1, _num2; long num1buff[120]; long num2buff[120]; public: string multiply(string num1, string num2) { result.">
@@ -91,7 +93,9 @@
         
         
         <div class="site-meta">
-            <h1 class="site-name"><a href="/zh-cn">Nansen Li</a></h1>
+            <h1 class="site-name"><a href="/zh-cn">Nansen Li&#39;s Blog
+李楠森的博客
+</a></h1>
             <h2 class="site-description"></h2>
         </div>
     </header><ol class="menu-social">

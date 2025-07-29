@@ -6,10 +6,12 @@
 
 <link rel='canonical' href='https://nansenli.com/zh-cn/post/jianshu/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/deepin-%E5%AE%89%E8%A3%85-gpu%E7%89%88-tensorflow-%E8%A6%81%E7%82%B9/'>
 
-<link rel="stylesheet" href="/scss/style.min.1084ac713783b88e0bd9807a58068e10aae22e99420f94a9234654a4e199baa4.css"><meta property='og:title' content="Deepin 安装 GPU版 Tensorflow 要点">
+<link rel="stylesheet" href="/scss/style.min.b9b97e7c3f7f078f7ec4f60195f6139d30ad5972cc05950321ee04a9e98c542f.css"><meta property='og:title' content="Deepin 安装 GPU版 Tensorflow 要点">
 <meta property='og:description' content="前言 虽然有很多教程都给出了如何在Ubuntu上安装Tensorflow，但是却没有一篇文章讲如何在Deepin系统安装Tensorflow，这里将安装过程的几个要点讲解一下 流程 首先下载Nvidia的Linux驱动。在官网可以下载。然后运行，如果不能运行，则需要修改驱动运行权限，使用chmod u+x来添加运行权限。关于deepin安装显卡驱动，可以参考这个文章 https://wiki.deepin.org/index.php?title=%E6%98%BE%E5%8D%A1 安装Docker-ce。这里一定要遵循官方的安装方案，只此一个方法可以正常安装最新版docker。https://wiki.deepin.org/index.php?title=Docker 下载Nvidia-docker。在Github的Nvidia-Docker页面找到Ubuntu的安装包和安装步骤，安装即可 接下来运行 docker run -it -p 8888:8888 tensorflow/tensorflow:latest-gpu 此时可以进入官方的tensorflow带GPU版本的镜像啦，打开localhost:8888可以看到jupyter的页面 坑 在安装Nvidia显卡驱动的时候，根据安装软件的提示，需要关闭Linux的桌面系统X server，此时可以通过tty1~6来进行终端操作。但是如果Deepin已经安装了自带的Nvidia驱动，要停止lightdm服务时，在Deepin在关闭X server的同时，显示器也关闭了，无法显示tty1 ~6的屏幕，由于这个问题，导致Nvidia驱动无法安装。即使手动卸载安装的Deepin官方Nvidia驱动，经过了繁琐的卸载指令，在切换到tty1 ~6后，在关闭图形界面的时候，仍然会导致tty屏幕被关闭，黑屏一片，无法继续后面的驱动卸载和重新安装官方Nvidia驱动。 解决方案 为了避免Nvidia驱动无法安装，又能简洁科学的操作，所以必须在第一次安装Deepin系统的时候，在未安装显卡驱动的情况下对电脑进行操作进行安装Nvidia显卡官方linux驱动，首先按下快捷键“Ctrl+Alt+F2”，进入tty2，然后输入sudo systemctl stop lightdm 停止lightdm服务，此时电脑关闭X server的时候不会导致显示器的关闭，之后运行chmod u+x NVIDIA-Linux-x86_64-352.55.run #赋予可执行权限 以及sudo ./NVIDIA-Linux-x86_64-352.55.run #安装驱动文件 然后重启就可以正常的使用官方闭源驱动啦。 后续 使用GPU来运行Tensorflow程序是非常快的。一般的程序可以提速10倍以上，有些程序可以提速50到100倍的速度，所以使用GPU来进行Tensorflow编程是非常有必要的。 另外，不知道是Deepin的问题还是Nvidia-Dcoker的问题还是驱动的问题，在电脑待机之后会导致Tensorflow镜像出错，所以在训练的时候不要让机器进行待机动作。">
 <meta property='og:url' content='https://nansenli.com/zh-cn/post/jianshu/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/deepin-%E5%AE%89%E8%A3%85-gpu%E7%89%88-tensorflow-%E8%A6%81%E7%82%B9/'>
-<meta property='og:site_name' content='Nansen Li'>
+<meta property='og:site_name' content='Nansen Li&#39;s Blog
+李楠森的博客
+'>
 <meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2017-09-13T10:44:00&#43;00:00'/><meta property='article:modified_time' content='2017-09-13T10:44:00&#43;00:00'/>
 <meta name="twitter:title" content="Deepin 安装 GPU版 Tensorflow 要点">
 <meta name="twitter:description" content="前言 虽然有很多教程都给出了如何在Ubuntu上安装Tensorflow，但是却没有一篇文章讲如何在Deepin系统安装Tensorflow，这里将安装过程的几个要点讲解一下 流程 首先下载Nvidia的Linux驱动。在官网可以下载。然后运行，如果不能运行，则需要修改驱动运行权限，使用chmod u+x来添加运行权限。关于deepin安装显卡驱动，可以参考这个文章 https://wiki.deepin.org/index.php?title=%E6%98%BE%E5%8D%A1 安装Docker-ce。这里一定要遵循官方的安装方案，只此一个方法可以正常安装最新版docker。https://wiki.deepin.org/index.php?title=Docker 下载Nvidia-docker。在Github的Nvidia-Docker页面找到Ubuntu的安装包和安装步骤，安装即可 接下来运行 docker run -it -p 8888:8888 tensorflow/tensorflow:latest-gpu 此时可以进入官方的tensorflow带GPU版本的镜像啦，打开localhost:8888可以看到jupyter的页面 坑 在安装Nvidia显卡驱动的时候，根据安装软件的提示，需要关闭Linux的桌面系统X server，此时可以通过tty1~6来进行终端操作。但是如果Deepin已经安装了自带的Nvidia驱动，要停止lightdm服务时，在Deepin在关闭X server的同时，显示器也关闭了，无法显示tty1 ~6的屏幕，由于这个问题，导致Nvidia驱动无法安装。即使手动卸载安装的Deepin官方Nvidia驱动，经过了繁琐的卸载指令，在切换到tty1 ~6后，在关闭图形界面的时候，仍然会导致tty屏幕被关闭，黑屏一片，无法继续后面的驱动卸载和重新安装官方Nvidia驱动。 解决方案 为了避免Nvidia驱动无法安装，又能简洁科学的操作，所以必须在第一次安装Deepin系统的时候，在未安装显卡驱动的情况下对电脑进行操作进行安装Nvidia显卡官方linux驱动，首先按下快捷键“Ctrl+Alt+F2”，进入tty2，然后输入sudo systemctl stop lightdm 停止lightdm服务，此时电脑关闭X server的时候不会导致显示器的关闭，之后运行chmod u+x NVIDIA-Linux-x86_64-352.55.run #赋予可执行权限 以及sudo ./NVIDIA-Linux-x86_64-352.55.run #安装驱动文件 然后重启就可以正常的使用官方闭源驱动啦。 后续 使用GPU来运行Tensorflow程序是非常快的。一般的程序可以提速10倍以上，有些程序可以提速50到100倍的速度，所以使用GPU来进行Tensorflow编程是非常有必要的。 另外，不知道是Deepin的问题还是Nvidia-Dcoker的问题还是驱动的问题，在电脑待机之后会导致Tensorflow镜像出错，所以在训练的时候不要让机器进行待机动作。">
@@ -91,7 +93,9 @@
         
         
         <div class="site-meta">
-            <h1 class="site-name"><a href="/zh-cn">Nansen Li</a></h1>
+            <h1 class="site-name"><a href="/zh-cn">Nansen Li&#39;s Blog
+李楠森的博客
+</a></h1>
             <h2 class="site-description"></h2>
         </div>
     </header><ol class="menu-social">

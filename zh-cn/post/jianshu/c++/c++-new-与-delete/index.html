@@ -6,10 +6,12 @@
 
 <link rel='canonical' href='https://nansenli.com/zh-cn/post/jianshu/c&#43;&#43;/c&#43;&#43;-new-%E4%B8%8E-delete/'>
 
-<link rel="stylesheet" href="/scss/style.min.1084ac713783b88e0bd9807a58068e10aae22e99420f94a9234654a4e199baa4.css"><meta property='og:title' content="c++ new 与 delete">
+<link rel="stylesheet" href="/scss/style.min.b9b97e7c3f7f078f7ec4f60195f6139d30ad5972cc05950321ee04a9e98c542f.css"><meta property='og:title' content="c++ new 与 delete">
 <meta property='og:description' content="来源 ： https://kelvinh.github.io/blog/2014/04/19/research-on-operator-new-and-delete/ new 与 delete代码意味着什么 Class *pc = new Class; // ... delete pc; 上面代码的第一行即为 new operator ，而第三行即为 delete operator ，代码很简单，但对编译器来说，它需要做额外的工作，将上述代码翻译为近似于下面的代码： void *p = operator new(sizeof(Class)); // 对p指向的内存调用Class的构造函数，此处无法用直观的代码展现 Class *pc = static_cast&lt;Class*&gt;(p); // ... pc-&gt;~Class(); operator delete(pc); operator new 操作符到底做了什么，delete 操作符又做了什么？ void * operator new(std::size_t size) throw(std::bad_alloc) { if (size == 0) size = 1; void* p; while ((p = ::malloc(size)) == 0) { std::new_handler nh = std::get_new_handler(); if (nh) nh(); else throw std::bad_alloc(); } return p; } void operator delete(void* ptr) { if (ptr) ::free(ptr); } 实际上是malloc的包装，但是至少分配一个字节，并且在内存失败时会尝试获取用户设置的new_handler，如果用户事先设置了new_handler，那么会调用new_handler，否则会执行异常抛出bad_alloc。">
 <meta property='og:url' content='https://nansenli.com/zh-cn/post/jianshu/c&#43;&#43;/c&#43;&#43;-new-%E4%B8%8E-delete/'>
-<meta property='og:site_name' content='Nansen Li'>
+<meta property='og:site_name' content='Nansen Li&#39;s Blog
+李楠森的博客
+'>
 <meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2018-03-14T03:52:00&#43;00:00'/><meta property='article:modified_time' content='2018-03-14T03:52:00&#43;00:00'/>
 <meta name="twitter:title" content="c++ new 与 delete">
 <meta name="twitter:description" content="来源 ： https://kelvinh.github.io/blog/2014/04/19/research-on-operator-new-and-delete/ new 与 delete代码意味着什么 Class *pc = new Class; // ... delete pc; 上面代码的第一行即为 new operator ，而第三行即为 delete operator ，代码很简单，但对编译器来说，它需要做额外的工作，将上述代码翻译为近似于下面的代码： void *p = operator new(sizeof(Class)); // 对p指向的内存调用Class的构造函数，此处无法用直观的代码展现 Class *pc = static_cast&lt;Class*&gt;(p); // ... pc-&gt;~Class(); operator delete(pc); operator new 操作符到底做了什么，delete 操作符又做了什么？ void * operator new(std::size_t size) throw(std::bad_alloc) { if (size == 0) size = 1; void* p; while ((p = ::malloc(size)) == 0) { std::new_handler nh = std::get_new_handler(); if (nh) nh(); else throw std::bad_alloc(); } return p; } void operator delete(void* ptr) { if (ptr) ::free(ptr); } 实际上是malloc的包装，但是至少分配一个字节，并且在内存失败时会尝试获取用户设置的new_handler，如果用户事先设置了new_handler，那么会调用new_handler，否则会执行异常抛出bad_alloc。">
@@ -91,7 +93,9 @@
         
         
         <div class="site-meta">
-            <h1 class="site-name"><a href="/zh-cn">Nansen Li</a></h1>
+            <h1 class="site-name"><a href="/zh-cn">Nansen Li&#39;s Blog
+李楠森的博客
+</a></h1>
             <h2 class="site-description"></h2>
         </div>
     </header><ol class="menu-social">

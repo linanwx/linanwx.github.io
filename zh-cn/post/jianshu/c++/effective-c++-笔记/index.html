@@ -6,10 +6,12 @@
 
 <link rel='canonical' href='https://nansenli.com/zh-cn/post/jianshu/c&#43;&#43;/effective-c&#43;&#43;-%E7%AC%94%E8%AE%B0/'>
 
-<link rel="stylesheet" href="/scss/style.min.1084ac713783b88e0bd9807a58068e10aae22e99420f94a9234654a4e199baa4.css"><meta property='og:title' content="effective C++ 笔记">
+<link rel="stylesheet" href="/scss/style.min.b9b97e7c3f7f078f7ec4f60195f6139d30ad5972cc05950321ee04a9e98c542f.css"><meta property='og:title' content="effective C++ 笔记">
 <meta property='og:description' content="第一章 从 C 到 C++ 条款1 C++是语言联邦 这条意思是C++支持面向过程、面向对象、泛型编程、函数编程、元编程五中编程方式，但是会令人困惑。所以他是一门综合语言。 条款2 const enum inline 代替 define define不是语言的一部分，而是预处理的部分。const enum inline可以被编译器发现错误 条款3 使用const来限制出错的可能 例如返回const引用对象来防止用户修改。使用const成员函数来防止对类的破坏。 条款4 使用对象前确保已经初始化 主要是使用参数初始化列表初始化成员或者父类。另外如果类使用了全局的对象，则无法知道什么时候初始化的这个对象。所以需要使用类内部的static变量。（也是只有一份） 第二章 有关对象的构造与析构 条款5 了解对象的默认成员函数 编译器会根据需要的时候，默认生成的成员函数包括默认构造函数，拷贝构造函数，析构函数，拷贝赋值函数。 其中，默认拷贝赋值函数会可能无法拷贝引用成员。 条款6 使用=delete来拒绝默认生成的成员函数 这个可以防止类被拷贝，组织拷贝 条款7 为多态基类声明virtual析构函数 这个是基本功了。 条款8 析构函数不要抛出异常 这个可能导致内存释放不完全，或者导致抛出多个异常 条款9 构造函数和析构函数中中不调用虚函数 这条也比较明显，派生类的构造函数如果进入到基类构造函数中，调用了虚函数，此时派生类的虚函数还没有准备好。 条款10 operator = 应该返回对象的引用 这样就可以连续赋值了 条款11 在operator = 处理自我赋值 很难保证你的自我赋值代码没有问题，而且自我赋值是浪费时间的行为。 条款12 复制对象时记得复制每一个部分 这个很显然了。你要实现赋值函数，那么就必须拷贝所有内容。 第三章 有关对象的持有资源 条款13 对象是持有资源的基本单位 要能够获取资源，还要能够正确释放资源。关键在于使用shared_ptr来管理内存。可以自动释放持有的资源 条款14 持有资源的对象复制 要么禁止复制，要么使用shared_ptr成员，要么进行深度拷贝，要么使拷贝过程变为资源的转移。 条款15 持有资源的对象需要提供一个原始对象的方法 这个世界并不完美，许多APIs需要传递原始资源的指针才可以。使用shared_ptr会干扰这个对象的使用方式 条款16 new数组对象的时候需要delete 为了避免这种错误，可以使用vector容器来进行操作，避免对new数组的需求 条款17 new对象作为参数传入式可能导致内存泄漏 假如new对象和参数传入shared_ptr中间抛出了异常，那么就会导致内存泄漏">
 <meta property='og:url' content='https://nansenli.com/zh-cn/post/jianshu/c&#43;&#43;/effective-c&#43;&#43;-%E7%AC%94%E8%AE%B0/'>
-<meta property='og:site_name' content='Nansen Li'>
+<meta property='og:site_name' content='Nansen Li&#39;s Blog
+李楠森的博客
+'>
 <meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2018-04-23T10:40:00&#43;00:00'/><meta property='article:modified_time' content='2018-04-23T10:40:00&#43;00:00'/>
 <meta name="twitter:title" content="effective C++ 笔记">
 <meta name="twitter:description" content="第一章 从 C 到 C++ 条款1 C++是语言联邦 这条意思是C++支持面向过程、面向对象、泛型编程、函数编程、元编程五中编程方式，但是会令人困惑。所以他是一门综合语言。 条款2 const enum inline 代替 define define不是语言的一部分，而是预处理的部分。const enum inline可以被编译器发现错误 条款3 使用const来限制出错的可能 例如返回const引用对象来防止用户修改。使用const成员函数来防止对类的破坏。 条款4 使用对象前确保已经初始化 主要是使用参数初始化列表初始化成员或者父类。另外如果类使用了全局的对象，则无法知道什么时候初始化的这个对象。所以需要使用类内部的static变量。（也是只有一份） 第二章 有关对象的构造与析构 条款5 了解对象的默认成员函数 编译器会根据需要的时候，默认生成的成员函数包括默认构造函数，拷贝构造函数，析构函数，拷贝赋值函数。 其中，默认拷贝赋值函数会可能无法拷贝引用成员。 条款6 使用=delete来拒绝默认生成的成员函数 这个可以防止类被拷贝，组织拷贝 条款7 为多态基类声明virtual析构函数 这个是基本功了。 条款8 析构函数不要抛出异常 这个可能导致内存释放不完全，或者导致抛出多个异常 条款9 构造函数和析构函数中中不调用虚函数 这条也比较明显，派生类的构造函数如果进入到基类构造函数中，调用了虚函数，此时派生类的虚函数还没有准备好。 条款10 operator = 应该返回对象的引用 这样就可以连续赋值了 条款11 在operator = 处理自我赋值 很难保证你的自我赋值代码没有问题，而且自我赋值是浪费时间的行为。 条款12 复制对象时记得复制每一个部分 这个很显然了。你要实现赋值函数，那么就必须拷贝所有内容。 第三章 有关对象的持有资源 条款13 对象是持有资源的基本单位 要能够获取资源，还要能够正确释放资源。关键在于使用shared_ptr来管理内存。可以自动释放持有的资源 条款14 持有资源的对象复制 要么禁止复制，要么使用shared_ptr成员，要么进行深度拷贝，要么使拷贝过程变为资源的转移。 条款15 持有资源的对象需要提供一个原始对象的方法 这个世界并不完美，许多APIs需要传递原始资源的指针才可以。使用shared_ptr会干扰这个对象的使用方式 条款16 new数组对象的时候需要delete 为了避免这种错误，可以使用vector容器来进行操作，避免对new数组的需求 条款17 new对象作为参数传入式可能导致内存泄漏 假如new对象和参数传入shared_ptr中间抛出了异常，那么就会导致内存泄漏">
@@ -91,7 +93,9 @@
         
         
         <div class="site-meta">
-            <h1 class="site-name"><a href="/zh-cn">Nansen Li</a></h1>
+            <h1 class="site-name"><a href="/zh-cn">Nansen Li&#39;s Blog
+李楠森的博客
+</a></h1>
             <h2 class="site-description"></h2>
         </div>
     </header><ol class="menu-social">

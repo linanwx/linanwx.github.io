@@ -6,10 +6,12 @@
 
 <link rel='canonical' href='https://nansenli.com/zh-cn/post/jianshu/%E5%B5%8C%E5%85%A5%E5%BC%8F/ubuntu%E7%8E%AF%E5%A2%83%E4%B8%8B%E5%9C%A8stm32%E4%B8%8A%E9%83%A8%E7%BD%B2rt-thread%E7%B3%BB%E7%BB%9F/'>
 
-<link rel="stylesheet" href="/scss/style.min.1084ac713783b88e0bd9807a58068e10aae22e99420f94a9234654a4e199baa4.css"><meta property='og:title' content="Ubuntu环境下在STM32上部署RT-thread系统">
+<link rel="stylesheet" href="/scss/style.min.b9b97e7c3f7f078f7ec4f60195f6139d30ad5972cc05950321ee04a9e98c542f.css"><meta property='og:title' content="Ubuntu环境下在STM32上部署RT-thread系统">
 <meta property='og:description' content="RT-Thread是一个中国开源嵌入式系统，目前版本为2.2，已经支持许多微控制器，例如STM32系列，甚至可以在蓝牙BLE芯片中运行。尽管微控制器中资源紧张，但是部署一个易用的微操作系统对项目开发和代码管理是很有益的。 准备工具 STM32开发版一个，支持USB下载功能 Ubuntu系统 USB转串口线 这里我使用了古老的ALIENTEK STM32 MINI V2.0 开发板，芯片型号为STM32F103RBT6，Ubuntu系统版本为16.04 1.下载交叉编译工具链 下载gcc-arm-none-eabi交叉编译工具链，对于16.04系统，直接使用apt install gcc-arm-none-eabi 进行安装 2.下载RT-Thread编译工具 该系统使用scons编译，对于16.04系统，使用 apt install scons 进行安装 3.下载系统源码 下载RT-Thread系统，地址为：https://github.com/RT-Thread 解压目录 4.修改编译工程 进入目录bsp/stm32f10x 编辑文件rtconfig.py 修改 CROSS_TOOL 为 gcc 5.针对板子进行配置 stm32f10x.h 中对晶振进行配置 HSE_VALUE，例如800000 board.h 中对RAM进行配置 STM32_SRAM_SIZE，例如20 led.c 中对 led进行配置 6.编译源码 在bsp/stm32f10x目录下运行 scons，输入rtthread.bin文件 7.烧录代码 你可以使用Jlink进行下载，须在Jlink官网下载Linux执行文件，由于我是debian系统，可以直接打开JLink_Linux_V614a_x86_64.deb文件进行安装。然后在系统文件下lib/目录下执行JlinkExe文件，即可以通过Jlink进行下载烧录程序。 这里我采用了更为方便的串口烧录。首先将开发板的B0接高电平，B1接低电平，然后使用STM32flash-5.0这个软件进行烧录。 下载地址https://sourceforge.net/projects/stm32flash/ 解压目录，在该目录下运行make，得到stm32flash 将rtthread.bin复制到该目录下，接入USB转串口线，然后输入sudo ./stm32flash -w rtthread.bin -v -g 0x0 /dev/ttyUSB0，其中ttyUSB0是串口设备 8.检查是否成功 若能看到LED灯闪烁，则成功 ">
 <meta property='og:url' content='https://nansenli.com/zh-cn/post/jianshu/%E5%B5%8C%E5%85%A5%E5%BC%8F/ubuntu%E7%8E%AF%E5%A2%83%E4%B8%8B%E5%9C%A8stm32%E4%B8%8A%E9%83%A8%E7%BD%B2rt-thread%E7%B3%BB%E7%BB%9F/'>
-<meta property='og:site_name' content='Nansen Li'>
+<meta property='og:site_name' content='Nansen Li&#39;s Blog
+李楠森的博客
+'>
 <meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2017-03-02T07:59:00&#43;00:00'/><meta property='article:modified_time' content='2017-03-02T07:59:00&#43;00:00'/>
 <meta name="twitter:title" content="Ubuntu环境下在STM32上部署RT-thread系统">
 <meta name="twitter:description" content="RT-Thread是一个中国开源嵌入式系统，目前版本为2.2，已经支持许多微控制器，例如STM32系列，甚至可以在蓝牙BLE芯片中运行。尽管微控制器中资源紧张，但是部署一个易用的微操作系统对项目开发和代码管理是很有益的。 准备工具 STM32开发版一个，支持USB下载功能 Ubuntu系统 USB转串口线 这里我使用了古老的ALIENTEK STM32 MINI V2.0 开发板，芯片型号为STM32F103RBT6，Ubuntu系统版本为16.04 1.下载交叉编译工具链 下载gcc-arm-none-eabi交叉编译工具链，对于16.04系统，直接使用apt install gcc-arm-none-eabi 进行安装 2.下载RT-Thread编译工具 该系统使用scons编译，对于16.04系统，使用 apt install scons 进行安装 3.下载系统源码 下载RT-Thread系统，地址为：https://github.com/RT-Thread 解压目录 4.修改编译工程 进入目录bsp/stm32f10x 编辑文件rtconfig.py 修改 CROSS_TOOL 为 gcc 5.针对板子进行配置 stm32f10x.h 中对晶振进行配置 HSE_VALUE，例如800000 board.h 中对RAM进行配置 STM32_SRAM_SIZE，例如20 led.c 中对 led进行配置 6.编译源码 在bsp/stm32f10x目录下运行 scons，输入rtthread.bin文件 7.烧录代码 你可以使用Jlink进行下载，须在Jlink官网下载Linux执行文件，由于我是debian系统，可以直接打开JLink_Linux_V614a_x86_64.deb文件进行安装。然后在系统文件下lib/目录下执行JlinkExe文件，即可以通过Jlink进行下载烧录程序。 这里我采用了更为方便的串口烧录。首先将开发板的B0接高电平，B1接低电平，然后使用STM32flash-5.0这个软件进行烧录。 下载地址https://sourceforge.net/projects/stm32flash/ 解压目录，在该目录下运行make，得到stm32flash 将rtthread.bin复制到该目录下，接入USB转串口线，然后输入sudo ./stm32flash -w rtthread.bin -v -g 0x0 /dev/ttyUSB0，其中ttyUSB0是串口设备 8.检查是否成功 若能看到LED灯闪烁，则成功 ">
@@ -91,7 +93,9 @@
         
         
         <div class="site-meta">
-            <h1 class="site-name"><a href="/zh-cn">Nansen Li</a></h1>
+            <h1 class="site-name"><a href="/zh-cn">Nansen Li&#39;s Blog
+李楠森的博客
+</a></h1>
             <h2 class="site-description"></h2>
         </div>
     </header><ol class="menu-social">

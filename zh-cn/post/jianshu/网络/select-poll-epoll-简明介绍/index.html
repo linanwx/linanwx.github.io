@@ -6,10 +6,12 @@
 
 <link rel='canonical' href='https://nansenli.com/zh-cn/post/jianshu/%E7%BD%91%E7%BB%9C/select-poll-epoll-%E7%AE%80%E6%98%8E%E4%BB%8B%E7%BB%8D/'>
 
-<link rel="stylesheet" href="/scss/style.min.1084ac713783b88e0bd9807a58068e10aae22e99420f94a9234654a4e199baa4.css"><meta property='og:title' content="select poll epoll 简明介绍">
+<link rel="stylesheet" href="/scss/style.min.b9b97e7c3f7f078f7ec4f60195f6139d30ad5972cc05950321ee04a9e98c542f.css"><meta property='og:title' content="select poll epoll 简明介绍">
 <meta property='og:description' content="来源 https://cloud.tencent.com/developer/article/1005481 函数简介 select 函数原型如下： int select (int n, fd_set *readfds, fd_set *writefds, fd_set *exceptfds, struct timeval *timeout); fd_set是包含有文件描述符的集合，是一个位图，总共有n位。这意味这每次调用就会拷贝一次文件描述符集合到内核。 poll 函数原型如下： int poll (struct pollfd *fds, unsigned int nfds, int timeout); 不同与select使用三个位图来表示三个fdset的方式，poll使用一个 pollfd的数组实现。传入他的长度，以及超时。 epoll epoll是在2.6内核中提出的，是之前的select和poll的增强版本。 int epoll_create(int size)；//创建一个epoll的句柄，size用来告诉内核这个监听的数目一共有多大 int epoll_ctl(int epfd, int op, int fd, struct epoll_event *event)； int epoll_wait(int epfd, struct epoll_event * events, int maxevents, int timeout); epoll_create是用于创建epoll的句柄。size是建议内核预先分配的文件描述符数目，不会限制实际运行的数目。 epoll_ctl会控制epoll的句柄，我们可以向其中添加、删除、修改文件描述符。ctl与epoll_wait相分离的机制使得只用复制一次事件集合。 epoll_wait可以用于获得从内核得到的事件的集合。 socket 事件 在Linux 2.6内核事件中，设置了wakeup callback机制。当socket在等待事件发生时，由内核的socket睡眠队列管理。当socket事件发生时，内核会顺序遍历socket睡眠队列上的每个process，通知该进程事件发生。通知时，会依次调用该事件的回调函数。 最初的select select最初只是一个朴素的实现，来尝试解决多个文件描述符的检查问题。 select做了什么？ select调用后，做了以下事情：">
 <meta property='og:url' content='https://nansenli.com/zh-cn/post/jianshu/%E7%BD%91%E7%BB%9C/select-poll-epoll-%E7%AE%80%E6%98%8E%E4%BB%8B%E7%BB%8D/'>
-<meta property='og:site_name' content='Nansen Li'>
+<meta property='og:site_name' content='Nansen Li&#39;s Blog
+李楠森的博客
+'>
 <meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2018-03-12T13:19:00&#43;00:00'/><meta property='article:modified_time' content='2018-03-12T13:19:00&#43;00:00'/>
 <meta name="twitter:title" content="select poll epoll 简明介绍">
 <meta name="twitter:description" content="来源 https://cloud.tencent.com/developer/article/1005481 函数简介 select 函数原型如下： int select (int n, fd_set *readfds, fd_set *writefds, fd_set *exceptfds, struct timeval *timeout); fd_set是包含有文件描述符的集合，是一个位图，总共有n位。这意味这每次调用就会拷贝一次文件描述符集合到内核。 poll 函数原型如下： int poll (struct pollfd *fds, unsigned int nfds, int timeout); 不同与select使用三个位图来表示三个fdset的方式，poll使用一个 pollfd的数组实现。传入他的长度，以及超时。 epoll epoll是在2.6内核中提出的，是之前的select和poll的增强版本。 int epoll_create(int size)；//创建一个epoll的句柄，size用来告诉内核这个监听的数目一共有多大 int epoll_ctl(int epfd, int op, int fd, struct epoll_event *event)； int epoll_wait(int epfd, struct epoll_event * events, int maxevents, int timeout); epoll_create是用于创建epoll的句柄。size是建议内核预先分配的文件描述符数目，不会限制实际运行的数目。 epoll_ctl会控制epoll的句柄，我们可以向其中添加、删除、修改文件描述符。ctl与epoll_wait相分离的机制使得只用复制一次事件集合。 epoll_wait可以用于获得从内核得到的事件的集合。 socket 事件 在Linux 2.6内核事件中，设置了wakeup callback机制。当socket在等待事件发生时，由内核的socket睡眠队列管理。当socket事件发生时，内核会顺序遍历socket睡眠队列上的每个process，通知该进程事件发生。通知时，会依次调用该事件的回调函数。 最初的select select最初只是一个朴素的实现，来尝试解决多个文件描述符的检查问题。 select做了什么？ select调用后，做了以下事情：">
@@ -91,7 +93,9 @@
         
         
         <div class="site-meta">
-            <h1 class="site-name"><a href="/zh-cn">Nansen Li</a></h1>
+            <h1 class="site-name"><a href="/zh-cn">Nansen Li&#39;s Blog
+李楠森的博客
+</a></h1>
             <h2 class="site-description"></h2>
         </div>
     </header><ol class="menu-social">

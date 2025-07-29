@@ -6,10 +6,12 @@
 
 <link rel='canonical' href='https://nansenli.com/zh-cn/post/jianshu/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E9%9B%B6%E5%9F%BA%E7%A1%80%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%E4%B8%80%E4%BC%98%E8%BE%BE%E5%AD%A6%E5%9F%8E/'>
 
-<link rel="stylesheet" href="/scss/style.min.1084ac713783b88e0bd9807a58068e10aae22e99420f94a9234654a4e199baa4.css"><meta property='og:title' content="深度学习零基础学习笔记一（优达学城）">
+<link rel="stylesheet" href="/scss/style.min.b9b97e7c3f7f078f7ec4f60195f6139d30ad5972cc05950321ee04a9e98c542f.css"><meta property='og:title' content="深度学习零基础学习笔记一（优达学城）">
 <meta property='og:description' content="前言 突发奇想想学机器学习，这里是学习过程的笔记 准备 我做了这些准备工作 MacBook 一台，搭建好Python环境，安装numpy和matplotlib 优达学城注册免费的《深度学习》课程（Google合作） 廖雪峰Python入门教程学习 花费两天时间大致浏览《机器学习实战》 学习这些知识应该足以进行接下来的优达学城的学习 课程一 从机器学习到深度学习 小节1-8，主要介绍了深度学习的发展现状等等知识。 小节9-12介绍了softmax模型。 粗略浏览机器学习实战后，在机器学习实战这本书中，大致介绍了机器学习的几种算法。从表面上来看，机器学习是一些分类和聚类算法。在这些算法中，介绍了一种算法，叫做逻辑回归分类。 在小节9-12中，主要介绍了分类器模型——逻辑回归，分类函数使用的是softmax函数。 什么是softmax函数 这张图片可以表明什么是softmax函数了。对原来数列中的每个数z求exp(z)，新数的大小所占的比例就是新数的softmax概率。 性质 如果输入同比例扩大，则分类器的结果越两极化，越自信，如果输入同比例缩小，分类器结果趋于平均，不自信。 算法 import numpy as np def softmax(x): &#34;&#34;&#34;Compute softmax values for each sets of scores in x.&#34;&#34;&#34; expList = [np.exp(i) for i in x] expSum = sum(expList) x = [i/expSum for i in expList] return np.array(x) 13-14节主要讲One-Hot编码。在softmax函数给出一组概率数列之后，如何确定分类呢？例如概率最高的为1，其他的为0，这样的一个数列，属于One-Hot编码。这种编码是已经确定了分类。 15-16节讲了交叉熵。softmax可以计算概率数列，OneHot是已经确定的分类，那如何计算概率数列到某个分类的距离呢？使用交叉熵来度量这个距离。 17-20 节讲解了如何使用这个分类器。其中，18节讲了为什么需要采用一种特殊的初始数据。 sum = 1000000000 for i in range(1000000): sum += 0.000001 sum -= 1000000000 print(sum) 这段代码运行结果不是1。如果把sum换成一个很小的数字，例如1，而不是1000000000，我们发现结果误差变小了。基于这个原因，我们希望初始数据总是均值为0，并且各个方向的方差为一致的。例如一个灰度图片的像素值0-255，我们需要把它减去128，然后除以128，这样每一个数字都是-1到1之间的数字，这样的初始数据更适合用来训练。">
 <meta property='og:url' content='https://nansenli.com/zh-cn/post/jianshu/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E9%9B%B6%E5%9F%BA%E7%A1%80%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%E4%B8%80%E4%BC%98%E8%BE%BE%E5%AD%A6%E5%9F%8E/'>
-<meta property='og:site_name' content='Nansen Li'>
+<meta property='og:site_name' content='Nansen Li&#39;s Blog
+李楠森的博客
+'>
 <meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2017-07-19T07:42:00&#43;00:00'/><meta property='article:modified_time' content='2017-07-19T07:42:00&#43;00:00'/>
 <meta name="twitter:title" content="深度学习零基础学习笔记一（优达学城）">
 <meta name="twitter:description" content="前言 突发奇想想学机器学习，这里是学习过程的笔记 准备 我做了这些准备工作 MacBook 一台，搭建好Python环境，安装numpy和matplotlib 优达学城注册免费的《深度学习》课程（Google合作） 廖雪峰Python入门教程学习 花费两天时间大致浏览《机器学习实战》 学习这些知识应该足以进行接下来的优达学城的学习 课程一 从机器学习到深度学习 小节1-8，主要介绍了深度学习的发展现状等等知识。 小节9-12介绍了softmax模型。 粗略浏览机器学习实战后，在机器学习实战这本书中，大致介绍了机器学习的几种算法。从表面上来看，机器学习是一些分类和聚类算法。在这些算法中，介绍了一种算法，叫做逻辑回归分类。 在小节9-12中，主要介绍了分类器模型——逻辑回归，分类函数使用的是softmax函数。 什么是softmax函数 这张图片可以表明什么是softmax函数了。对原来数列中的每个数z求exp(z)，新数的大小所占的比例就是新数的softmax概率。 性质 如果输入同比例扩大，则分类器的结果越两极化，越自信，如果输入同比例缩小，分类器结果趋于平均，不自信。 算法 import numpy as np def softmax(x): &#34;&#34;&#34;Compute softmax values for each sets of scores in x.&#34;&#34;&#34; expList = [np.exp(i) for i in x] expSum = sum(expList) x = [i/expSum for i in expList] return np.array(x) 13-14节主要讲One-Hot编码。在softmax函数给出一组概率数列之后，如何确定分类呢？例如概率最高的为1，其他的为0，这样的一个数列，属于One-Hot编码。这种编码是已经确定了分类。 15-16节讲了交叉熵。softmax可以计算概率数列，OneHot是已经确定的分类，那如何计算概率数列到某个分类的距离呢？使用交叉熵来度量这个距离。 17-20 节讲解了如何使用这个分类器。其中，18节讲了为什么需要采用一种特殊的初始数据。 sum = 1000000000 for i in range(1000000): sum += 0.000001 sum -= 1000000000 print(sum) 这段代码运行结果不是1。如果把sum换成一个很小的数字，例如1，而不是1000000000，我们发现结果误差变小了。基于这个原因，我们希望初始数据总是均值为0，并且各个方向的方差为一致的。例如一个灰度图片的像素值0-255，我们需要把它减去128，然后除以128，这样每一个数字都是-1到1之间的数字，这样的初始数据更适合用来训练。">
@@ -91,7 +93,9 @@
         
         
         <div class="site-meta">
-            <h1 class="site-name"><a href="/zh-cn">Nansen Li</a></h1>
+            <h1 class="site-name"><a href="/zh-cn">Nansen Li&#39;s Blog
+李楠森的博客
+</a></h1>
             <h2 class="site-description"></h2>
         </div>
     </header><ol class="menu-social">

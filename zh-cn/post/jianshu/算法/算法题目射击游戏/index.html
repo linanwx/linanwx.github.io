@@ -6,10 +6,12 @@
 
 <link rel='canonical' href='https://nansenli.com/zh-cn/post/jianshu/%E7%AE%97%E6%B3%95/%E7%AE%97%E6%B3%95%E9%A2%98%E7%9B%AE%E5%B0%84%E5%87%BB%E6%B8%B8%E6%88%8F/'>
 
-<link rel="stylesheet" href="/scss/style.min.1084ac713783b88e0bd9807a58068e10aae22e99420f94a9234654a4e199baa4.css"><meta property='og:title' content="算法题目——射击游戏">
+<link rel="stylesheet" href="/scss/style.min.b9b97e7c3f7f078f7ec4f60195f6139d30ad5972cc05950321ee04a9e98c542f.css"><meta property='og:title' content="算法题目——射击游戏">
 <meta property='og:description' content="链接：https://www.nowcoder.com/questionTerminal/d3f26db0325444078717cc802e0056d8 来源：牛客网 小易正在玩一款新出的射击游戏,这个射击游戏在一个二维平面进行,小易在坐标原点(0,0),平面上有n只怪物,每个怪物有所在的坐标(x[i], y[i])。小易进行一次射击会把x轴和y轴上(包含坐标原点)的怪物一次性消灭。 小易是这个游戏的VIP玩家,他拥有两项特权操作: 1、让平面内的所有怪物同时向任意同一方向移动任意同一距离 2、让平面内的所有怪物同时对于小易(0,0)旋转任意同一角度 小易要进行一次射击。小易在进行射击前,可以使用这两项特权操作任意次。 小易想知道在他射击的时候最多可以同时消灭多少只怪物,请你帮帮小易。 如样例所示: 所有点对于坐标原点(0,0)顺时针或者逆时针旋转45°,可以让所有点都在坐标轴上,所以5个怪物都可以消灭。 输入描述: 输入包括三行。 第一行中有一个正整数n(1 ≤ n ≤ 50),表示平面内的怪物数量。 第二行包括n个整数x[i](-1,000,000 ≤ x[i] ≤ 1,000,000),表示每只怪物所在坐标的横坐标,以空格分割。 第二行包括n个整数y[i](-1,000,000 ≤ y[i] ≤ 1,000,000),表示每只怪物所在坐标的纵坐标,以空格分割。 输出描述: 输出一个整数表示小易最多能消灭多少只怪物。 示例1 输入 5 0 -1 1 1 -1 0 -1 -1 1 1 输出 5 分析 题目等价于，找一个十字架能够尽可能多的覆盖所有节点。 考虑到一根线至少能够覆盖到两个点，再加一根垂直于这条线至少能够覆盖3个点，在此基础上进行遍历。对任意三个点，我们选择其中两个点做一条直线(三种情况)，对于第三个点，我们做一条垂线到这条直线上。这样的十字架已经经过了三个点。对于剩下的点，我们判断是否在这个十字架上。要判断是否在十字架上，首先判断是否和第一条直线在同一条直线上。否则，判断这个点和第三个点所构成的直线是否和第二条直线垂直。 当点数小于等于3个点，则可以把所有点都覆盖到。 #include &lt;vector&gt; #include &lt;iostream&gt; #include &lt;algorithm&gt; using namespace std; struct point{ int x = 0; int y = 0; }; bool is_sameline(point p1, point p2, point p3){ return ((p1.">
 <meta property='og:url' content='https://nansenli.com/zh-cn/post/jianshu/%E7%AE%97%E6%B3%95/%E7%AE%97%E6%B3%95%E9%A2%98%E7%9B%AE%E5%B0%84%E5%87%BB%E6%B8%B8%E6%88%8F/'>
-<meta property='og:site_name' content='Nansen Li'>
+<meta property='og:site_name' content='Nansen Li&#39;s Blog
+李楠森的博客
+'>
 <meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2018-01-23T01:39:00&#43;00:00'/><meta property='article:modified_time' content='2018-01-23T01:39:00&#43;00:00'/>
 <meta name="twitter:title" content="算法题目——射击游戏">
 <meta name="twitter:description" content="链接：https://www.nowcoder.com/questionTerminal/d3f26db0325444078717cc802e0056d8 来源：牛客网 小易正在玩一款新出的射击游戏,这个射击游戏在一个二维平面进行,小易在坐标原点(0,0),平面上有n只怪物,每个怪物有所在的坐标(x[i], y[i])。小易进行一次射击会把x轴和y轴上(包含坐标原点)的怪物一次性消灭。 小易是这个游戏的VIP玩家,他拥有两项特权操作: 1、让平面内的所有怪物同时向任意同一方向移动任意同一距离 2、让平面内的所有怪物同时对于小易(0,0)旋转任意同一角度 小易要进行一次射击。小易在进行射击前,可以使用这两项特权操作任意次。 小易想知道在他射击的时候最多可以同时消灭多少只怪物,请你帮帮小易。 如样例所示: 所有点对于坐标原点(0,0)顺时针或者逆时针旋转45°,可以让所有点都在坐标轴上,所以5个怪物都可以消灭。 输入描述: 输入包括三行。 第一行中有一个正整数n(1 ≤ n ≤ 50),表示平面内的怪物数量。 第二行包括n个整数x[i](-1,000,000 ≤ x[i] ≤ 1,000,000),表示每只怪物所在坐标的横坐标,以空格分割。 第二行包括n个整数y[i](-1,000,000 ≤ y[i] ≤ 1,000,000),表示每只怪物所在坐标的纵坐标,以空格分割。 输出描述: 输出一个整数表示小易最多能消灭多少只怪物。 示例1 输入 5 0 -1 1 1 -1 0 -1 -1 1 1 输出 5 分析 题目等价于，找一个十字架能够尽可能多的覆盖所有节点。 考虑到一根线至少能够覆盖到两个点，再加一根垂直于这条线至少能够覆盖3个点，在此基础上进行遍历。对任意三个点，我们选择其中两个点做一条直线(三种情况)，对于第三个点，我们做一条垂线到这条直线上。这样的十字架已经经过了三个点。对于剩下的点，我们判断是否在这个十字架上。要判断是否在十字架上，首先判断是否和第一条直线在同一条直线上。否则，判断这个点和第三个点所构成的直线是否和第二条直线垂直。 当点数小于等于3个点，则可以把所有点都覆盖到。 #include &lt;vector&gt; #include &lt;iostream&gt; #include &lt;algorithm&gt; using namespace std; struct point{ int x = 0; int y = 0; }; bool is_sameline(point p1, point p2, point p3){ return ((p1.">
@@ -91,7 +93,9 @@
         
         
         <div class="site-meta">
-            <h1 class="site-name"><a href="/zh-cn">Nansen Li</a></h1>
+            <h1 class="site-name"><a href="/zh-cn">Nansen Li&#39;s Blog
+李楠森的博客
+</a></h1>
             <h2 class="site-description"></h2>
         </div>
     </header><ol class="menu-social">

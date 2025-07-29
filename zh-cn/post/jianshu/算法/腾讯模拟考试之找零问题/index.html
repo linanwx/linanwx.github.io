@@ -6,10 +6,12 @@
 
 <link rel='canonical' href='https://nansenli.com/zh-cn/post/jianshu/%E7%AE%97%E6%B3%95/%E8%85%BE%E8%AE%AF%E6%A8%A1%E6%8B%9F%E8%80%83%E8%AF%95%E4%B9%8B%E6%89%BE%E9%9B%B6%E9%97%AE%E9%A2%98/'>
 
-<link rel="stylesheet" href="/scss/style.min.1084ac713783b88e0bd9807a58068e10aae22e99420f94a9234654a4e199baa4.css"><meta property='og:title' content="腾讯模拟考试之找零问题">
+<link rel="stylesheet" href="/scss/style.min.b9b97e7c3f7f078f7ec4f60195f6139d30ad5972cc05950321ee04a9e98c542f.css"><meta property='og:title' content="腾讯模拟考试之找零问题">
 <meta property='og:description' content="小Q非常富有，拥有非常多的硬币，小Q的拥有的硬币是有规律的，对于所有的非负整数K,小Q恰好&gt; 各有两个数值为2^k，的硬币，所以小Q拥有的硬币是1，1，2，2，4，4……，小Q卖东西需要支付元钱，请问小Q想知道有多少种组合方案。 输入：一个n (1&lt;=n&lt;=10^18),代表要付的钱 输出：表示小Q可以拼凑的方案数目 参考答案 #coding=utf-8 import math n = int(input()) def getMaxCoin(n): tmp = int(math.log(n,2)) return 2**tmp buff = {} def dp(n, coin): if (n, coin) in buff: return buff[(n,coin)] if n == 0: # 找0块钱，必然可以 return 1 if coin == 1: # 只用1元找 if n == 1 or n == 2: return 1 return 0 # 当前面值无解 if n &gt; coin * 4 -2: return 0 ret = 0 # 只用了一枚 if n &gt;= coin: ret += dp(n-coin, coin//2) if n &gt;= coin*2: # 用了两枚 ret += dp(n-coin*2, coin//2) # 没有用 ret += dp(n, coin//2) buff[(n,coin)] = ret return ret print(dp(n,getMaxCoin(n))) 思路： 对于当前的面额，最大可能用到的硬币面额可以通过getMaxCoin函数计算得到。 对于问题面额n和可以使用的最大硬币面额，求dp(n, coin)的值。 coin会不断减小，对于coin为1时，面额为1或2只有1种情况。对于面额为0时，不需要硬币就可以有解。对于面额大于coin*4-2时，超过了能找的上限，无解。对于其他情况，分三种情况，coin用了一枚，coin用了两枚，coin用了零枚。分别计算对应的dp值即可。使用buff缓存已经计算出来的面值。">
 <meta property='og:url' content='https://nansenli.com/zh-cn/post/jianshu/%E7%AE%97%E6%B3%95/%E8%85%BE%E8%AE%AF%E6%A8%A1%E6%8B%9F%E8%80%83%E8%AF%95%E4%B9%8B%E6%89%BE%E9%9B%B6%E9%97%AE%E9%A2%98/'>
-<meta property='og:site_name' content='Nansen Li'>
+<meta property='og:site_name' content='Nansen Li&#39;s Blog
+李楠森的博客
+'>
 <meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2018-03-26T03:57:00&#43;00:00'/><meta property='article:modified_time' content='2018-03-26T03:57:00&#43;00:00'/>
 <meta name="twitter:title" content="腾讯模拟考试之找零问题">
 <meta name="twitter:description" content="小Q非常富有，拥有非常多的硬币，小Q的拥有的硬币是有规律的，对于所有的非负整数K,小Q恰好&gt; 各有两个数值为2^k，的硬币，所以小Q拥有的硬币是1，1，2，2，4，4……，小Q卖东西需要支付元钱，请问小Q想知道有多少种组合方案。 输入：一个n (1&lt;=n&lt;=10^18),代表要付的钱 输出：表示小Q可以拼凑的方案数目 参考答案 #coding=utf-8 import math n = int(input()) def getMaxCoin(n): tmp = int(math.log(n,2)) return 2**tmp buff = {} def dp(n, coin): if (n, coin) in buff: return buff[(n,coin)] if n == 0: # 找0块钱，必然可以 return 1 if coin == 1: # 只用1元找 if n == 1 or n == 2: return 1 return 0 # 当前面值无解 if n &gt; coin * 4 -2: return 0 ret = 0 # 只用了一枚 if n &gt;= coin: ret += dp(n-coin, coin//2) if n &gt;= coin*2: # 用了两枚 ret += dp(n-coin*2, coin//2) # 没有用 ret += dp(n, coin//2) buff[(n,coin)] = ret return ret print(dp(n,getMaxCoin(n))) 思路： 对于当前的面额，最大可能用到的硬币面额可以通过getMaxCoin函数计算得到。 对于问题面额n和可以使用的最大硬币面额，求dp(n, coin)的值。 coin会不断减小，对于coin为1时，面额为1或2只有1种情况。对于面额为0时，不需要硬币就可以有解。对于面额大于coin*4-2时，超过了能找的上限，无解。对于其他情况，分三种情况，coin用了一枚，coin用了两枚，coin用了零枚。分别计算对应的dp值即可。使用buff缓存已经计算出来的面值。">
@@ -91,7 +93,9 @@
         
         
         <div class="site-meta">
-            <h1 class="site-name"><a href="/zh-cn">Nansen Li</a></h1>
+            <h1 class="site-name"><a href="/zh-cn">Nansen Li&#39;s Blog
+李楠森的博客
+</a></h1>
             <h2 class="site-description"></h2>
         </div>
     </header><ol class="menu-social">

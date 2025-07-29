@@ -6,10 +6,12 @@
 
 <link rel='canonical' href='https://nansenli.com/zh-cn/post/jianshu/%E5%B5%8C%E5%85%A5%E5%BC%8F/%E5%9C%A8rt-thread%E4%B8%AD%E4%BD%BF%E7%94%A8spi%E5%92%8Cuart%E8%AE%BE%E5%A4%87/'>
 
-<link rel="stylesheet" href="/scss/style.min.1084ac713783b88e0bd9807a58068e10aae22e99420f94a9234654a4e199baa4.css"><meta property='og:title' content="在RT-Thread中使用SPI和UART设备">
+<link rel="stylesheet" href="/scss/style.min.b9b97e7c3f7f078f7ec4f60195f6139d30ad5972cc05950321ee04a9e98c542f.css"><meta property='og:title' content="在RT-Thread中使用SPI和UART设备">
 <meta property='og:description' content="RT-Thread采用了类似于linux的函数调用方法，这里说明一下如何简单的使用设备。 硬件环境 ：STM32F103RBT6 用户程序位置 用户程序在bsp文件夹下面的applications中的applications.c中书写和调用，如果程序比较多，再新建一个c文件分离出去。 SPI 驱动文件 stm32f10x下面的drivers并没有spi驱动，我们需要将stm32f107对应的spi驱动移植过来。将rt_stm32f10x_spi.c，rt_stm32f10x_spi.h，以及platform.c文件复制过去，然后在rt_init_thread_entry函数中添加rt_platform_init();的调用，在对应文件中加入头文件。然后修改SConscript添加对platform.c，rt_stm32f10x_spi.c的编译，并在config中添加RT_USING_SPI和RT_USING_SPI1的宏定义 在platform.c中spi初始化加入如下代码，配置频率 /* config spi */ { struct rt_spi_configuration cfg; cfg.data_width = 8; cfg.mode = RT_SPI_MODE_3 | RT_SPI_MSB; /* SPI Compatible Modes 3 and SPI_FirstBit_MSB in lis302dl datasheet */ //APB2=168M/2=84M, SPI1 = 84/2,4,8,16,32 = 42M, 21M, 10.5M, 5.25M, 2.625M ... cfg.max_hz = 2625000; /* SPI_BaudRatePrescaler_16=84000000/16=5.25MHz. The max_hz of lis302dl is 10MHz in datasheet */ rt_spi_configure(&amp;spi_device, &amp;cfg); } /* config spi */ 硬件配置 硬件管脚被配置在platform.c文件中, 我们不修改默认的配置,也就是 PA4567这几个管脚为默认的spi输入输出管脚">
 <meta property='og:url' content='https://nansenli.com/zh-cn/post/jianshu/%E5%B5%8C%E5%85%A5%E5%BC%8F/%E5%9C%A8rt-thread%E4%B8%AD%E4%BD%BF%E7%94%A8spi%E5%92%8Cuart%E8%AE%BE%E5%A4%87/'>
-<meta property='og:site_name' content='Nansen Li'>
+<meta property='og:site_name' content='Nansen Li&#39;s Blog
+李楠森的博客
+'>
 <meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2017-03-07T09:41:00&#43;00:00'/><meta property='article:modified_time' content='2017-03-07T09:41:00&#43;00:00'/>
 <meta name="twitter:title" content="在RT-Thread中使用SPI和UART设备">
 <meta name="twitter:description" content="RT-Thread采用了类似于linux的函数调用方法，这里说明一下如何简单的使用设备。 硬件环境 ：STM32F103RBT6 用户程序位置 用户程序在bsp文件夹下面的applications中的applications.c中书写和调用，如果程序比较多，再新建一个c文件分离出去。 SPI 驱动文件 stm32f10x下面的drivers并没有spi驱动，我们需要将stm32f107对应的spi驱动移植过来。将rt_stm32f10x_spi.c，rt_stm32f10x_spi.h，以及platform.c文件复制过去，然后在rt_init_thread_entry函数中添加rt_platform_init();的调用，在对应文件中加入头文件。然后修改SConscript添加对platform.c，rt_stm32f10x_spi.c的编译，并在config中添加RT_USING_SPI和RT_USING_SPI1的宏定义 在platform.c中spi初始化加入如下代码，配置频率 /* config spi */ { struct rt_spi_configuration cfg; cfg.data_width = 8; cfg.mode = RT_SPI_MODE_3 | RT_SPI_MSB; /* SPI Compatible Modes 3 and SPI_FirstBit_MSB in lis302dl datasheet */ //APB2=168M/2=84M, SPI1 = 84/2,4,8,16,32 = 42M, 21M, 10.5M, 5.25M, 2.625M ... cfg.max_hz = 2625000; /* SPI_BaudRatePrescaler_16=84000000/16=5.25MHz. The max_hz of lis302dl is 10MHz in datasheet */ rt_spi_configure(&amp;spi_device, &amp;cfg); } /* config spi */ 硬件配置 硬件管脚被配置在platform.c文件中, 我们不修改默认的配置,也就是 PA4567这几个管脚为默认的spi输入输出管脚">
@@ -91,7 +93,9 @@
         
         
         <div class="site-meta">
-            <h1 class="site-name"><a href="/zh-cn">Nansen Li</a></h1>
+            <h1 class="site-name"><a href="/zh-cn">Nansen Li&#39;s Blog
+李楠森的博客
+</a></h1>
             <h2 class="site-description"></h2>
         </div>
     </header><ol class="menu-social">

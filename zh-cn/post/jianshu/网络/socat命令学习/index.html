@@ -6,10 +6,12 @@
 
 <link rel='canonical' href='https://nansenli.com/zh-cn/post/jianshu/%E7%BD%91%E7%BB%9C/socat%E5%91%BD%E4%BB%A4%E5%AD%A6%E4%B9%A0/'>
 
-<link rel="stylesheet" href="/scss/style.min.1084ac713783b88e0bd9807a58068e10aae22e99420f94a9234654a4e199baa4.css"><meta property='og:title' content="socat命令学习">
+<link rel="stylesheet" href="/scss/style.min.b9b97e7c3f7f078f7ec4f60195f6139d30ad5972cc05950321ee04a9e98c542f.css"><meta property='og:title' content="socat命令学习">
 <meta property='og:description' content="前言 socat是强大易用的工具，可以实现任意socket的转换。 使用 socat [options] &lt;address&gt; &lt;address&gt; options可以查看help。 address有一下几种形式： - STDIN STDOUT ：表示标准输入输出，可以就用一个横杠代替 /var/log/syslog : 也可以是任意路径，如果是相对路径要使用./，打开一个文件作为数据流。 TCP:127.0.0.1:1080 : 建立一个TCP连接作为数据流，TCP也可以替换为UDP TCP-LISTEN:12345 : 建立TCP监听端口，TCP也可以替换为UDP EXEC:/bin/bash : 执行一个程序作为数据流。 场景一 本地有个文件，我想显示在终端中 socat - /etc/sysctl.conf 场景二 有个TCP连接会连上来，我想看看会获得什么数据。 socat TCP-LISTEN:12345 - 场景三 我是黑客，我想在目标机上弄一个shell代理 socat TCP-LISTEN:12345 EXEC:/bin/bash 场景四 本地有一个UNIX DOMAIN域套接字，我想把他转成TCP SOCKET供局域网内的机器使用，怎么办？ socat TCP-LISTEN:12345,reuseaddr,fork UNIX-CONNECT:/data/deCOREIDPS/unix.domain 当有多个tcp连上来那就fork一个去连域套接字 场景五 将本地的80端口转到远程去 socat TCP-LISTEN:80,fork TCP:www.baidu.com:80 参考 http://brieflyx.me/2015/linux-tools/socat-introduction/">
 <meta property='og:url' content='https://nansenli.com/zh-cn/post/jianshu/%E7%BD%91%E7%BB%9C/socat%E5%91%BD%E4%BB%A4%E5%AD%A6%E4%B9%A0/'>
-<meta property='og:site_name' content='Nansen Li'>
+<meta property='og:site_name' content='Nansen Li&#39;s Blog
+李楠森的博客
+'>
 <meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2018-05-23T09:04:00&#43;00:00'/><meta property='article:modified_time' content='2018-05-23T09:04:00&#43;00:00'/>
 <meta name="twitter:title" content="socat命令学习">
 <meta name="twitter:description" content="前言 socat是强大易用的工具，可以实现任意socket的转换。 使用 socat [options] &lt;address&gt; &lt;address&gt; options可以查看help。 address有一下几种形式： - STDIN STDOUT ：表示标准输入输出，可以就用一个横杠代替 /var/log/syslog : 也可以是任意路径，如果是相对路径要使用./，打开一个文件作为数据流。 TCP:127.0.0.1:1080 : 建立一个TCP连接作为数据流，TCP也可以替换为UDP TCP-LISTEN:12345 : 建立TCP监听端口，TCP也可以替换为UDP EXEC:/bin/bash : 执行一个程序作为数据流。 场景一 本地有个文件，我想显示在终端中 socat - /etc/sysctl.conf 场景二 有个TCP连接会连上来，我想看看会获得什么数据。 socat TCP-LISTEN:12345 - 场景三 我是黑客，我想在目标机上弄一个shell代理 socat TCP-LISTEN:12345 EXEC:/bin/bash 场景四 本地有一个UNIX DOMAIN域套接字，我想把他转成TCP SOCKET供局域网内的机器使用，怎么办？ socat TCP-LISTEN:12345,reuseaddr,fork UNIX-CONNECT:/data/deCOREIDPS/unix.domain 当有多个tcp连上来那就fork一个去连域套接字 场景五 将本地的80端口转到远程去 socat TCP-LISTEN:80,fork TCP:www.baidu.com:80 参考 http://brieflyx.me/2015/linux-tools/socat-introduction/">
@@ -91,7 +93,9 @@
         
         
         <div class="site-meta">
-            <h1 class="site-name"><a href="/zh-cn">Nansen Li</a></h1>
+            <h1 class="site-name"><a href="/zh-cn">Nansen Li&#39;s Blog
+李楠森的博客
+</a></h1>
             <h2 class="site-description"></h2>
         </div>
     </header><ol class="menu-social">

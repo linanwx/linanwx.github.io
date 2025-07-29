@@ -6,10 +6,12 @@
 
 <link rel='canonical' href='https://nansenli.com/zh-cn/post/jianshu/%E5%B5%8C%E5%85%A5%E5%BC%8F/libcurl%E4%BA%A4%E5%8F%89%E7%BC%96%E8%AF%91arm%E7%89%88%E6%9C%AC%E5%8A%A8%E6%80%81%E5%BA%93/'>
 
-<link rel="stylesheet" href="/scss/style.min.1084ac713783b88e0bd9807a58068e10aae22e99420f94a9234654a4e199baa4.css"><meta property='og:title' content="libcurl交叉编译arm版本动态库">
+<link rel="stylesheet" href="/scss/style.min.b9b97e7c3f7f078f7ec4f60195f6139d30ad5972cc05950321ee04a9e98c542f.css"><meta property='og:title' content="libcurl交叉编译arm版本动态库">
 <meta property='og:description' content="前言 最近由于项目需要要进行交叉编译libcurl以完成https通信。这里记录一下过程。 首先下载最新版本的源码文件，并解压，如下： 我用的deepin自带交叉编译工具链，sudo apt install gcc-5-arm-linux-gnueabihf安装就可以了。 arm-linux内容 在openssl目录下运行以下命令： source ../arm-linux ./Configure --prefix=$(pwd)/../output shared no-asm linux-armv4 make -j4 make install 首先导入环境变量。然后进行编译，输出路径在output下面。 然后在libcurl 下运行以下命令 source ../arm-linux ./configure --with-ssl=$(pwd)/../output --prefix=$PWD/../output --build=x86_64-pc-linux-gnu --host=arm-linux-gnueabihf CC=arm-linux-gnueabihf-gcc-5 --without-zlib curl配置结果一览 curl version: 7.58.0 Host setup: x86_64-pc-linux-gnu Install prefix: /media/linan/72605383-b1ba-4c79-90fd-443514396fbc/curl_workdir/curl-7.58.0/output Compiler: arm-linux-gnueabihf-gcc-5 SSL support: enabled (OpenSSL) SSH support: no (--with-libssh2) zlib support: no (--with-zlib) brotli support: no (--with-brotli) GSS-API support: no (--with-gssapi) TLS-SRP support: enabled resolver: POSIX threaded IPv6 support: enabled Unix sockets support: enabled IDN support: no (--with-{libidn2,winidn}) Build libcurl: Shared=yes, Static=yes Built-in manual: enabled --libcurl option: enabled (--disable-libcurl-option) Verbose errors: enabled (--disable-verbose) SSPI support: no (--enable-sspi) ca cert bundle: no ca cert path: no ca fallback: no LDAP support: no (--enable-ldap / --with-ldap-lib / --with-lber-lib) LDAPS support: no (--enable-ldaps) RTSP support: enabled RTMP support: no (--with-librtmp) metalink support: no (--with-libmetalink) PSL support: no (libpsl not found) HTTP2 support: disabled (--with-nghttp2) Protocols: DICT FILE FTP FTPS GOPHER HTTP HTTPS IMAP IMAPS POP3 POP3S RTSP SMB SMBS SMTP SMTPS TELNET TFTP 然后在运行make 以及make install，在curl目录下就会出现output目录。">
 <meta property='og:url' content='https://nansenli.com/zh-cn/post/jianshu/%E5%B5%8C%E5%85%A5%E5%BC%8F/libcurl%E4%BA%A4%E5%8F%89%E7%BC%96%E8%AF%91arm%E7%89%88%E6%9C%AC%E5%8A%A8%E6%80%81%E5%BA%93/'>
-<meta property='og:site_name' content='Nansen Li'>
+<meta property='og:site_name' content='Nansen Li&#39;s Blog
+李楠森的博客
+'>
 <meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2018-01-30T10:53:00&#43;00:00'/><meta property='article:modified_time' content='2018-01-30T10:53:00&#43;00:00'/>
 <meta name="twitter:title" content="libcurl交叉编译arm版本动态库">
 <meta name="twitter:description" content="前言 最近由于项目需要要进行交叉编译libcurl以完成https通信。这里记录一下过程。 首先下载最新版本的源码文件，并解压，如下： 我用的deepin自带交叉编译工具链，sudo apt install gcc-5-arm-linux-gnueabihf安装就可以了。 arm-linux内容 在openssl目录下运行以下命令： source ../arm-linux ./Configure --prefix=$(pwd)/../output shared no-asm linux-armv4 make -j4 make install 首先导入环境变量。然后进行编译，输出路径在output下面。 然后在libcurl 下运行以下命令 source ../arm-linux ./configure --with-ssl=$(pwd)/../output --prefix=$PWD/../output --build=x86_64-pc-linux-gnu --host=arm-linux-gnueabihf CC=arm-linux-gnueabihf-gcc-5 --without-zlib curl配置结果一览 curl version: 7.58.0 Host setup: x86_64-pc-linux-gnu Install prefix: /media/linan/72605383-b1ba-4c79-90fd-443514396fbc/curl_workdir/curl-7.58.0/output Compiler: arm-linux-gnueabihf-gcc-5 SSL support: enabled (OpenSSL) SSH support: no (--with-libssh2) zlib support: no (--with-zlib) brotli support: no (--with-brotli) GSS-API support: no (--with-gssapi) TLS-SRP support: enabled resolver: POSIX threaded IPv6 support: enabled Unix sockets support: enabled IDN support: no (--with-{libidn2,winidn}) Build libcurl: Shared=yes, Static=yes Built-in manual: enabled --libcurl option: enabled (--disable-libcurl-option) Verbose errors: enabled (--disable-verbose) SSPI support: no (--enable-sspi) ca cert bundle: no ca cert path: no ca fallback: no LDAP support: no (--enable-ldap / --with-ldap-lib / --with-lber-lib) LDAPS support: no (--enable-ldaps) RTSP support: enabled RTMP support: no (--with-librtmp) metalink support: no (--with-libmetalink) PSL support: no (libpsl not found) HTTP2 support: disabled (--with-nghttp2) Protocols: DICT FILE FTP FTPS GOPHER HTTP HTTPS IMAP IMAPS POP3 POP3S RTSP SMB SMBS SMTP SMTPS TELNET TFTP 然后在运行make 以及make install，在curl目录下就会出现output目录。">
@@ -91,7 +93,9 @@
         
         
         <div class="site-meta">
-            <h1 class="site-name"><a href="/zh-cn">Nansen Li</a></h1>
+            <h1 class="site-name"><a href="/zh-cn">Nansen Li&#39;s Blog
+李楠森的博客
+</a></h1>
             <h2 class="site-description"></h2>
         </div>
     </header><ol class="menu-social">

@@ -6,10 +6,12 @@
 
 <link rel='canonical' href='https://nansenli.com/zh-cn/post/jianshu/%E9%9A%8F%E7%AC%94/c&#43;&#43;-%E6%99%BA%E8%83%BD%E6%8C%87%E9%92%88%E5%AD%A6%E4%B9%A0/'>
 
-<link rel="stylesheet" href="/scss/style.min.1084ac713783b88e0bd9807a58068e10aae22e99420f94a9234654a4e199baa4.css"><meta property='og:title' content="C智能指针学习">
+<link rel="stylesheet" href="/scss/style.min.b9b97e7c3f7f078f7ec4f60195f6139d30ad5972cc05950321ee04a9e98c542f.css"><meta property='og:title' content="C智能指针学习">
 <meta property='og:description' content="前言 智能指针似乎越来越广泛的使用了。有必要好好记住。 shared_ptr shared_ptr允许多个指针指向同一个对象，unique_ptr则独占所指的对象。 例子 #include &lt;memory&gt; #include &lt;thread&gt; class A { char * str; public: A(){ str = new char[20]; printf(&#34;构造\\n&#34;); } ~A() { printf(&#34;析构\\n&#34;); delete [] str; } }; std::shared_ptr&lt;A&gt; xixi; void test() { std::shared_ptr&lt;A&gt; shared_a = std::make_shared&lt;A&gt;(); xixi = shared_a; printf(&#34;%d\\n&#34;, xixi.use_count()); } int main() { test(); std::this_thread::sleep_for(std::chrono::seconds(1)); } 上面这个例子中，xixi是全局智能指针，会在程序结束时才会释放自己所指向的对象，如果去掉了xixi=shared_a，则在main函数延迟之前就会看到析构。 unique_ptr unique_ptr独占对象，只能在不同的unique_ptr中移动（std::move）。没有make_unique语句。只能在构造函数中传入对象的指针来构造unique_ptr。 unique_ptr使用场景 1、为动态申请的资源提供异常安全保证 我们先来看看下面这一段代码： void Func() { int *p = new int(5); // ...（可能会抛出异常） delete p; } 这是我们传统的写法：当我们动态申请内存后，有可能我们接下来的代码由于抛出异常或者提前退出（if语句）而没有执行delete操作。">
 <meta property='og:url' content='https://nansenli.com/zh-cn/post/jianshu/%E9%9A%8F%E7%AC%94/c&#43;&#43;-%E6%99%BA%E8%83%BD%E6%8C%87%E9%92%88%E5%AD%A6%E4%B9%A0/'>
-<meta property='og:site_name' content='Nansen Li'>
+<meta property='og:site_name' content='Nansen Li&#39;s Blog
+李楠森的博客
+'>
 <meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2018-02-03T09:30:00&#43;00:00'/><meta property='article:modified_time' content='2018-02-03T09:30:00&#43;00:00'/>
 <meta name="twitter:title" content="C智能指针学习">
 <meta name="twitter:description" content="前言 智能指针似乎越来越广泛的使用了。有必要好好记住。 shared_ptr shared_ptr允许多个指针指向同一个对象，unique_ptr则独占所指的对象。 例子 #include &lt;memory&gt; #include &lt;thread&gt; class A { char * str; public: A(){ str = new char[20]; printf(&#34;构造\\n&#34;); } ~A() { printf(&#34;析构\\n&#34;); delete [] str; } }; std::shared_ptr&lt;A&gt; xixi; void test() { std::shared_ptr&lt;A&gt; shared_a = std::make_shared&lt;A&gt;(); xixi = shared_a; printf(&#34;%d\\n&#34;, xixi.use_count()); } int main() { test(); std::this_thread::sleep_for(std::chrono::seconds(1)); } 上面这个例子中，xixi是全局智能指针，会在程序结束时才会释放自己所指向的对象，如果去掉了xixi=shared_a，则在main函数延迟之前就会看到析构。 unique_ptr unique_ptr独占对象，只能在不同的unique_ptr中移动（std::move）。没有make_unique语句。只能在构造函数中传入对象的指针来构造unique_ptr。 unique_ptr使用场景 1、为动态申请的资源提供异常安全保证 我们先来看看下面这一段代码： void Func() { int *p = new int(5); // ...（可能会抛出异常） delete p; } 这是我们传统的写法：当我们动态申请内存后，有可能我们接下来的代码由于抛出异常或者提前退出（if语句）而没有执行delete操作。">
@@ -91,7 +93,9 @@
         
         
         <div class="site-meta">
-            <h1 class="site-name"><a href="/zh-cn">Nansen Li</a></h1>
+            <h1 class="site-name"><a href="/zh-cn">Nansen Li&#39;s Blog
+李楠森的博客
+</a></h1>
             <h2 class="site-description"></h2>
         </div>
     </header><ol class="menu-social">
