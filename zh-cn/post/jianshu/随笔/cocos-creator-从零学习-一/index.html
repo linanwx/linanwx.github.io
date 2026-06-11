@@ -1,483 +1,40 @@
-<!DOCTYPE html>
-<html lang="zh-cn" dir="ltr">
-    <head><meta charset='utf-8'>
-<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="前言 尽管知乎上对Cocos2dx成见很大，但是徘徊于纠结用什么游戏引擎不如都试试。况且这个软件是国人开发的，学习起来应该不算困难。 虽然没有学过JavaScript，但是似乎也可以边查边写吧。JavaScript的教程： http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000 Cocos creator目前版本为1.5.1，官网有一份很详细的手册，网址为 http://www.cocos.com/docs/creator/ 。这篇文章是该快速上手这一章的精简版，并且对游戏性进行了提升。 安装 windows下面的安装是没有任何问题的。mac下的安装，需要注意一下。 在官网下载安装包之后，拖动到applications中之后，打开会提示该应用是未被信任的开发者。此时，打开系统偏好设置中的安全性与隐私中的通用，会看到打开的按钮，通过此方式打开之后，不再进行提醒了。 快速开始 从dashboard开始新建项目，或者打开项目。根据教程中关于快速上手的部分，我们从这个地址可以下载到一个初始工程项目 下载初始项目 。 或者点击这里下载 https://github.com/cocos-creator/tutorial-first-game/releases/download/v1.2/start_project.zip 这个快速上手最终做出的游戏效果是这样的： http://fbdemos.avosapps.com/star-catcher/ 。 这个游戏有点类似于接金币这样的游戏，但是更加困难，游戏的学习曲线非常的大，由于这个小怪物的水平加速度难以驾驭以及上下蹦跳的关系，几乎很难已去接到五角星，而且也没有什么剧情。我们最好把他改的好玩一点吧。 打开这个项目，我们先学习一下界面。左下角是资源面板，在初始项目中，已经建立了一个工程目录，这里有最基本的资源，已经目录组织。assets的意思是资产，在这个总目录下面，有三个子目录，包含有字体，音频，与图片资源。 创建场景 场景是至关重要的，因为场景包含了游戏脚本，而场景在游戏开始的时候会自动加载。在资源面板中的assets下点击加号创建一个场景，重命名为game，双击打开。 左上角的层级管理器显示的是当前的场景中节点之间的关系。 在这个game场景中，只有一个根节点canvas（画布），现在这个节点上是空的，意味着什么都不会加载。 点击根结点在右侧数据面板中，我们可以设置根节点的分辨率。分辨率的高度设置为自适应，总为960x640，和iPhone第一代长宽比一致，推测这个分辨率应该是dp而不是pixel吧。 场景图像 将资源background拖拽到canvas上，使得background成为canvas的一个子节点，注意不要将background变成另一个根节点。 使用cmd+s来保存刚刚的变动。 选中场景中的background图片，然后，在左上角找到变换工具的第四个按钮，分别是平移，旋转，缩放，矩形变换。选中矩形变换，将background变换为一个能覆盖场景的大小，如下图所示。 上述步骤也可以直接对background的属性进行设置，设置位置为0，0，宽高为1600和800就行。 用同样的方法添加地面。 用同样的方法插入小怪物，并且重命名为player。图片的默认锚点为中心位置，这里将锚点anchor的y设置为0。 创建脚步 接下来出现了惊人的一幕，教程居然说不会编程也没关系，你可以交给你的程序员小伙伴来解决，果然是我现在只差一个程序员了。 在下图中资源的player的位置建立一个js脚本文件，并打开。 在properties中插入以下内容，这部分是小怪物的物理属性 jumpHeight:0, jumpDuration:0, maxMoveSpeed:0, accel:0, 选中小怪物图片，在属性框中找到添加组件，把player脚本添加到player图片上，并且设置好相关参数。 完善脚本 我们在脚本中继续加入其他功能。首先是跳跃的动作。 在properties下面加入这一段 setJumpAction: function(){ var jumpUp = cc.moveBy(this.jumpDuration, cc.p(0,this.jumpHeight)).easing(cc.easeQuadraticActionOut()); var jumpDown = cc.moveBy(this.jumpDuration, cc.p(0,-this.jumpHeight)).easing(cc.easeQuadraticActionIn()); return cc.repeatForever(cc.sequence(jumpUp, jumpDown)); }, moveBy是官方的API，在官方API中查询一下该API的使用，第一个参数是移动的距离，第二个参数是移动的位置。很显然是向上移动了一段距离。后面的easing是生成缓动运动，生成的对象是easeQuadraticActionIn和Out，这两个是二次曲线。原来的教程中是三次曲线，这个和真实世界中的物理运动差的太多了。 在onload方法中加入下面这段代码，启动动画。 onLoad: function () { this.jumpAction = this.">
-<title>Cocos Creator 从零学习 一</title>
-
-<link rel='canonical' href='https://nansenli.com/zh-cn/post/jianshu/%E9%9A%8F%E7%AC%94/cocos-creator-%E4%BB%8E%E9%9B%B6%E5%AD%A6%E4%B9%A0-%E4%B8%80/'>
-
-<link rel="stylesheet" href="/scss/style.min.b9b97e7c3f7f078f7ec4f60195f6139d30ad5972cc05950321ee04a9e98c542f.css"><meta property='og:title' content="Cocos Creator 从零学习 一">
-<meta property='og:description' content="前言 尽管知乎上对Cocos2dx成见很大，但是徘徊于纠结用什么游戏引擎不如都试试。况且这个软件是国人开发的，学习起来应该不算困难。 虽然没有学过JavaScript，但是似乎也可以边查边写吧。JavaScript的教程： http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000 Cocos creator目前版本为1.5.1，官网有一份很详细的手册，网址为 http://www.cocos.com/docs/creator/ 。这篇文章是该快速上手这一章的精简版，并且对游戏性进行了提升。 安装 windows下面的安装是没有任何问题的。mac下的安装，需要注意一下。 在官网下载安装包之后，拖动到applications中之后，打开会提示该应用是未被信任的开发者。此时，打开系统偏好设置中的安全性与隐私中的通用，会看到打开的按钮，通过此方式打开之后，不再进行提醒了。 快速开始 从dashboard开始新建项目，或者打开项目。根据教程中关于快速上手的部分，我们从这个地址可以下载到一个初始工程项目 下载初始项目 。 或者点击这里下载 https://github.com/cocos-creator/tutorial-first-game/releases/download/v1.2/start_project.zip 这个快速上手最终做出的游戏效果是这样的： http://fbdemos.avosapps.com/star-catcher/ 。 这个游戏有点类似于接金币这样的游戏，但是更加困难，游戏的学习曲线非常的大，由于这个小怪物的水平加速度难以驾驭以及上下蹦跳的关系，几乎很难已去接到五角星，而且也没有什么剧情。我们最好把他改的好玩一点吧。 打开这个项目，我们先学习一下界面。左下角是资源面板，在初始项目中，已经建立了一个工程目录，这里有最基本的资源，已经目录组织。assets的意思是资产，在这个总目录下面，有三个子目录，包含有字体，音频，与图片资源。 创建场景 场景是至关重要的，因为场景包含了游戏脚本，而场景在游戏开始的时候会自动加载。在资源面板中的assets下点击加号创建一个场景，重命名为game，双击打开。 左上角的层级管理器显示的是当前的场景中节点之间的关系。 在这个game场景中，只有一个根节点canvas（画布），现在这个节点上是空的，意味着什么都不会加载。 点击根结点在右侧数据面板中，我们可以设置根节点的分辨率。分辨率的高度设置为自适应，总为960x640，和iPhone第一代长宽比一致，推测这个分辨率应该是dp而不是pixel吧。 场景图像 将资源background拖拽到canvas上，使得background成为canvas的一个子节点，注意不要将background变成另一个根节点。 使用cmd+s来保存刚刚的变动。 选中场景中的background图片，然后，在左上角找到变换工具的第四个按钮，分别是平移，旋转，缩放，矩形变换。选中矩形变换，将background变换为一个能覆盖场景的大小，如下图所示。 上述步骤也可以直接对background的属性进行设置，设置位置为0，0，宽高为1600和800就行。 用同样的方法添加地面。 用同样的方法插入小怪物，并且重命名为player。图片的默认锚点为中心位置，这里将锚点anchor的y设置为0。 创建脚步 接下来出现了惊人的一幕，教程居然说不会编程也没关系，你可以交给你的程序员小伙伴来解决，果然是我现在只差一个程序员了。 在下图中资源的player的位置建立一个js脚本文件，并打开。 在properties中插入以下内容，这部分是小怪物的物理属性 jumpHeight:0, jumpDuration:0, maxMoveSpeed:0, accel:0, 选中小怪物图片，在属性框中找到添加组件，把player脚本添加到player图片上，并且设置好相关参数。 完善脚本 我们在脚本中继续加入其他功能。首先是跳跃的动作。 在properties下面加入这一段 setJumpAction: function(){ var jumpUp = cc.moveBy(this.jumpDuration, cc.p(0,this.jumpHeight)).easing(cc.easeQuadraticActionOut()); var jumpDown = cc.moveBy(this.jumpDuration, cc.p(0,-this.jumpHeight)).easing(cc.easeQuadraticActionIn()); return cc.repeatForever(cc.sequence(jumpUp, jumpDown)); }, moveBy是官方的API，在官方API中查询一下该API的使用，第一个参数是移动的距离，第二个参数是移动的位置。很显然是向上移动了一段距离。后面的easing是生成缓动运动，生成的对象是easeQuadraticActionIn和Out，这两个是二次曲线。原来的教程中是三次曲线，这个和真实世界中的物理运动差的太多了。 在onload方法中加入下面这段代码，启动动画。 onLoad: function () { this.jumpAction = this.">
-<meta property='og:url' content='https://nansenli.com/zh-cn/post/jianshu/%E9%9A%8F%E7%AC%94/cocos-creator-%E4%BB%8E%E9%9B%B6%E5%AD%A6%E4%B9%A0-%E4%B8%80/'>
-<meta property='og:site_name' content='Nansen Li&#39;s Blog
+<!doctype html><html lang=zh-cn dir=ltr><head><meta charset=utf-8><meta name=viewport content='width=device-width,initial-scale=1'><meta name=description content="前言 尽管知乎上对Cocos2dx成见很大，但是徘徊于纠结用什么游戏引擎不如都试试。况且这个软件是国人开发的，学习起来应该不算困难。 虽然没有学过JavaScript，但是似乎也可以边查边写吧。JavaScript的教程： http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000 Cocos creator目前版本为1.5.1，官网有一份很详细的手册，网址为 http://www.cocos.com/docs/creator/ 。这篇文章是该快速上手这一章的精简版，并且对游戏性进行了提升。 安装 windows下面的安装是没有任何问题的。mac下的安装，需要注意一下。 在官网下载安装包之后，拖动到applications中之后，打开会提示该应用是未被信任的开发者。此时，打开系统偏好设置中的安全性与隐私中的通用，会看到打开的按钮，通过此方式打开之后，不再进行提醒了。 快速开始 从dashboard开始新建项目，或者打开项目。根据教程中关于快速上手的部分，我们从这个地址可以下载到一个初始工程项目 下载初始项目 。 或者点击这里下载 https://github.com/cocos-creator/tutorial-first-game/releases/download/v1.2/start_project.zip 这个快速上手最终做出的游戏效果是这样的： http://fbdemos.avosapps.com/star-catcher/ 。 这个游戏有点类似于接金币这样的游戏，但是更加困难，游戏的学习曲线非常的大，由于这个小怪物的水平加速度难以驾驭以及上下蹦跳的关系，几乎很难已去接到五角星，而且也没有什么剧情。我们最好把他改的好玩一点吧。 打开这个项目，我们先学习一下界面。左下角是资源面板，在初始项目中，已经建立了一个工程目录，这里有最基本的资源，已经目录组织。assets的意思是资产，在这个总目录下面，有三个子目录，包含有字体，音频，与图片资源。 创建场景 场景是至关重要的，因为场景包含了游戏脚本，而场景在游戏开始的时候会自动加载。在资源面板中的assets下点击加号创建一个场景，重命名为game，双击打开。 左上角的层级管理器显示的是当前的场景中节点之间的关系。 在这个game场景中，只有一个根节点canvas（画布），现在这个节点上是空的，意味着什么都不会加载。 点击根结点在右侧数据面板中，我们可以设置根节点的分辨率。分辨率的高度设置为自适应，总为960x640，和iPhone第一代长宽比一致，推测这个分辨率应该是dp而不是pixel吧。 场景图像 将资源background拖拽到canvas上，使得background成为canvas的一个子节点，注意不要将background变成另一个根节点。 使用cmd+s来保存刚刚的变动。 选中场景中的background图片，然后，在左上角找到变换工具的第四个按钮，分别是平移，旋转，缩放，矩形变换。选中矩形变换，将background变换为一个能覆盖场景的大小，如下图所示。 上述步骤也可以直接对background的属性进行设置，设置位置为0，0，宽高为1600和800就行。 用同样的方法添加地面。 用同样的方法插入小怪物，并且重命名为player。图片的默认锚点为中心位置，这里将锚点anchor的y设置为0。 创建脚步 接下来出现了惊人的一幕，教程居然说不会编程也没关系，你可以交给你的程序员小伙伴来解决，果然是我现在只差一个程序员了。 在下图中资源的player的位置建立一个js脚本文件，并打开。 在properties中插入以下内容，这部分是小怪物的物理属性 jumpHeight:0, jumpDuration:0, maxMoveSpeed:0, accel:0, 选中小怪物图片，在属性框中找到添加组件，把player脚本添加到player图片上，并且设置好相关参数。 完善脚本 我们在脚本中继续加入其他功能。首先是跳跃的动作。 在properties下面加入这一段 setJumpAction: function(){ var jumpUp = cc.moveBy(this.jumpDuration, cc.p(0,this.jumpHeight)).easing(cc.easeQuadraticActionOut()); var jumpDown = cc.moveBy(this.jumpDuration, cc.p(0,-this.jumpHeight)).easing(cc.easeQuadraticActionIn()); return cc.repeatForever(cc.sequence(jumpUp, jumpDown)); }, moveBy是官方的API，在官方API中查询一下该API的使用，第一个参数是移动的距离，第二个参数是移动的位置。很显然是向上移动了一段距离。后面的easing是生成缓动运动，生成的对象是easeQuadraticActionIn和Out，这两个是二次曲线。原来的教程中是三次曲线，这个和真实世界中的物理运动差的太多了。 在onload方法中加入下面这段代码，启动动画。 onLoad: function () { this.jumpAction = this."><title>Cocos Creator 从零学习 一</title>
+<link rel=canonical href=https://nansenli.com/zh-cn/post/jianshu/%E9%9A%8F%E7%AC%94/cocos-creator-%E4%BB%8E%E9%9B%B6%E5%AD%A6%E4%B9%A0-%E4%B8%80/><link rel=stylesheet href=/scss/style.min.b9b97e7c3f7f078f7ec4f60195f6139d30ad5972cc05950321ee04a9e98c542f.css><meta property='og:title' content="Cocos Creator 从零学习 一"><meta property='og:description' content="前言 尽管知乎上对Cocos2dx成见很大，但是徘徊于纠结用什么游戏引擎不如都试试。况且这个软件是国人开发的，学习起来应该不算困难。 虽然没有学过JavaScript，但是似乎也可以边查边写吧。JavaScript的教程： http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000 Cocos creator目前版本为1.5.1，官网有一份很详细的手册，网址为 http://www.cocos.com/docs/creator/ 。这篇文章是该快速上手这一章的精简版，并且对游戏性进行了提升。 安装 windows下面的安装是没有任何问题的。mac下的安装，需要注意一下。 在官网下载安装包之后，拖动到applications中之后，打开会提示该应用是未被信任的开发者。此时，打开系统偏好设置中的安全性与隐私中的通用，会看到打开的按钮，通过此方式打开之后，不再进行提醒了。 快速开始 从dashboard开始新建项目，或者打开项目。根据教程中关于快速上手的部分，我们从这个地址可以下载到一个初始工程项目 下载初始项目 。 或者点击这里下载 https://github.com/cocos-creator/tutorial-first-game/releases/download/v1.2/start_project.zip 这个快速上手最终做出的游戏效果是这样的： http://fbdemos.avosapps.com/star-catcher/ 。 这个游戏有点类似于接金币这样的游戏，但是更加困难，游戏的学习曲线非常的大，由于这个小怪物的水平加速度难以驾驭以及上下蹦跳的关系，几乎很难已去接到五角星，而且也没有什么剧情。我们最好把他改的好玩一点吧。 打开这个项目，我们先学习一下界面。左下角是资源面板，在初始项目中，已经建立了一个工程目录，这里有最基本的资源，已经目录组织。assets的意思是资产，在这个总目录下面，有三个子目录，包含有字体，音频，与图片资源。 创建场景 场景是至关重要的，因为场景包含了游戏脚本，而场景在游戏开始的时候会自动加载。在资源面板中的assets下点击加号创建一个场景，重命名为game，双击打开。 左上角的层级管理器显示的是当前的场景中节点之间的关系。 在这个game场景中，只有一个根节点canvas（画布），现在这个节点上是空的，意味着什么都不会加载。 点击根结点在右侧数据面板中，我们可以设置根节点的分辨率。分辨率的高度设置为自适应，总为960x640，和iPhone第一代长宽比一致，推测这个分辨率应该是dp而不是pixel吧。 场景图像 将资源background拖拽到canvas上，使得background成为canvas的一个子节点，注意不要将background变成另一个根节点。 使用cmd+s来保存刚刚的变动。 选中场景中的background图片，然后，在左上角找到变换工具的第四个按钮，分别是平移，旋转，缩放，矩形变换。选中矩形变换，将background变换为一个能覆盖场景的大小，如下图所示。 上述步骤也可以直接对background的属性进行设置，设置位置为0，0，宽高为1600和800就行。 用同样的方法添加地面。 用同样的方法插入小怪物，并且重命名为player。图片的默认锚点为中心位置，这里将锚点anchor的y设置为0。 创建脚步 接下来出现了惊人的一幕，教程居然说不会编程也没关系，你可以交给你的程序员小伙伴来解决，果然是我现在只差一个程序员了。 在下图中资源的player的位置建立一个js脚本文件，并打开。 在properties中插入以下内容，这部分是小怪物的物理属性 jumpHeight:0, jumpDuration:0, maxMoveSpeed:0, accel:0, 选中小怪物图片，在属性框中找到添加组件，把player脚本添加到player图片上，并且设置好相关参数。 完善脚本 我们在脚本中继续加入其他功能。首先是跳跃的动作。 在properties下面加入这一段 setJumpAction: function(){ var jumpUp = cc.moveBy(this.jumpDuration, cc.p(0,this.jumpHeight)).easing(cc.easeQuadraticActionOut()); var jumpDown = cc.moveBy(this.jumpDuration, cc.p(0,-this.jumpHeight)).easing(cc.easeQuadraticActionIn()); return cc.repeatForever(cc.sequence(jumpUp, jumpDown)); }, moveBy是官方的API，在官方API中查询一下该API的使用，第一个参数是移动的距离，第二个参数是移动的位置。很显然是向上移动了一段距离。后面的easing是生成缓动运动，生成的对象是easeQuadraticActionIn和Out，这两个是二次曲线。原来的教程中是三次曲线，这个和真实世界中的物理运动差的太多了。 在onload方法中加入下面这段代码，启动动画。 onLoad: function () { this.jumpAction = this."><meta property='og:url' content='https://nansenli.com/zh-cn/post/jianshu/%E9%9A%8F%E7%AC%94/cocos-creator-%E4%BB%8E%E9%9B%B6%E5%AD%A6%E4%B9%A0-%E4%B8%80/'><meta property='og:site_name' content="Nansen Li's Blog
 李楠森的博客
-'>
-<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2017-06-27T09:31:00&#43;00:00'/><meta property='article:modified_time' content='2017-06-27T09:31:00&#43;00:00'/>
-<meta name="twitter:title" content="Cocos Creator 从零学习 一">
-<meta name="twitter:description" content="前言 尽管知乎上对Cocos2dx成见很大，但是徘徊于纠结用什么游戏引擎不如都试试。况且这个软件是国人开发的，学习起来应该不算困难。 虽然没有学过JavaScript，但是似乎也可以边查边写吧。JavaScript的教程： http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000 Cocos creator目前版本为1.5.1，官网有一份很详细的手册，网址为 http://www.cocos.com/docs/creator/ 。这篇文章是该快速上手这一章的精简版，并且对游戏性进行了提升。 安装 windows下面的安装是没有任何问题的。mac下的安装，需要注意一下。 在官网下载安装包之后，拖动到applications中之后，打开会提示该应用是未被信任的开发者。此时，打开系统偏好设置中的安全性与隐私中的通用，会看到打开的按钮，通过此方式打开之后，不再进行提醒了。 快速开始 从dashboard开始新建项目，或者打开项目。根据教程中关于快速上手的部分，我们从这个地址可以下载到一个初始工程项目 下载初始项目 。 或者点击这里下载 https://github.com/cocos-creator/tutorial-first-game/releases/download/v1.2/start_project.zip 这个快速上手最终做出的游戏效果是这样的： http://fbdemos.avosapps.com/star-catcher/ 。 这个游戏有点类似于接金币这样的游戏，但是更加困难，游戏的学习曲线非常的大，由于这个小怪物的水平加速度难以驾驭以及上下蹦跳的关系，几乎很难已去接到五角星，而且也没有什么剧情。我们最好把他改的好玩一点吧。 打开这个项目，我们先学习一下界面。左下角是资源面板，在初始项目中，已经建立了一个工程目录，这里有最基本的资源，已经目录组织。assets的意思是资产，在这个总目录下面，有三个子目录，包含有字体，音频，与图片资源。 创建场景 场景是至关重要的，因为场景包含了游戏脚本，而场景在游戏开始的时候会自动加载。在资源面板中的assets下点击加号创建一个场景，重命名为game，双击打开。 左上角的层级管理器显示的是当前的场景中节点之间的关系。 在这个game场景中，只有一个根节点canvas（画布），现在这个节点上是空的，意味着什么都不会加载。 点击根结点在右侧数据面板中，我们可以设置根节点的分辨率。分辨率的高度设置为自适应，总为960x640，和iPhone第一代长宽比一致，推测这个分辨率应该是dp而不是pixel吧。 场景图像 将资源background拖拽到canvas上，使得background成为canvas的一个子节点，注意不要将background变成另一个根节点。 使用cmd+s来保存刚刚的变动。 选中场景中的background图片，然后，在左上角找到变换工具的第四个按钮，分别是平移，旋转，缩放，矩形变换。选中矩形变换，将background变换为一个能覆盖场景的大小，如下图所示。 上述步骤也可以直接对background的属性进行设置，设置位置为0，0，宽高为1600和800就行。 用同样的方法添加地面。 用同样的方法插入小怪物，并且重命名为player。图片的默认锚点为中心位置，这里将锚点anchor的y设置为0。 创建脚步 接下来出现了惊人的一幕，教程居然说不会编程也没关系，你可以交给你的程序员小伙伴来解决，果然是我现在只差一个程序员了。 在下图中资源的player的位置建立一个js脚本文件，并打开。 在properties中插入以下内容，这部分是小怪物的物理属性 jumpHeight:0, jumpDuration:0, maxMoveSpeed:0, accel:0, 选中小怪物图片，在属性框中找到添加组件，把player脚本添加到player图片上，并且设置好相关参数。 完善脚本 我们在脚本中继续加入其他功能。首先是跳跃的动作。 在properties下面加入这一段 setJumpAction: function(){ var jumpUp = cc.moveBy(this.jumpDuration, cc.p(0,this.jumpHeight)).easing(cc.easeQuadraticActionOut()); var jumpDown = cc.moveBy(this.jumpDuration, cc.p(0,-this.jumpHeight)).easing(cc.easeQuadraticActionIn()); return cc.repeatForever(cc.sequence(jumpUp, jumpDown)); }, moveBy是官方的API，在官方API中查询一下该API的使用，第一个参数是移动的距离，第二个参数是移动的位置。很显然是向上移动了一段距离。后面的easing是生成缓动运动，生成的对象是easeQuadraticActionIn和Out，这两个是二次曲线。原来的教程中是三次曲线，这个和真实世界中的物理运动差的太多了。 在onload方法中加入下面这段代码，启动动画。 onLoad: function () { this.jumpAction = this.">
-    <link rel="shortcut icon" href="/favicon.ico" />
-
-  
-    
-      <script async src="https://www.googletagmanager.com/gtag/js?id=G-WC38C3XE3J"></script>
-      <script>
-        var doNotTrack = false;
-        if ( false ) {
-          var dnt = (navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack);
-          var doNotTrack = (dnt == "1" || dnt == "yes");
-        }
-        if (!doNotTrack) {
-          window.dataLayer = window.dataLayer || [];
-          function gtag(){dataLayer.push(arguments);}
-          gtag('js', new Date());
-          gtag('config', 'G-WC38C3XE3J');
-        }
-      </script>
-    
-  
-
-
-    </head>
-    <body class="
-    article-page
-    ">
-    <script>
-        (function() {
-            const colorSchemeKey = 'StackColorScheme';
-            if(!localStorage.getItem(colorSchemeKey)){
-                localStorage.setItem(colorSchemeKey, "auto");
-            }
-        })();
-    </script><script>
-    (function() {
-        const colorSchemeKey = 'StackColorScheme';
-        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
-        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
-
-        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
-            
-
-            document.documentElement.dataset.scheme = 'dark';
-        } else {
-            document.documentElement.dataset.scheme = 'light';
-        }
-    })();
-</script>
-<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
-    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="切换菜单">
-        <span class="hamburger-box">
-            <span class="hamburger-inner"></span>
-        </span>
-    </button>
-
-    <header>
-        
-            
-            <figure class="site-avatar">
-                <a href="/zh-cn/">
-                
-                    
-                    
-                    
-                        
-                        <img src="/img/avatar_hu96777ff80939aaa7d938dddcc232fcc6_1414962_300x0_resize_box_3.png" width="300"
-                            height="300" class="site-logo" loading="lazy" alt="Avatar">
-                    
-                
-                </a>
-                
-                    <span class="emoji">🌈</span>
-                
-            </figure>
-            
-        
-        
-        <div class="site-meta">
-            <h1 class="site-name"><a href="/zh-cn">Nansen Li&#39;s Blog
-李楠森的博客
-</a></h1>
-            <h2 class="site-description"></h2>
-        </div>
-    </header><ol class="menu-social">
-            
-                <li>
-                    <a 
-                        href='https://github.com/linanwx'
-                        target="_blank"
-                        title="GitHub"
-                        rel="me"
-                    >
-                        
-                        
-                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
-</svg>
-
-
-
-                        
-                    </a>
-                </li>
-            
-                <li>
-                    <a 
-                        href='https://www.linkedin.com/in/nansen-li-3bb0a3146/'
-                        target="_blank"
-                        title="LinkedIn"
-                        rel="me"
-                    >
-                        
-                        
-                            <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-brand-linkedin"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M8 11v5" /><path d="M8 8v.01" /><path d="M12 16v-5" /><path d="M16 16v-3a2 2 0 1 0 -4 0" /><path d="M3 7a4 4 0 0 1 4 -4h10a4 4 0 0 1 4 4v10a4 4 0 0 1 -4 4h-10a4 4 0 0 1 -4 -4z" /></svg>
-                        
-                    </a>
-                </li>
-            
-                <li>
-                    <a 
-                        href='index.xml'
-                        target="_blank"
-                        title="RSS"
-                        rel="me"
-                    >
-                        
-                        
-                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-rss" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-  <path stroke="none" d="M0 0h24v24H0z"/>
-  <circle cx="5" cy="19" r="1" />
-  <path d="M4 4a16 16 0 0 1 16 16" />
-  <path d="M4 11a9 9 0 0 1 9 9" />
-</svg>
-
-
-
-                        
-                    </a>
-                </li>
-            
-        </ol><ol class="menu" id="main-menu">
-        
-        
-        
-        <li >
-            <a href='/zh-cn/' >
-                
-                
-                
-                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-  <path stroke="none" d="M0 0h24v24H0z"/>
-  <polyline points="5 12 3 12 12 3 21 12 19 12" />
-  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
-  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
-</svg>
-
-
-
-                
-                <span>主页</span>
-            </a>
-        </li>
-        
-        
-        <li >
-            <a href='/zh-cn/page/archives/' >
-                
-                
-                
-                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-  <path stroke="none" d="M0 0h24v24H0z"/>
-  <rect x="3" y="4" width="18" height="4" rx="2" />
-  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
-  <line x1="10" y1="12" x2="14" y2="12" />
-</svg>
-
-
-
-                
-                <span>归档</span>
-            </a>
-        </li>
-        
-        
-        <li >
-            <a href='/zh-cn/page/search/' >
-                
-                
-                
-                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-  <path stroke="none" d="M0 0h24v24H0z"/>
-  <circle cx="10" cy="10" r="7" />
-  <line x1="21" y1="21" x2="15" y2="15" />
-</svg>
-
-
-
-                
-                <span>搜索</span>
-            </a>
-        </li>
-        
-        <li class="menu-bottom-section">
-            <ol class="menu">
-                    
-                        <li id="i18n-switch">  
-                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-language" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-  <path d="M4 5h7" />
-  <path d="M9 3v2c0 4.418 -2.239 8 -5 8" />
-  <path d="M5 9c-.003 2.144 2.952 3.908 6.7 4" />
-  <path d="M12 20l4 -9l4 9" />
-  <path d="M19.1 18h-6.2" />
-</svg>
-
-
-
-                            <select name="language" title="language" onchange="window.location.href = this.selectedOptions[0].value">
-                                
-                                    <option value="https://nansenli.com/" >English</option>
-                                
-                                    <option value="https://nansenli.com/zh-cn/" selected>中文</option>
-                                
-                            </select>
-                        </li>
-                    
-                
-
-                
-                    <li id="dark-mode-toggle">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-  <path stroke="none" d="M0 0h24v24H0z"/>
-  <circle cx="8" cy="12" r="2" />
-  <rect x="2" y="6" width="20" height="12" rx="6" />
-</svg>
-
-
-
-                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-  <path stroke="none" d="M0 0h24v24H0z"/>
-  <circle cx="16" cy="12" r="2" />
-  <rect x="2" y="6" width="20" height="12" rx="6" />
-</svg>
-
-
-
-                        <span>暗色模式</span>
-                    </li>
-                
-            </ol>
-        </li>
-    </ol>
-</aside>
-
-    
-
-            <main class="main full-width">
-    <article class="main-article">
-    <header class="article-header">
-
-    <div class="article-details">
-    
-    <header class="article-category">
-        
-            <a href="/zh-cn/categories/%E9%9A%8F%E7%AC%94/" >
-                随笔
-            </a>
-        
-    </header>
-    
-
-    <div class="article-title-wrapper">
-        <h2 class="article-title">
-            <a href="/zh-cn/post/jianshu/%E9%9A%8F%E7%AC%94/cocos-creator-%E4%BB%8E%E9%9B%B6%E5%AD%A6%E4%B9%A0-%E4%B8%80/">Cocos Creator 从零学习 一</a>
-        </h2>
-    
-        
-    </div>
-
-    
-    
-    
-    
-    <footer class="article-time">
-        
-            <div>
-                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-  <path stroke="none" d="M0 0h24v24H0z"/>
-  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
-  <circle cx="18" cy="18" r="4" />
-  <path d="M15 3v4" />
-  <path d="M7 3v4" />
-  <path d="M3 11h16" />
-  <path d="M18 16.496v1.504l1 1" />
-</svg>
-                <time class="article-time--published">Jun 27, 2017</time>
-            </div>
-        
-
-        
-            <div>
-                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-  <path stroke="none" d="M0 0h24v24H0z"/>
-  <circle cx="12" cy="12" r="9" />
-  <polyline points="12 7 12 12 15 15" />
-</svg>
-
-
-
-                <time class="article-time--reading">
-                    阅读时长: 3 分钟
-                </time>
-            </div>
-        
-    </footer>
-    
-
-    
-        <footer class="article-translations">
-            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-language" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-  <path d="M4 5h7" />
-  <path d="M9 3v2c0 4.418 -2.239 8 -5 8" />
-  <path d="M5 9c-.003 2.144 2.952 3.908 6.7 4" />
-  <path d="M12 20l4 -9l4 9" />
-  <path d="M19.1 18h-6.2" />
-</svg>
-
-
-
-            <div>
-                
-                    <a href="https://nansenli.com/post/jianshu/%E9%9A%8F%E7%AC%94/cocos-creator-%E4%BB%8E%E9%9B%B6%E5%AD%A6%E4%B9%A0-%E4%B8%80/" class="link">English</a>
-                
-            </div>
-        </footer>
-    
-</div>
-
-</header>
-
-    <section class="article-content">
-    
-    
-    <h2 id="前言">前言
-</h2><p>尽管知乎上对Cocos2dx成见很大，但是徘徊于纠结用什么游戏引擎不如都试试。况且这个软件是国人开发的，学习起来应该不算困难。</p>
-<p>虽然没有学过JavaScript，但是似乎也可以边查边写吧。JavaScript的教程： <a class="link" href="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000"  target="_blank" rel="noopener"
-    >http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000</a></p>
-<p>Cocos creator目前版本为1.5.1，官网有一份很详细的手册，网址为 <a class="link" href="http://www.cocos.com/docs/creator/"  target="_blank" rel="noopener"
-    >http://www.cocos.com/docs/creator/</a> 。这篇文章是该快速上手这一章的精简版，并且对游戏性进行了提升。</p>
-<p><img src="/img/rescued/62b797900564.png"
-	
-	
-	
-	loading="lazy"
-	
-		alt="知乎网友表情.png"
-	
-	
-></p>
-<h2 id="安装">安装
-</h2><p>windows下面的安装是没有任何问题的。mac下的安装，需要注意一下。
-在官网下载安装包之后，拖动到applications中之后，打开会提示该应用是未被信任的开发者。此时，打开系统偏好设置中的安全性与隐私中的通用，会看到打开的按钮，通过此方式打开之后，不再进行提醒了。</p>
-<h2 id="快速开始">快速开始
-</h2><p><img src="/img/rescued/9e8dbbc03ce7.png"
-	
-	
-	
-	loading="lazy"
-	
-		alt="dashboard"
-	
-	
-></p>
-<p>从dashboard开始新建项目，或者打开项目。根据教程中关于快速上手的部分，我们从这个地址可以下载到一个初始工程项目 <a class="link" href="https://github.com/cocos-creator/tutorial-first-game/releases/download/v1.2/start_project.zip"  target="_blank" rel="noopener"
-    >下载初始项目</a> 。
-或者点击这里下载 <a class="link" href="https://github.com/cocos-creator/tutorial-first-game/releases/download/v1.2/start_project.zip"  target="_blank" rel="noopener"
-    >https://github.com/cocos-creator/tutorial-first-game/releases/download/v1.2/start_project.zip</a></p>
-<p>这个快速上手最终做出的游戏效果是这样的： <a class="link" href="http://fbdemos.avosapps.com/star-catcher/"  target="_blank" rel="noopener"
-    >http://fbdemos.avosapps.com/star-catcher/</a> 。
-这个游戏有点类似于接金币这样的游戏，但是更加困难，游戏的学习曲线非常的大，由于这个小怪物的水平加速度难以驾驭以及上下蹦跳的关系，几乎很难已去接到五角星，而且也没有什么剧情。我们最好把他改的好玩一点吧。</p>
-<p>打开这个项目，我们先学习一下界面。左下角是资源面板，在初始项目中，已经建立了一个工程目录，这里有最基本的资源，已经目录组织。assets的意思是资产，在这个总目录下面，有三个子目录，包含有字体，音频，与图片资源。</p>
-<h2 id="创建场景">创建场景
-</h2><p>场景是至关重要的，因为场景包含了游戏脚本，而场景在游戏开始的时候会自动加载。在资源面板中的assets下点击加号创建一个场景，重命名为game，双击打开。</p>
-<p><img src="/img/rescued/a862f7b07015.png"
-	
-	
-	
-	loading="lazy"
-	
-		alt="屏幕快照 2017-06-20 上午11.01.53.png"
-	
-	
-></p>
-<p>左上角的层级管理器显示的是当前的场景中节点之间的关系。
-在这个game场景中，只有一个根节点canvas（画布），现在这个节点上是空的，意味着什么都不会加载。</p>
-<p>点击根结点在右侧数据面板中，我们可以设置根节点的分辨率。分辨率的高度设置为自适应，总为960x640，和iPhone第一代长宽比一致，推测这个分辨率应该是dp而不是pixel吧。</p>
-<h2 id="场景图像">场景图像
-</h2><p>将资源background拖拽到canvas上，使得background成为canvas的一个子节点，注意不要将background变成另一个根节点。
+"><meta property='og:type' content='article'><meta property='article:section' content='Post'><meta property='article:published_time' content='2017-06-27T09:31:00+00:00'><meta property='article:modified_time' content='2017-06-27T09:31:00+00:00'><meta name=twitter:title content="Cocos Creator 从零学习 一"><meta name=twitter:description content="前言 尽管知乎上对Cocos2dx成见很大，但是徘徊于纠结用什么游戏引擎不如都试试。况且这个软件是国人开发的，学习起来应该不算困难。 虽然没有学过JavaScript，但是似乎也可以边查边写吧。JavaScript的教程： http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000 Cocos creator目前版本为1.5.1，官网有一份很详细的手册，网址为 http://www.cocos.com/docs/creator/ 。这篇文章是该快速上手这一章的精简版，并且对游戏性进行了提升。 安装 windows下面的安装是没有任何问题的。mac下的安装，需要注意一下。 在官网下载安装包之后，拖动到applications中之后，打开会提示该应用是未被信任的开发者。此时，打开系统偏好设置中的安全性与隐私中的通用，会看到打开的按钮，通过此方式打开之后，不再进行提醒了。 快速开始 从dashboard开始新建项目，或者打开项目。根据教程中关于快速上手的部分，我们从这个地址可以下载到一个初始工程项目 下载初始项目 。 或者点击这里下载 https://github.com/cocos-creator/tutorial-first-game/releases/download/v1.2/start_project.zip 这个快速上手最终做出的游戏效果是这样的： http://fbdemos.avosapps.com/star-catcher/ 。 这个游戏有点类似于接金币这样的游戏，但是更加困难，游戏的学习曲线非常的大，由于这个小怪物的水平加速度难以驾驭以及上下蹦跳的关系，几乎很难已去接到五角星，而且也没有什么剧情。我们最好把他改的好玩一点吧。 打开这个项目，我们先学习一下界面。左下角是资源面板，在初始项目中，已经建立了一个工程目录，这里有最基本的资源，已经目录组织。assets的意思是资产，在这个总目录下面，有三个子目录，包含有字体，音频，与图片资源。 创建场景 场景是至关重要的，因为场景包含了游戏脚本，而场景在游戏开始的时候会自动加载。在资源面板中的assets下点击加号创建一个场景，重命名为game，双击打开。 左上角的层级管理器显示的是当前的场景中节点之间的关系。 在这个game场景中，只有一个根节点canvas（画布），现在这个节点上是空的，意味着什么都不会加载。 点击根结点在右侧数据面板中，我们可以设置根节点的分辨率。分辨率的高度设置为自适应，总为960x640，和iPhone第一代长宽比一致，推测这个分辨率应该是dp而不是pixel吧。 场景图像 将资源background拖拽到canvas上，使得background成为canvas的一个子节点，注意不要将background变成另一个根节点。 使用cmd+s来保存刚刚的变动。 选中场景中的background图片，然后，在左上角找到变换工具的第四个按钮，分别是平移，旋转，缩放，矩形变换。选中矩形变换，将background变换为一个能覆盖场景的大小，如下图所示。 上述步骤也可以直接对background的属性进行设置，设置位置为0，0，宽高为1600和800就行。 用同样的方法添加地面。 用同样的方法插入小怪物，并且重命名为player。图片的默认锚点为中心位置，这里将锚点anchor的y设置为0。 创建脚步 接下来出现了惊人的一幕，教程居然说不会编程也没关系，你可以交给你的程序员小伙伴来解决，果然是我现在只差一个程序员了。 在下图中资源的player的位置建立一个js脚本文件，并打开。 在properties中插入以下内容，这部分是小怪物的物理属性 jumpHeight:0, jumpDuration:0, maxMoveSpeed:0, accel:0, 选中小怪物图片，在属性框中找到添加组件，把player脚本添加到player图片上，并且设置好相关参数。 完善脚本 我们在脚本中继续加入其他功能。首先是跳跃的动作。 在properties下面加入这一段 setJumpAction: function(){ var jumpUp = cc.moveBy(this.jumpDuration, cc.p(0,this.jumpHeight)).easing(cc.easeQuadraticActionOut()); var jumpDown = cc.moveBy(this.jumpDuration, cc.p(0,-this.jumpHeight)).easing(cc.easeQuadraticActionIn()); return cc.repeatForever(cc.sequence(jumpUp, jumpDown)); }, moveBy是官方的API，在官方API中查询一下该API的使用，第一个参数是移动的距离，第二个参数是移动的位置。很显然是向上移动了一段距离。后面的easing是生成缓动运动，生成的对象是easeQuadraticActionIn和Out，这两个是二次曲线。原来的教程中是三次曲线，这个和真实世界中的物理运动差的太多了。 在onload方法中加入下面这段代码，启动动画。 onLoad: function () { this.jumpAction = this."><link rel="shortcut icon" href=/favicon.ico><script async src="https://www.googletagmanager.com/gtag/js?id=G-WC38C3XE3J"></script><script>var dnt,doNotTrack=!1;if(!1&&(dnt=navigator.doNotTrack||window.doNotTrack||navigator.msDoNotTrack,doNotTrack=dnt=="1"||dnt=="yes"),!doNotTrack){window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag("js",new Date),gtag("config","G-WC38C3XE3J")}</script></head><body class=article-page><script>(function(){const e="StackColorScheme";localStorage.getItem(e)||localStorage.setItem(e,"auto")})()</script><script>(function(){const t="StackColorScheme",e=localStorage.getItem(t),n=window.matchMedia("(prefers-color-scheme: dark)").matches===!0;e=="dark"||e==="auto"&&n?document.documentElement.dataset.scheme="dark":document.documentElement.dataset.scheme="light"})()</script><div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky"><button class="hamburger hamburger--spin" type=button id=toggle-menu aria-label=切换菜单>
+<span class=hamburger-box><span class=hamburger-inner></span></span></button><header><figure class=site-avatar><a href=/zh-cn/><img src=/img/avatar_hu96777ff80939aaa7d938dddcc232fcc6_1414962_300x0_resize_box_3.png width=300 height=300 class=site-logo loading=lazy alt=Avatar>
+</a><span class=emoji>🌈</span></figure><div class=site-meta><h1 class=site-name><a href=/zh-cn>Nansen Li's Blog
+李楠森的博客</a></h1><h2 class=site-description></h2></div></header><ol class=menu-social><li><a href=https://github.com/linanwx target=_blank title=GitHub rel=me><svg class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 19c-4.3 1.4-4.3-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6.0 00-1.3-3.2 4.2 4.2.0 00-.1-3.2s-1.1-.3-3.5 1.3a12.3 12.3.0 00-6.2.0C6.5 2.8 5.4 3.1 5.4 3.1a4.2 4.2.0 00-.1 3.2A4.6 4.6.0 004 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"/></svg></a></li><li><a href=https://www.linkedin.com/in/nansen-li-3bb0a3146/ target=_blank title=LinkedIn rel=me><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-brand-linkedin"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M8 11v5"/><path d="M8 8v.01"/><path d="M12 16v-5"/><path d="M16 16v-3a2 2 0 10-4 0"/><path d="M3 7a4 4 0 014-4h10a4 4 0 014 4v10a4 4 0 01-4 4H7a4 4 0 01-4-4z"/></svg></a></li><li><a href=index.xml target=_blank title=RSS rel=me><svg class="icon icon-tabler icon-tabler-rss" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="5" cy="19" r="1"/><path d="M4 4a16 16 0 0116 16"/><path d="M4 11a9 9 0 019 9"/></svg></a></li></ol><ol class=menu id=main-menu><li><a href=/zh-cn/><svg class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><polyline points="5 12 3 12 12 3 21 12 19 12"/><path d="M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/><path d="M9 21v-6a2 2 0 012-2h2a2 2 0 012 2v6"/></svg>
+<span>主页</span></a></li><li><a href=/zh-cn/page/archives/><svg class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><rect x="3" y="4" width="18" height="4" rx="2"/><path d="M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8"/><line x1="10" y1="12" x2="14" y2="12"/></svg>
+<span>归档</span></a></li><li><a href=/zh-cn/page/search/><svg class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="10" cy="10" r="7"/><line x1="21" y1="21" x2="15" y2="15"/></svg>
+<span>搜索</span></a></li><li class=menu-bottom-section><ol class=menu><li id=i18n-switch><svg class="icon icon-tabler icon-tabler-language" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 5h7"/><path d="M9 3v2c0 4.418-2.239 8-5 8"/><path d="M5 9c-.003 2.144 2.952 3.908 6.7 4"/><path d="M12 20l4-9 4 9"/><path d="M19.1 18h-6.2"/></svg>
+<select name=language title=language onchange="window.location.href=this.selectedOptions[0].value"><option value=https://nansenli.com/>English</option><option value=https://nansenli.com/zh-cn/ selected>中文</option></select></li><li id=dark-mode-toggle><svg class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="8" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
+<svg class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="16" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
+<span>暗色模式</span></li></ol></li></ol></aside><main class="main full-width"><article class=main-article><header class=article-header><div class=article-details><header class=article-category><a href=/zh-cn/categories/%E9%9A%8F%E7%AC%94/>随笔</a></header><div class=article-title-wrapper><h2 class=article-title><a href=/zh-cn/post/jianshu/%E9%9A%8F%E7%AC%94/cocos-creator-%E4%BB%8E%E9%9B%B6%E5%AD%A6%E4%B9%A0-%E4%B8%80/>Cocos Creator 从零学习 一</a></h2></div><footer class=article-time><div><svg class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M11.795 21H5a2 2 0 01-2-2V7a2 2 0 012-2h12a2 2 0 012 2v4"/><circle cx="18" cy="18" r="4"/><path d="M15 3v4"/><path d="M7 3v4"/><path d="M3 11h16"/><path d="M18 16.496V18l1 1"/></svg>
+<time class=article-time--published>Jun 27, 2017</time></div><div><svg class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg>
+<time class=article-time--reading>阅读时长: 3 分钟</time></div></footer><footer class=article-translations><svg class="icon icon-tabler icon-tabler-language" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 5h7"/><path d="M9 3v2c0 4.418-2.239 8-5 8"/><path d="M5 9c-.003 2.144 2.952 3.908 6.7 4"/><path d="M12 20l4-9 4 9"/><path d="M19.1 18h-6.2"/></svg><div><a href=https://nansenli.com/post/jianshu/%E9%9A%8F%E7%AC%94/cocos-creator-%E4%BB%8E%E9%9B%B6%E5%AD%A6%E4%B9%A0-%E4%B8%80/ class=link>English</a></div></footer></div></header><section class=article-content><h2 id=前言>前言</h2><p>尽管知乎上对Cocos2dx成见很大，但是徘徊于纠结用什么游戏引擎不如都试试。况且这个软件是国人开发的，学习起来应该不算困难。</p><p>虽然没有学过JavaScript，但是似乎也可以边查边写吧。JavaScript的教程： <a class=link href=http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000 target=_blank rel=noopener>http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000</a></p><p>Cocos creator目前版本为1.5.1，官网有一份很详细的手册，网址为 <a class=link href=http://www.cocos.com/docs/creator/ target=_blank rel=noopener>http://www.cocos.com/docs/creator/</a> 。这篇文章是该快速上手这一章的精简版，并且对游戏性进行了提升。</p><p><img src=/img/rescued/62b797900564.png loading=lazy alt=知乎网友表情.png></p><h2 id=安装>安装</h2><p>windows下面的安装是没有任何问题的。mac下的安装，需要注意一下。
+在官网下载安装包之后，拖动到applications中之后，打开会提示该应用是未被信任的开发者。此时，打开系统偏好设置中的安全性与隐私中的通用，会看到打开的按钮，通过此方式打开之后，不再进行提醒了。</p><h2 id=快速开始>快速开始</h2><p><img src=/img/rescued/9e8dbbc03ce7.png loading=lazy alt=dashboard></p><p>从dashboard开始新建项目，或者打开项目。根据教程中关于快速上手的部分，我们从这个地址可以下载到一个初始工程项目 <a class=link href=https://github.com/cocos-creator/tutorial-first-game/releases/download/v1.2/start_project.zip target=_blank rel=noopener>下载初始项目</a> 。
+或者点击这里下载 <a class=link href=https://github.com/cocos-creator/tutorial-first-game/releases/download/v1.2/start_project.zip target=_blank rel=noopener>https://github.com/cocos-creator/tutorial-first-game/releases/download/v1.2/start_project.zip</a></p><p>这个快速上手最终做出的游戏效果是这样的： <a class=link href=http://fbdemos.avosapps.com/star-catcher/ target=_blank rel=noopener>http://fbdemos.avosapps.com/star-catcher/</a> 。
+这个游戏有点类似于接金币这样的游戏，但是更加困难，游戏的学习曲线非常的大，由于这个小怪物的水平加速度难以驾驭以及上下蹦跳的关系，几乎很难已去接到五角星，而且也没有什么剧情。我们最好把他改的好玩一点吧。</p><p>打开这个项目，我们先学习一下界面。左下角是资源面板，在初始项目中，已经建立了一个工程目录，这里有最基本的资源，已经目录组织。assets的意思是资产，在这个总目录下面，有三个子目录，包含有字体，音频，与图片资源。</p><h2 id=创建场景>创建场景</h2><p>场景是至关重要的，因为场景包含了游戏脚本，而场景在游戏开始的时候会自动加载。在资源面板中的assets下点击加号创建一个场景，重命名为game，双击打开。</p><p><img src=/img/rescued/a862f7b07015.png loading=lazy alt="屏幕快照 2017-06-20 上午11.01.53.png"></p><p>左上角的层级管理器显示的是当前的场景中节点之间的关系。
+在这个game场景中，只有一个根节点canvas（画布），现在这个节点上是空的，意味着什么都不会加载。</p><p>点击根结点在右侧数据面板中，我们可以设置根节点的分辨率。分辨率的高度设置为自适应，总为960x640，和iPhone第一代长宽比一致，推测这个分辨率应该是dp而不是pixel吧。</p><h2 id=场景图像>场景图像</h2><p>将资源background拖拽到canvas上，使得background成为canvas的一个子节点，注意不要将background变成另一个根节点。
 使用cmd+s来保存刚刚的变动。
-选中场景中的background图片，然后，在左上角找到变换工具的第四个按钮，分别是平移，旋转，缩放，矩形变换。选中矩形变换，将background变换为一个能覆盖场景的大小，如下图所示。</p>
-<p><img src="/img/rescued/6b7b8f0da17f.png"
-	
-	
-	
-	loading="lazy"
-	
-		alt="场景图像"
-	
-	
-></p>
-<p>上述步骤也可以直接对background的属性进行设置，设置位置为0，0，宽高为1600和800就行。</p>
-<p>用同样的方法添加地面。
-用同样的方法插入小怪物，并且重命名为player。图片的默认锚点为中心位置，这里将锚点anchor的y设置为0。</p>
-<h2 id="创建脚步">创建脚步
-</h2><p>接下来出现了惊人的一幕，教程居然说不会编程也没关系，<strong>你可以交给你的程序员小伙伴来解决</strong>，果然是我现在只差一个程序员了。</p>
-<p>在下图中资源的player的位置建立一个js脚本文件，并打开。
-<img src="/img/rescued/f7c5d8668523.png"
-	
-	
-	
-	loading="lazy"
-	
-		alt="脚本"
-	
-	
-></p>
-<p>在properties中插入以下内容，这部分是小怪物的物理属性</p>
-<pre tabindex="0"><code>        jumpHeight:0,
+选中场景中的background图片，然后，在左上角找到变换工具的第四个按钮，分别是平移，旋转，缩放，矩形变换。选中矩形变换，将background变换为一个能覆盖场景的大小，如下图所示。</p><p><img src=/img/rescued/6b7b8f0da17f.png loading=lazy alt=场景图像></p><p>上述步骤也可以直接对background的属性进行设置，设置位置为0，0，宽高为1600和800就行。</p><p>用同样的方法添加地面。
+用同样的方法插入小怪物，并且重命名为player。图片的默认锚点为中心位置，这里将锚点anchor的y设置为0。</p><h2 id=创建脚步>创建脚步</h2><p>接下来出现了惊人的一幕，教程居然说不会编程也没关系，<strong>你可以交给你的程序员小伙伴来解决</strong>，果然是我现在只差一个程序员了。</p><p>在下图中资源的player的位置建立一个js脚本文件，并打开。
+<img src=/img/rescued/f7c5d8668523.png loading=lazy alt=脚本></p><p>在properties中插入以下内容，这部分是小怪物的物理属性</p><pre tabindex=0><code>        jumpHeight:0,
         jumpDuration:0,
         maxMoveSpeed:0,
         accel:0,
-</code></pre><p>选中小怪物图片，在属性框中找到添加组件，把player脚本添加到player图片上，并且设置好相关参数。</p>
-<p><img src="/img/rescued/83e4e58a11e8.png"
-	
-	
-	
-	loading="lazy"
-	
-		alt="参数设置"
-	
-	
-></p>
-<h2 id="完善脚本">完善脚本
-</h2><p>我们在脚本中继续加入其他功能。首先是跳跃的动作。</p>
-<p>在properties下面加入这一段</p>
-<pre tabindex="0"><code>    setJumpAction: function(){
+</code></pre><p>选中小怪物图片，在属性框中找到添加组件，把player脚本添加到player图片上，并且设置好相关参数。</p><p><img src=/img/rescued/83e4e58a11e8.png loading=lazy alt=参数设置></p><h2 id=完善脚本>完善脚本</h2><p>我们在脚本中继续加入其他功能。首先是跳跃的动作。</p><p>在properties下面加入这一段</p><pre tabindex=0><code>    setJumpAction: function(){
         var jumpUp = cc.moveBy(this.jumpDuration, cc.p(0,this.jumpHeight)).easing(cc.easeQuadraticActionOut());
         var jumpDown = cc.moveBy(this.jumpDuration, cc.p(0,-this.jumpHeight)).easing(cc.easeQuadraticActionIn());
         return cc.repeatForever(cc.sequence(jumpUp, jumpDown));
     },
-</code></pre><p>moveBy是官方的API，在官方API中查询一下该API的使用，第一个参数是移动的距离，第二个参数是移动的位置。很显然是向上移动了一段距离。后面的easing是生成缓动运动，生成的对象是easeQuadraticActionIn和Out，这两个是二次曲线。原来的教程中是三次曲线，这个和真实世界中的物理运动差的太多了。</p>
-<p>在onload方法中加入下面这段代码，启动动画。</p>
-<pre tabindex="0"><code>    onLoad: function () {
+</code></pre><p>moveBy是官方的API，在官方API中查询一下该API的使用，第一个参数是移动的距离，第二个参数是移动的位置。很显然是向上移动了一段距离。后面的easing是生成缓动运动，生成的对象是easeQuadraticActionIn和Out，这两个是二次曲线。原来的教程中是三次曲线，这个和真实世界中的物理运动差的太多了。</p><p>在onload方法中加入下面这段代码，启动动画。</p><pre tabindex=0><code>    onLoad: function () {
         this.jumpAction = this.setJumpAction();
         this.node.runAction(this.jumpAction);
     },
-</code></pre><p>现在点击播放按钮刻可以查看初始的效果。</p>
-<h2 id="控制角色">控制角色
-</h2><p>为主角加上移动的控制。
-在setJumpAction下面继续添加方法。</p>
-<pre tabindex="0"><code>    setInputControl: function(){
+</code></pre><p>现在点击播放按钮刻可以查看初始的效果。</p><h2 id=控制角色>控制角色</h2><p>为主角加上移动的控制。
+在setJumpAction下面继续添加方法。</p><pre tabindex=0><code>    setInputControl: function(){
         var self = this;
         cc.eventManager.addListener({
             event: cc.EventListener.KEYBOARD,
@@ -504,8 +61,7 @@
             }
         }, self.node)
     },
-</code></pre><p>更新onload和update代码</p>
-<pre tabindex="0"><code>    onLoad: function () {
+</code></pre><p>更新onload和update代码</p><pre tabindex=0><code>    onLoad: function () {
         this.jumpAction = this.setJumpAction();
         this.node.runAction(this.jumpAction);
         
@@ -536,10 +92,7 @@
         
         this.node.x += this.xSpeed * dt;
     },
-</code></pre><p>第一个代码添加了个监听器，按键变动的时候改变accLeft和accRight的值。启动时打开监听，然后，在每一帧需要更新的时候，计算怪物的位置。</p>
-<h2 id="增加五角星">增加五角星
-</h2><p>添加Game脚本到assets/scripts文件夹下，双击打开脚本，加入以下代码</p>
-<pre tabindex="0"><code>cc.Class({
+</code></pre><p>第一个代码添加了个监听器，按键变动的时候改变accLeft和accRight的值。启动时打开监听，然后，在每一帧需要更新的时候，计算怪物的位置。</p><h2 id=增加五角星>增加五角星</h2><p>添加Game脚本到assets/scripts文件夹下，双击打开脚本，加入以下代码</p><pre tabindex=0><code>cc.Class({
     extends: cc.Component,
 
     properties: {
@@ -608,8 +161,7 @@
     // },
 });
 </code></pre><p>从 资源管理器 中拖拽 assets/textures/star 资源到场景中，添加名叫 Star 的JavaScript脚本到assets/scripts/中，并关联脚本。
-打开star脚本，添加如下代码</p>
-<pre tabindex="0"><code>cc.Class({
+打开star脚本，添加如下代码</p><pre tabindex=0><code>cc.Class({
     extends: cc.Component,
 
     properties: {
@@ -667,196 +219,11 @@
 </code></pre><p>现在在star的属性中设置pickRadius为60。
 从层级管理器中将star节点拖拽到资源管理器中的assets文件夹下，就生成了名叫star的 Prefab 资源。
 从场景中删除star节点。
-选中Canvas节点后，拖拽脚本到 属性检查器，从资源管理器中拖拽star Prefab 资源到Game组件的Star Prefab属性中，从层级编辑器中拖拽ground和Player 节点到组件中相同名字的属性上。</p>
-<p>接下来再加入计分机制，和上面的过程十分的类似，这里就略去不详细写了，此时，测试一下游戏的效果，已经可以看到游戏大致效果。</p>
-<p>如果你有任何问题，可以查看官方的上手的教程，也可以点击这里可以下载到此为止的工程：
-链接: <a class="link" href="https://pan.baidu.com/s/1dFw3VSP"  target="_blank" rel="noopener"
-    >https://pan.baidu.com/s/1dFw3VSP</a> 密码: 7vgu</p>
-<p>官方在接下来继续进行了游戏的完善，不过我不打算继续完善下去了，接下来将关注对触摸屏的支持</p>
-<p><img src="/img/rescued/9e062259e40a.png"
-	
-	
-	
-	loading="lazy"
-	
-		alt="效果"
-	
-	
-></p>
-
-</section>
-
-
-    <footer class="article-footer">
-    
-
-    </footer>
-
-
-    
-</article>
-
-    
-
-    
-
-     
-    
-        
-    <div class="disqus-container">
-    <div id="disqus_thread"></div>
-<script>
-    window.disqus_config = function () {
-    
-    
-    
-    };
-    (function() {
-        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
-            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
-            return;
-        }
-        var d = document, s = d.createElement('script'); s.async = true;
-        s.src = '//' + "nansenli" + '.disqus.com/embed.js';
-        s.setAttribute('data-timestamp', +new Date());
-        (d.head || d.body).appendChild(s);
-    })();
-</script>
-<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
-</div>
-
-<style>
-    .disqus-container {
-        background-color: var(--card-background);
-        border-radius: var(--card-border-radius);
-        box-shadow: var(--shadow-l1);
-        padding: var(--card-padding);
-    }
-</style>
-
-<script>
-    window.addEventListener('onColorSchemeChange', (e) => {
-        if (typeof DISQUS == 'object') {
-            DISQUS.reset({
-                reload: true
-            });
-        }
-    })
-</script>
-
-    
-
-    <footer class="site-footer">
-    <section class="copyright">
-        &copy; 
-        
-        2026 Nansen Li 🌈 （李楠森）
-    </section>
-    
-    <section class="powerby">
-        使用 <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> 构建 <br />
-        主题 <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.31.0">Stack</a></b> 由 <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a> 设计
-    </section>
-</footer>
-
-
-    
-<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
-
-    
-    <div class="pswp__bg"></div>
-
-    
-    <div class="pswp__scroll-wrap">
-
-        
-        <div class="pswp__container">
-            <div class="pswp__item"></div>
-            <div class="pswp__item"></div>
-            <div class="pswp__item"></div>
-        </div>
-
-        
-        <div class="pswp__ui pswp__ui--hidden">
-
-            <div class="pswp__top-bar">
-
-                
-
-                <div class="pswp__counter"></div>
-
-                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
-
-                <button class="pswp__button pswp__button--share" title="Share"></button>
-
-                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
-
-                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
-
-                
-                
-                <div class="pswp__preloader">
-                    <div class="pswp__preloader__icn">
-                        <div class="pswp__preloader__cut">
-                            <div class="pswp__preloader__donut"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
-                <div class="pswp__share-tooltip"></div>
-            </div>
-
-            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
-            </button>
-
-            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
-            </button>
-
-            <div class="pswp__caption">
-                <div class="pswp__caption__center"></div>
-            </div>
-
-        </div>
-
-    </div>
-
-</div><script 
-                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
-                defer
-                >
-            </script><script 
-                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
-                defer
-                >
-            </script><link 
-                rel="stylesheet" 
-                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
-            ><link 
-                rel="stylesheet" 
-                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
-            >
-
-            </main>
-        </div>
-        <script 
-                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
-                
-                >
-            </script><script type="text/javascript" src="/ts/main.1e9a3bafd846ced4c345d084b355fb8c7bae75701c338f8a1f8a82c780137826.js" defer></script>
-<script>
-    (function () {
-        const customFont = document.createElement('link');
-        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
-
-        customFont.type = "text/css";
-        customFont.rel = "stylesheet";
-
-        document.head.appendChild(customFont);
-    }());
-</script>
-
-    </body>
-</html>
+选中Canvas节点后，拖拽脚本到 属性检查器，从资源管理器中拖拽star Prefab 资源到Game组件的Star Prefab属性中，从层级编辑器中拖拽ground和Player 节点到组件中相同名字的属性上。</p><p>接下来再加入计分机制，和上面的过程十分的类似，这里就略去不详细写了，此时，测试一下游戏的效果，已经可以看到游戏大致效果。</p><p>如果你有任何问题，可以查看官方的上手的教程，也可以点击这里可以下载到此为止的工程：
+链接: <a class=link href=https://pan.baidu.com/s/1dFw3VSP target=_blank rel=noopener>https://pan.baidu.com/s/1dFw3VSP</a> 密码: 7vgu</p><p>官方在接下来继续进行了游戏的完善，不过我不打算继续完善下去了，接下来将关注对触摸屏的支持</p><p><img src=/img/rescued/9e062259e40a.png loading=lazy alt=效果></p></section><footer class=article-footer></footer></article><div class=disqus-container><div id=disqus_thread></div><script>window.disqus_config=function(){},function(){if(["localhost","127.0.0.1"].indexOf(window.location.hostname)!=-1){document.getElementById("disqus_thread").innerHTML="Disqus comments not available by default when the website is previewed locally.";return}var t=document,e=t.createElement("script");e.async=!0,e.src="//nansenli.disqus.com/embed.js",e.setAttribute("data-timestamp",+new Date),(t.head||t.body).appendChild(e)}()</script><noscript>Please enable JavaScript to view the <a href=https://disqus.com/?ref_noscript>comments powered by Disqus.</a></noscript><a href=https://disqus.com class=dsq-brlink>comments powered by <span class=logo-disqus>Disqus</span></a></div><style>.disqus-container{background-color:var(--card-background);border-radius:var(--card-border-radius);box-shadow:var(--shadow-l1);padding:var(--card-padding)}</style><script>window.addEventListener("onColorSchemeChange",e=>{typeof DISQUS=="object"&&DISQUS.reset({reload:!0})})</script><footer class=site-footer><section class=copyright>&copy;
+2026 Nansen Li 🌈 （李楠森）</section><section class=powerby>使用 <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a> 构建<br>主题 <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.31.0>Stack</a></b> 由 <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a> 设计</section></footer><div class=pswp tabindex=-1 role=dialog aria-hidden=true><div class=pswp__bg></div><div class=pswp__scroll-wrap><div class=pswp__container><div class=pswp__item></div><div class=pswp__item></div><div class=pswp__item></div></div><div class="pswp__ui pswp__ui--hidden"><div class=pswp__top-bar><div class=pswp__counter></div><button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+<button class="pswp__button pswp__button--share" title=Share></button>
+<button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+<button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button><div class=pswp__preloader><div class=pswp__preloader__icn><div class=pswp__preloader__cut><div class=pswp__preloader__donut></div></div></div></div></div><div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap"><div class=pswp__share-tooltip></div></div><button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+</button>
+<button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button><div class=pswp__caption><div class=pswp__caption__center></div></div></div></div></div><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo=" crossorigin=anonymous defer></script><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU=" crossorigin=anonymous defer></script><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css crossorigin=anonymous><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css crossorigin=anonymous></main></div><script src=https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z+KMkF24hUW8WePSA9HM=" crossorigin=anonymous></script><script type=text/javascript src=/ts/main.1e9a3bafd846ced4c345d084b355fb8c7bae75701c338f8a1f8a82c780137826.js defer></script><script>(function(){const e=document.createElement("link");e.href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap",e.type="text/css",e.rel="stylesheet",document.head.appendChild(e)})()</script></body></html>

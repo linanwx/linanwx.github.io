@@ -1,678 +1,99 @@
-<!DOCTYPE html>
-<html lang="zh-cn" dir="ltr">
-    <head><meta charset='utf-8'>
-<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="今天开始了漫长的刷题流程。之前只是简单做了一些题目，保持手感，但今天开始，就要为面试正式准备了。 之前一直在思考一个问题：如何高效地刷 Leetcode。我认为，要高效地刷题，首先就得背题。书读百遍，其义自见，大语言模型经过大量训练，也锻炼出了写代码的能力。同样地，我相信 Leetcode 也一样，通过多次练习，答案自然会浮现，量变产生质变。 53. Maximum Subarray 解题思路可以使用 Kadane&rsquo;s Algorithm，代码如下： def maxSubArray(nums): max_current = max_global = nums[0] for num in nums[1:]: max_current = max(num, max_current + num) max_global = max(max_global, max_current) return max_global 这是一个典型的动态规划题目，上面的算法其实隐藏了动态规划的本质。 class Solution { public: int maxSubArray(vector&lt;int&gt;&amp; nums) { vector&lt;int&gt; dp(nums.size()); dp[0] = nums[0]; for (int i = 1; i &lt; nums.size(); i++) { dp[i] = max(dp[i - 1] + nums[i], nums[i]); } return *max_element(dp.begin(), dp.end()); } }; 这段代码更好地体现了动态规划的思想。">
-<title>Leetcode 背题</title>
-
-<link rel='canonical' href='https://nansenli.com/zh-cn/post/2024/10/leetcode241020/'>
-
-<link rel="stylesheet" href="/scss/style.min.b9b97e7c3f7f078f7ec4f60195f6139d30ad5972cc05950321ee04a9e98c542f.css"><meta property='og:title' content="Leetcode 背题">
-<meta property='og:description' content="今天开始了漫长的刷题流程。之前只是简单做了一些题目，保持手感，但今天开始，就要为面试正式准备了。 之前一直在思考一个问题：如何高效地刷 Leetcode。我认为，要高效地刷题，首先就得背题。书读百遍，其义自见，大语言模型经过大量训练，也锻炼出了写代码的能力。同样地，我相信 Leetcode 也一样，通过多次练习，答案自然会浮现，量变产生质变。 53. Maximum Subarray 解题思路可以使用 Kadane&rsquo;s Algorithm，代码如下： def maxSubArray(nums): max_current = max_global = nums[0] for num in nums[1:]: max_current = max(num, max_current + num) max_global = max(max_global, max_current) return max_global 这是一个典型的动态规划题目，上面的算法其实隐藏了动态规划的本质。 class Solution { public: int maxSubArray(vector&lt;int&gt;&amp; nums) { vector&lt;int&gt; dp(nums.size()); dp[0] = nums[0]; for (int i = 1; i &lt; nums.size(); i++) { dp[i] = max(dp[i - 1] + nums[i], nums[i]); } return *max_element(dp.begin(), dp.end()); } }; 这段代码更好地体现了动态规划的思想。">
-<meta property='og:url' content='https://nansenli.com/zh-cn/post/2024/10/leetcode241020/'>
-<meta property='og:site_name' content='Nansen Li&#39;s Blog
+<!doctype html><html lang=zh-cn dir=ltr><head><meta charset=utf-8><meta name=viewport content='width=device-width,initial-scale=1'><meta name=description content="今天开始了漫长的刷题流程。之前只是简单做了一些题目，保持手感，但今天开始，就要为面试正式准备了。 之前一直在思考一个问题：如何高效地刷 Leetcode。我认为，要高效地刷题，首先就得背题。书读百遍，其义自见，大语言模型经过大量训练，也锻炼出了写代码的能力。同样地，我相信 Leetcode 也一样，通过多次练习，答案自然会浮现，量变产生质变。 53. Maximum Subarray 解题思路可以使用 Kadane&rsquo;s Algorithm，代码如下： def maxSubArray(nums): max_current = max_global = nums[0] for num in nums[1:]: max_current = max(num, max_current + num) max_global = max(max_global, max_current) return max_global 这是一个典型的动态规划题目，上面的算法其实隐藏了动态规划的本质。 class Solution { public: int maxSubArray(vector<int>& nums) { vector<int> dp(nums.size()); dp[0] = nums[0]; for (int i = 1; i < nums.size(); i++) { dp[i] = max(dp[i - 1] + nums[i], nums[i]); } return *max_element(dp.begin(), dp.end()); } }; 这段代码更好地体现了动态规划的思想。"><title>Leetcode 背题</title>
+<link rel=canonical href=https://nansenli.com/zh-cn/post/2024/10/leetcode241020/><link rel=stylesheet href=/scss/style.min.b9b97e7c3f7f078f7ec4f60195f6139d30ad5972cc05950321ee04a9e98c542f.css><meta property='og:title' content="Leetcode 背题"><meta property='og:description' content="今天开始了漫长的刷题流程。之前只是简单做了一些题目，保持手感，但今天开始，就要为面试正式准备了。 之前一直在思考一个问题：如何高效地刷 Leetcode。我认为，要高效地刷题，首先就得背题。书读百遍，其义自见，大语言模型经过大量训练，也锻炼出了写代码的能力。同样地，我相信 Leetcode 也一样，通过多次练习，答案自然会浮现，量变产生质变。 53. Maximum Subarray 解题思路可以使用 Kadane&rsquo;s Algorithm，代码如下： def maxSubArray(nums): max_current = max_global = nums[0] for num in nums[1:]: max_current = max(num, max_current + num) max_global = max(max_global, max_current) return max_global 这是一个典型的动态规划题目，上面的算法其实隐藏了动态规划的本质。 class Solution { public: int maxSubArray(vector<int>& nums) { vector<int> dp(nums.size()); dp[0] = nums[0]; for (int i = 1; i < nums.size(); i++) { dp[i] = max(dp[i - 1] + nums[i], nums[i]); } return *max_element(dp.begin(), dp.end()); } }; 这段代码更好地体现了动态规划的思想。"><meta property='og:url' content='https://nansenli.com/zh-cn/post/2024/10/leetcode241020/'><meta property='og:site_name' content="Nansen Li's Blog
 李楠森的博客
-'>
-<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2024-10-21T19:39:36&#43;00:00'/><meta property='article:modified_time' content='2024-10-21T19:39:36&#43;00:00'/>
-<meta name="twitter:title" content="Leetcode 背题">
-<meta name="twitter:description" content="今天开始了漫长的刷题流程。之前只是简单做了一些题目，保持手感，但今天开始，就要为面试正式准备了。 之前一直在思考一个问题：如何高效地刷 Leetcode。我认为，要高效地刷题，首先就得背题。书读百遍，其义自见，大语言模型经过大量训练，也锻炼出了写代码的能力。同样地，我相信 Leetcode 也一样，通过多次练习，答案自然会浮现，量变产生质变。 53. Maximum Subarray 解题思路可以使用 Kadane&rsquo;s Algorithm，代码如下： def maxSubArray(nums): max_current = max_global = nums[0] for num in nums[1:]: max_current = max(num, max_current + num) max_global = max(max_global, max_current) return max_global 这是一个典型的动态规划题目，上面的算法其实隐藏了动态规划的本质。 class Solution { public: int maxSubArray(vector&lt;int&gt;&amp; nums) { vector&lt;int&gt; dp(nums.size()); dp[0] = nums[0]; for (int i = 1; i &lt; nums.size(); i++) { dp[i] = max(dp[i - 1] + nums[i], nums[i]); } return *max_element(dp.begin(), dp.end()); } }; 这段代码更好地体现了动态规划的思想。">
-    <link rel="shortcut icon" href="/favicon.ico" />
-
-  
-    
-      <script async src="https://www.googletagmanager.com/gtag/js?id=G-WC38C3XE3J"></script>
-      <script>
-        var doNotTrack = false;
-        if ( false ) {
-          var dnt = (navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack);
-          var doNotTrack = (dnt == "1" || dnt == "yes");
-        }
-        if (!doNotTrack) {
-          window.dataLayer = window.dataLayer || [];
-          function gtag(){dataLayer.push(arguments);}
-          gtag('js', new Date());
-          gtag('config', 'G-WC38C3XE3J');
-        }
-      </script>
-    
-  
-
-
-    </head>
-    <body class="
-    article-page
-    ">
-    <script>
-        (function() {
-            const colorSchemeKey = 'StackColorScheme';
-            if(!localStorage.getItem(colorSchemeKey)){
-                localStorage.setItem(colorSchemeKey, "auto");
-            }
-        })();
-    </script><script>
-    (function() {
-        const colorSchemeKey = 'StackColorScheme';
-        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
-        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
-
-        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
-            
-
-            document.documentElement.dataset.scheme = 'dark';
-        } else {
-            document.documentElement.dataset.scheme = 'light';
-        }
-    })();
-</script>
-<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
-    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="切换菜单">
-        <span class="hamburger-box">
-            <span class="hamburger-inner"></span>
-        </span>
-    </button>
-
-    <header>
-        
-            
-            <figure class="site-avatar">
-                <a href="/zh-cn/">
-                
-                    
-                    
-                    
-                        
-                        <img src="/img/avatar_hu96777ff80939aaa7d938dddcc232fcc6_1414962_300x0_resize_box_3.png" width="300"
-                            height="300" class="site-logo" loading="lazy" alt="Avatar">
-                    
-                
-                </a>
-                
-                    <span class="emoji">🌈</span>
-                
-            </figure>
-            
-        
-        
-        <div class="site-meta">
-            <h1 class="site-name"><a href="/zh-cn">Nansen Li&#39;s Blog
-李楠森的博客
-</a></h1>
-            <h2 class="site-description"></h2>
-        </div>
-    </header><ol class="menu-social">
-            
-                <li>
-                    <a 
-                        href='https://github.com/linanwx'
-                        target="_blank"
-                        title="GitHub"
-                        rel="me"
-                    >
-                        
-                        
-                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
-</svg>
-
-
-
-                        
-                    </a>
-                </li>
-            
-                <li>
-                    <a 
-                        href='https://www.linkedin.com/in/nansen-li-3bb0a3146/'
-                        target="_blank"
-                        title="LinkedIn"
-                        rel="me"
-                    >
-                        
-                        
-                            <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-brand-linkedin"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M8 11v5" /><path d="M8 8v.01" /><path d="M12 16v-5" /><path d="M16 16v-3a2 2 0 1 0 -4 0" /><path d="M3 7a4 4 0 0 1 4 -4h10a4 4 0 0 1 4 4v10a4 4 0 0 1 -4 4h-10a4 4 0 0 1 -4 -4z" /></svg>
-                        
-                    </a>
-                </li>
-            
-                <li>
-                    <a 
-                        href='index.xml'
-                        target="_blank"
-                        title="RSS"
-                        rel="me"
-                    >
-                        
-                        
-                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-rss" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-  <path stroke="none" d="M0 0h24v24H0z"/>
-  <circle cx="5" cy="19" r="1" />
-  <path d="M4 4a16 16 0 0 1 16 16" />
-  <path d="M4 11a9 9 0 0 1 9 9" />
-</svg>
-
-
-
-                        
-                    </a>
-                </li>
-            
-        </ol><ol class="menu" id="main-menu">
-        
-        
-        
-        <li >
-            <a href='/zh-cn/' >
-                
-                
-                
-                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-  <path stroke="none" d="M0 0h24v24H0z"/>
-  <polyline points="5 12 3 12 12 3 21 12 19 12" />
-  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
-  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
-</svg>
-
-
-
-                
-                <span>主页</span>
-            </a>
-        </li>
-        
-        
-        <li >
-            <a href='/zh-cn/page/archives/' >
-                
-                
-                
-                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-  <path stroke="none" d="M0 0h24v24H0z"/>
-  <rect x="3" y="4" width="18" height="4" rx="2" />
-  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
-  <line x1="10" y1="12" x2="14" y2="12" />
-</svg>
-
-
-
-                
-                <span>归档</span>
-            </a>
-        </li>
-        
-        
-        <li >
-            <a href='/zh-cn/page/search/' >
-                
-                
-                
-                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-  <path stroke="none" d="M0 0h24v24H0z"/>
-  <circle cx="10" cy="10" r="7" />
-  <line x1="21" y1="21" x2="15" y2="15" />
-</svg>
-
-
-
-                
-                <span>搜索</span>
-            </a>
-        </li>
-        
-        <li class="menu-bottom-section">
-            <ol class="menu">
-                    
-                        <li id="i18n-switch">  
-                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-language" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-  <path d="M4 5h7" />
-  <path d="M9 3v2c0 4.418 -2.239 8 -5 8" />
-  <path d="M5 9c-.003 2.144 2.952 3.908 6.7 4" />
-  <path d="M12 20l4 -9l4 9" />
-  <path d="M19.1 18h-6.2" />
-</svg>
-
-
-
-                            <select name="language" title="language" onchange="window.location.href = this.selectedOptions[0].value">
-                                
-                                    <option value="https://nansenli.com/" >English</option>
-                                
-                                    <option value="https://nansenli.com/zh-cn/" selected>中文</option>
-                                
-                            </select>
-                        </li>
-                    
-                
-
-                
-                    <li id="dark-mode-toggle">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-  <path stroke="none" d="M0 0h24v24H0z"/>
-  <circle cx="8" cy="12" r="2" />
-  <rect x="2" y="6" width="20" height="12" rx="6" />
-</svg>
-
-
-
-                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-  <path stroke="none" d="M0 0h24v24H0z"/>
-  <circle cx="16" cy="12" r="2" />
-  <rect x="2" y="6" width="20" height="12" rx="6" />
-</svg>
-
-
-
-                        <span>暗色模式</span>
-                    </li>
-                
-            </ol>
-        </li>
-    </ol>
-</aside>
-
-    
-
-            <main class="main full-width">
-    <article class="main-article">
-    <header class="article-header">
-
-    <div class="article-details">
-    
-
-    <div class="article-title-wrapper">
-        <h2 class="article-title">
-            <a href="/zh-cn/post/2024/10/leetcode241020/">Leetcode 背题</a>
-        </h2>
-    
-        
-    </div>
-
-    
-    
-    
-    
-    <footer class="article-time">
-        
-            <div>
-                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-  <path stroke="none" d="M0 0h24v24H0z"/>
-  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
-  <circle cx="18" cy="18" r="4" />
-  <path d="M15 3v4" />
-  <path d="M7 3v4" />
-  <path d="M3 11h16" />
-  <path d="M18 16.496v1.504l1 1" />
-</svg>
-                <time class="article-time--published">Oct 21, 2024</time>
-            </div>
-        
-
-        
-            <div>
-                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-  <path stroke="none" d="M0 0h24v24H0z"/>
-  <circle cx="12" cy="12" r="9" />
-  <polyline points="12 7 12 12 15 15" />
-</svg>
-
-
-
-                <time class="article-time--reading">
-                    阅读时长: 3 分钟
-                </time>
-            </div>
-        
-    </footer>
-    
-
-    
-        <footer class="article-translations">
-            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-language" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-  <path d="M4 5h7" />
-  <path d="M9 3v2c0 4.418 -2.239 8 -5 8" />
-  <path d="M5 9c-.003 2.144 2.952 3.908 6.7 4" />
-  <path d="M12 20l4 -9l4 9" />
-  <path d="M19.1 18h-6.2" />
-</svg>
-
-
-
-            <div>
-                
-                    <a href="https://nansenli.com/post/2024/10/leetcode241020/" class="link">English</a>
-                
-            </div>
-        </footer>
-    
-</div>
-
-</header>
-
-    <section class="article-content">
-    
-    
-    <p>今天开始了漫长的刷题流程。之前只是简单做了一些题目，保持手感，但今天开始，就要为面试正式准备了。</p>
-<p>之前一直在思考一个问题：如何高效地刷 Leetcode。我认为，要高效地刷题，首先就得背题。书读百遍，其义自见，大语言模型经过大量训练，也锻炼出了写代码的能力。同样地，我相信 Leetcode 也一样，通过多次练习，答案自然会浮现，量变产生质变。</p>
-<h2 id="53-maximum-subarrayhttpsleetcodecomproblemsmaximum-subarray"><a class="link" href="https://leetcode.com/problems/maximum-subarray/"  target="_blank" rel="noopener"
-    >53. Maximum Subarray</a>
-</h2><p>解题思路可以使用 <strong>Kadane&rsquo;s Algorithm</strong>，代码如下：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">maxSubArray</span>(nums):
-</span></span><span style="display:flex;"><span>    max_current <span style="color:#f92672">=</span> max_global <span style="color:#f92672">=</span> nums[<span style="color:#ae81ff">0</span>]
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> num <span style="color:#f92672">in</span> nums[<span style="color:#ae81ff">1</span>:]:
-</span></span><span style="display:flex;"><span>        max_current <span style="color:#f92672">=</span> max(num, max_current <span style="color:#f92672">+</span> num)
-</span></span><span style="display:flex;"><span>        max_global <span style="color:#f92672">=</span> max(max_global, max_current)
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> max_global
-</span></span></code></pre></div><p>这是一个典型的动态规划题目，上面的算法其实隐藏了动态规划的本质。</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Solution</span> {
-</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span><span style="color:#f92672">:</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> maxSubArray(vector<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">int</span><span style="color:#f92672">&gt;&amp;</span> nums) {
-</span></span><span style="display:flex;"><span>        vector<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">int</span><span style="color:#f92672">&gt;</span> dp(nums.size());
-</span></span><span style="display:flex;"><span>        dp[<span style="color:#ae81ff">0</span>] <span style="color:#f92672">=</span> nums[<span style="color:#ae81ff">0</span>];
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">int</span> i <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>; i <span style="color:#f92672">&lt;</span> nums.size(); i<span style="color:#f92672">++</span>) {
-</span></span><span style="display:flex;"><span>            dp[i] <span style="color:#f92672">=</span> max(dp[i <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span>] <span style="color:#f92672">+</span> nums[i], nums[i]);
-</span></span><span style="display:flex;"><span>        }
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">max_element</span>(dp.begin(), dp.end());
-</span></span><span style="display:flex;"><span>    }
-</span></span><span style="display:flex;"><span>};
-</span></span></code></pre></div><p>这段代码更好地体现了动态规划的思想。</p>
-<p>理解 <code>dp[i] = max(nums[i] + dp[i-1], nums[i])</code> 的公式可以从动态规划的角度来解析。这个公式的核心在于“在每一个位置上，我们要做出一个最优选择”。以下是详细解释：</p>
-<h3 id="1-dpi-的含义是什么">1. <code>dp[i]</code> 的含义是什么？
-</h3><ul>
-<li><code>dp[i]</code> 表示以位置 <code>i</code> 结尾的 <strong>最大子数组和</strong>。</li>
-</ul>
-<h3 id="2-为什么比较-numsi--dpi-1-和-numsi">2. 为什么比较 <code>nums[i] + dp[i-1]</code> 和 <code>nums[i]</code>？
-</h3><ul>
-<li>核心问题是：<strong>当前的最大子数组和是否应该包括之前的部分（<code>dp[i-1]</code>）？</strong>
-<ul>
-<li><strong><code>nums[i] + dp[i-1]</code></strong>：如果 <code>dp[i-1]</code> 是正数，加上当前的 <code>nums[i]</code> 会让子数组和变大，那么我们选择累加。</li>
-<li><strong><code>nums[i]</code></strong>：如果 <code>dp[i-1]</code> 是负数，我们选择从当前位置重新开始一个新的子数组，因为负数只会拖累当前和。</li>
-</ul>
-</li>
-</ul>
-<h3 id="3-为什么不用比较后续的数">3. 为什么不用比较后续的数？
-</h3><ul>
-<li>我们在比较时，是假设数组在位置 <code>i</code> 停止。也就是说，我们考虑 <code>[0:i]</code> 这个范围内的最大值，对于位置 <code>i</code> 来说，要么加上之前的子数组，要么放弃之前的子数组，只采用当前的数。</li>
-<li>然后，我们遍历整个数组，找出在每个位置停下来的最大值，最终返回最大的那个值。</li>
-</ul>
-<h2 id="57-insert-intervalhttpsleetcodecomproblemsinsert-interval"><a class="link" href="https://leetcode.com/problems/insert-interval/"  target="_blank" rel="noopener"
-    >57. Insert Interval</a>
-</h2><p>这是一个经典的区间合并问题，需要将新插入的区间合并到已有的区间中。</p>
-<p>可以使用分解法来解决：</p>
-<ul>
-<li>第一步，将不重叠且在 <code>newInterval</code> 之前的区间添加到结果中。</li>
-<li>第二步，合并所有可能重叠的区间到 <code>newInterval</code> 中，注意这里的判断条件。</li>
-<li>第三步，将剩余的区间添加到结果中。</li>
-</ul>
-<p>注意，合并区间的判断条件是前一个区间的开始小于等于后一个区间的结束，即 <code>intervals[i][0] &lt;= newInterval[1]</code>。</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Solution</span>:
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">insert</span>(self, intervals: List[List[int]], newInterval: List[int]) <span style="color:#f92672">-&gt;</span> List[List[int]]:
-</span></span><span style="display:flex;"><span>        ret_list <span style="color:#f92672">=</span> []
-</span></span><span style="display:flex;"><span>        i <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">while</span> i <span style="color:#f92672">&lt;</span> len(intervals) <span style="color:#f92672">and</span> intervals[i][<span style="color:#ae81ff">1</span>] <span style="color:#f92672">&lt;</span> newInterval[<span style="color:#ae81ff">0</span>]:
-</span></span><span style="display:flex;"><span>            ret_list<span style="color:#f92672">.</span>append(intervals[i])
-</span></span><span style="display:flex;"><span>            i <span style="color:#f92672">+=</span> <span style="color:#ae81ff">1</span>
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">while</span> i <span style="color:#f92672">&lt;</span> len(intervals) <span style="color:#f92672">and</span> intervals[i][<span style="color:#ae81ff">0</span>] <span style="color:#f92672">&lt;=</span> newInterval[<span style="color:#ae81ff">1</span>]:
-</span></span><span style="display:flex;"><span>            newInterval[<span style="color:#ae81ff">0</span>] <span style="color:#f92672">=</span> min(intervals[i][<span style="color:#ae81ff">0</span>], newInterval[<span style="color:#ae81ff">0</span>])
-</span></span><span style="display:flex;"><span>            newInterval[<span style="color:#ae81ff">1</span>] <span style="color:#f92672">=</span> max(intervals[i][<span style="color:#ae81ff">1</span>], newInterval[<span style="color:#ae81ff">1</span>])
-</span></span><span style="display:flex;"><span>            i <span style="color:#f92672">+=</span> <span style="color:#ae81ff">1</span>
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>        ret_list<span style="color:#f92672">.</span>append(newInterval)
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">while</span> i <span style="color:#f92672">&lt;</span> len(intervals):
-</span></span><span style="display:flex;"><span>            ret_list<span style="color:#f92672">.</span>append(intervals[i])
-</span></span><span style="display:flex;"><span>            i <span style="color:#f92672">+=</span> <span style="color:#ae81ff">1</span>
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> ret_list
-</span></span></code></pre></div><p>只要注意细节，这个题目其实并不难。</p>
-<h2 id="300-longest-increasing-subsequencehttpsleetcodecomproblemslongest-increasing-subsequence"><a class="link" href="https://leetcode.com/problems/longest-increasing-subsequence/"  target="_blank" rel="noopener"
-    >300. Longest Increasing Subsequence</a>
-</h2><p>显然是一个动态规划问题。</p>
-<p><code>dp[i]</code> 表示以某个数字结尾的最长递增子序列的长度。</p>
-<p>每次加入一个元素，我们更新当前的 <code>dp</code> 数组，如果当前数字比之前的小，它们的结果就加 1。</p>
-<p>注意，第一个 <code>dp[i]</code> 是从下标 1 开始的。</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Solution</span>:
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">lengthOfLIS</span>(self, nums: List[int]) <span style="color:#f92672">-&gt;</span> int:
-</span></span><span style="display:flex;"><span>        dp <span style="color:#f92672">=</span> [<span style="color:#ae81ff">1</span>] <span style="color:#f92672">*</span> len(nums)
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">1</span>, len(nums)):
-</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">for</span> j <span style="color:#f92672">in</span> range(i):
-</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">if</span> nums[j] <span style="color:#f92672">&lt;</span> nums[i]:
-</span></span><span style="display:flex;"><span>                    dp[i] <span style="color:#f92672">=</span> max(dp[i], dp[j] <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>)
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> max(dp)
-</span></span></code></pre></div><p><strong>复杂度分析</strong>：</p>
-<ul>
-<li>时间复杂度：$O(n^2)$，因为有两个嵌套的循环。</li>
-<li>空间复杂度：$O(n)$，因为需要一个长度为 <code>n</code> 的 <code>dp</code> 数组。</li>
-</ul>
-<h2 id="674-longest-continuous-increasing-subsequencehttpsleetcodecomproblemslongest-continuous-increasing-subsequence"><a class="link" href="https://leetcode.com/problems/longest-continuous-increasing-subsequence/"  target="_blank" rel="noopener"
-    >674. Longest Continuous Increasing Subsequence</a>
-</h2><p>这是一个简单题目，但仍然值得理解。</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Solution</span>:
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">findLengthOfLCIS</span>(self, nums: List[int]) <span style="color:#f92672">-&gt;</span> int:
-</span></span><span style="display:flex;"><span>        dp <span style="color:#f92672">=</span> [<span style="color:#ae81ff">1</span>] <span style="color:#f92672">*</span> len(nums)
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">1</span>, len(nums)):
-</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> nums[i] <span style="color:#f92672">&gt;</span> nums[i<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>]:
-</span></span><span style="display:flex;"><span>                dp[i] <span style="color:#f92672">=</span> max(dp[i], dp[i<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>] <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>)
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> max(dp)
-</span></span></code></pre></div><h2 id="392-is-subsequencehttpsleetcodecomproblemsis-subsequence"><a class="link" href="https://leetcode.com/problems/is-subsequence/"  target="_blank" rel="noopener"
-    >392. Is Subsequence</a>
-</h2><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Solution</span>:
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">isSubsequence</span>(self, s: str, t: str) <span style="color:#f92672">-&gt;</span> bool:
-</span></span><span style="display:flex;"><span>        i <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
-</span></span><span style="display:flex;"><span>        j <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">while</span> i <span style="color:#f92672">&lt;</span> len(s) <span style="color:#f92672">and</span> j <span style="color:#f92672">&lt;</span> len(t):
-</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> s[i] <span style="color:#f92672">==</span> t[j]:
-</span></span><span style="display:flex;"><span>                i <span style="color:#f92672">+=</span> <span style="color:#ae81ff">1</span>
-</span></span><span style="display:flex;"><span>            j <span style="color:#f92672">+=</span> <span style="color:#ae81ff">1</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> i <span style="color:#f92672">==</span> len(s)
-</span></span></code></pre></div><p>这个题目可以用双指针法，以 <code>t</code> 为基准，如果 <code>s</code> 中有相同字符就向前推进，如果 <code>s</code> 到结尾了，说明匹配完成。</p>
-<h2 id="115-distinct-subsequenceshttpsleetcodecomproblemsdistinct-subsequences"><a class="link" href="https://leetcode.com/problems/distinct-subsequences/"  target="_blank" rel="noopener"
-    >115. Distinct Subsequences</a>
-</h2><p>这个问题要求我们找到字符串 <code>s</code> 中有多少不同的子序列等于字符串 <code>t</code>。</p>
-<p>首先，我们需要定义 <code>dp</code>，其中 <code>dp[i][j]</code> 表示从 <code>s</code> 的前 <code>i</code> 个字符中形成 <code>t</code> 的前 <code>j</code> 个字符的不同子序列数。</p>
-<ul>
-<li><code>dp[i][0]</code> 表示当 <code>t</code> 为空串时，结果为 1。</li>
-<li><code>dp[0][j]</code> 表示从空串中形成 <code>t</code>，结果为 0。</li>
-</ul>
-<p>对于 <code>dp[i][j]</code>，其结果取决于位置 <code>i</code> 和 <code>j</code> 的字符：</p>
-<ul>
-<li>如果两者相等，结果等于不匹配 <code>s[i-1]</code> 的情况（<code>dp[i-1][j]</code>）加上匹配的情况（<code>dp[i-1][j-1]</code>）。</li>
-<li>如果不相等，则结果等于 <code>dp[i-1][j]</code>。</li>
-</ul>
-<p>注意，这里 <code>i, j</code> 指的是前 <code>i</code> 个和前 <code>j</code> 个字符。</p>
-<p>此外，<code>dp[0][0]</code> 初始化为 1，因为空字符串是任何字符串的子序列。</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Solution</span>:
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">numDistinct</span>(self, s: str, t: str) <span style="color:#f92672">-&gt;</span> int:
-</span></span><span style="display:flex;"><span>        dp <span style="color:#f92672">=</span> [[<span style="color:#ae81ff">0</span> <span style="color:#66d9ef">for</span> _ <span style="color:#f92672">in</span> range(len(t) <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>)] <span style="color:#66d9ef">for</span> _ <span style="color:#f92672">in</span> range(len(s) <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>)]
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(len(s) <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>):
-</span></span><span style="display:flex;"><span>            dp[i][<span style="color:#ae81ff">0</span>] <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span> j <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">1</span>, len(t) <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>):
-</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">1</span>, len(s) <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>):
-</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">if</span> s[i<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>] <span style="color:#f92672">==</span> t[j<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>]:
-</span></span><span style="display:flex;"><span>                    dp[i][j] <span style="color:#f92672">=</span> dp[i<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>][j] <span style="color:#f92672">+</span> dp[i<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>][j<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>]
-</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">else</span>:
-</span></span><span style="display:flex;"><span>                    dp[i][j] <span style="color:#f92672">=</span> dp[i<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>][j]
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> dp[<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>][<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>]
-</span></span></code></pre></div>
-</section>
-
-
-    <footer class="article-footer">
-    
-
-    </footer>
-
-
-    
-</article>
-
-    
-
-    
-
-     
-    
-        
-    <div class="disqus-container">
-    <div id="disqus_thread"></div>
-<script>
-    window.disqus_config = function () {
-    
-    
-    
-    };
-    (function() {
-        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
-            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
-            return;
-        }
-        var d = document, s = d.createElement('script'); s.async = true;
-        s.src = '//' + "nansenli" + '.disqus.com/embed.js';
-        s.setAttribute('data-timestamp', +new Date());
-        (d.head || d.body).appendChild(s);
-    })();
-</script>
-<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
-</div>
-
-<style>
-    .disqus-container {
-        background-color: var(--card-background);
-        border-radius: var(--card-border-radius);
-        box-shadow: var(--shadow-l1);
-        padding: var(--card-padding);
-    }
-</style>
-
-<script>
-    window.addEventListener('onColorSchemeChange', (e) => {
-        if (typeof DISQUS == 'object') {
-            DISQUS.reset({
-                reload: true
-            });
-        }
-    })
-</script>
-
-    
-
-    <footer class="site-footer">
-    <section class="copyright">
-        &copy; 
-        
-        2026 Nansen Li 🌈 （李楠森）
-    </section>
-    
-    <section class="powerby">
-        使用 <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> 构建 <br />
-        主题 <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.31.0">Stack</a></b> 由 <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a> 设计
-    </section>
-</footer>
-
-
-    
-<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
-
-    
-    <div class="pswp__bg"></div>
-
-    
-    <div class="pswp__scroll-wrap">
-
-        
-        <div class="pswp__container">
-            <div class="pswp__item"></div>
-            <div class="pswp__item"></div>
-            <div class="pswp__item"></div>
-        </div>
-
-        
-        <div class="pswp__ui pswp__ui--hidden">
-
-            <div class="pswp__top-bar">
-
-                
-
-                <div class="pswp__counter"></div>
-
-                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
-
-                <button class="pswp__button pswp__button--share" title="Share"></button>
-
-                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
-
-                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
-
-                
-                
-                <div class="pswp__preloader">
-                    <div class="pswp__preloader__icn">
-                        <div class="pswp__preloader__cut">
-                            <div class="pswp__preloader__donut"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
-                <div class="pswp__share-tooltip"></div>
-            </div>
-
-            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
-            </button>
-
-            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
-            </button>
-
-            <div class="pswp__caption">
-                <div class="pswp__caption__center"></div>
-            </div>
-
-        </div>
-
-    </div>
-
-</div><script 
-                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
-                defer
-                >
-            </script><script 
-                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
-                defer
-                >
-            </script><link 
-                rel="stylesheet" 
-                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
-            ><link 
-                rel="stylesheet" 
-                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
-            >
-
-            </main>
-        </div>
-        <script 
-                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
-                
-                >
-            </script><script type="text/javascript" src="/ts/main.1e9a3bafd846ced4c345d084b355fb8c7bae75701c338f8a1f8a82c780137826.js" defer></script>
-<script>
-    (function () {
-        const customFont = document.createElement('link');
-        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
-
-        customFont.type = "text/css";
-        customFont.rel = "stylesheet";
-
-        document.head.appendChild(customFont);
-    }());
-</script>
-
-    </body>
-</html>
+"><meta property='og:type' content='article'><meta property='article:section' content='Post'><meta property='article:published_time' content='2024-10-21T19:39:36+00:00'><meta property='article:modified_time' content='2024-10-21T19:39:36+00:00'><meta name=twitter:title content="Leetcode 背题"><meta name=twitter:description content="今天开始了漫长的刷题流程。之前只是简单做了一些题目，保持手感，但今天开始，就要为面试正式准备了。 之前一直在思考一个问题：如何高效地刷 Leetcode。我认为，要高效地刷题，首先就得背题。书读百遍，其义自见，大语言模型经过大量训练，也锻炼出了写代码的能力。同样地，我相信 Leetcode 也一样，通过多次练习，答案自然会浮现，量变产生质变。 53. Maximum Subarray 解题思路可以使用 Kadane&rsquo;s Algorithm，代码如下： def maxSubArray(nums): max_current = max_global = nums[0] for num in nums[1:]: max_current = max(num, max_current + num) max_global = max(max_global, max_current) return max_global 这是一个典型的动态规划题目，上面的算法其实隐藏了动态规划的本质。 class Solution { public: int maxSubArray(vector<int>& nums) { vector<int> dp(nums.size()); dp[0] = nums[0]; for (int i = 1; i < nums.size(); i++) { dp[i] = max(dp[i - 1] + nums[i], nums[i]); } return *max_element(dp.begin(), dp.end()); } }; 这段代码更好地体现了动态规划的思想。"><link rel="shortcut icon" href=/favicon.ico><script async src="https://www.googletagmanager.com/gtag/js?id=G-WC38C3XE3J"></script><script>var dnt,doNotTrack=!1;if(!1&&(dnt=navigator.doNotTrack||window.doNotTrack||navigator.msDoNotTrack,doNotTrack=dnt=="1"||dnt=="yes"),!doNotTrack){window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag("js",new Date),gtag("config","G-WC38C3XE3J")}</script></head><body class=article-page><script>(function(){const e="StackColorScheme";localStorage.getItem(e)||localStorage.setItem(e,"auto")})()</script><script>(function(){const t="StackColorScheme",e=localStorage.getItem(t),n=window.matchMedia("(prefers-color-scheme: dark)").matches===!0;e=="dark"||e==="auto"&&n?document.documentElement.dataset.scheme="dark":document.documentElement.dataset.scheme="light"})()</script><div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky"><button class="hamburger hamburger--spin" type=button id=toggle-menu aria-label=切换菜单>
+<span class=hamburger-box><span class=hamburger-inner></span></span></button><header><figure class=site-avatar><a href=/zh-cn/><img src=/img/avatar_hu96777ff80939aaa7d938dddcc232fcc6_1414962_300x0_resize_box_3.png width=300 height=300 class=site-logo loading=lazy alt=Avatar>
+</a><span class=emoji>🌈</span></figure><div class=site-meta><h1 class=site-name><a href=/zh-cn>Nansen Li's Blog
+李楠森的博客</a></h1><h2 class=site-description></h2></div></header><ol class=menu-social><li><a href=https://github.com/linanwx target=_blank title=GitHub rel=me><svg class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 19c-4.3 1.4-4.3-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6.0 00-1.3-3.2 4.2 4.2.0 00-.1-3.2s-1.1-.3-3.5 1.3a12.3 12.3.0 00-6.2.0C6.5 2.8 5.4 3.1 5.4 3.1a4.2 4.2.0 00-.1 3.2A4.6 4.6.0 004 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"/></svg></a></li><li><a href=https://www.linkedin.com/in/nansen-li-3bb0a3146/ target=_blank title=LinkedIn rel=me><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-brand-linkedin"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M8 11v5"/><path d="M8 8v.01"/><path d="M12 16v-5"/><path d="M16 16v-3a2 2 0 10-4 0"/><path d="M3 7a4 4 0 014-4h10a4 4 0 014 4v10a4 4 0 01-4 4H7a4 4 0 01-4-4z"/></svg></a></li><li><a href=index.xml target=_blank title=RSS rel=me><svg class="icon icon-tabler icon-tabler-rss" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="5" cy="19" r="1"/><path d="M4 4a16 16 0 0116 16"/><path d="M4 11a9 9 0 019 9"/></svg></a></li></ol><ol class=menu id=main-menu><li><a href=/zh-cn/><svg class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><polyline points="5 12 3 12 12 3 21 12 19 12"/><path d="M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/><path d="M9 21v-6a2 2 0 012-2h2a2 2 0 012 2v6"/></svg>
+<span>主页</span></a></li><li><a href=/zh-cn/page/archives/><svg class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><rect x="3" y="4" width="18" height="4" rx="2"/><path d="M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8"/><line x1="10" y1="12" x2="14" y2="12"/></svg>
+<span>归档</span></a></li><li><a href=/zh-cn/page/search/><svg class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="10" cy="10" r="7"/><line x1="21" y1="21" x2="15" y2="15"/></svg>
+<span>搜索</span></a></li><li class=menu-bottom-section><ol class=menu><li id=i18n-switch><svg class="icon icon-tabler icon-tabler-language" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 5h7"/><path d="M9 3v2c0 4.418-2.239 8-5 8"/><path d="M5 9c-.003 2.144 2.952 3.908 6.7 4"/><path d="M12 20l4-9 4 9"/><path d="M19.1 18h-6.2"/></svg>
+<select name=language title=language onchange="window.location.href=this.selectedOptions[0].value"><option value=https://nansenli.com/>English</option><option value=https://nansenli.com/zh-cn/ selected>中文</option></select></li><li id=dark-mode-toggle><svg class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="8" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
+<svg class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="16" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
+<span>暗色模式</span></li></ol></li></ol></aside><main class="main full-width"><article class=main-article><header class=article-header><div class=article-details><div class=article-title-wrapper><h2 class=article-title><a href=/zh-cn/post/2024/10/leetcode241020/>Leetcode 背题</a></h2></div><footer class=article-time><div><svg class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M11.795 21H5a2 2 0 01-2-2V7a2 2 0 012-2h12a2 2 0 012 2v4"/><circle cx="18" cy="18" r="4"/><path d="M15 3v4"/><path d="M7 3v4"/><path d="M3 11h16"/><path d="M18 16.496V18l1 1"/></svg>
+<time class=article-time--published>Oct 21, 2024</time></div><div><svg class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg>
+<time class=article-time--reading>阅读时长: 3 分钟</time></div></footer><footer class=article-translations><svg class="icon icon-tabler icon-tabler-language" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 5h7"/><path d="M9 3v2c0 4.418-2.239 8-5 8"/><path d="M5 9c-.003 2.144 2.952 3.908 6.7 4"/><path d="M12 20l4-9 4 9"/><path d="M19.1 18h-6.2"/></svg><div><a href=https://nansenli.com/post/2024/10/leetcode241020/ class=link>English</a></div></footer></div></header><section class=article-content><p>今天开始了漫长的刷题流程。之前只是简单做了一些题目，保持手感，但今天开始，就要为面试正式准备了。</p><p>之前一直在思考一个问题：如何高效地刷 Leetcode。我认为，要高效地刷题，首先就得背题。书读百遍，其义自见，大语言模型经过大量训练，也锻炼出了写代码的能力。同样地，我相信 Leetcode 也一样，通过多次练习，答案自然会浮现，量变产生质变。</p><h2 id=53-maximum-subarrayhttpsleetcodecomproblemsmaximum-subarray><a class=link href=https://leetcode.com/problems/maximum-subarray/ target=_blank rel=noopener>53. Maximum Subarray</a></h2><p>解题思路可以使用 <strong>Kadane&rsquo;s Algorithm</strong>，代码如下：</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=display:flex><span><span style=color:#66d9ef>def</span> <span style=color:#a6e22e>maxSubArray</span>(nums):
+</span></span><span style=display:flex><span>    max_current <span style=color:#f92672>=</span> max_global <span style=color:#f92672>=</span> nums[<span style=color:#ae81ff>0</span>]
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>for</span> num <span style=color:#f92672>in</span> nums[<span style=color:#ae81ff>1</span>:]:
+</span></span><span style=display:flex><span>        max_current <span style=color:#f92672>=</span> max(num, max_current <span style=color:#f92672>+</span> num)
+</span></span><span style=display:flex><span>        max_global <span style=color:#f92672>=</span> max(max_global, max_current)
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>return</span> max_global
+</span></span></code></pre></div><p>这是一个典型的动态规划题目，上面的算法其实隐藏了动态规划的本质。</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-cpp data-lang=cpp><span style=display:flex><span><span style=color:#66d9ef>class</span> <span style=color:#a6e22e>Solution</span> {
+</span></span><span style=display:flex><span><span style=color:#66d9ef>public</span><span style=color:#f92672>:</span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>int</span> maxSubArray(vector<span style=color:#f92672>&lt;</span><span style=color:#66d9ef>int</span><span style=color:#f92672>&gt;&amp;</span> nums) {
+</span></span><span style=display:flex><span>        vector<span style=color:#f92672>&lt;</span><span style=color:#66d9ef>int</span><span style=color:#f92672>&gt;</span> dp(nums.size());
+</span></span><span style=display:flex><span>        dp[<span style=color:#ae81ff>0</span>] <span style=color:#f92672>=</span> nums[<span style=color:#ae81ff>0</span>];
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>for</span> (<span style=color:#66d9ef>int</span> i <span style=color:#f92672>=</span> <span style=color:#ae81ff>1</span>; i <span style=color:#f92672>&lt;</span> nums.size(); i<span style=color:#f92672>++</span>) {
+</span></span><span style=display:flex><span>            dp[i] <span style=color:#f92672>=</span> max(dp[i <span style=color:#f92672>-</span> <span style=color:#ae81ff>1</span>] <span style=color:#f92672>+</span> nums[i], nums[i]);
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> <span style=color:#f92672>*</span><span style=color:#a6e22e>max_element</span>(dp.begin(), dp.end());
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>};
+</span></span></code></pre></div><p>这段代码更好地体现了动态规划的思想。</p><p>理解 <code>dp[i] = max(nums[i] + dp[i-1], nums[i])</code> 的公式可以从动态规划的角度来解析。这个公式的核心在于“在每一个位置上，我们要做出一个最优选择”。以下是详细解释：</p><h3 id=1-dpi-的含义是什么>1. <code>dp[i]</code> 的含义是什么？</h3><ul><li><code>dp[i]</code> 表示以位置 <code>i</code> 结尾的 <strong>最大子数组和</strong>。</li></ul><h3 id=2-为什么比较-numsi--dpi-1-和-numsi>2. 为什么比较 <code>nums[i] + dp[i-1]</code> 和 <code>nums[i]</code>？</h3><ul><li>核心问题是：<strong>当前的最大子数组和是否应该包括之前的部分（<code>dp[i-1]</code>）？</strong><ul><li><strong><code>nums[i] + dp[i-1]</code></strong>：如果 <code>dp[i-1]</code> 是正数，加上当前的 <code>nums[i]</code> 会让子数组和变大，那么我们选择累加。</li><li><strong><code>nums[i]</code></strong>：如果 <code>dp[i-1]</code> 是负数，我们选择从当前位置重新开始一个新的子数组，因为负数只会拖累当前和。</li></ul></li></ul><h3 id=3-为什么不用比较后续的数>3. 为什么不用比较后续的数？</h3><ul><li>我们在比较时，是假设数组在位置 <code>i</code> 停止。也就是说，我们考虑 <code>[0:i]</code> 这个范围内的最大值，对于位置 <code>i</code> 来说，要么加上之前的子数组，要么放弃之前的子数组，只采用当前的数。</li><li>然后，我们遍历整个数组，找出在每个位置停下来的最大值，最终返回最大的那个值。</li></ul><h2 id=57-insert-intervalhttpsleetcodecomproblemsinsert-interval><a class=link href=https://leetcode.com/problems/insert-interval/ target=_blank rel=noopener>57. Insert Interval</a></h2><p>这是一个经典的区间合并问题，需要将新插入的区间合并到已有的区间中。</p><p>可以使用分解法来解决：</p><ul><li>第一步，将不重叠且在 <code>newInterval</code> 之前的区间添加到结果中。</li><li>第二步，合并所有可能重叠的区间到 <code>newInterval</code> 中，注意这里的判断条件。</li><li>第三步，将剩余的区间添加到结果中。</li></ul><p>注意，合并区间的判断条件是前一个区间的开始小于等于后一个区间的结束，即 <code>intervals[i][0] &lt;= newInterval[1]</code>。</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=display:flex><span><span style=color:#66d9ef>class</span> <span style=color:#a6e22e>Solution</span>:
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>def</span> <span style=color:#a6e22e>insert</span>(self, intervals: List[List[int]], newInterval: List[int]) <span style=color:#f92672>-&gt;</span> List[List[int]]:
+</span></span><span style=display:flex><span>        ret_list <span style=color:#f92672>=</span> []
+</span></span><span style=display:flex><span>        i <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>while</span> i <span style=color:#f92672>&lt;</span> len(intervals) <span style=color:#f92672>and</span> intervals[i][<span style=color:#ae81ff>1</span>] <span style=color:#f92672>&lt;</span> newInterval[<span style=color:#ae81ff>0</span>]:
+</span></span><span style=display:flex><span>            ret_list<span style=color:#f92672>.</span>append(intervals[i])
+</span></span><span style=display:flex><span>            i <span style=color:#f92672>+=</span> <span style=color:#ae81ff>1</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>while</span> i <span style=color:#f92672>&lt;</span> len(intervals) <span style=color:#f92672>and</span> intervals[i][<span style=color:#ae81ff>0</span>] <span style=color:#f92672>&lt;=</span> newInterval[<span style=color:#ae81ff>1</span>]:
+</span></span><span style=display:flex><span>            newInterval[<span style=color:#ae81ff>0</span>] <span style=color:#f92672>=</span> min(intervals[i][<span style=color:#ae81ff>0</span>], newInterval[<span style=color:#ae81ff>0</span>])
+</span></span><span style=display:flex><span>            newInterval[<span style=color:#ae81ff>1</span>] <span style=color:#f92672>=</span> max(intervals[i][<span style=color:#ae81ff>1</span>], newInterval[<span style=color:#ae81ff>1</span>])
+</span></span><span style=display:flex><span>            i <span style=color:#f92672>+=</span> <span style=color:#ae81ff>1</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        ret_list<span style=color:#f92672>.</span>append(newInterval)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>while</span> i <span style=color:#f92672>&lt;</span> len(intervals):
+</span></span><span style=display:flex><span>            ret_list<span style=color:#f92672>.</span>append(intervals[i])
+</span></span><span style=display:flex><span>            i <span style=color:#f92672>+=</span> <span style=color:#ae81ff>1</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> ret_list
+</span></span></code></pre></div><p>只要注意细节，这个题目其实并不难。</p><h2 id=300-longest-increasing-subsequencehttpsleetcodecomproblemslongest-increasing-subsequence><a class=link href=https://leetcode.com/problems/longest-increasing-subsequence/ target=_blank rel=noopener>300. Longest Increasing Subsequence</a></h2><p>显然是一个动态规划问题。</p><p><code>dp[i]</code> 表示以某个数字结尾的最长递增子序列的长度。</p><p>每次加入一个元素，我们更新当前的 <code>dp</code> 数组，如果当前数字比之前的小，它们的结果就加 1。</p><p>注意，第一个 <code>dp[i]</code> 是从下标 1 开始的。</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=display:flex><span><span style=color:#66d9ef>class</span> <span style=color:#a6e22e>Solution</span>:
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>def</span> <span style=color:#a6e22e>lengthOfLIS</span>(self, nums: List[int]) <span style=color:#f92672>-&gt;</span> int:
+</span></span><span style=display:flex><span>        dp <span style=color:#f92672>=</span> [<span style=color:#ae81ff>1</span>] <span style=color:#f92672>*</span> len(nums)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>for</span> i <span style=color:#f92672>in</span> range(<span style=color:#ae81ff>1</span>, len(nums)):
+</span></span><span style=display:flex><span>            <span style=color:#66d9ef>for</span> j <span style=color:#f92672>in</span> range(i):
+</span></span><span style=display:flex><span>                <span style=color:#66d9ef>if</span> nums[j] <span style=color:#f92672>&lt;</span> nums[i]:
+</span></span><span style=display:flex><span>                    dp[i] <span style=color:#f92672>=</span> max(dp[i], dp[j] <span style=color:#f92672>+</span> <span style=color:#ae81ff>1</span>)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> max(dp)
+</span></span></code></pre></div><p><strong>复杂度分析</strong>：</p><ul><li>时间复杂度：$O(n^2)$，因为有两个嵌套的循环。</li><li>空间复杂度：$O(n)$，因为需要一个长度为 <code>n</code> 的 <code>dp</code> 数组。</li></ul><h2 id=674-longest-continuous-increasing-subsequencehttpsleetcodecomproblemslongest-continuous-increasing-subsequence><a class=link href=https://leetcode.com/problems/longest-continuous-increasing-subsequence/ target=_blank rel=noopener>674. Longest Continuous Increasing Subsequence</a></h2><p>这是一个简单题目，但仍然值得理解。</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=display:flex><span><span style=color:#66d9ef>class</span> <span style=color:#a6e22e>Solution</span>:
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>def</span> <span style=color:#a6e22e>findLengthOfLCIS</span>(self, nums: List[int]) <span style=color:#f92672>-&gt;</span> int:
+</span></span><span style=display:flex><span>        dp <span style=color:#f92672>=</span> [<span style=color:#ae81ff>1</span>] <span style=color:#f92672>*</span> len(nums)
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>for</span> i <span style=color:#f92672>in</span> range(<span style=color:#ae81ff>1</span>, len(nums)):
+</span></span><span style=display:flex><span>            <span style=color:#66d9ef>if</span> nums[i] <span style=color:#f92672>&gt;</span> nums[i<span style=color:#f92672>-</span><span style=color:#ae81ff>1</span>]:
+</span></span><span style=display:flex><span>                dp[i] <span style=color:#f92672>=</span> max(dp[i], dp[i<span style=color:#f92672>-</span><span style=color:#ae81ff>1</span>] <span style=color:#f92672>+</span> <span style=color:#ae81ff>1</span>)
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> max(dp)
+</span></span></code></pre></div><h2 id=392-is-subsequencehttpsleetcodecomproblemsis-subsequence><a class=link href=https://leetcode.com/problems/is-subsequence/ target=_blank rel=noopener>392. Is Subsequence</a></h2><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=display:flex><span><span style=color:#66d9ef>class</span> <span style=color:#a6e22e>Solution</span>:
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>def</span> <span style=color:#a6e22e>isSubsequence</span>(self, s: str, t: str) <span style=color:#f92672>-&gt;</span> bool:
+</span></span><span style=display:flex><span>        i <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>
+</span></span><span style=display:flex><span>        j <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>while</span> i <span style=color:#f92672>&lt;</span> len(s) <span style=color:#f92672>and</span> j <span style=color:#f92672>&lt;</span> len(t):
+</span></span><span style=display:flex><span>            <span style=color:#66d9ef>if</span> s[i] <span style=color:#f92672>==</span> t[j]:
+</span></span><span style=display:flex><span>                i <span style=color:#f92672>+=</span> <span style=color:#ae81ff>1</span>
+</span></span><span style=display:flex><span>            j <span style=color:#f92672>+=</span> <span style=color:#ae81ff>1</span>
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> i <span style=color:#f92672>==</span> len(s)
+</span></span></code></pre></div><p>这个题目可以用双指针法，以 <code>t</code> 为基准，如果 <code>s</code> 中有相同字符就向前推进，如果 <code>s</code> 到结尾了，说明匹配完成。</p><h2 id=115-distinct-subsequenceshttpsleetcodecomproblemsdistinct-subsequences><a class=link href=https://leetcode.com/problems/distinct-subsequences/ target=_blank rel=noopener>115. Distinct Subsequences</a></h2><p>这个问题要求我们找到字符串 <code>s</code> 中有多少不同的子序列等于字符串 <code>t</code>。</p><p>首先，我们需要定义 <code>dp</code>，其中 <code>dp[i][j]</code> 表示从 <code>s</code> 的前 <code>i</code> 个字符中形成 <code>t</code> 的前 <code>j</code> 个字符的不同子序列数。</p><ul><li><code>dp[i][0]</code> 表示当 <code>t</code> 为空串时，结果为 1。</li><li><code>dp[0][j]</code> 表示从空串中形成 <code>t</code>，结果为 0。</li></ul><p>对于 <code>dp[i][j]</code>，其结果取决于位置 <code>i</code> 和 <code>j</code> 的字符：</p><ul><li>如果两者相等，结果等于不匹配 <code>s[i-1]</code> 的情况（<code>dp[i-1][j]</code>）加上匹配的情况（<code>dp[i-1][j-1]</code>）。</li><li>如果不相等，则结果等于 <code>dp[i-1][j]</code>。</li></ul><p>注意，这里 <code>i, j</code> 指的是前 <code>i</code> 个和前 <code>j</code> 个字符。</p><p>此外，<code>dp[0][0]</code> 初始化为 1，因为空字符串是任何字符串的子序列。</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=display:flex><span><span style=color:#66d9ef>class</span> <span style=color:#a6e22e>Solution</span>:
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>def</span> <span style=color:#a6e22e>numDistinct</span>(self, s: str, t: str) <span style=color:#f92672>-&gt;</span> int:
+</span></span><span style=display:flex><span>        dp <span style=color:#f92672>=</span> [[<span style=color:#ae81ff>0</span> <span style=color:#66d9ef>for</span> _ <span style=color:#f92672>in</span> range(len(t) <span style=color:#f92672>+</span> <span style=color:#ae81ff>1</span>)] <span style=color:#66d9ef>for</span> _ <span style=color:#f92672>in</span> range(len(s) <span style=color:#f92672>+</span> <span style=color:#ae81ff>1</span>)]
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>for</span> i <span style=color:#f92672>in</span> range(len(s) <span style=color:#f92672>+</span> <span style=color:#ae81ff>1</span>):
+</span></span><span style=display:flex><span>            dp[i][<span style=color:#ae81ff>0</span>] <span style=color:#f92672>=</span> <span style=color:#ae81ff>1</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>for</span> j <span style=color:#f92672>in</span> range(<span style=color:#ae81ff>1</span>, len(t) <span style=color:#f92672>+</span> <span style=color:#ae81ff>1</span>):
+</span></span><span style=display:flex><span>            <span style=color:#66d9ef>for</span> i <span style=color:#f92672>in</span> range(<span style=color:#ae81ff>1</span>, len(s) <span style=color:#f92672>+</span> <span style=color:#ae81ff>1</span>):
+</span></span><span style=display:flex><span>                <span style=color:#66d9ef>if</span> s[i<span style=color:#f92672>-</span><span style=color:#ae81ff>1</span>] <span style=color:#f92672>==</span> t[j<span style=color:#f92672>-</span><span style=color:#ae81ff>1</span>]:
+</span></span><span style=display:flex><span>                    dp[i][j] <span style=color:#f92672>=</span> dp[i<span style=color:#f92672>-</span><span style=color:#ae81ff>1</span>][j] <span style=color:#f92672>+</span> dp[i<span style=color:#f92672>-</span><span style=color:#ae81ff>1</span>][j<span style=color:#f92672>-</span><span style=color:#ae81ff>1</span>]
+</span></span><span style=display:flex><span>                <span style=color:#66d9ef>else</span>:
+</span></span><span style=display:flex><span>                    dp[i][j] <span style=color:#f92672>=</span> dp[i<span style=color:#f92672>-</span><span style=color:#ae81ff>1</span>][j]
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> dp[<span style=color:#f92672>-</span><span style=color:#ae81ff>1</span>][<span style=color:#f92672>-</span><span style=color:#ae81ff>1</span>]
+</span></span></code></pre></div></section><footer class=article-footer></footer></article><div class=disqus-container><div id=disqus_thread></div><script>window.disqus_config=function(){},function(){if(["localhost","127.0.0.1"].indexOf(window.location.hostname)!=-1){document.getElementById("disqus_thread").innerHTML="Disqus comments not available by default when the website is previewed locally.";return}var t=document,e=t.createElement("script");e.async=!0,e.src="//nansenli.disqus.com/embed.js",e.setAttribute("data-timestamp",+new Date),(t.head||t.body).appendChild(e)}()</script><noscript>Please enable JavaScript to view the <a href=https://disqus.com/?ref_noscript>comments powered by Disqus.</a></noscript><a href=https://disqus.com class=dsq-brlink>comments powered by <span class=logo-disqus>Disqus</span></a></div><style>.disqus-container{background-color:var(--card-background);border-radius:var(--card-border-radius);box-shadow:var(--shadow-l1);padding:var(--card-padding)}</style><script>window.addEventListener("onColorSchemeChange",e=>{typeof DISQUS=="object"&&DISQUS.reset({reload:!0})})</script><footer class=site-footer><section class=copyright>&copy;
+2026 Nansen Li 🌈 （李楠森）</section><section class=powerby>使用 <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a> 构建<br>主题 <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.31.0>Stack</a></b> 由 <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a> 设计</section></footer><div class=pswp tabindex=-1 role=dialog aria-hidden=true><div class=pswp__bg></div><div class=pswp__scroll-wrap><div class=pswp__container><div class=pswp__item></div><div class=pswp__item></div><div class=pswp__item></div></div><div class="pswp__ui pswp__ui--hidden"><div class=pswp__top-bar><div class=pswp__counter></div><button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+<button class="pswp__button pswp__button--share" title=Share></button>
+<button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+<button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button><div class=pswp__preloader><div class=pswp__preloader__icn><div class=pswp__preloader__cut><div class=pswp__preloader__donut></div></div></div></div></div><div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap"><div class=pswp__share-tooltip></div></div><button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+</button>
+<button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button><div class=pswp__caption><div class=pswp__caption__center></div></div></div></div></div><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo=" crossorigin=anonymous defer></script><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU=" crossorigin=anonymous defer></script><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css crossorigin=anonymous><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css crossorigin=anonymous></main></div><script src=https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z+KMkF24hUW8WePSA9HM=" crossorigin=anonymous></script><script type=text/javascript src=/ts/main.1e9a3bafd846ced4c345d084b355fb8c7bae75701c338f8a1f8a82c780137826.js defer></script><script>(function(){const e=document.createElement("link");e.href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap",e.type="text/css",e.rel="stylesheet",document.head.appendChild(e)})()</script></body></html>

@@ -1,111 +1,89 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
-    <channel>
-        <title>漏洞 on Nansen Li&#39;s Blog
-李楠森的博客
-</title>
-        <link>https://nansenli.com/zh-cn/tags/%E6%BC%8F%E6%B4%9E/</link>
-        <description>Recent content in 漏洞 on Nansen Li&#39;s Blog
-李楠森的博客
-</description>
-        <generator>Hugo -- gohugo.io</generator>
-        <language>zh-cn</language>
-        <copyright>Nansen Li 🌈 （李楠森）</copyright>
-        <lastBuildDate>Tue, 15 Oct 2024 14:18:44 +0000</lastBuildDate><atom:link href="https://nansenli.com/zh-cn/tags/%E6%BC%8F%E6%B4%9E/index.xml" rel="self" type="application/rss+xml" /><item>
-        <title>Off-by-One 溢出攻击分析</title>
-        <link>https://nansenli.com/zh-cn/post/2024/10/oboattact-md/</link>
-        <pubDate>Tue, 15 Oct 2024 14:18:44 +0000</pubDate>
-        
-        <guid>https://nansenli.com/zh-cn/post/2024/10/oboattact-md/</guid>
-        <description>&lt;h1 id=&#34;off-by-one-溢出攻击分析&#34;&gt;Off-by-One 溢出攻击分析
-&lt;/h1&gt;&lt;h2 id=&#34;背景&#34;&gt;背景
-&lt;/h2&gt;&lt;p&gt;上周，我参加了一门安全课程，其中包含了一个 off-by-one 溢出漏洞的示例。以下是原始代码：&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-c&#34; data-lang=&#34;c&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;/* 简单的 off-by-one 溢出示例 */&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;#include&lt;/span&gt; &lt;span style=&#34;color:#75715e&#34;&gt;&amp;lt;stdio.h&amp;gt;&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;#include&lt;/span&gt; &lt;span style=&#34;color:#75715e&#34;&gt;&amp;lt;stdlib.h&amp;gt;&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;#include&lt;/span&gt; &lt;span style=&#34;color:#75715e&#34;&gt;&amp;lt;string.h&amp;gt;&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;void&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;foo&lt;/span&gt;(&lt;span style=&#34;color:#66d9ef&#34;&gt;char&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt;input) {
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  &lt;span style=&#34;color:#66d9ef&#34;&gt;char&lt;/span&gt; buf[&lt;span style=&#34;color:#ae81ff&#34;&gt;1024&lt;/span&gt;];
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  &lt;span style=&#34;color:#a6e22e&#34;&gt;strncpy&lt;/span&gt;(buf, input, &lt;span style=&#34;color:#66d9ef&#34;&gt;sizeof&lt;/span&gt;(buf));
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  buf[&lt;span style=&#34;color:#66d9ef&#34;&gt;sizeof&lt;/span&gt;(buf)] &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;\0&amp;#39;&lt;/span&gt;;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;void&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;bar&lt;/span&gt;(&lt;span style=&#34;color:#66d9ef&#34;&gt;void&lt;/span&gt;) {
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  &lt;span style=&#34;color:#a6e22e&#34;&gt;printf&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;I&amp;#39;ve been hacked&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;\n&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;);
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;main&lt;/span&gt;(&lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; argc, &lt;span style=&#34;color:#66d9ef&#34;&gt;char&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;**&lt;/span&gt;argv) {
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (argc &lt;span style=&#34;color:#f92672&#34;&gt;!=&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;2&lt;/span&gt;) {
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#a6e22e&#34;&gt;printf&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Usage: %s input_string&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;\n&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;, argv[&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;]);
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#a6e22e&#34;&gt;exit&lt;/span&gt;(EXIT_FAILURE);
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  }
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  &lt;span style=&#34;color:#a6e22e&#34;&gt;foo&lt;/span&gt;(argv[&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;]);
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;利用此漏洞的攻击命令是：&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;perl -e &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;system &amp;#34;./obo&amp;#34;, &amp;#34;\x38\x84\x04\x08&amp;#34;x256&amp;#39;&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;运行此命令的结果是屏幕上打印出多行 &lt;code&gt;I&#39;ve been hacked&lt;/code&gt;。&lt;/p&gt;
-&lt;h2 id=&#34;分析&#34;&gt;分析
-&lt;/h2&gt;&lt;p&gt;当程序进入 &lt;code&gt;foo&lt;/code&gt; 函数时，内存布局如下（使用 GDB 观察到）：&lt;/p&gt;
-&lt;p&gt;从上到下，布局包含返回地址、保存的帧指针（saved frame pointer）和缓冲区 (&lt;code&gt;buf&lt;/code&gt;)。&lt;/p&gt;
-&lt;p&gt;当执行 &lt;code&gt;buf[sizeof(buf)] = &#39;\0&#39;;&lt;/code&gt; 时，保存的帧指针 (&lt;code&gt;ebp&lt;/code&gt;) 的最低有效字节被设置为 &lt;code&gt;0&lt;/code&gt;。为了确保 &lt;code&gt;ebp&lt;/code&gt; 在被部分覆盖后仍然指向 &lt;code&gt;buf&lt;/code&gt; 区域内，需要至少 1024 字节的缓冲区。具体来说，需要覆盖 &lt;code&gt;ebp&lt;/code&gt;，使其保持在合理范围内（最高到 &lt;code&gt;0xff&lt;/code&gt;），这就是为什么缓冲区设置为 &lt;code&gt;0xff * 4&lt;/code&gt; 字节的原因。&lt;/p&gt;
-&lt;h2 id=&#34;理解-foo-返回时的汇编命令&#34;&gt;理解 &lt;code&gt;foo&lt;/code&gt; 返回时的汇编命令
-&lt;/h2&gt;&lt;p&gt;当 &lt;code&gt;foo&lt;/code&gt; 函数返回时，通常会执行以下关键的汇编指令：&lt;/p&gt;
-&lt;h3 id=&#34;1-leave-指令&#34;&gt;1. &lt;code&gt;leave&lt;/code&gt; 指令
-&lt;/h3&gt;&lt;p&gt;&lt;code&gt;leave&lt;/code&gt; 指令等价于：&lt;/p&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code class=&#34;language-assembly&#34; data-lang=&#34;assembly&#34;&gt;mov esp, ebp
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>漏洞 on Nansen Li's Blog
+李楠森的博客</title><link>https://nansenli.com/zh-cn/tags/%E6%BC%8F%E6%B4%9E/</link><description>Recent content in 漏洞 on Nansen Li's Blog
+李楠森的博客</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><copyright>Nansen Li 🌈 （李楠森）</copyright><lastBuildDate>Tue, 15 Oct 2024 14:18:44 +0000</lastBuildDate><atom:link href="https://nansenli.com/zh-cn/tags/%E6%BC%8F%E6%B4%9E/index.xml" rel="self" type="application/rss+xml"/><item><title>Off-by-One 溢出攻击分析</title><link>https://nansenli.com/zh-cn/post/2024/10/oboattact-md/</link><pubDate>Tue, 15 Oct 2024 14:18:44 +0000</pubDate><guid>https://nansenli.com/zh-cn/post/2024/10/oboattact-md/</guid><description>&lt;h1 id="off-by-one-溢出攻击分析">Off-by-One 溢出攻击分析
+&lt;/h1>&lt;h2 id="背景">背景
+&lt;/h2>&lt;p>上周，我参加了一门安全课程，其中包含了一个 off-by-one 溢出漏洞的示例。以下是原始代码：&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-c" data-lang="c">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">/* 简单的 off-by-one 溢出示例 */&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#include&lt;/span> &lt;span style="color:#75715e">&amp;lt;stdio.h&amp;gt;&lt;/span>&lt;span style="color:#75715e">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#include&lt;/span> &lt;span style="color:#75715e">&amp;lt;stdlib.h&amp;gt;&lt;/span>&lt;span style="color:#75715e">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#include&lt;/span> &lt;span style="color:#75715e">&amp;lt;string.h&amp;gt;&lt;/span>&lt;span style="color:#75715e">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">void&lt;/span> &lt;span style="color:#a6e22e">foo&lt;/span>(&lt;span style="color:#66d9ef">char&lt;/span> &lt;span style="color:#f92672">*&lt;/span>input) {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">char&lt;/span> buf[&lt;span style="color:#ae81ff">1024&lt;/span>];
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">strncpy&lt;/span>(buf, input, &lt;span style="color:#66d9ef">sizeof&lt;/span>(buf));
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> buf[&lt;span style="color:#66d9ef">sizeof&lt;/span>(buf)] &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#e6db74">&amp;#39;\0&amp;#39;&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">void&lt;/span> &lt;span style="color:#a6e22e">bar&lt;/span>(&lt;span style="color:#66d9ef">void&lt;/span>) {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">printf&lt;/span>(&lt;span style="color:#e6db74">&amp;#34;I&amp;#39;ve been hacked&lt;/span>&lt;span style="color:#ae81ff">\n&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">int&lt;/span> &lt;span style="color:#a6e22e">main&lt;/span>(&lt;span style="color:#66d9ef">int&lt;/span> argc, &lt;span style="color:#66d9ef">char&lt;/span> &lt;span style="color:#f92672">**&lt;/span>argv) {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">if&lt;/span> (argc &lt;span style="color:#f92672">!=&lt;/span> &lt;span style="color:#ae81ff">2&lt;/span>) {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">printf&lt;/span>(&lt;span style="color:#e6db74">&amp;#34;Usage: %s input_string&lt;/span>&lt;span style="color:#ae81ff">\n&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>, argv[&lt;span style="color:#ae81ff">0&lt;/span>]);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">exit&lt;/span>(EXIT_FAILURE);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">foo&lt;/span>(argv[&lt;span style="color:#ae81ff">1&lt;/span>]);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>利用此漏洞的攻击命令是：&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span>perl -e &lt;span style="color:#e6db74">&amp;#39;system &amp;#34;./obo&amp;#34;, &amp;#34;\x38\x84\x04\x08&amp;#34;x256&amp;#39;&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>运行此命令的结果是屏幕上打印出多行 &lt;code>I've been hacked&lt;/code>。&lt;/p>
+&lt;h2 id="分析">分析
+&lt;/h2>&lt;p>当程序进入 &lt;code>foo&lt;/code> 函数时，内存布局如下（使用 GDB 观察到）：&lt;/p>
+&lt;p>从上到下，布局包含返回地址、保存的帧指针（saved frame pointer）和缓冲区 (&lt;code>buf&lt;/code>)。&lt;/p>
+&lt;p>当执行 &lt;code>buf[sizeof(buf)] = '\0';&lt;/code> 时，保存的帧指针 (&lt;code>ebp&lt;/code>) 的最低有效字节被设置为 &lt;code>0&lt;/code>。为了确保 &lt;code>ebp&lt;/code> 在被部分覆盖后仍然指向 &lt;code>buf&lt;/code> 区域内，需要至少 1024 字节的缓冲区。具体来说，需要覆盖 &lt;code>ebp&lt;/code>，使其保持在合理范围内（最高到 &lt;code>0xff&lt;/code>），这就是为什么缓冲区设置为 &lt;code>0xff * 4&lt;/code> 字节的原因。&lt;/p>
+&lt;h2 id="理解-foo-返回时的汇编命令">理解 &lt;code>foo&lt;/code> 返回时的汇编命令
+&lt;/h2>&lt;p>当 &lt;code>foo&lt;/code> 函数返回时，通常会执行以下关键的汇编指令：&lt;/p>
+&lt;h3 id="1-leave-指令">1. &lt;code>leave&lt;/code> 指令
+&lt;/h3>&lt;p>&lt;code>leave&lt;/code> 指令等价于：&lt;/p>
+&lt;pre tabindex="0">&lt;code class="language-assembly" data-lang="assembly">mov esp, ebp
 pop ebp
-&lt;/code&gt;&lt;/pre&gt;&lt;ul&gt;
-&lt;li&gt;&lt;code&gt;mov esp, ebp&lt;/code&gt;：将栈指针 (&lt;code&gt;esp&lt;/code&gt;) 设置为帧指针 (&lt;code&gt;ebp&lt;/code&gt;) 的值，恢复栈指针到当前栈帧的顶部，从而释放当前函数占用的空间。&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;pop ebp&lt;/code&gt;：将栈顶的值弹出并赋给帧指针 (&lt;code&gt;ebp&lt;/code&gt;)，从而恢复调用者的帧指针。实际上，相当于将返回地址写入 &lt;code&gt;ebp&lt;/code&gt;，这意味着将栈中的值（通常是调用者的帧地址）赋给 &lt;code&gt;ebp&lt;/code&gt;，从而恢复调用者的栈帧。&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;&lt;code&gt;leave&lt;/code&gt; 的作用是将 &lt;code&gt;esp&lt;/code&gt; 恢复到函数调用前的位置，并弹出保存的 &lt;code&gt;ebp&lt;/code&gt;。如果 &lt;code&gt;ebp&lt;/code&gt; 被覆盖为指向某个特殊地址（例如缓冲区内的地址），在函数返回时可能导致错误的栈指针位置。&lt;/p&gt;
-&lt;h3 id=&#34;2-ret-指令&#34;&gt;2. &lt;code&gt;ret&lt;/code&gt; 指令
-&lt;/h3&gt;&lt;p&gt;&lt;code&gt;ret&lt;/code&gt; 指令从栈顶弹出一个地址并跳转到该地址：&lt;/p&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code class=&#34;language-assembly&#34; data-lang=&#34;assembly&#34;&gt;pop eip
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;如果返回地址被覆盖为 &lt;code&gt;bar&lt;/code&gt; 函数的地址，执行流将跳转到 &lt;code&gt;bar&lt;/code&gt;，允许攻击者执行任意代码。本质上，&lt;code&gt;ret&lt;/code&gt; 会将一个地址弹出到指令指针 (&lt;code&gt;eip&lt;/code&gt;) 并跳转到该地址继续执行。&lt;/p&gt;
-&lt;h2 id=&#34;攻击步骤&#34;&gt;攻击步骤
-&lt;/h2&gt;&lt;ul&gt;
-&lt;li&gt;当执行命令 &lt;code&gt;perl -e &#39;system &amp;quot;./obo&amp;quot;, &amp;quot;\x38\x84\x04\x08&amp;quot;x256&#39;&lt;/code&gt; 时，程序会将这些重复的字节作为输入传递给 &lt;code&gt;./obo&lt;/code&gt;。&lt;/li&gt;
-&lt;li&gt;在 &lt;code&gt;foo&lt;/code&gt; 函数返回时，执行了 &lt;code&gt;leave&lt;/code&gt; 和 &lt;code&gt;ret&lt;/code&gt; 指令，由于返回地址被覆盖，程序跳转到 &lt;code&gt;bar&lt;/code&gt; 函数，打印出成功的消息多次。&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h2 id=&#34;进一步分析确定有效的覆盖位置&#34;&gt;进一步分析：确定有效的覆盖位置
-&lt;/h2&gt;&lt;p&gt;为了成功执行攻击，关键在于精确确定需要覆盖哪些字节，以有效地操控控制流。在这个例子中，溢出发生在执行 &lt;code&gt;buf[sizeof(buf)] = &#39;\0&#39;&lt;/code&gt; 时，导致保存的帧指针 (&lt;code&gt;ebp&lt;/code&gt;) 的最低有效字节被设置为 &lt;code&gt;0&lt;/code&gt;。因此，需要调整 &lt;code&gt;ebp&lt;/code&gt; 的值，确保其指向缓冲区区域，从而使执行流程按预期进行，最终跳转到 &lt;code&gt;bar&lt;/code&gt; 函数。&lt;/p&gt;
-&lt;p&gt;基于进一步的分析和测试，得出以下见解：&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;
-&lt;p&gt;要准确确定覆盖位置，&lt;code&gt;ebp&lt;/code&gt; 的值至关重要。然而，获得这个值是有挑战的，因为：&lt;/p&gt;
-&lt;ol&gt;
-&lt;li&gt;GDB 调试会影响地址布局。&lt;/li&gt;
-&lt;li&gt;输入参数的长度会影响地址布局。&lt;/li&gt;
-&lt;/ol&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;在 GDB 调试下，&lt;code&gt;foo&lt;/code&gt; 函数内的布局如下：&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;执行 &lt;code&gt;buf[sizeof(buf)] = &#39;\0&#39;;&lt;/code&gt; 后，&lt;code&gt;ebp&lt;/code&gt; 被修改，使得返回地址实际上取的是 &lt;code&gt;ebp + 1&lt;/code&gt; 处的值，即地址 &lt;code&gt;0xbfffed00 + 1&lt;/code&gt;，也就是 &lt;code&gt;0xbfffed04&lt;/code&gt;。&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;对应的偏移位置在 &lt;code&gt;buf&lt;/code&gt; 的第 255 个位置，这意味着可以通过只在该特定位置填入返回地址来构造攻击。在 GDB 中使用以下命令进行验证：&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;r &lt;span style=&#34;color:#66d9ef&#34;&gt;$(&lt;/span&gt;perl -e &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;print  &amp;#34;\x01\x01\x01\x01&amp;#34;x254 . &amp;#34;\x38\x84\x04\x08&amp;#34;x1 . &amp;#34;\x01\x01\x01\x01&amp;#34;x1&amp;#39;&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;)&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;经过验证，这在 GDB 调试下是有效的，但需要注意以下细节：&lt;/p&gt;
-&lt;ol&gt;
-&lt;li&gt;输入参数的长度必须始终为 256 字节，否则 &lt;code&gt;ebp&lt;/code&gt; 的值会发生变化，因为输入参数会占用栈空间，从而影响帧的起始位置，进而影响 &lt;code&gt;ebp&lt;/code&gt; 的值。&lt;/li&gt;
-&lt;li&gt;填充必须使用非零值，如 &lt;code&gt;0x01&lt;/code&gt;，因为如果遇到 &lt;code&gt;0&lt;/code&gt; 值，&lt;code&gt;strncpy&lt;/code&gt; 会提前终止。&lt;/li&gt;
-&lt;/ol&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;直接执行程序时（即不使用 GDB），内存布局不同，导致偏移位置也不同。通过实验，发现偏移位置在第 235 个位置。对应的攻击命令是：&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;./obo &lt;span style=&#34;color:#66d9ef&#34;&gt;$(&lt;/span&gt;perl -e &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;print  &amp;#34;\x01\x01\x01\x01&amp;#34;x234 . &amp;#34;\x38\x84\x04\x08&amp;#34;x1 . &amp;#34;\x01\x01\x01\x01&amp;#34;x21&amp;#39;&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;)&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;这样就实现了找到准确覆盖位置并成功执行攻击的效果。&lt;/p&gt;
-</description>
-        </item>
-        
-    </channel>
-</rss>
+&lt;/code>&lt;/pre>&lt;ul>
+&lt;li>&lt;code>mov esp, ebp&lt;/code>：将栈指针 (&lt;code>esp&lt;/code>) 设置为帧指针 (&lt;code>ebp&lt;/code>) 的值，恢复栈指针到当前栈帧的顶部，从而释放当前函数占用的空间。&lt;/li>
+&lt;li>&lt;code>pop ebp&lt;/code>：将栈顶的值弹出并赋给帧指针 (&lt;code>ebp&lt;/code>)，从而恢复调用者的帧指针。实际上，相当于将返回地址写入 &lt;code>ebp&lt;/code>，这意味着将栈中的值（通常是调用者的帧地址）赋给 &lt;code>ebp&lt;/code>，从而恢复调用者的栈帧。&lt;/li>
+&lt;/ul>
+&lt;p>&lt;code>leave&lt;/code> 的作用是将 &lt;code>esp&lt;/code> 恢复到函数调用前的位置，并弹出保存的 &lt;code>ebp&lt;/code>。如果 &lt;code>ebp&lt;/code> 被覆盖为指向某个特殊地址（例如缓冲区内的地址），在函数返回时可能导致错误的栈指针位置。&lt;/p>
+&lt;h3 id="2-ret-指令">2. &lt;code>ret&lt;/code> 指令
+&lt;/h3>&lt;p>&lt;code>ret&lt;/code> 指令从栈顶弹出一个地址并跳转到该地址：&lt;/p>
+&lt;pre tabindex="0">&lt;code class="language-assembly" data-lang="assembly">pop eip
+&lt;/code>&lt;/pre>&lt;p>如果返回地址被覆盖为 &lt;code>bar&lt;/code> 函数的地址，执行流将跳转到 &lt;code>bar&lt;/code>，允许攻击者执行任意代码。本质上，&lt;code>ret&lt;/code> 会将一个地址弹出到指令指针 (&lt;code>eip&lt;/code>) 并跳转到该地址继续执行。&lt;/p>
+&lt;h2 id="攻击步骤">攻击步骤
+&lt;/h2>&lt;ul>
+&lt;li>当执行命令 &lt;code>perl -e 'system &amp;quot;./obo&amp;quot;, &amp;quot;\x38\x84\x04\x08&amp;quot;x256'&lt;/code> 时，程序会将这些重复的字节作为输入传递给 &lt;code>./obo&lt;/code>。&lt;/li>
+&lt;li>在 &lt;code>foo&lt;/code> 函数返回时，执行了 &lt;code>leave&lt;/code> 和 &lt;code>ret&lt;/code> 指令，由于返回地址被覆盖，程序跳转到 &lt;code>bar&lt;/code> 函数，打印出成功的消息多次。&lt;/li>
+&lt;/ul>
+&lt;h2 id="进一步分析确定有效的覆盖位置">进一步分析：确定有效的覆盖位置
+&lt;/h2>&lt;p>为了成功执行攻击，关键在于精确确定需要覆盖哪些字节，以有效地操控控制流。在这个例子中，溢出发生在执行 &lt;code>buf[sizeof(buf)] = '\0'&lt;/code> 时，导致保存的帧指针 (&lt;code>ebp&lt;/code>) 的最低有效字节被设置为 &lt;code>0&lt;/code>。因此，需要调整 &lt;code>ebp&lt;/code> 的值，确保其指向缓冲区区域，从而使执行流程按预期进行，最终跳转到 &lt;code>bar&lt;/code> 函数。&lt;/p>
+&lt;p>基于进一步的分析和测试，得出以下见解：&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>要准确确定覆盖位置，&lt;code>ebp&lt;/code> 的值至关重要。然而，获得这个值是有挑战的，因为：&lt;/p>
+&lt;ol>
+&lt;li>GDB 调试会影响地址布局。&lt;/li>
+&lt;li>输入参数的长度会影响地址布局。&lt;/li>
+&lt;/ol>
+&lt;/li>
+&lt;li>
+&lt;p>在 GDB 调试下，&lt;code>foo&lt;/code> 函数内的布局如下：&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>执行 &lt;code>buf[sizeof(buf)] = '\0';&lt;/code> 后，&lt;code>ebp&lt;/code> 被修改，使得返回地址实际上取的是 &lt;code>ebp + 1&lt;/code> 处的值，即地址 &lt;code>0xbfffed00 + 1&lt;/code>，也就是 &lt;code>0xbfffed04&lt;/code>。&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>对应的偏移位置在 &lt;code>buf&lt;/code> 的第 255 个位置，这意味着可以通过只在该特定位置填入返回地址来构造攻击。在 GDB 中使用以下命令进行验证：&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span>r &lt;span style="color:#66d9ef">$(&lt;/span>perl -e &lt;span style="color:#e6db74">&amp;#39;print &amp;#34;\x01\x01\x01\x01&amp;#34;x254 . &amp;#34;\x38\x84\x04\x08&amp;#34;x1 . &amp;#34;\x01\x01\x01\x01&amp;#34;x1&amp;#39;&lt;/span>&lt;span style="color:#66d9ef">)&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;/li>
+&lt;li>
+&lt;p>经过验证，这在 GDB 调试下是有效的，但需要注意以下细节：&lt;/p>
+&lt;ol>
+&lt;li>输入参数的长度必须始终为 256 字节，否则 &lt;code>ebp&lt;/code> 的值会发生变化，因为输入参数会占用栈空间，从而影响帧的起始位置，进而影响 &lt;code>ebp&lt;/code> 的值。&lt;/li>
+&lt;li>填充必须使用非零值，如 &lt;code>0x01&lt;/code>，因为如果遇到 &lt;code>0&lt;/code> 值，&lt;code>strncpy&lt;/code> 会提前终止。&lt;/li>
+&lt;/ol>
+&lt;/li>
+&lt;li>
+&lt;p>直接执行程序时（即不使用 GDB），内存布局不同，导致偏移位置也不同。通过实验，发现偏移位置在第 235 个位置。对应的攻击命令是：&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span>./obo &lt;span style="color:#66d9ef">$(&lt;/span>perl -e &lt;span style="color:#e6db74">&amp;#39;print &amp;#34;\x01\x01\x01\x01&amp;#34;x234 . &amp;#34;\x38\x84\x04\x08&amp;#34;x1 . &amp;#34;\x01\x01\x01\x01&amp;#34;x21&amp;#39;&lt;/span>&lt;span style="color:#66d9ef">)&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;/li>
+&lt;/ul>
+&lt;p>这样就实现了找到准确覆盖位置并成功执行攻击的效果。&lt;/p></description></item></channel></rss>

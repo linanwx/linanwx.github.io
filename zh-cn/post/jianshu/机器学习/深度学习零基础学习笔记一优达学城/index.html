@@ -1,539 +1,37 @@
-<!DOCTYPE html>
-<html lang="zh-cn" dir="ltr">
-    <head><meta charset='utf-8'>
-<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="前言 突发奇想想学机器学习，这里是学习过程的笔记 准备 我做了这些准备工作 MacBook 一台，搭建好Python环境，安装numpy和matplotlib 优达学城注册免费的《深度学习》课程（Google合作） 廖雪峰Python入门教程学习 花费两天时间大致浏览《机器学习实战》 学习这些知识应该足以进行接下来的优达学城的学习 课程一 从机器学习到深度学习 小节1-8，主要介绍了深度学习的发展现状等等知识。 小节9-12介绍了softmax模型。 粗略浏览机器学习实战后，在机器学习实战这本书中，大致介绍了机器学习的几种算法。从表面上来看，机器学习是一些分类和聚类算法。在这些算法中，介绍了一种算法，叫做逻辑回归分类。 在小节9-12中，主要介绍了分类器模型——逻辑回归，分类函数使用的是softmax函数。 什么是softmax函数 这张图片可以表明什么是softmax函数了。对原来数列中的每个数z求exp(z)，新数的大小所占的比例就是新数的softmax概率。 性质 如果输入同比例扩大，则分类器的结果越两极化，越自信，如果输入同比例缩小，分类器结果趋于平均，不自信。 算法 import numpy as np def softmax(x): &#34;&#34;&#34;Compute softmax values for each sets of scores in x.&#34;&#34;&#34; expList = [np.exp(i) for i in x] expSum = sum(expList) x = [i/expSum for i in expList] return np.array(x) 13-14节主要讲One-Hot编码。在softmax函数给出一组概率数列之后，如何确定分类呢？例如概率最高的为1，其他的为0，这样的一个数列，属于One-Hot编码。这种编码是已经确定了分类。 15-16节讲了交叉熵。softmax可以计算概率数列，OneHot是已经确定的分类，那如何计算概率数列到某个分类的距离呢？使用交叉熵来度量这个距离。 17-20 节讲解了如何使用这个分类器。其中，18节讲了为什么需要采用一种特殊的初始数据。 sum = 1000000000 for i in range(1000000): sum += 0.000001 sum -= 1000000000 print(sum) 这段代码运行结果不是1。如果把sum换成一个很小的数字，例如1，而不是1000000000，我们发现结果误差变小了。基于这个原因，我们希望初始数据总是均值为0，并且各个方向的方差为一致的。例如一个灰度图片的像素值0-255，我们需要把它减去128，然后除以128，这样每一个数字都是-1到1之间的数字，这样的初始数据更适合用来训练。">
-<title>深度学习零基础学习笔记一（优达学城）</title>
-
-<link rel='canonical' href='https://nansenli.com/zh-cn/post/jianshu/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E9%9B%B6%E5%9F%BA%E7%A1%80%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%E4%B8%80%E4%BC%98%E8%BE%BE%E5%AD%A6%E5%9F%8E/'>
-
-<link rel="stylesheet" href="/scss/style.min.b9b97e7c3f7f078f7ec4f60195f6139d30ad5972cc05950321ee04a9e98c542f.css"><meta property='og:title' content="深度学习零基础学习笔记一（优达学城）">
-<meta property='og:description' content="前言 突发奇想想学机器学习，这里是学习过程的笔记 准备 我做了这些准备工作 MacBook 一台，搭建好Python环境，安装numpy和matplotlib 优达学城注册免费的《深度学习》课程（Google合作） 廖雪峰Python入门教程学习 花费两天时间大致浏览《机器学习实战》 学习这些知识应该足以进行接下来的优达学城的学习 课程一 从机器学习到深度学习 小节1-8，主要介绍了深度学习的发展现状等等知识。 小节9-12介绍了softmax模型。 粗略浏览机器学习实战后，在机器学习实战这本书中，大致介绍了机器学习的几种算法。从表面上来看，机器学习是一些分类和聚类算法。在这些算法中，介绍了一种算法，叫做逻辑回归分类。 在小节9-12中，主要介绍了分类器模型——逻辑回归，分类函数使用的是softmax函数。 什么是softmax函数 这张图片可以表明什么是softmax函数了。对原来数列中的每个数z求exp(z)，新数的大小所占的比例就是新数的softmax概率。 性质 如果输入同比例扩大，则分类器的结果越两极化，越自信，如果输入同比例缩小，分类器结果趋于平均，不自信。 算法 import numpy as np def softmax(x): &#34;&#34;&#34;Compute softmax values for each sets of scores in x.&#34;&#34;&#34; expList = [np.exp(i) for i in x] expSum = sum(expList) x = [i/expSum for i in expList] return np.array(x) 13-14节主要讲One-Hot编码。在softmax函数给出一组概率数列之后，如何确定分类呢？例如概率最高的为1，其他的为0，这样的一个数列，属于One-Hot编码。这种编码是已经确定了分类。 15-16节讲了交叉熵。softmax可以计算概率数列，OneHot是已经确定的分类，那如何计算概率数列到某个分类的距离呢？使用交叉熵来度量这个距离。 17-20 节讲解了如何使用这个分类器。其中，18节讲了为什么需要采用一种特殊的初始数据。 sum = 1000000000 for i in range(1000000): sum += 0.000001 sum -= 1000000000 print(sum) 这段代码运行结果不是1。如果把sum换成一个很小的数字，例如1，而不是1000000000，我们发现结果误差变小了。基于这个原因，我们希望初始数据总是均值为0，并且各个方向的方差为一致的。例如一个灰度图片的像素值0-255，我们需要把它减去128，然后除以128，这样每一个数字都是-1到1之间的数字，这样的初始数据更适合用来训练。">
-<meta property='og:url' content='https://nansenli.com/zh-cn/post/jianshu/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E9%9B%B6%E5%9F%BA%E7%A1%80%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%E4%B8%80%E4%BC%98%E8%BE%BE%E5%AD%A6%E5%9F%8E/'>
-<meta property='og:site_name' content='Nansen Li&#39;s Blog
+<!doctype html><html lang=zh-cn dir=ltr><head><meta charset=utf-8><meta name=viewport content='width=device-width,initial-scale=1'><meta name=description content='前言 突发奇想想学机器学习，这里是学习过程的笔记 准备 我做了这些准备工作 MacBook 一台，搭建好Python环境，安装numpy和matplotlib 优达学城注册免费的《深度学习》课程（Google合作） 廖雪峰Python入门教程学习 花费两天时间大致浏览《机器学习实战》 学习这些知识应该足以进行接下来的优达学城的学习 课程一 从机器学习到深度学习 小节1-8，主要介绍了深度学习的发展现状等等知识。 小节9-12介绍了softmax模型。 粗略浏览机器学习实战后，在机器学习实战这本书中，大致介绍了机器学习的几种算法。从表面上来看，机器学习是一些分类和聚类算法。在这些算法中，介绍了一种算法，叫做逻辑回归分类。 在小节9-12中，主要介绍了分类器模型——逻辑回归，分类函数使用的是softmax函数。 什么是softmax函数 这张图片可以表明什么是softmax函数了。对原来数列中的每个数z求exp(z)，新数的大小所占的比例就是新数的softmax概率。 性质 如果输入同比例扩大，则分类器的结果越两极化，越自信，如果输入同比例缩小，分类器结果趋于平均，不自信。 算法 import numpy as np def softmax(x): """Compute softmax values for each sets of scores in x.""" expList = [np.exp(i) for i in x] expSum = sum(expList) x = [i/expSum for i in expList] return np.array(x) 13-14节主要讲One-Hot编码。在softmax函数给出一组概率数列之后，如何确定分类呢？例如概率最高的为1，其他的为0，这样的一个数列，属于One-Hot编码。这种编码是已经确定了分类。 15-16节讲了交叉熵。softmax可以计算概率数列，OneHot是已经确定的分类，那如何计算概率数列到某个分类的距离呢？使用交叉熵来度量这个距离。 17-20 节讲解了如何使用这个分类器。其中，18节讲了为什么需要采用一种特殊的初始数据。 sum = 1000000000 for i in range(1000000): sum += 0.000001 sum -= 1000000000 print(sum) 这段代码运行结果不是1。如果把sum换成一个很小的数字，例如1，而不是1000000000，我们发现结果误差变小了。基于这个原因，我们希望初始数据总是均值为0，并且各个方向的方差为一致的。例如一个灰度图片的像素值0-255，我们需要把它减去128，然后除以128，这样每一个数字都是-1到1之间的数字，这样的初始数据更适合用来训练。'><title>深度学习零基础学习笔记一（优达学城）</title>
+<link rel=canonical href=https://nansenli.com/zh-cn/post/jianshu/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E9%9B%B6%E5%9F%BA%E7%A1%80%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%E4%B8%80%E4%BC%98%E8%BE%BE%E5%AD%A6%E5%9F%8E/><link rel=stylesheet href=/scss/style.min.b9b97e7c3f7f078f7ec4f60195f6139d30ad5972cc05950321ee04a9e98c542f.css><meta property='og:title' content="深度学习零基础学习笔记一（优达学城）"><meta property='og:description' content='前言 突发奇想想学机器学习，这里是学习过程的笔记 准备 我做了这些准备工作 MacBook 一台，搭建好Python环境，安装numpy和matplotlib 优达学城注册免费的《深度学习》课程（Google合作） 廖雪峰Python入门教程学习 花费两天时间大致浏览《机器学习实战》 学习这些知识应该足以进行接下来的优达学城的学习 课程一 从机器学习到深度学习 小节1-8，主要介绍了深度学习的发展现状等等知识。 小节9-12介绍了softmax模型。 粗略浏览机器学习实战后，在机器学习实战这本书中，大致介绍了机器学习的几种算法。从表面上来看，机器学习是一些分类和聚类算法。在这些算法中，介绍了一种算法，叫做逻辑回归分类。 在小节9-12中，主要介绍了分类器模型——逻辑回归，分类函数使用的是softmax函数。 什么是softmax函数 这张图片可以表明什么是softmax函数了。对原来数列中的每个数z求exp(z)，新数的大小所占的比例就是新数的softmax概率。 性质 如果输入同比例扩大，则分类器的结果越两极化，越自信，如果输入同比例缩小，分类器结果趋于平均，不自信。 算法 import numpy as np def softmax(x): """Compute softmax values for each sets of scores in x.""" expList = [np.exp(i) for i in x] expSum = sum(expList) x = [i/expSum for i in expList] return np.array(x) 13-14节主要讲One-Hot编码。在softmax函数给出一组概率数列之后，如何确定分类呢？例如概率最高的为1，其他的为0，这样的一个数列，属于One-Hot编码。这种编码是已经确定了分类。 15-16节讲了交叉熵。softmax可以计算概率数列，OneHot是已经确定的分类，那如何计算概率数列到某个分类的距离呢？使用交叉熵来度量这个距离。 17-20 节讲解了如何使用这个分类器。其中，18节讲了为什么需要采用一种特殊的初始数据。 sum = 1000000000 for i in range(1000000): sum += 0.000001 sum -= 1000000000 print(sum) 这段代码运行结果不是1。如果把sum换成一个很小的数字，例如1，而不是1000000000，我们发现结果误差变小了。基于这个原因，我们希望初始数据总是均值为0，并且各个方向的方差为一致的。例如一个灰度图片的像素值0-255，我们需要把它减去128，然后除以128，这样每一个数字都是-1到1之间的数字，这样的初始数据更适合用来训练。'><meta property='og:url' content='https://nansenli.com/zh-cn/post/jianshu/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E9%9B%B6%E5%9F%BA%E7%A1%80%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%E4%B8%80%E4%BC%98%E8%BE%BE%E5%AD%A6%E5%9F%8E/'><meta property='og:site_name' content="Nansen Li's Blog
 李楠森的博客
-'>
-<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2017-07-19T07:42:00&#43;00:00'/><meta property='article:modified_time' content='2017-07-19T07:42:00&#43;00:00'/>
-<meta name="twitter:title" content="深度学习零基础学习笔记一（优达学城）">
-<meta name="twitter:description" content="前言 突发奇想想学机器学习，这里是学习过程的笔记 准备 我做了这些准备工作 MacBook 一台，搭建好Python环境，安装numpy和matplotlib 优达学城注册免费的《深度学习》课程（Google合作） 廖雪峰Python入门教程学习 花费两天时间大致浏览《机器学习实战》 学习这些知识应该足以进行接下来的优达学城的学习 课程一 从机器学习到深度学习 小节1-8，主要介绍了深度学习的发展现状等等知识。 小节9-12介绍了softmax模型。 粗略浏览机器学习实战后，在机器学习实战这本书中，大致介绍了机器学习的几种算法。从表面上来看，机器学习是一些分类和聚类算法。在这些算法中，介绍了一种算法，叫做逻辑回归分类。 在小节9-12中，主要介绍了分类器模型——逻辑回归，分类函数使用的是softmax函数。 什么是softmax函数 这张图片可以表明什么是softmax函数了。对原来数列中的每个数z求exp(z)，新数的大小所占的比例就是新数的softmax概率。 性质 如果输入同比例扩大，则分类器的结果越两极化，越自信，如果输入同比例缩小，分类器结果趋于平均，不自信。 算法 import numpy as np def softmax(x): &#34;&#34;&#34;Compute softmax values for each sets of scores in x.&#34;&#34;&#34; expList = [np.exp(i) for i in x] expSum = sum(expList) x = [i/expSum for i in expList] return np.array(x) 13-14节主要讲One-Hot编码。在softmax函数给出一组概率数列之后，如何确定分类呢？例如概率最高的为1，其他的为0，这样的一个数列，属于One-Hot编码。这种编码是已经确定了分类。 15-16节讲了交叉熵。softmax可以计算概率数列，OneHot是已经确定的分类，那如何计算概率数列到某个分类的距离呢？使用交叉熵来度量这个距离。 17-20 节讲解了如何使用这个分类器。其中，18节讲了为什么需要采用一种特殊的初始数据。 sum = 1000000000 for i in range(1000000): sum += 0.000001 sum -= 1000000000 print(sum) 这段代码运行结果不是1。如果把sum换成一个很小的数字，例如1，而不是1000000000，我们发现结果误差变小了。基于这个原因，我们希望初始数据总是均值为0，并且各个方向的方差为一致的。例如一个灰度图片的像素值0-255，我们需要把它减去128，然后除以128，这样每一个数字都是-1到1之间的数字，这样的初始数据更适合用来训练。">
-    <link rel="shortcut icon" href="/favicon.ico" />
-
-  
-    
-      <script async src="https://www.googletagmanager.com/gtag/js?id=G-WC38C3XE3J"></script>
-      <script>
-        var doNotTrack = false;
-        if ( false ) {
-          var dnt = (navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack);
-          var doNotTrack = (dnt == "1" || dnt == "yes");
-        }
-        if (!doNotTrack) {
-          window.dataLayer = window.dataLayer || [];
-          function gtag(){dataLayer.push(arguments);}
-          gtag('js', new Date());
-          gtag('config', 'G-WC38C3XE3J');
-        }
-      </script>
-    
-  
-
-
-    </head>
-    <body class="
-    article-page
-    ">
-    <script>
-        (function() {
-            const colorSchemeKey = 'StackColorScheme';
-            if(!localStorage.getItem(colorSchemeKey)){
-                localStorage.setItem(colorSchemeKey, "auto");
-            }
-        })();
-    </script><script>
-    (function() {
-        const colorSchemeKey = 'StackColorScheme';
-        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
-        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
-
-        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
-            
-
-            document.documentElement.dataset.scheme = 'dark';
-        } else {
-            document.documentElement.dataset.scheme = 'light';
-        }
-    })();
-</script>
-<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
-    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="切换菜单">
-        <span class="hamburger-box">
-            <span class="hamburger-inner"></span>
-        </span>
-    </button>
-
-    <header>
-        
-            
-            <figure class="site-avatar">
-                <a href="/zh-cn/">
-                
-                    
-                    
-                    
-                        
-                        <img src="/img/avatar_hu96777ff80939aaa7d938dddcc232fcc6_1414962_300x0_resize_box_3.png" width="300"
-                            height="300" class="site-logo" loading="lazy" alt="Avatar">
-                    
-                
-                </a>
-                
-                    <span class="emoji">🌈</span>
-                
-            </figure>
-            
-        
-        
-        <div class="site-meta">
-            <h1 class="site-name"><a href="/zh-cn">Nansen Li&#39;s Blog
-李楠森的博客
-</a></h1>
-            <h2 class="site-description"></h2>
-        </div>
-    </header><ol class="menu-social">
-            
-                <li>
-                    <a 
-                        href='https://github.com/linanwx'
-                        target="_blank"
-                        title="GitHub"
-                        rel="me"
-                    >
-                        
-                        
-                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
-</svg>
-
-
-
-                        
-                    </a>
-                </li>
-            
-                <li>
-                    <a 
-                        href='https://www.linkedin.com/in/nansen-li-3bb0a3146/'
-                        target="_blank"
-                        title="LinkedIn"
-                        rel="me"
-                    >
-                        
-                        
-                            <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-brand-linkedin"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M8 11v5" /><path d="M8 8v.01" /><path d="M12 16v-5" /><path d="M16 16v-3a2 2 0 1 0 -4 0" /><path d="M3 7a4 4 0 0 1 4 -4h10a4 4 0 0 1 4 4v10a4 4 0 0 1 -4 4h-10a4 4 0 0 1 -4 -4z" /></svg>
-                        
-                    </a>
-                </li>
-            
-                <li>
-                    <a 
-                        href='index.xml'
-                        target="_blank"
-                        title="RSS"
-                        rel="me"
-                    >
-                        
-                        
-                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-rss" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-  <path stroke="none" d="M0 0h24v24H0z"/>
-  <circle cx="5" cy="19" r="1" />
-  <path d="M4 4a16 16 0 0 1 16 16" />
-  <path d="M4 11a9 9 0 0 1 9 9" />
-</svg>
-
-
-
-                        
-                    </a>
-                </li>
-            
-        </ol><ol class="menu" id="main-menu">
-        
-        
-        
-        <li >
-            <a href='/zh-cn/' >
-                
-                
-                
-                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-  <path stroke="none" d="M0 0h24v24H0z"/>
-  <polyline points="5 12 3 12 12 3 21 12 19 12" />
-  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
-  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
-</svg>
-
-
-
-                
-                <span>主页</span>
-            </a>
-        </li>
-        
-        
-        <li >
-            <a href='/zh-cn/page/archives/' >
-                
-                
-                
-                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-  <path stroke="none" d="M0 0h24v24H0z"/>
-  <rect x="3" y="4" width="18" height="4" rx="2" />
-  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
-  <line x1="10" y1="12" x2="14" y2="12" />
-</svg>
-
-
-
-                
-                <span>归档</span>
-            </a>
-        </li>
-        
-        
-        <li >
-            <a href='/zh-cn/page/search/' >
-                
-                
-                
-                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-  <path stroke="none" d="M0 0h24v24H0z"/>
-  <circle cx="10" cy="10" r="7" />
-  <line x1="21" y1="21" x2="15" y2="15" />
-</svg>
-
-
-
-                
-                <span>搜索</span>
-            </a>
-        </li>
-        
-        <li class="menu-bottom-section">
-            <ol class="menu">
-                    
-                        <li id="i18n-switch">  
-                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-language" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-  <path d="M4 5h7" />
-  <path d="M9 3v2c0 4.418 -2.239 8 -5 8" />
-  <path d="M5 9c-.003 2.144 2.952 3.908 6.7 4" />
-  <path d="M12 20l4 -9l4 9" />
-  <path d="M19.1 18h-6.2" />
-</svg>
-
-
-
-                            <select name="language" title="language" onchange="window.location.href = this.selectedOptions[0].value">
-                                
-                                    <option value="https://nansenli.com/" >English</option>
-                                
-                                    <option value="https://nansenli.com/zh-cn/" selected>中文</option>
-                                
-                            </select>
-                        </li>
-                    
-                
-
-                
-                    <li id="dark-mode-toggle">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-  <path stroke="none" d="M0 0h24v24H0z"/>
-  <circle cx="8" cy="12" r="2" />
-  <rect x="2" y="6" width="20" height="12" rx="6" />
-</svg>
-
-
-
-                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-  <path stroke="none" d="M0 0h24v24H0z"/>
-  <circle cx="16" cy="12" r="2" />
-  <rect x="2" y="6" width="20" height="12" rx="6" />
-</svg>
-
-
-
-                        <span>暗色模式</span>
-                    </li>
-                
-            </ol>
-        </li>
-    </ol>
-</aside>
-
-    
-
-            <main class="main full-width">
-    <article class="main-article">
-    <header class="article-header">
-
-    <div class="article-details">
-    
-    <header class="article-category">
-        
-            <a href="/zh-cn/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" >
-                机器学习
-            </a>
-        
-    </header>
-    
-
-    <div class="article-title-wrapper">
-        <h2 class="article-title">
-            <a href="/zh-cn/post/jianshu/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E9%9B%B6%E5%9F%BA%E7%A1%80%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%E4%B8%80%E4%BC%98%E8%BE%BE%E5%AD%A6%E5%9F%8E/">深度学习零基础学习笔记一（优达学城）</a>
-        </h2>
-    
-        
-    </div>
-
-    
-    
-    
-    
-    <footer class="article-time">
-        
-            <div>
-                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-  <path stroke="none" d="M0 0h24v24H0z"/>
-  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
-  <circle cx="18" cy="18" r="4" />
-  <path d="M15 3v4" />
-  <path d="M7 3v4" />
-  <path d="M3 11h16" />
-  <path d="M18 16.496v1.504l1 1" />
-</svg>
-                <time class="article-time--published">Jul 19, 2017</time>
-            </div>
-        
-
-        
-            <div>
-                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-  <path stroke="none" d="M0 0h24v24H0z"/>
-  <circle cx="12" cy="12" r="9" />
-  <polyline points="12 7 12 12 15 15" />
-</svg>
-
-
-
-                <time class="article-time--reading">
-                    阅读时长: 8 分钟
-                </time>
-            </div>
-        
-    </footer>
-    
-
-    
-        <footer class="article-translations">
-            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-language" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-  <path d="M4 5h7" />
-  <path d="M9 3v2c0 4.418 -2.239 8 -5 8" />
-  <path d="M5 9c-.003 2.144 2.952 3.908 6.7 4" />
-  <path d="M12 20l4 -9l4 9" />
-  <path d="M19.1 18h-6.2" />
-</svg>
-
-
-
-            <div>
-                
-                    <a href="https://nansenli.com/post/jianshu/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E9%9B%B6%E5%9F%BA%E7%A1%80%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%E4%B8%80%E4%BC%98%E8%BE%BE%E5%AD%A6%E5%9F%8E/" class="link">English</a>
-                
-            </div>
-        </footer>
-    
-</div>
-
-</header>
-
-    <section class="article-content">
-    
-    
-    <h2 id="前言">前言
-</h2><p>突发奇想想学机器学习，这里是学习过程的笔记</p>
-<h2 id="准备">准备
-</h2><p>我做了这些准备工作</p>
-<ul>
-<li>MacBook 一台，搭建好Python环境，安装numpy和matplotlib</li>
-<li>优达学城注册免费的《深度学习》课程（Google合作）</li>
-<li>廖雪峰Python入门教程学习</li>
-<li>花费两天时间大致浏览《机器学习实战》</li>
-</ul>
-<p>学习这些知识应该足以进行接下来的优达学城的学习</p>
-<h2 id="课程一-从机器学习到深度学习">课程一 从机器学习到深度学习
-</h2><p><img src="/img/rescued/71c43f961173.png"
-	
-	
-	
-	loading="lazy"
-	
-		alt="前言"
-	
-	
-></p>
-<p>小节1-8，主要介绍了深度学习的发展现状等等知识。</p>
-<p><img src="/img/rescued/ff643a3a1ec4.png"
-	
-	
-	
-	loading="lazy"
-	
-		alt="image.png"
-	
-	
-></p>
-<p>小节9-12介绍了softmax模型。</p>
-<p>粗略浏览机器学习实战后，在机器学习实战这本书中，大致介绍了机器学习的几种算法。从表面上来看，机器学习是一些分类和聚类算法。在这些算法中，介绍了一种算法，叫做逻辑回归分类。</p>
-<p>在小节9-12中，主要介绍了分类器模型——逻辑回归，分类函数使用的是softmax函数。</p>
-<ul>
-<li>什么是softmax函数</li>
-</ul>
-<p><img src="/img/rescued/cb4b58f90872.jpg"
-	
-	
-	
-	loading="lazy"
-	
-		alt="softmax"
-	
-	
-></p>
-<p>这张图片可以表明什么是softmax函数了。对原来数列中的每个数z求exp(z)，新数的大小所占的比例就是新数的softmax概率。</p>
-<ul>
-<li>性质</li>
-</ul>
-<p>如果输入同比例扩大，则分类器的结果越两极化，越自信，如果输入同比例缩小，分类器结果趋于平均，不自信。</p>
-<ul>
-<li>算法</li>
-</ul>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">import</span> numpy <span style="color:#66d9ef">as</span> np
-</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">softmax</span>(x):
-</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;&#34;&#34;Compute softmax values for each sets of scores in x.&#34;&#34;&#34;</span>
-</span></span><span style="display:flex;"><span>    expList <span style="color:#f92672">=</span> [np<span style="color:#f92672">.</span>exp(i) <span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> x]
-</span></span><span style="display:flex;"><span>    expSum <span style="color:#f92672">=</span> sum(expList)
-</span></span><span style="display:flex;"><span>    x <span style="color:#f92672">=</span> [i<span style="color:#f92672">/</span>expSum <span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> expList]
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> np<span style="color:#f92672">.</span>array(x)
-</span></span></code></pre></div><p><img src="/img/rescued/8ba75ea46168.png"
-	
-	
-	
-	loading="lazy"
-	
-		alt="image.png"
-	
-	
-></p>
-<p>13-14节主要讲One-Hot编码。在softmax函数给出一组概率数列之后，如何确定分类呢？例如概率最高的为1，其他的为0，这样的一个数列，属于One-Hot编码。这种编码是已经确定了分类。</p>
-<p><img src="/img/rescued/d0050afa0519.png"
-	
-	
-	
-	loading="lazy"
-	
-		alt="交叉熵"
-	
-	
-></p>
-<p>15-16节讲了交叉熵。softmax可以计算概率数列，OneHot是已经确定的分类，那如何计算概率数列到某个分类的距离呢？使用交叉熵来度量这个距离。</p>
-<p><img src="/img/rescued/7a800c91612a.png"
-	
-	
-	
-	loading="lazy"
-	
-		alt="image.png"
-	
-	
-></p>
-<p><img src="/img/rescued/a1e862b4bd40.png"
-	
-	
-	
-	loading="lazy"
-	
-		alt="image.png"
-	
-	
-></p>
-<p>17-20 节讲解了如何使用这个分类器。其中，18节讲了为什么需要采用一种特殊的初始数据。</p>
-<pre tabindex="0"><code>sum = 1000000000
+"><meta property='og:type' content='article'><meta property='article:section' content='Post'><meta property='article:published_time' content='2017-07-19T07:42:00+00:00'><meta property='article:modified_time' content='2017-07-19T07:42:00+00:00'><meta name=twitter:title content="深度学习零基础学习笔记一（优达学城）"><meta name=twitter:description content='前言 突发奇想想学机器学习，这里是学习过程的笔记 准备 我做了这些准备工作 MacBook 一台，搭建好Python环境，安装numpy和matplotlib 优达学城注册免费的《深度学习》课程（Google合作） 廖雪峰Python入门教程学习 花费两天时间大致浏览《机器学习实战》 学习这些知识应该足以进行接下来的优达学城的学习 课程一 从机器学习到深度学习 小节1-8，主要介绍了深度学习的发展现状等等知识。 小节9-12介绍了softmax模型。 粗略浏览机器学习实战后，在机器学习实战这本书中，大致介绍了机器学习的几种算法。从表面上来看，机器学习是一些分类和聚类算法。在这些算法中，介绍了一种算法，叫做逻辑回归分类。 在小节9-12中，主要介绍了分类器模型——逻辑回归，分类函数使用的是softmax函数。 什么是softmax函数 这张图片可以表明什么是softmax函数了。对原来数列中的每个数z求exp(z)，新数的大小所占的比例就是新数的softmax概率。 性质 如果输入同比例扩大，则分类器的结果越两极化，越自信，如果输入同比例缩小，分类器结果趋于平均，不自信。 算法 import numpy as np def softmax(x): """Compute softmax values for each sets of scores in x.""" expList = [np.exp(i) for i in x] expSum = sum(expList) x = [i/expSum for i in expList] return np.array(x) 13-14节主要讲One-Hot编码。在softmax函数给出一组概率数列之后，如何确定分类呢？例如概率最高的为1，其他的为0，这样的一个数列，属于One-Hot编码。这种编码是已经确定了分类。 15-16节讲了交叉熵。softmax可以计算概率数列，OneHot是已经确定的分类，那如何计算概率数列到某个分类的距离呢？使用交叉熵来度量这个距离。 17-20 节讲解了如何使用这个分类器。其中，18节讲了为什么需要采用一种特殊的初始数据。 sum = 1000000000 for i in range(1000000): sum += 0.000001 sum -= 1000000000 print(sum) 这段代码运行结果不是1。如果把sum换成一个很小的数字，例如1，而不是1000000000，我们发现结果误差变小了。基于这个原因，我们希望初始数据总是均值为0，并且各个方向的方差为一致的。例如一个灰度图片的像素值0-255，我们需要把它减去128，然后除以128，这样每一个数字都是-1到1之间的数字，这样的初始数据更适合用来训练。'><link rel="shortcut icon" href=/favicon.ico><script async src="https://www.googletagmanager.com/gtag/js?id=G-WC38C3XE3J"></script><script>var dnt,doNotTrack=!1;if(!1&&(dnt=navigator.doNotTrack||window.doNotTrack||navigator.msDoNotTrack,doNotTrack=dnt=="1"||dnt=="yes"),!doNotTrack){window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag("js",new Date),gtag("config","G-WC38C3XE3J")}</script></head><body class=article-page><script>(function(){const e="StackColorScheme";localStorage.getItem(e)||localStorage.setItem(e,"auto")})()</script><script>(function(){const t="StackColorScheme",e=localStorage.getItem(t),n=window.matchMedia("(prefers-color-scheme: dark)").matches===!0;e=="dark"||e==="auto"&&n?document.documentElement.dataset.scheme="dark":document.documentElement.dataset.scheme="light"})()</script><div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky"><button class="hamburger hamburger--spin" type=button id=toggle-menu aria-label=切换菜单>
+<span class=hamburger-box><span class=hamburger-inner></span></span></button><header><figure class=site-avatar><a href=/zh-cn/><img src=/img/avatar_hu96777ff80939aaa7d938dddcc232fcc6_1414962_300x0_resize_box_3.png width=300 height=300 class=site-logo loading=lazy alt=Avatar>
+</a><span class=emoji>🌈</span></figure><div class=site-meta><h1 class=site-name><a href=/zh-cn>Nansen Li's Blog
+李楠森的博客</a></h1><h2 class=site-description></h2></div></header><ol class=menu-social><li><a href=https://github.com/linanwx target=_blank title=GitHub rel=me><svg class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 19c-4.3 1.4-4.3-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6.0 00-1.3-3.2 4.2 4.2.0 00-.1-3.2s-1.1-.3-3.5 1.3a12.3 12.3.0 00-6.2.0C6.5 2.8 5.4 3.1 5.4 3.1a4.2 4.2.0 00-.1 3.2A4.6 4.6.0 004 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"/></svg></a></li><li><a href=https://www.linkedin.com/in/nansen-li-3bb0a3146/ target=_blank title=LinkedIn rel=me><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-brand-linkedin"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M8 11v5"/><path d="M8 8v.01"/><path d="M12 16v-5"/><path d="M16 16v-3a2 2 0 10-4 0"/><path d="M3 7a4 4 0 014-4h10a4 4 0 014 4v10a4 4 0 01-4 4H7a4 4 0 01-4-4z"/></svg></a></li><li><a href=index.xml target=_blank title=RSS rel=me><svg class="icon icon-tabler icon-tabler-rss" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="5" cy="19" r="1"/><path d="M4 4a16 16 0 0116 16"/><path d="M4 11a9 9 0 019 9"/></svg></a></li></ol><ol class=menu id=main-menu><li><a href=/zh-cn/><svg class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><polyline points="5 12 3 12 12 3 21 12 19 12"/><path d="M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/><path d="M9 21v-6a2 2 0 012-2h2a2 2 0 012 2v6"/></svg>
+<span>主页</span></a></li><li><a href=/zh-cn/page/archives/><svg class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><rect x="3" y="4" width="18" height="4" rx="2"/><path d="M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8"/><line x1="10" y1="12" x2="14" y2="12"/></svg>
+<span>归档</span></a></li><li><a href=/zh-cn/page/search/><svg class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="10" cy="10" r="7"/><line x1="21" y1="21" x2="15" y2="15"/></svg>
+<span>搜索</span></a></li><li class=menu-bottom-section><ol class=menu><li id=i18n-switch><svg class="icon icon-tabler icon-tabler-language" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 5h7"/><path d="M9 3v2c0 4.418-2.239 8-5 8"/><path d="M5 9c-.003 2.144 2.952 3.908 6.7 4"/><path d="M12 20l4-9 4 9"/><path d="M19.1 18h-6.2"/></svg>
+<select name=language title=language onchange="window.location.href=this.selectedOptions[0].value"><option value=https://nansenli.com/>English</option><option value=https://nansenli.com/zh-cn/ selected>中文</option></select></li><li id=dark-mode-toggle><svg class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="8" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
+<svg class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="16" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
+<span>暗色模式</span></li></ol></li></ol></aside><main class="main full-width"><article class=main-article><header class=article-header><div class=article-details><header class=article-category><a href=/zh-cn/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/>机器学习</a></header><div class=article-title-wrapper><h2 class=article-title><a href=/zh-cn/post/jianshu/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E9%9B%B6%E5%9F%BA%E7%A1%80%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%E4%B8%80%E4%BC%98%E8%BE%BE%E5%AD%A6%E5%9F%8E/>深度学习零基础学习笔记一（优达学城）</a></h2></div><footer class=article-time><div><svg class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M11.795 21H5a2 2 0 01-2-2V7a2 2 0 012-2h12a2 2 0 012 2v4"/><circle cx="18" cy="18" r="4"/><path d="M15 3v4"/><path d="M7 3v4"/><path d="M3 11h16"/><path d="M18 16.496V18l1 1"/></svg>
+<time class=article-time--published>Jul 19, 2017</time></div><div><svg class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg>
+<time class=article-time--reading>阅读时长: 8 分钟</time></div></footer><footer class=article-translations><svg class="icon icon-tabler icon-tabler-language" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 5h7"/><path d="M9 3v2c0 4.418-2.239 8-5 8"/><path d="M5 9c-.003 2.144 2.952 3.908 6.7 4"/><path d="M12 20l4-9 4 9"/><path d="M19.1 18h-6.2"/></svg><div><a href=https://nansenli.com/post/jianshu/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E9%9B%B6%E5%9F%BA%E7%A1%80%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%E4%B8%80%E4%BC%98%E8%BE%BE%E5%AD%A6%E5%9F%8E/ class=link>English</a></div></footer></div></header><section class=article-content><h2 id=前言>前言</h2><p>突发奇想想学机器学习，这里是学习过程的笔记</p><h2 id=准备>准备</h2><p>我做了这些准备工作</p><ul><li>MacBook 一台，搭建好Python环境，安装numpy和matplotlib</li><li>优达学城注册免费的《深度学习》课程（Google合作）</li><li>廖雪峰Python入门教程学习</li><li>花费两天时间大致浏览《机器学习实战》</li></ul><p>学习这些知识应该足以进行接下来的优达学城的学习</p><h2 id=课程一-从机器学习到深度学习>课程一 从机器学习到深度学习</h2><p><img src=/img/rescued/71c43f961173.png loading=lazy alt=前言></p><p>小节1-8，主要介绍了深度学习的发展现状等等知识。</p><p><img src=/img/rescued/ff643a3a1ec4.png loading=lazy alt=image.png></p><p>小节9-12介绍了softmax模型。</p><p>粗略浏览机器学习实战后，在机器学习实战这本书中，大致介绍了机器学习的几种算法。从表面上来看，机器学习是一些分类和聚类算法。在这些算法中，介绍了一种算法，叫做逻辑回归分类。</p><p>在小节9-12中，主要介绍了分类器模型——逻辑回归，分类函数使用的是softmax函数。</p><ul><li>什么是softmax函数</li></ul><p><img src=/img/rescued/cb4b58f90872.jpg loading=lazy alt=softmax></p><p>这张图片可以表明什么是softmax函数了。对原来数列中的每个数z求exp(z)，新数的大小所占的比例就是新数的softmax概率。</p><ul><li>性质</li></ul><p>如果输入同比例扩大，则分类器的结果越两极化，越自信，如果输入同比例缩小，分类器结果趋于平均，不自信。</p><ul><li>算法</li></ul><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=display:flex><span><span style=color:#f92672>import</span> numpy <span style=color:#66d9ef>as</span> np
+</span></span><span style=display:flex><span><span style=color:#66d9ef>def</span> <span style=color:#a6e22e>softmax</span>(x):
+</span></span><span style=display:flex><span>    <span style=color:#e6db74>&#34;&#34;&#34;Compute softmax values for each sets of scores in x.&#34;&#34;&#34;</span>
+</span></span><span style=display:flex><span>    expList <span style=color:#f92672>=</span> [np<span style=color:#f92672>.</span>exp(i) <span style=color:#66d9ef>for</span> i <span style=color:#f92672>in</span> x]
+</span></span><span style=display:flex><span>    expSum <span style=color:#f92672>=</span> sum(expList)
+</span></span><span style=display:flex><span>    x <span style=color:#f92672>=</span> [i<span style=color:#f92672>/</span>expSum <span style=color:#66d9ef>for</span> i <span style=color:#f92672>in</span> expList]
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>return</span> np<span style=color:#f92672>.</span>array(x)
+</span></span></code></pre></div><p><img src=/img/rescued/8ba75ea46168.png loading=lazy alt=image.png></p><p>13-14节主要讲One-Hot编码。在softmax函数给出一组概率数列之后，如何确定分类呢？例如概率最高的为1，其他的为0，这样的一个数列，属于One-Hot编码。这种编码是已经确定了分类。</p><p><img src=/img/rescued/d0050afa0519.png loading=lazy alt=交叉熵></p><p>15-16节讲了交叉熵。softmax可以计算概率数列，OneHot是已经确定的分类，那如何计算概率数列到某个分类的距离呢？使用交叉熵来度量这个距离。</p><p><img src=/img/rescued/7a800c91612a.png loading=lazy alt=image.png></p><p><img src=/img/rescued/a1e862b4bd40.png loading=lazy alt=image.png></p><p>17-20 节讲解了如何使用这个分类器。其中，18节讲了为什么需要采用一种特殊的初始数据。</p><pre tabindex=0><code>sum = 1000000000
 
 for i in range(1000000):
     sum += 0.000001
 
 sum -= 1000000000
 print(sum)
-</code></pre><p>这段代码运行结果不是1。如果把sum换成一个很小的数字，例如1，而不是1000000000，我们发现结果误差变小了。基于这个原因，我们希望初始数据总是均值为0，并且各个方向的方差为一致的。例如一个灰度图片的像素值0-255，我们需要把它减去128，然后除以128，这样每一个数字都是-1到1之间的数字，这样的初始数据更适合用来训练。</p>
-<p><img src="/img/rescued/34f543ea3c1e.png"
-	
-	
-	
-	loading="lazy"
-	
-		alt="image.png"
-	
-	
-></p>
-<p>这样，我们就可以进行训练了。回顾一下视频内容，xi是训练数据矩阵，w是随机权重矩阵，为了性能，随机值取自正态分布中轴为0，方差很小的分布函数，然后计算概率数列，和目标的距离。然后求出到所有目标的平均距离。我们的目的是让距离变小，所以我们沿着梯度下降的方向优化权重矩阵，同时优化截距b。不断重复这一个过程，直到局部最优为止。</p>
-<ul>
-<li>安装docker</li>
-</ul>
-<p><a class="link" href="https://www.docker-cn.com/community-edition#/download"  target="_blank" rel="noopener"
-    >https://www.docker-cn.com/community-edition#/download</a></p>
-<p>配置官方中国镜像。</p>
-<p><img src="/img/rescued/1a9fbd212a79.png"
-	
-	
-	
-	loading="lazy"
-	
-		alt="image.png"
-	
-	
-></p>
-<ul>
-<li>安装jupyter notebook</li>
-</ul>
-<p><code>$ pip3 install jupyter</code>
+</code></pre><p>这段代码运行结果不是1。如果把sum换成一个很小的数字，例如1，而不是1000000000，我们发现结果误差变小了。基于这个原因，我们希望初始数据总是均值为0，并且各个方向的方差为一致的。例如一个灰度图片的像素值0-255，我们需要把它减去128，然后除以128，这样每一个数字都是-1到1之间的数字，这样的初始数据更适合用来训练。</p><p><img src=/img/rescued/34f543ea3c1e.png loading=lazy alt=image.png></p><p>这样，我们就可以进行训练了。回顾一下视频内容，xi是训练数据矩阵，w是随机权重矩阵，为了性能，随机值取自正态分布中轴为0，方差很小的分布函数，然后计算概率数列，和目标的距离。然后求出到所有目标的平均距离。我们的目的是让距离变小，所以我们沿着梯度下降的方向优化权重矩阵，同时优化截距b。不断重复这一个过程，直到局部最优为止。</p><ul><li>安装docker</li></ul><p><a class=link href=https://www.docker-cn.com/community-edition#/download target=_blank rel=noopener>https://www.docker-cn.com/community-edition#/download</a></p><p>配置官方中国镜像。</p><p><img src=/img/rescued/1a9fbd212a79.png loading=lazy alt=image.png></p><ul><li>安装jupyter notebook</li></ul><p><code>$ pip3 install jupyter</code>
 <code>$ jupyter notebook</code>
-此时可以使用命令jupyter notebook打开一个jupyter编辑器</p>
-<ul>
-<li>tensorflow环境搭建</li>
-</ul>
-<p><code>$ docker run -it -p 8888:8888 tensorflow/tensorflow</code>
-运行上述命令会自动下载tensorflow镜像，前提是仓库镜像设置成中国的镜像，否则下载很慢。运行命令后，会提示你打开网页，打开这个网址以后会显示tensorflow的jupyter编辑环境，前提是jupyter notebook安装正确</p>
-<ul>
-<li>挂载docker的文件目录
+此时可以使用命令jupyter notebook打开一个jupyter编辑器</p><ul><li>tensorflow环境搭建</li></ul><p><code>$ docker run -it -p 8888:8888 tensorflow/tensorflow</code>
+运行上述命令会自动下载tensorflow镜像，前提是仓库镜像设置成中国的镜像，否则下载很慢。运行命令后，会提示你打开网页，打开这个网址以后会显示tensorflow的jupyter编辑环境，前提是jupyter notebook安装正确</p><ul><li>挂载docker的文件目录
 我们需要把官方的作业导进去。关闭容器，重新打开容器，使用<code>-v 主机目录:容器目录</code>来进行挂载。
-<code>docker run -v /Users/hahaha/tensorflow/:/notebooks -it -p 8888:8888 tensorflow/tensorflow</code></li>
-</ul>
-<p>其中/Users/hahaha/tensorflow/是我的mac的一个文件夹，notebooks是tensorflow中的jupyter默认编辑目录。</p>
-<p>在主机目录的挂载目录下面粘贴第一个作业文件，1_notmnist.ipynb。这个文件可以在这里找到： <a class="link" href="https://github.com/tensorflow/tensorflow/blob/master/tensorflow/examples/udacity/1_notmnist.ipynb"  target="_blank" rel="noopener"
-    >1_notmnist.ipynb</a></p>
-<p><img src="/img/rescued/7faf184ae282.png"
-	
-	
-	
-	loading="lazy"
-	
-		alt="作业一内容"
-	
-	
-></p>
-<h2 id="作业代码段一">作业代码段一
-</h2><p>首先运行一下第一段代码的import，应该是没有任何出错的，此时什么也不会发生，如果出现了红色的输出错误，那就说明这些from import没有导入成功。</p>
-<pre tabindex="0"><code># These are all the modules we&#39;ll be using later. Make sure you can import them
+<code>docker run -v /Users/hahaha/tensorflow/:/notebooks -it -p 8888:8888 tensorflow/tensorflow</code></li></ul><p>其中/Users/hahaha/tensorflow/是我的mac的一个文件夹，notebooks是tensorflow中的jupyter默认编辑目录。</p><p>在主机目录的挂载目录下面粘贴第一个作业文件，1_notmnist.ipynb。这个文件可以在这里找到： <a class=link href=https://github.com/tensorflow/tensorflow/blob/master/tensorflow/examples/udacity/1_notmnist.ipynb target=_blank rel=noopener>1_notmnist.ipynb</a></p><p><img src=/img/rescued/7faf184ae282.png loading=lazy alt=作业一内容></p><h2 id=作业代码段一>作业代码段一</h2><p>首先运行一下第一段代码的import，应该是没有任何出错的，此时什么也不会发生，如果出现了红色的输出错误，那就说明这些from import没有导入成功。</p><pre tabindex=0><code># These are all the modules we&#39;ll be using later. Make sure you can import them
 # before proceeding further.
 from __future__ import print_function
 # print函数
@@ -565,19 +63,7 @@ from six.moves import cPickle as pickle
 # 使用%matplotlib命令可以将matplotlib的图表直接嵌入到Notebook之中，
 # 或者使用指定的界面库显示图表，它有一个参数指定matplotlib图表的显示方式。
 # inline表示将图表嵌入到Notebook中。
-</code></pre><h2 id="作业代码段二">作业代码段二
-</h2><p>接下来是第二段代码，会进行下载用于训练和测试的字母集合，大概是300mb大小。下载成功后，可以看到挂载目录下面的这两个文件。</p>
-<p><img src="/img/rescued/66a1b044606a.png"
-	
-	
-	
-	loading="lazy"
-	
-		alt="作业"
-	
-	
-></p>
-<pre tabindex="0"><code>url = &#39;https://commondatastorage.googleapis.com/books1000/&#39;
+</code></pre><h2 id=作业代码段二>作业代码段二</h2><p>接下来是第二段代码，会进行下载用于训练和测试的字母集合，大概是300mb大小。下载成功后，可以看到挂载目录下面的这两个文件。</p><p><img src=/img/rescued/66a1b044606a.png loading=lazy alt=作业></p><pre tabindex=0><code>url = &#39;https://commondatastorage.googleapis.com/books1000/&#39;
 last_percent_reported = None
 data_root = &#39;.&#39; # Change me to store data elsewhere
 
@@ -622,9 +108,7 @@ def maybe_download(filename, expected_bytes, force=False):
 
 train_filename = maybe_download(&#39;notMNIST_large.tar.gz&#39;, 247336696)
 test_filename = maybe_download(&#39;notMNIST_small.tar.gz&#39;, 8458043)
-</code></pre><h2 id="作业代码段三">作业代码段三
-</h2><p>解压缩用例</p>
-<pre tabindex="0"><code>num_classes = 10
+</code></pre><h2 id=作业代码段三>作业代码段三</h2><p>解压缩用例</p><pre tabindex=0><code>num_classes = 10
 # 数字总共有多少个
 np.random.seed(133)
 # 初始化随机种子
@@ -656,12 +140,7 @@ def maybe_extract(filename, force=False):
   
 train_folders = maybe_extract(train_filename)
 test_folders = maybe_extract(test_filename)
-</code></pre><h2 id="问题一">问题一
-</h2><p>写出代码显示解压缩的文件内容信息</p>
-<ul>
-<li>参考答案</li>
-</ul>
-<pre tabindex="0"><code>import random
+</code></pre><h2 id=问题一>问题一</h2><p>写出代码显示解压缩的文件内容信息</p><ul><li>参考答案</li></ul><pre tabindex=0><code>import random
 import matplotlib.image as mpimg
 
 
@@ -694,31 +173,7 @@ def plot_samples(data_folders, sample_size, title=None):
 
 plot_samples(train_folders, 20, &#39;Train&#39;)
 plot_samples(test_folders, 20, &#39;Test&#39;)
-</code></pre><p>运行效果如下</p>
-<p><img src="/img/rescued/94887f5b6eab.png"
-	
-	
-	
-	loading="lazy"
-	
-		alt="训练.png"
-	
-	
-></p>
-<p><img src="/img/rescued/3930a2cfe6b0.png"
-	
-	
-	
-	loading="lazy"
-	
-		alt="测试.png"
-	
-	
-></p>
-<p>可以看出，部分训练数据是有问题的</p>
-<h2 id="作业代码段四">作业代码段四
-</h2><p>这之后需要进行数据的归一化处理，就是让图像的每一个像素由0<del>255变换到-1.0</del>1.0，并且持久化到文件中</p>
-<pre tabindex="0"><code>image_size = 28  # Pixel width and height.
+</code></pre><p>运行效果如下</p><p><img src=/img/rescued/94887f5b6eab.png loading=lazy alt=训练.png></p><p><img src=/img/rescued/3930a2cfe6b0.png loading=lazy alt=测试.png></p><p>可以看出，部分训练数据是有问题的</p><h2 id=作业代码段四>作业代码段四</h2><p>这之后需要进行数据的归一化处理，就是让图像的每一个像素由0<del>255变换到-1.0</del>1.0，并且持久化到文件中</p><pre tabindex=0><code>image_size = 28  # Pixel width and height.
 pixel_depth = 255.0  # Number of levels per pixel.
 # 图片长宽和图片像素深度
 def load_letter(folder, min_num_images):
@@ -794,12 +249,7 @@ def maybe_pickle(data_folders, min_num_images_per_class, force=False):
 
 train_datasets = maybe_pickle(train_folders, 45000)
 test_datasets = maybe_pickle(test_folders, 1800)
-</code></pre><h2 id="问题2">问题2
-</h2><p>显示处理过的图片</p>
-<ul>
-<li>参考答案</li>
-</ul>
-<pre tabindex="0"><code>def plot_samples_2(data_folders, sample_size, title=None):
+</code></pre><h2 id=问题2>问题2</h2><p>显示处理过的图片</p><ul><li>参考答案</li></ul><pre tabindex=0><code>def plot_samples_2(data_folders, sample_size, title=None):
     fig = plt.figure()
 #     建立空图像
     if title: fig.suptitle(title, fontsize=16, fontweight=&#39;bold&#39;)
@@ -826,32 +276,7 @@ test_datasets = maybe_pickle(test_folders, 1800)
 
 plot_samples_2(train_datasets, 20, &#39;Train&#39;)
 plot_samples_2(test_datasets, 20, &#39;Test&#39;)
-</code></pre><p><img src="/img/rescued/c09ea5ab69e9.png"
-	
-	
-	
-	loading="lazy"
-	
-		alt="image.png"
-	
-	
-></p>
-<p><img src="/img/rescued/d4363496653b.png"
-	
-	
-	
-	loading="lazy"
-	
-		alt="image.png"
-	
-	
-></p>
-<h2 id="问题3">问题3
-</h2><p>检查每个字母下面的文件数目是否相似。</p>
-<ul>
-<li>参考答案</li>
-</ul>
-<pre tabindex="0"><code>file_path = &#39;notMNIST_large/{0}.pickle&#39;
+</code></pre><p><img src=/img/rescued/c09ea5ab69e9.png loading=lazy alt=image.png></p><p><img src=/img/rescued/d4363496653b.png loading=lazy alt=image.png></p><h2 id=问题3>问题3</h2><p>检查每个字母下面的文件数目是否相似。</p><ul><li>参考答案</li></ul><pre tabindex=0><code>file_path = &#39;notMNIST_large/{0}.pickle&#39;
 for ele in &#39;ABCDEFJHIJ&#39;:
     with open(file_path.format(ele), &#39;rb&#39;) as pk_f:
 #         遍历每一个目录
@@ -860,19 +285,7 @@ for ele in &#39;ABCDEFJHIJ&#39;:
     print(&#39;number of pictures in {}.pickle = &#39;.format(ele), dat.shape[0])
 #     打印相关信息
 </code></pre><p>结果表明数目基本一致。
-<img src="/img/rescued/31bcb36f8c25.png"
-	
-	
-	
-	loading="lazy"
-	
-		alt="问题3效果"
-	
-	
-></p>
-<h2 id="代码段数据分割">代码段——数据分割
-</h2><p>数据不可能一次性就全部加载到内存中，这里对这些数据进行分割，接下来的这份代码对数据进行了分割</p>
-<pre tabindex="0"><code>def make_arrays(nb_rows, img_size):
+<img src=/img/rescued/31bcb36f8c25.png loading=lazy alt=问题3效果></p><h2 id=代码段数据分割>代码段——数据分割</h2><p>数据不可能一次性就全部加载到内存中，这里对这些数据进行分割，接下来的这份代码对数据进行了分割</p><pre tabindex=0><code>def make_arrays(nb_rows, img_size):
   if nb_rows:
     dataset = np.ndarray((nb_rows, img_size, img_size), dtype=np.float32)
 #     创建一个空集合，数据类型是长rows宽img_size高img_size的矩阵，数据类型是浮点32位
@@ -952,9 +365,7 @@ _, _, test_dataset, test_labels = merge_datasets(test_datasets, test_size)
 print(&#39;Training:&#39;, train_dataset.shape, train_labels.shape)
 print(&#39;Validation:&#39;, valid_dataset.shape, valid_labels.shape)
 print(&#39;Testing:&#39;, test_dataset.shape, test_labels.shape)
-</code></pre><h2 id="代码段打散数据">代码段——打散数据
-</h2><p>permutation函数介绍：http://www.jianshu.com/p/f0eb10acaa2d</p>
-<pre tabindex="0"><code>def randomize(dataset, labels):
+</code></pre><h2 id=代码段打散数据>代码段——打散数据</h2><p>permutation函数介绍：http://www.jianshu.com/p/f0eb10acaa2d</p><pre tabindex=0><code>def randomize(dataset, labels):
 #     labels.shape[0] 是 labels 的长度
   permutation = np.random.permutation(labels.shape[0])
 #     随机取出这么多数字的打乱
@@ -967,12 +378,7 @@ print(&#39;Testing:&#39;, test_dataset.shape, test_labels.shape)
 train_dataset, train_labels = randomize(train_dataset, train_labels)
 test_dataset, test_labels = randomize(test_dataset, test_labels)
 valid_dataset, valid_labels = randomize(valid_dataset, valid_labels)
-</code></pre><h2 id="问题4">问题4
-</h2><p>检验打散后的数据是否正确</p>
-<ul>
-<li>参考答案</li>
-</ul>
-<pre tabindex="0"><code>import random
+</code></pre><h2 id=问题4>问题4</h2><p>检验打散后的数据是否正确</p><ul><li>参考答案</li></ul><pre tabindex=0><code>import random
 def plot_sample_3(dataset, labels, title):
     fig = plt.figure()
     plt.suptitle(title, fontsize=16, fontweight=&#39;bold&#39;)
@@ -996,19 +402,7 @@ def plot_sample_3(dataset, labels, title):
 plot_sample_3(train_dataset, train_labels, &#39;train dataset suffled&#39;)
 plot_sample_3(valid_dataset, valid_labels, &#39;valid dataset suffled&#39;)
 plot_sample_3(test_dataset, test_labels, &#39;test dataset suffled&#39;)
-</code></pre><p><img src="/img/rescued/2041fe44668c.png"
-	
-	
-	
-	loading="lazy"
-	
-		alt="问题4"
-	
-	
-></p>
-<p>省略类似的两图</p>
-<h2 id="代码段保存数据">代码段——保存数据
-</h2><pre tabindex="0"><code>pickle_file = os.path.join(data_root, &#39;notMNIST.pickle&#39;)
+</code></pre><p><img src=/img/rescued/2041fe44668c.png loading=lazy alt=问题4></p><p>省略类似的两图</p><h2 id=代码段保存数据>代码段——保存数据</h2><pre tabindex=0><code>pickle_file = os.path.join(data_root, &#39;notMNIST.pickle&#39;)
 # 输出文件路径
 try:
   f = open(pickle_file, &#39;wb&#39;)
@@ -1027,21 +421,12 @@ try:
 except Exception as e:
   print(&#39;Unable to save data to&#39;, pickle_file, &#39;:&#39;, e)
   raise
-</code></pre><h2 id="代码段显示保存数据的大小">代码段——显示保存数据的大小
-</h2><pre tabindex="0"><code>statinfo = os.stat(pickle_file)
+</code></pre><h2 id=代码段显示保存数据的大小>代码段——显示保存数据的大小</h2><pre tabindex=0><code>statinfo = os.stat(pickle_file)
 print(&#39;Compressed pickle size:&#39;, statinfo.st_size)
-</code></pre><h2 id="问题5">问题5
-</h2><p>题目的Google翻译</p>
-<p>通过构建，此数据集可能包含大量重叠样本，包括验证和测试集中也包含的训练数据！ 训练和测试之间的重叠可能会使结果偏斜，如果您希望在没有重叠的环境中使用您的模型，但如果您希望在使用训练样本时再次看到训练样本，那么实际上是可以的。 测量培训，验证和测试样本之间的重叠程度。
+</code></pre><h2 id=问题5>问题5</h2><p>题目的Google翻译</p><p>通过构建，此数据集可能包含大量重叠样本，包括验证和测试集中也包含的训练数据！ 训练和测试之间的重叠可能会使结果偏斜，如果您希望在没有重叠的环境中使用您的模型，但如果您希望在使用训练样本时再次看到训练样本，那么实际上是可以的。 测量培训，验证和测试样本之间的重叠程度。
 可选问题：
 数据集之间的重复数据怎么样？ （几乎相同的图像）
-创建一个消毒验证和测试集，并比较您在随后的作业中的准确性。</p>
-<p>大概意思是训练数据不能和测试用的数据重合，否则导致准确度不准</p>
-<p>参考代码：</p>
-<ul>
-<li>仅仅查看重复的图片数量</li>
-</ul>
-<pre tabindex="0"><code>import hashlib
+创建一个消毒验证和测试集，并比较您在随后的作业中的准确性。</p><p>大概意思是训练数据不能和测试用的数据重合，否则导致准确度不准</p><p>参考代码：</p><ul><li>仅仅查看重复的图片数量</li></ul><pre tabindex=0><code>import hashlib
 
 pickle_file = os.path.join(&#39;.&#39;, &#39;notMNIST.pickle&#39;)
 try:
@@ -1080,63 +465,31 @@ calcOverlap(data[&#39;test_dataset&#39;], data[&#39;valid_dataset&#39;], &#34;te
 
 - 参考代码
 </code></pre><p>import random
-def disp_sample_dataset(dataset, labels,trueLabels, title=None):</p>
-<h1 id="展示训练的结果">展示训练的结果
-</h1><pre><code>fig = plt.figure()
+def disp_sample_dataset(dataset, labels,trueLabels, title=None):</p><h1 id=展示训练的结果>展示训练的结果</h1><pre><code>fig = plt.figure()
 if title: fig.suptitle(title, fontsize=16, fontweight='bold')
-</code></pre>
-<h1 id="设置标题样式">设置标题样式
-</h1><pre><code>items = random.sample(range(len(labels)), 200)
-</code></pre>
-<h1 id="随机选择一系列图片">随机选择一系列图片
-</h1><pre><code>for i, item in enumerate(items):
+</code></pre><h1 id=设置标题样式>设置标题样式</h1><pre><code>items = random.sample(range(len(labels)), 200)
+</code></pre><h1 id=随机选择一系列图片>随机选择一系列图片</h1><pre><code>for i, item in enumerate(items):
     plt.subplot(10, 20, i + 1)
-</code></pre>
-<h1 id="设置一个子图">设置一个子图
-</h1><pre><code>    plt.axis('off')
-</code></pre>
-<h1 id="关闭坐标线">关闭坐标线
-</h1><pre><code>    lab = str(chr(ord('A') + labels[item]))
+</code></pre><h1 id=设置一个子图>设置一个子图</h1><pre><code>    plt.axis('off')
+</code></pre><h1 id=关闭坐标线>关闭坐标线</h1><pre><code>    lab = str(chr(ord('A') + labels[item]))
     trueLab = str(chr(ord('A') + trueLabels[item]))
     if lab == trueLab:
         plt.title( lab )
     else:
         plt.title(lab + &quot; but &quot; + trueLab)
-</code></pre>
-<h1 id="加上标题">加上标题
-</h1><pre><code>    plt.imshow(dataset[item])
-</code></pre>
-<h1 id="显示这个图片">显示这个图片
-</h1><pre><code>fig.set_size_inches(18.5, 10.5)
+</code></pre><h1 id=加上标题>加上标题</h1><pre><code>    plt.imshow(dataset[item])
+</code></pre><h1 id=显示这个图片>显示这个图片</h1><pre><code>fig.set_size_inches(18.5, 10.5)
 plt.show()
-</code></pre>
-<p>def train_and_predict(train_dataset, train_labels, test_dataset, test_labels ,sample_size):
-regr = LogisticRegression()</p>
-<h1 id="生成训练器">生成训练器
-</h1><pre><code>X_train = train_dataset[:sample_size].reshape(sample_size, 784)
-</code></pre>
-<h1 id="根据sample_size选择要训练的数据量">根据sample_size选择要训练的数据量
-</h1><h1 id="把二维向量压缩到一维向量">把二维向量压缩到一维向量
-</h1><pre><code>y_train = train_labels[:sample_size]
-</code></pre>
-<h1 id="取出训练数据">取出训练数据
-</h1><pre><code>regr.fit(X_train, y_train)
-</code></pre>
-<h1 id="训练数据">训练数据
-</h1><pre><code>X_test = test_dataset.reshape(test_dataset.shape[0], 28 * 28)
-</code></pre>
-<h1 id="将测试数据压缩到一维向量">将测试数据压缩到一维向量
-</h1><pre><code>y_test = test_labels
-</code></pre>
-<h1 id="测试数据所对应的真实标签">测试数据所对应的真实标签
-</h1><pre><code>pred_labels = regr.predict(X_test)
-</code></pre>
-<h1 id="生成预测数据">生成预测数据
-</h1><pre><code>print('Accuracy:', regr.score(X_test, y_test), 'when sample_size=', sample_size)
+</code></pre><p>def train_and_predict(train_dataset, train_labels, test_dataset, test_labels ,sample_size):
+regr = LogisticRegression()</p><h1 id=生成训练器>生成训练器</h1><pre><code>X_train = train_dataset[:sample_size].reshape(sample_size, 784)
+</code></pre><h1 id=根据sample_size选择要训练的数据量>根据sample_size选择要训练的数据量</h1><h1 id=把二维向量压缩到一维向量>把二维向量压缩到一维向量</h1><pre><code>y_train = train_labels[:sample_size]
+</code></pre><h1 id=取出训练数据>取出训练数据</h1><pre><code>regr.fit(X_train, y_train)
+</code></pre><h1 id=训练数据>训练数据</h1><pre><code>X_test = test_dataset.reshape(test_dataset.shape[0], 28 * 28)
+</code></pre><h1 id=将测试数据压缩到一维向量>将测试数据压缩到一维向量</h1><pre><code>y_test = test_labels
+</code></pre><h1 id=测试数据所对应的真实标签>测试数据所对应的真实标签</h1><pre><code>pred_labels = regr.predict(X_test)
+</code></pre><h1 id=生成预测数据>生成预测数据</h1><pre><code>print('Accuracy:', regr.score(X_test, y_test), 'when sample_size=', sample_size)
 disp_sample_dataset(test_dataset, pred_labels, test_labels, 'sample_size=' + str(sample_size))
-</code></pre>
-<p>train_and_predict(data[&rsquo;train_dataset&rsquo;],data[&rsquo;train_labels&rsquo;],data[&rsquo;test_dataset&rsquo;],data[&rsquo;test_labels&rsquo;], 1000)</p>
-<pre tabindex="0"><code>
+</code></pre><p>train_and_predict(data[&rsquo;train_dataset&rsquo;],data[&rsquo;train_labels&rsquo;],data[&rsquo;test_dataset&rsquo;],data[&rsquo;test_labels&rsquo;], 1000)</p><pre tabindex=0><code>
 ![image.png](/img/rescued/abdb5d761390.png)
 
 
@@ -1158,180 +511,10 @@ disp_sample_dataset(test_dataset, pred_labels, test_labels, 'sample_size=' + str
 
 &gt; 作业代码参考
 &gt; http://www.hankcs.com/ml/notmnist.html
-</code></pre>
-</section>
-
-
-    <footer class="article-footer">
-    
-
-    </footer>
-
-
-    
-</article>
-
-    
-
-    
-
-     
-    
-        
-    <div class="disqus-container">
-    <div id="disqus_thread"></div>
-<script>
-    window.disqus_config = function () {
-    
-    
-    
-    };
-    (function() {
-        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
-            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
-            return;
-        }
-        var d = document, s = d.createElement('script'); s.async = true;
-        s.src = '//' + "nansenli" + '.disqus.com/embed.js';
-        s.setAttribute('data-timestamp', +new Date());
-        (d.head || d.body).appendChild(s);
-    })();
-</script>
-<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
-</div>
-
-<style>
-    .disqus-container {
-        background-color: var(--card-background);
-        border-radius: var(--card-border-radius);
-        box-shadow: var(--shadow-l1);
-        padding: var(--card-padding);
-    }
-</style>
-
-<script>
-    window.addEventListener('onColorSchemeChange', (e) => {
-        if (typeof DISQUS == 'object') {
-            DISQUS.reset({
-                reload: true
-            });
-        }
-    })
-</script>
-
-    
-
-    <footer class="site-footer">
-    <section class="copyright">
-        &copy; 
-        
-        2026 Nansen Li 🌈 （李楠森）
-    </section>
-    
-    <section class="powerby">
-        使用 <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> 构建 <br />
-        主题 <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.31.0">Stack</a></b> 由 <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a> 设计
-    </section>
-</footer>
-
-
-    
-<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
-
-    
-    <div class="pswp__bg"></div>
-
-    
-    <div class="pswp__scroll-wrap">
-
-        
-        <div class="pswp__container">
-            <div class="pswp__item"></div>
-            <div class="pswp__item"></div>
-            <div class="pswp__item"></div>
-        </div>
-
-        
-        <div class="pswp__ui pswp__ui--hidden">
-
-            <div class="pswp__top-bar">
-
-                
-
-                <div class="pswp__counter"></div>
-
-                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
-
-                <button class="pswp__button pswp__button--share" title="Share"></button>
-
-                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
-
-                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
-
-                
-                
-                <div class="pswp__preloader">
-                    <div class="pswp__preloader__icn">
-                        <div class="pswp__preloader__cut">
-                            <div class="pswp__preloader__donut"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
-                <div class="pswp__share-tooltip"></div>
-            </div>
-
-            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
-            </button>
-
-            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
-            </button>
-
-            <div class="pswp__caption">
-                <div class="pswp__caption__center"></div>
-            </div>
-
-        </div>
-
-    </div>
-
-</div><script 
-                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
-                defer
-                >
-            </script><script 
-                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
-                defer
-                >
-            </script><link 
-                rel="stylesheet" 
-                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
-            ><link 
-                rel="stylesheet" 
-                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
-            >
-
-            </main>
-        </div>
-        <script 
-                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
-                
-                >
-            </script><script type="text/javascript" src="/ts/main.1e9a3bafd846ced4c345d084b355fb8c7bae75701c338f8a1f8a82c780137826.js" defer></script>
-<script>
-    (function () {
-        const customFont = document.createElement('link');
-        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
-
-        customFont.type = "text/css";
-        customFont.rel = "stylesheet";
-
-        document.head.appendChild(customFont);
-    }());
-</script>
-
-    </body>
-</html>
+</code></pre></section><footer class=article-footer></footer></article><div class=disqus-container><div id=disqus_thread></div><script>window.disqus_config=function(){},function(){if(["localhost","127.0.0.1"].indexOf(window.location.hostname)!=-1){document.getElementById("disqus_thread").innerHTML="Disqus comments not available by default when the website is previewed locally.";return}var t=document,e=t.createElement("script");e.async=!0,e.src="//nansenli.disqus.com/embed.js",e.setAttribute("data-timestamp",+new Date),(t.head||t.body).appendChild(e)}()</script><noscript>Please enable JavaScript to view the <a href=https://disqus.com/?ref_noscript>comments powered by Disqus.</a></noscript><a href=https://disqus.com class=dsq-brlink>comments powered by <span class=logo-disqus>Disqus</span></a></div><style>.disqus-container{background-color:var(--card-background);border-radius:var(--card-border-radius);box-shadow:var(--shadow-l1);padding:var(--card-padding)}</style><script>window.addEventListener("onColorSchemeChange",e=>{typeof DISQUS=="object"&&DISQUS.reset({reload:!0})})</script><footer class=site-footer><section class=copyright>&copy;
+2026 Nansen Li 🌈 （李楠森）</section><section class=powerby>使用 <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a> 构建<br>主题 <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.31.0>Stack</a></b> 由 <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a> 设计</section></footer><div class=pswp tabindex=-1 role=dialog aria-hidden=true><div class=pswp__bg></div><div class=pswp__scroll-wrap><div class=pswp__container><div class=pswp__item></div><div class=pswp__item></div><div class=pswp__item></div></div><div class="pswp__ui pswp__ui--hidden"><div class=pswp__top-bar><div class=pswp__counter></div><button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+<button class="pswp__button pswp__button--share" title=Share></button>
+<button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+<button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button><div class=pswp__preloader><div class=pswp__preloader__icn><div class=pswp__preloader__cut><div class=pswp__preloader__donut></div></div></div></div></div><div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap"><div class=pswp__share-tooltip></div></div><button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+</button>
+<button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button><div class=pswp__caption><div class=pswp__caption__center></div></div></div></div></div><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo=" crossorigin=anonymous defer></script><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU=" crossorigin=anonymous defer></script><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css crossorigin=anonymous><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css crossorigin=anonymous></main></div><script src=https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z+KMkF24hUW8WePSA9HM=" crossorigin=anonymous></script><script type=text/javascript src=/ts/main.1e9a3bafd846ced4c345d084b355fb8c7bae75701c338f8a1f8a82c780137826.js defer></script><script>(function(){const e=document.createElement("link");e.href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap",e.type="text/css",e.rel="stylesheet",document.head.appendChild(e)})()</script></body></html>
