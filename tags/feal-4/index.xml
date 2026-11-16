@@ -86,10 +86,24 @@ $$&lt;br>
 Any candidate $K_3$ that satisfies the differential equation $= 0x02000000$ is retained.&lt;/li>
 &lt;/ol>
 &lt;p>Using this method, I successfully obtained four candidate subkeys:&lt;/p>
-&lt;pre tabindex="0">&lt;code>cfa38976, cfa309f6, 4f238976, 4f2309f6
-&lt;/code>&lt;/pre>&lt;p>An example command to execute the above process is:&lt;/p>
-&lt;pre tabindex="0">&lt;code>./main -mode=attackk3 -file=K3.txt
-&lt;/code>&lt;/pre>&lt;p>This implementation is consistent with the method I introduced on &lt;a class="link" href="https://www.theamazingking.com" target="_blank" rel="noopener"
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">cfa38976, cfa309f6, 4f238976, 4f2309f6
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>An example command to execute the above process is:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">./main -mode=attackk3 -file=K3.txt
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>This implementation is consistent with the method I introduced on &lt;a class="link" href="https://www.theamazingking.com" target="_blank" rel="noopener"
 >www.theamazingking.com&lt;/a>.&lt;/p>
 &lt;hr>
 &lt;h2 id="attacking-k2">Attacking K2
@@ -106,15 +120,33 @@ P_0 \oplus P_1 = 0x0000000080800000.
 $$&lt;/li>
 &lt;li>Capture ciphertext differences after encryption, and by traversing all possible $K_2$ values, check if the differential constraint $=0x02000000$ is satisfied.&lt;/li>
 &lt;li>Example command:
-&lt;pre tabindex="0">&lt;code>./main -mode=attackk2 -file=K2.txt -k3=cfa38976,cfa309f6,4f238976,4f2309f6
-&lt;/code>&lt;/pre>&lt;/li>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">./main -mode=attackk2 -file=K2.txt -k3=cfa38976,cfa309f6,4f238976,4f2309f6
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;/li>
 &lt;li>The final output example is as follows:
-&lt;pre tabindex="0">&lt;code>Candidate K2: 8b722e41 (K3: cfa38976)
-Candidate K2: 8b72aec1 (K3: cfa38976)
-...
-Candidate K2: 89722e43 (K3: 4f2309f6)
-Candidate K2: 8972aec3 (K3: 4f2309f6)
-&lt;/code>&lt;/pre>&lt;/li>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">Candidate K2: 8b722e41 (K3: cfa38976)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Candidate K2: 8b72aec1 (K3: cfa38976)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">...
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Candidate K2: 89722e43 (K3: 4f2309f6)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Candidate K2: 8972aec3 (K3: 4f2309f6)
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;/li>
 &lt;/ol>
 &lt;hr>
 &lt;h2 id="attacking-k1">Attacking K1
@@ -125,8 +157,15 @@ P_0 \oplus P_1 = 0x0000000002000000
 $$&lt;br>
 and verified their encryption outputs.&lt;/p>
 &lt;p>Example command:&lt;/p>
-&lt;pre tabindex="0">&lt;code>./main -mode=attackk1 -file=K1.txt -k3k2=&amp;#34;cfa38976,8b722e41; cfa38976,8b72aec1; ...&amp;#34;
-&lt;/code>&lt;/pre>&lt;p>This allows you to input all previously obtained candidate combinations of $K_3$ and $K_2$ at once, and finally find the corresponding $K_1$ candidates.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">./main -mode=attackk1 -file=K1.txt -k3k2=&amp;#34;cfa38976,8b722e41; cfa38976,8b72aec1; ...&amp;#34;
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>This allows you to input all previously obtained candidate combinations of $K_3$ and $K_2$ at once, and finally find the corresponding $K_1$ candidates.&lt;/p>
 &lt;hr>
 &lt;h2 id="attacking-k0-k4-k5">Attacking K0, K4, K5
 &lt;/h2>&lt;p>Once $K_3$, $K_2$, and $K_1$ are all obtained, $K_0$, $K_4$, and $K_5$ required for the last round can be deduced.&lt;br>
@@ -139,8 +178,15 @@ Let the final encrypted left and right parts be $L_0$, $R_0$. The corresponding 
 &lt;/ul>
 &lt;p>By enumerating all possible $K_0$, the corresponding $K_4$ and $K_5$ can be solved through the above equations. Then, use other plaintext-ciphertext pairs to cross-validate correctness. If all are satisfied, the correct final key set is obtained.&lt;/p>
 &lt;p>Example command:&lt;/p>
-&lt;pre tabindex="0">&lt;code>./main -mode=attackk0k4k5 -k3k2k1=&amp;#34;...&amp;#34; -file=K1.txt -file2=K1_p.txt
-&lt;/code>&lt;/pre>&lt;hr>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">./main -mode=attackk0k4k5 -k3k2k1=&amp;#34;...&amp;#34; -file=K1.txt -file2=K1_p.txt
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;hr>
 &lt;h2 id="implementation-optimization-and-verification">Implementation, Optimization, and Verification
 &lt;/h2>&lt;h3 id="1-automated-generation-and-parallel-computing">1. Automated Generation and Parallel Computing
 &lt;/h3>&lt;ul>
@@ -164,21 +210,66 @@ Select a plaintext &lt;code>1234567890abcdef&lt;/code> and the ciphertext &lt;co
 &lt;h2 id="final-results">Final Results
 &lt;/h2>&lt;p>All deduced $K_0$–$K_5$ are stored in &lt;code>final_result.txt&lt;/code>. After deduplication, they include the following ranges:&lt;/p>
 &lt;h3 id="possible-values-for-k0">Possible Values for K0
-&lt;/h3>&lt;pre tabindex="0">&lt;code>890c2148 890ca1c8 098c2148 098ca1c8 ...
-0b8c214a 0b8ca1ca 8b0c214a 8b0ca1ca
-&lt;/code>&lt;/pre>&lt;h3 id="possible-values-for-k1">Possible Values for K1
-&lt;/h3>&lt;pre tabindex="0">&lt;code>471f077e 471f87fe c79f077e c79f87fc ...
-451f077c 451f87fc c59f077c c59f87fc
-&lt;/code>&lt;/pre>&lt;h3 id="possible-values-for-k2">Possible Values for K2
-&lt;/h3>&lt;pre tabindex="0">&lt;code>8b722e41 8b72aec1 8b722e43 8b72aec3 ...
-89722e43 8972aec3
-&lt;/code>&lt;/pre>&lt;h3 id="possible-values-for-k3">Possible Values for K3
-&lt;/h3>&lt;pre tabindex="0">&lt;code>cfa38976 cfa309f6 4f238976 4f2309f6
-&lt;/code>&lt;/pre>&lt;h3 id="possible-values-for-k4">Possible Values for K4
-&lt;/h3>&lt;pre tabindex="0">&lt;code>89eb0024 89eb0026 8beb0024 8beb0026
-&lt;/code>&lt;/pre>&lt;h3 id="possible-values-for-k5">Possible Values for K5
-&lt;/h3>&lt;pre tabindex="0">&lt;code>b85e6bc0 b85e6bc2 ba5e6bc0 ba5e6bc2
-&lt;/code>&lt;/pre>&lt;p>With the aid of differential analysis, we ultimately obtained a set of candidate subkeys. Compared to modern block ciphers (such as AES), FEAL-4 has fewer rounds and a simpler structure, making it very suitable for demonstrating the concept of differential analysis in teaching and research.&lt;/p>
+&lt;/h3>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">890c2148 890ca1c8 098c2148 098ca1c8 ...
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">0b8c214a 0b8ca1ca 8b0c214a 8b0ca1ca
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="possible-values-for-k1">Possible Values for K1
+&lt;/h3>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">471f077e 471f87fe c79f077e c79f87fc ...
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">451f077c 451f87fc c59f077c c59f87fc
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="possible-values-for-k2">Possible Values for K2
+&lt;/h3>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">8b722e41 8b72aec1 8b722e43 8b72aec3 ...
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">89722e43 8972aec3
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="possible-values-for-k3">Possible Values for K3
+&lt;/h3>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">cfa38976 cfa309f6 4f238976 4f2309f6
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="possible-values-for-k4">Possible Values for K4
+&lt;/h3>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">89eb0024 89eb0026 8beb0024 8beb0026
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="possible-values-for-k5">Possible Values for K5
+&lt;/h3>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">b85e6bc0 b85e6bc2 ba5e6bc0 ba5e6bc2
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>With the aid of differential analysis, we ultimately obtained a set of candidate subkeys. Compared to modern block ciphers (such as AES), FEAL-4 has fewer rounds and a simpler structure, making it very suitable for demonstrating the concept of differential analysis in teaching and research.&lt;/p>
 &lt;hr>
 &lt;h2 id="conclusion">Conclusion
 &lt;/h2>&lt;p>This article detailed the complete process of performing a differential attack on FEAL-4, including designing differential paths, generating plaintext pairs, attacking intermediate subkeys ($K_3$, $K_2$, $K_1$), and finally reverse-solving for $K_0$, $K_4$, $K_5$. It also introduced several optimizations and verification methods during the code implementation process.&lt;br>

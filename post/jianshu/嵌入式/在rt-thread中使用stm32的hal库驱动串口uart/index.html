@@ -1,5 +1,5 @@
 <!doctype html><html lang=en dir=ltr><head><meta charset=utf-8><meta name=viewport content='width=device-width,initial-scale=1'><meta name=description content="Introduction Previously, I had been trying to develop STM32 with RT-Thread under Linux. While this approach is feasible, it comes with various inconveniences. Using VSCode + Scons + openocd for editing, compiling/linking, and flashing is possible for development, but there&rsquo;s no complete solution for debugging in this environment, requiring Eclipse for debugging. Although converting RT-Thread to an Eclipse project is possible, at that point it might be better to directly use Keil 5 for development under Windows."><title>Using STM32 HAL Library to Drive UART in RT-Thread</title>
-<link rel=canonical href=https://nansenli.com/post/jianshu/%E5%B5%8C%E5%85%A5%E5%BC%8F/%E5%9C%A8rt-thread%E4%B8%AD%E4%BD%BF%E7%94%A8stm32%E7%9A%84hal%E5%BA%93%E9%A9%B1%E5%8A%A8%E4%B8%B2%E5%8F%A3uart/><link rel=stylesheet href=/scss/style.min.b9b97e7c3f7f078f7ec4f60195f6139d30ad5972cc05950321ee04a9e98c542f.css><meta property='og:title' content="Using STM32 HAL Library to Drive UART in RT-Thread"><meta property='og:description' content="Introduction Previously, I had been trying to develop STM32 with RT-Thread under Linux. While this approach is feasible, it comes with various inconveniences. Using VSCode + Scons + openocd for editing, compiling/linking, and flashing is possible for development, but there&rsquo;s no complete solution for debugging in this environment, requiring Eclipse for debugging. Although converting RT-Thread to an Eclipse project is possible, at that point it might be better to directly use Keil 5 for development under Windows."><meta property='og:url' content='https://nansenli.com/post/jianshu/%E5%B5%8C%E5%85%A5%E5%BC%8F/%E5%9C%A8rt-thread%E4%B8%AD%E4%BD%BF%E7%94%A8stm32%E7%9A%84hal%E5%BA%93%E9%A9%B1%E5%8A%A8%E4%B8%B2%E5%8F%A3uart/'><meta property='og:site_name' content="Nansen Li's Blog
+<link rel=canonical href=https://nansenli.com/post/jianshu/%E5%B5%8C%E5%85%A5%E5%BC%8F/%E5%9C%A8rt-thread%E4%B8%AD%E4%BD%BF%E7%94%A8stm32%E7%9A%84hal%E5%BA%93%E9%A9%B1%E5%8A%A8%E4%B8%B2%E5%8F%A3uart/><link rel=stylesheet href=/scss/style.min.13a07907ead250546ad0b764b76f2b704035157ccc91726856890c9c2e7e027e.css><meta property='og:title' content="Using STM32 HAL Library to Drive UART in RT-Thread"><meta property='og:description' content="Introduction Previously, I had been trying to develop STM32 with RT-Thread under Linux. While this approach is feasible, it comes with various inconveniences. Using VSCode + Scons + openocd for editing, compiling/linking, and flashing is possible for development, but there&rsquo;s no complete solution for debugging in this environment, requiring Eclipse for debugging. Although converting RT-Thread to an Eclipse project is possible, at that point it might be better to directly use Keil 5 for development under Windows."><meta property='og:url' content='https://nansenli.com/post/jianshu/%E5%B5%8C%E5%85%A5%E5%BC%8F/%E5%9C%A8rt-thread%E4%B8%AD%E4%BD%BF%E7%94%A8stm32%E7%9A%84hal%E5%BA%93%E9%A9%B1%E5%8A%A8%E4%B8%B2%E5%8F%A3uart/'><meta property='og:site_name' content="Nansen Li's Blog
 李楠森的博客
 "><meta property='og:type' content='article'><meta property='article:section' content='Post'><meta property='article:published_time' content='2017-04-06T10:22:00+00:00'><meta property='article:modified_time' content='2017-04-06T10:22:00+00:00'><meta name=twitter:title content="Using STM32 HAL Library to Drive UART in RT-Thread"><meta name=twitter:description content="Introduction Previously, I had been trying to develop STM32 with RT-Thread under Linux. While this approach is feasible, it comes with various inconveniences. Using VSCode + Scons + openocd for editing, compiling/linking, and flashing is possible for development, but there&rsquo;s no complete solution for debugging in this environment, requiring Eclipse for debugging. Although converting RT-Thread to an Eclipse project is possible, at that point it might be better to directly use Keil 5 for development under Windows."><link rel="shortcut icon" href=/favicon.ico><script async src="https://www.googletagmanager.com/gtag/js?id=G-WC38C3XE3J"></script><script>var dnt,doNotTrack=!1;if(!1&&(dnt=navigator.doNotTrack||window.doNotTrack||navigator.msDoNotTrack,doNotTrack=dnt=="1"||dnt=="yes"),!doNotTrack){window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag("js",new Date),gtag("config","G-WC38C3XE3J")}</script></head><body class=article-page><script>(function(){const e="StackColorScheme";localStorage.getItem(e)||localStorage.setItem(e,"auto")})()</script><script>(function(){const t="StackColorScheme",e=localStorage.getItem(t),n=window.matchMedia("(prefers-color-scheme: dark)").matches===!0;e=="dark"||e==="auto"&&n?document.documentElement.dataset.scheme="dark":document.documentElement.dataset.scheme="light"})()</script><div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky"><button class="hamburger hamburger--spin" type=button id=toggle-menu aria-label="Toggle Menu">
 <span class=hamburger-box><span class=hamburger-inner></span></span></button><header><figure class=site-avatar><a href=/><img src=/img/avatar_hu96777ff80939aaa7d938dddcc232fcc6_1414962_300x0_resize_box_3.png width=300 height=300 class=site-logo loading=lazy alt=Avatar>
@@ -10,101 +10,191 @@
 <span>Search</span></a></li><li class=menu-bottom-section><ol class=menu><li id=i18n-switch><svg class="icon icon-tabler icon-tabler-language" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 5h7"/><path d="M9 3v2c0 4.418-2.239 8-5 8"/><path d="M5 9c-.003 2.144 2.952 3.908 6.7 4"/><path d="M12 20l4-9 4 9"/><path d="M19.1 18h-6.2"/></svg>
 <select name=language title=language onchange="window.location.href=this.selectedOptions[0].value"><option value=https://nansenli.com/ selected>English</option><option value=https://nansenli.com/zh-cn/>中文</option></select></li><li id=dark-mode-toggle><svg class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="8" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
 <svg class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="16" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
-<span>Dark Mode</span></li></ol></li></ol></aside><main class="main full-width"><article class=main-article><header class=article-header><div class=article-details><header class=article-category><a href=/categories/embedded/>Embedded</a></header><div class=article-title-wrapper><h2 class=article-title><a href=/post/jianshu/%E5%B5%8C%E5%85%A5%E5%BC%8F/%E5%9C%A8rt-thread%E4%B8%AD%E4%BD%BF%E7%94%A8stm32%E7%9A%84hal%E5%BA%93%E9%A9%B1%E5%8A%A8%E4%B8%B2%E5%8F%A3uart/>Using STM32 HAL Library to Drive UART in RT-Thread</a></h2></div><footer class=article-time><div><svg class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M11.795 21H5a2 2 0 01-2-2V7a2 2 0 012-2h12a2 2 0 012 2v4"/><circle cx="18" cy="18" r="4"/><path d="M15 3v4"/><path d="M7 3v4"/><path d="M3 11h16"/><path d="M18 16.496V18l1 1"/></svg>
+<span>Dark Mode</span></li></ol></li></ol></aside><aside class="sidebar right-sidebar sticky"><section class="widget archives"><div class=widget-icon><svg class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><line x1="5" y1="9" x2="19" y2="9"/><line x1="5" y1="15" x2="19" y2="15"/><line x1="11" y1="4" x2="7" y2="20"/><line x1="17" y1="4" x2="13" y2="20"/></svg></div><h2 class="widget-title section-title">Table of contents</h2><div class=widget--toc><nav id=TableOfContents><ul><li><a href=#introduction>Introduction</a></li><li><a href=#installing-keil-523>Installing Keil 5.23</a></li><li><a href=#installing-libraries-with-pack-installer>Installing Libraries with Pack Installer</a></li><li><a href=#installing-stm32cubemx>Installing STM32CubeMX</a></li><li><a href=#installing-st-link-driver>Installing ST-Link Driver</a></li><li><a href=#downloading-the-nucleo-project>Downloading the Nucleo Project</a></li><li><a href=#generating-uart-initialization-code-with-stm32cubemx>Generating UART Initialization Code with STM32CubeMX</a></li></ul></nav></div></section></aside><main class="main full-width"><article class=main-article><header class=article-header><div class=article-details><header class=article-category><a href=/categories/embedded/>Embedded</a></header><div class=article-title-wrapper><h2 class=article-title><a href=/post/jianshu/%E5%B5%8C%E5%85%A5%E5%BC%8F/%E5%9C%A8rt-thread%E4%B8%AD%E4%BD%BF%E7%94%A8stm32%E7%9A%84hal%E5%BA%93%E9%A9%B1%E5%8A%A8%E4%B8%B2%E5%8F%A3uart/>Using STM32 HAL Library to Drive UART in RT-Thread</a></h2></div><footer class=article-time><div><svg class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M11.795 21H5a2 2 0 01-2-2V7a2 2 0 012-2h12a2 2 0 012 2v4"/><circle cx="18" cy="18" r="4"/><path d="M15 3v4"/><path d="M7 3v4"/><path d="M3 11h16"/><path d="M18 16.496V18l1 1"/></svg>
 <time class=article-time--published>Apr 06, 2017</time></div><div><svg class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg>
-<time class=article-time--reading>4 minute read</time></div></footer><footer class=article-translations><svg class="icon icon-tabler icon-tabler-language" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 5h7"/><path d="M9 3v2c0 4.418-2.239 8-5 8"/><path d="M5 9c-.003 2.144 2.952 3.908 6.7 4"/><path d="M12 20l4-9 4 9"/><path d="M19.1 18h-6.2"/></svg><div><a href=https://nansenli.com/zh-cn/post/jianshu/%E5%B5%8C%E5%85%A5%E5%BC%8F/%E5%9C%A8rt-thread%E4%B8%AD%E4%BD%BF%E7%94%A8stm32%E7%9A%84hal%E5%BA%93%E9%A9%B1%E5%8A%A8%E4%B8%B2%E5%8F%A3uart/ class=link>中文</a></div></footer></div></header><section class=article-content><h2 id=introduction>Introduction</h2><p>Previously, I had been trying to develop STM32 with RT-Thread under Linux. While this approach is feasible, it comes with various inconveniences. Using VSCode + Scons + openocd for editing, compiling/linking, and flashing is possible for development, but there&rsquo;s no complete solution for debugging in this environment, requiring Eclipse for debugging. Although converting RT-Thread to an Eclipse project is possible, at that point it might be better to directly use Keil 5 for development under Windows.</p><p>Since the STM32F103&rsquo;s onboard flash is too small and its stack is very limited, I switched to STM32F411. The board is from Waveshare&rsquo;s XNUCLEO, which is compatible with STM&rsquo;s official NUCLEO boards.</p><h2 id=installing-keil-523>Installing Keil 5.23</h2><p>I first installed Keil 5.11 and cracked it, then uninstalled it and installed Keil 5.23, which automatically showed as successfully cracked. The cracking tool is the registration code generator that has been popular for many years. I&rsquo;m using Keil 5.23 because RT-Thread projects can only be opened with this version.</p><h2 id=installing-libraries-with-pack-installer>Installing Libraries with Pack Installer</h2><p>You need to install Keil::STM32F4xx_DFP to open the nucleo project in RT-Thread&rsquo;s bps branch.</p><h2 id=installing-stm32cubemx>Installing STM32CubeMX</h2><p>With STM32CubeMX, we can easily generate initialization code by clicking with the mouse. However, we still need to write function calls ourselves, which is not as convenient as NPX&rsquo;s PE.</p><h2 id=installing-st-link-driver>Installing ST-Link Driver</h2><p>Waveshare&rsquo;s 100 yuan board includes an ST-Link debugger, so we&rsquo;ll use ST-Link for debugging.</p><h2 id=downloading-the-nucleo-project>Downloading the Nucleo Project</h2><p>Open the Keil 5 project in <code>rt-thread-master\bsp\stm32f411-nucleo</code>, try to compile it, and after it passes, set up the project&rsquo;s debug configuration to use ST-Link for debugging, then download the program to the board. Although the program is downloaded, there&rsquo;s no visible effect because the main function is empty.</p><p>Let&rsquo;s add the following code to the main function:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-C data-lang=C><span style=display:flex><span><span style=color:#66d9ef>int</span> <span style=color:#a6e22e>main</span>(<span style=color:#66d9ef>void</span>)
-</span></span><span style=display:flex><span>{
-</span></span><span style=display:flex><span>  <span style=color:#75715e>/* user app entry */</span>
-</span></span><span style=display:flex><span>	<span style=color:#a6e22e>MX_GPIO_Init</span>();
-</span></span><span style=display:flex><span>	<span style=color:#66d9ef>while</span>(<span style=color:#ae81ff>1</span>){
-</span></span><span style=display:flex><span>		<span style=color:#a6e22e>rt_thread_delay</span>(<span style=color:#ae81ff>5</span>);
-</span></span><span style=display:flex><span>		<span style=color:#a6e22e>HAL_GPIO_WritePin</span> (GPIOC, GPIO_PIN_5, GPIO_PIN_SET);
-</span></span><span style=display:flex><span>		<span style=color:#a6e22e>rt_thread_delay</span>(<span style=color:#ae81ff>5</span>);
-</span></span><span style=display:flex><span>		<span style=color:#a6e22e>HAL_GPIO_WritePin</span> (GPIOC, GPIO_PIN_5, GPIO_PIN_RESET);
-</span></span><span style=display:flex><span>	}
-</span></span><span style=display:flex><span>}
-</span></span></code></pre></div><p>And add the LED initialization function:</p><pre tabindex=0><code>static void MX_GPIO_Init(void)
-{
-
-  GPIO_InitTypeDef GPIO_InitStruct;
-
-  /* GPIO Ports Clock Enable */
-  __HAL_RCC_GPIOC_CLK_ENABLE();
-
-  /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_5, GPIO_PIN_RESET);
-
-  /*Configure GPIO pin : PC5 */
-  GPIO_InitStruct.Pin = GPIO_PIN_5;
-  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(GPIOC, &amp;GPIO_InitStruct);
-}
-</code></pre><p>Now we can see the onboard LED4 light up and blink.</p><p>Where do these initialization codes come from? The code in the main function is found online, a simple function to operate GPIO. The MX_GPIO_Init code segment comes from the code automatically generated by STM32CubeMX. Below I&rsquo;ll explain how to generate UART initialization code using STM32CubeMX.</p><h2 id=generating-uart-initialization-code-with-stm32cubemx>Generating UART Initialization Code with STM32CubeMX</h2><ul><li>First, create a project and set the chip model. Here&rsquo;s a demonstration:</li></ul><p><img src=/img/rescued/905af84ac774.gif loading=lazy alt=2017-04-06_16-41-06.gif></p><ul><li>Then set up the serial port pins.
+<time class=article-time--reading>4 minute read</time></div></footer><footer class=article-translations><svg class="icon icon-tabler icon-tabler-language" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 5h7"/><path d="M9 3v2c0 4.418-2.239 8-5 8"/><path d="M5 9c-.003 2.144 2.952 3.908 6.7 4"/><path d="M12 20l4-9 4 9"/><path d="M19.1 18h-6.2"/></svg><div><a href=https://nansenli.com/zh-cn/post/jianshu/%E5%B5%8C%E5%85%A5%E5%BC%8F/%E5%9C%A8rt-thread%E4%B8%AD%E4%BD%BF%E7%94%A8stm32%E7%9A%84hal%E5%BA%93%E9%A9%B1%E5%8A%A8%E4%B8%B2%E5%8F%A3uart/ class=link>中文</a></div></footer></div></header><section class=article-content><h2 id=introduction>Introduction</h2><p>Previously, I had been trying to develop STM32 with RT-Thread under Linux. While this approach is feasible, it comes with various inconveniences. Using VSCode + Scons + openocd for editing, compiling/linking, and flashing is possible for development, but there&rsquo;s no complete solution for debugging in this environment, requiring Eclipse for debugging. Although converting RT-Thread to an Eclipse project is possible, at that point it might be better to directly use Keil 5 for development under Windows.</p><p>Since the STM32F103&rsquo;s onboard flash is too small and its stack is very limited, I switched to STM32F411. The board is from Waveshare&rsquo;s XNUCLEO, which is compatible with STM&rsquo;s official NUCLEO boards.</p><h2 id=installing-keil-523>Installing Keil 5.23</h2><p>I first installed Keil 5.11 and cracked it, then uninstalled it and installed Keil 5.23, which automatically showed as successfully cracked. The cracking tool is the registration code generator that has been popular for many years. I&rsquo;m using Keil 5.23 because RT-Thread projects can only be opened with this version.</p><h2 id=installing-libraries-with-pack-installer>Installing Libraries with Pack Installer</h2><p>You need to install Keil::STM32F4xx_DFP to open the nucleo project in RT-Thread&rsquo;s bps branch.</p><h2 id=installing-stm32cubemx>Installing STM32CubeMX</h2><p>With STM32CubeMX, we can easily generate initialization code by clicking with the mouse. However, we still need to write function calls ourselves, which is not as convenient as NPX&rsquo;s PE.</p><h2 id=installing-st-link-driver>Installing ST-Link Driver</h2><p>Waveshare&rsquo;s 100 yuan board includes an ST-Link debugger, so we&rsquo;ll use ST-Link for debugging.</p><h2 id=downloading-the-nucleo-project>Downloading the Nucleo Project</h2><p>Open the Keil 5 project in <code>rt-thread-master\bsp\stm32f411-nucleo</code>, try to compile it, and after it passes, set up the project&rsquo;s debug configuration to use ST-Link for debugging, then download the program to the board. Although the program is downloaded, there&rsquo;s no visible effect because the main function is empty.</p><p>Let&rsquo;s add the following code to the main function:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-C data-lang=C><span class=line><span class=cl><span class=kt>int</span> <span class=nf>main</span><span class=p>(</span><span class=kt>void</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=cm>/* user app entry */</span>
+</span></span><span class=line><span class=cl>	<span class=nf>MX_GPIO_Init</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>	<span class=k>while</span><span class=p>(</span><span class=mi>1</span><span class=p>){</span>
+</span></span><span class=line><span class=cl>		<span class=nf>rt_thread_delay</span><span class=p>(</span><span class=mi>5</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>		<span class=nf>HAL_GPIO_WritePin</span> <span class=p>(</span><span class=n>GPIOC</span><span class=p>,</span> <span class=n>GPIO_PIN_5</span><span class=p>,</span> <span class=n>GPIO_PIN_SET</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>		<span class=nf>rt_thread_delay</span><span class=p>(</span><span class=mi>5</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>		<span class=nf>HAL_GPIO_WritePin</span> <span class=p>(</span><span class=n>GPIOC</span><span class=p>,</span> <span class=n>GPIO_PIN_5</span><span class=p>,</span> <span class=n>GPIO_PIN_RESET</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>	<span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>And add the LED initialization function:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>static void MX_GPIO_Init(void)
+</span></span><span class=line><span class=cl>{
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  GPIO_InitTypeDef GPIO_InitStruct;
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  /* GPIO Ports Clock Enable */
+</span></span><span class=line><span class=cl>  __HAL_RCC_GPIOC_CLK_ENABLE();
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  /*Configure GPIO pin Output Level */
+</span></span><span class=line><span class=cl>  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_5, GPIO_PIN_RESET);
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  /*Configure GPIO pin : PC5 */
+</span></span><span class=line><span class=cl>  GPIO_InitStruct.Pin = GPIO_PIN_5;
+</span></span><span class=line><span class=cl>  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+</span></span><span class=line><span class=cl>  GPIO_InitStruct.Pull = GPIO_NOPULL;
+</span></span><span class=line><span class=cl>  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+</span></span><span class=line><span class=cl>  HAL_GPIO_Init(GPIOC, &amp;GPIO_InitStruct);
+</span></span><span class=line><span class=cl>}
+</span></span></code></pre></td></tr></table></div></div><p>Now we can see the onboard LED4 light up and blink.</p><p>Where do these initialization codes come from? The code in the main function is found online, a simple function to operate GPIO. The MX_GPIO_Init code segment comes from the code automatically generated by STM32CubeMX. Below I&rsquo;ll explain how to generate UART initialization code using STM32CubeMX.</p><h2 id=generating-uart-initialization-code-with-stm32cubemx>Generating UART Initialization Code with STM32CubeMX</h2><ul><li>First, create a project and set the chip model. Here&rsquo;s a demonstration:</li></ul><p><img src=/img/rescued/905af84ac774.gif loading=lazy alt=2017-04-06_16-41-06.gif></p><ul><li>Then set up the serial port pins.
 Since RT-Thread has already initialized UART1, we can&rsquo;t use this one. We can use UART6.</li></ul><p><img src=/img/rescued/4985758a4b21.gif loading=lazy alt=2017-04-06_16-57-29.gif></p><ul><li>Open the project and extract the code. The blue part is the code we need to take:</li></ul><p><img src=/img/rescued/f06cc889e552.gif loading=lazy alt=2017-04-06_17-01-11.gif></p><ul><li>Port the code
-In the void HAL_UART_MspInit(UART_HandleTypeDef *huart) function, add the code for USART6:</li></ul><pre tabindex=0><code>void HAL_UART_MspInit(UART_HandleTypeDef *huart)
-{
-    GPIO_InitTypeDef  GPIO_InitStruct;
-    if (huart-&gt;Instance == USART2)
-    {
-        /*##-1- Enable peripherals and GPIO Clocks #################################*/
-        /* Enable GPIO TX/RX clock */
-        USARTx_TX_GPIO_CLK_ENABLE();
-        USARTx_RX_GPIO_CLK_ENABLE();
-
-        /* Enable USARTx clock */
-        USARTx_CLK_ENABLE(); 
-
-        /*##-2- Configure peripheral GPIO ##########################################*/  
-        /* UART TX GPIO pin configuration  */
-        GPIO_InitStruct.Pin       = USARTx_TX_PIN;
-        GPIO_InitStruct.Mode      = GPIO_MODE_AF_PP;
-        GPIO_InitStruct.Pull      = GPIO_PULLUP;
-        GPIO_InitStruct.Speed     = GPIO_SPEED_FAST;
-        GPIO_InitStruct.Alternate = USARTx_TX_AF;
-
-        HAL_GPIO_Init(USARTx_TX_GPIO_PORT, &amp;GPIO_InitStruct);
-        
-        /* UART RX GPIO pin configuration  */
-        GPIO_InitStruct.Pin = USARTx_RX_PIN;
-        GPIO_InitStruct.Alternate = USARTx_RX_AF;
-        
-        HAL_GPIO_Init(USARTx_RX_GPIO_PORT, &amp;GPIO_InitStruct);
-        
-        HAL_NVIC_SetPriority(USART2_IRQn, 0, 1);
-        HAL_NVIC_EnableIRQ(USART2_IRQn);
-    }
-		if (huart-&gt;Instance == USART6)
-		{
-		/* USER CODE BEGIN USART6_MspInit 0 */
-
-		/* USER CODE END USART6_MspInit 0 */
-			/* Peripheral clock enable */
-			__HAL_RCC_USART6_CLK_ENABLE();
-		
-			/**USART6 GPIO Configuration    
-			PC6     ------&gt; USART6_TX
-			PC7     ------&gt; USART6_RX 
-			*/
-			GPIO_InitStruct.Pin = GPIO_PIN_6|GPIO_PIN_7;
-			GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-			GPIO_InitStruct.Pull = GPIO_PULLUP;
-			GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
-			GPIO_InitStruct.Alternate = GPIO_AF8_USART6;
-			HAL_GPIO_Init(GPIOC, &amp;GPIO_InitStruct);
-
-			/* Peripheral interrupt init */
-			HAL_NVIC_SetPriority(USART6_IRQn, 0, 0);
-			HAL_NVIC_EnableIRQ(USART6_IRQn);
-		/* USER CODE BEGIN USART6_MspInit 1 */
-
-		/* USER CODE END USART6_MspInit 1 */
-		}
-}
-</code></pre><p>In the main.c file, add the <code>MX_USART6_UART_Init();</code> function content, and call <code>MX_USART6_UART_Init();</code> in the main function to initialize.</p><p>Then, test it in the main() function:</p><pre tabindex=0><code>		uint8_t TxData[10]= &#34;01234abcde&#34;;
-		HAL_UART_Transmit(&amp;huart6,TxData,10,0xf);
-</code></pre><p>We&rsquo;ll place the Waveshare board&rsquo;s JP4 jumper on the right side so that the USB TO UART can use PC6 and PC7 as the serial interface. Then, connect the USB interface to the PC, and we can view the character string received by the PC in a serial terminal like XSHELL.</p></section><footer class=article-footer></footer></article><div class=disqus-container><div id=disqus_thread></div><script>window.disqus_config=function(){},function(){if(["localhost","127.0.0.1"].indexOf(window.location.hostname)!=-1){document.getElementById("disqus_thread").innerHTML="Disqus comments not available by default when the website is previewed locally.";return}var t=document,e=t.createElement("script");e.async=!0,e.src="//nansenli.disqus.com/embed.js",e.setAttribute("data-timestamp",+new Date),(t.head||t.body).appendChild(e)}()</script><noscript>Please enable JavaScript to view the <a href=https://disqus.com/?ref_noscript>comments powered by Disqus.</a></noscript><a href=https://disqus.com class=dsq-brlink>comments powered by <span class=logo-disqus>Disqus</span></a></div><style>.disqus-container{background-color:var(--card-background);border-radius:var(--card-border-radius);box-shadow:var(--shadow-l1);padding:var(--card-padding)}</style><script>window.addEventListener("onColorSchemeChange",e=>{typeof DISQUS=="object"&&DISQUS.reset({reload:!0})})</script><footer class=site-footer><section class=copyright>&copy;
+In the void HAL_UART_MspInit(UART_HandleTypeDef *huart) function, add the code for USART6:</li></ul><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span><span class=lnt>45
+</span><span class=lnt>46
+</span><span class=lnt>47
+</span><span class=lnt>48
+</span><span class=lnt>49
+</span><span class=lnt>50
+</span><span class=lnt>51
+</span><span class=lnt>52
+</span><span class=lnt>53
+</span><span class=lnt>54
+</span><span class=lnt>55
+</span><span class=lnt>56
+</span><span class=lnt>57
+</span><span class=lnt>58
+</span><span class=lnt>59
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>void HAL_UART_MspInit(UART_HandleTypeDef *huart)
+</span></span><span class=line><span class=cl>{
+</span></span><span class=line><span class=cl>    GPIO_InitTypeDef  GPIO_InitStruct;
+</span></span><span class=line><span class=cl>    if (huart-&gt;Instance == USART2)
+</span></span><span class=line><span class=cl>    {
+</span></span><span class=line><span class=cl>        /*##-1- Enable peripherals and GPIO Clocks #################################*/
+</span></span><span class=line><span class=cl>        /* Enable GPIO TX/RX clock */
+</span></span><span class=line><span class=cl>        USARTx_TX_GPIO_CLK_ENABLE();
+</span></span><span class=line><span class=cl>        USARTx_RX_GPIO_CLK_ENABLE();
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        /* Enable USARTx clock */
+</span></span><span class=line><span class=cl>        USARTx_CLK_ENABLE(); 
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        /*##-2- Configure peripheral GPIO ##########################################*/  
+</span></span><span class=line><span class=cl>        /* UART TX GPIO pin configuration  */
+</span></span><span class=line><span class=cl>        GPIO_InitStruct.Pin       = USARTx_TX_PIN;
+</span></span><span class=line><span class=cl>        GPIO_InitStruct.Mode      = GPIO_MODE_AF_PP;
+</span></span><span class=line><span class=cl>        GPIO_InitStruct.Pull      = GPIO_PULLUP;
+</span></span><span class=line><span class=cl>        GPIO_InitStruct.Speed     = GPIO_SPEED_FAST;
+</span></span><span class=line><span class=cl>        GPIO_InitStruct.Alternate = USARTx_TX_AF;
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        HAL_GPIO_Init(USARTx_TX_GPIO_PORT, &amp;GPIO_InitStruct);
+</span></span><span class=line><span class=cl>        
+</span></span><span class=line><span class=cl>        /* UART RX GPIO pin configuration  */
+</span></span><span class=line><span class=cl>        GPIO_InitStruct.Pin = USARTx_RX_PIN;
+</span></span><span class=line><span class=cl>        GPIO_InitStruct.Alternate = USARTx_RX_AF;
+</span></span><span class=line><span class=cl>        
+</span></span><span class=line><span class=cl>        HAL_GPIO_Init(USARTx_RX_GPIO_PORT, &amp;GPIO_InitStruct);
+</span></span><span class=line><span class=cl>        
+</span></span><span class=line><span class=cl>        HAL_NVIC_SetPriority(USART2_IRQn, 0, 1);
+</span></span><span class=line><span class=cl>        HAL_NVIC_EnableIRQ(USART2_IRQn);
+</span></span><span class=line><span class=cl>    }
+</span></span><span class=line><span class=cl>		if (huart-&gt;Instance == USART6)
+</span></span><span class=line><span class=cl>		{
+</span></span><span class=line><span class=cl>		/* USER CODE BEGIN USART6_MspInit 0 */
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>		/* USER CODE END USART6_MspInit 0 */
+</span></span><span class=line><span class=cl>			/* Peripheral clock enable */
+</span></span><span class=line><span class=cl>			__HAL_RCC_USART6_CLK_ENABLE();
+</span></span><span class=line><span class=cl>		
+</span></span><span class=line><span class=cl>			/**USART6 GPIO Configuration    
+</span></span><span class=line><span class=cl>			PC6     ------&gt; USART6_TX
+</span></span><span class=line><span class=cl>			PC7     ------&gt; USART6_RX 
+</span></span><span class=line><span class=cl>			*/
+</span></span><span class=line><span class=cl>			GPIO_InitStruct.Pin = GPIO_PIN_6|GPIO_PIN_7;
+</span></span><span class=line><span class=cl>			GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+</span></span><span class=line><span class=cl>			GPIO_InitStruct.Pull = GPIO_PULLUP;
+</span></span><span class=line><span class=cl>			GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+</span></span><span class=line><span class=cl>			GPIO_InitStruct.Alternate = GPIO_AF8_USART6;
+</span></span><span class=line><span class=cl>			HAL_GPIO_Init(GPIOC, &amp;GPIO_InitStruct);
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>			/* Peripheral interrupt init */
+</span></span><span class=line><span class=cl>			HAL_NVIC_SetPriority(USART6_IRQn, 0, 0);
+</span></span><span class=line><span class=cl>			HAL_NVIC_EnableIRQ(USART6_IRQn);
+</span></span><span class=line><span class=cl>		/* USER CODE BEGIN USART6_MspInit 1 */
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>		/* USER CODE END USART6_MspInit 1 */
+</span></span><span class=line><span class=cl>		}
+</span></span><span class=line><span class=cl>}
+</span></span></code></pre></td></tr></table></div></div><p>In the main.c file, add the <code>MX_USART6_UART_Init();</code> function content, and call <code>MX_USART6_UART_Init();</code> in the main function to initialize.</p><p>Then, test it in the main() function:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>		uint8_t TxData[10]= &#34;01234abcde&#34;;
+</span></span><span class=line><span class=cl>		HAL_UART_Transmit(&amp;huart6,TxData,10,0xf);
+</span></span></code></pre></td></tr></table></div></div><p>We&rsquo;ll place the Waveshare board&rsquo;s JP4 jumper on the right side so that the USB TO UART can use PC6 and PC7 as the serial interface. Then, connect the USB interface to the PC, and we can view the character string received by the PC in a serial terminal like XSHELL.</p></section><footer class=article-footer></footer></article><div class=disqus-container><div id=disqus_thread></div><script>window.disqus_config=function(){},function(){if(["localhost","127.0.0.1"].indexOf(window.location.hostname)!=-1){document.getElementById("disqus_thread").innerHTML="Disqus comments not available by default when the website is previewed locally.";return}var t=document,e=t.createElement("script");e.async=!0,e.src="//nansenli.disqus.com/embed.js",e.setAttribute("data-timestamp",+new Date),(t.head||t.body).appendChild(e)}()</script><noscript>Please enable JavaScript to view the <a href=https://disqus.com/?ref_noscript>comments powered by Disqus.</a></noscript><a href=https://disqus.com class=dsq-brlink>comments powered by <span class=logo-disqus>Disqus</span></a></div><style>.disqus-container{background-color:var(--card-background);border-radius:var(--card-border-radius);box-shadow:var(--shadow-l1);padding:var(--card-padding)}</style><script>window.addEventListener("onColorSchemeChange",e=>{typeof DISQUS=="object"&&DISQUS.reset({reload:!0})})</script><footer class=site-footer><section class=copyright>&copy;
 2026 Nansen Li 🌈 （李楠森）</section><section class=powerby>Built with <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a><br>Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.31.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a></section></footer><div class=pswp tabindex=-1 role=dialog aria-hidden=true><div class=pswp__bg></div><div class=pswp__scroll-wrap><div class=pswp__container><div class=pswp__item></div><div class=pswp__item></div><div class=pswp__item></div></div><div class="pswp__ui pswp__ui--hidden"><div class=pswp__top-bar><div class=pswp__counter></div><button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
 <button class="pswp__button pswp__button--share" title=Share></button>
 <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>

@@ -1,5 +1,5 @@
 <!doctype html><html lang=en dir=ltr><head><meta charset=utf-8><meta name=viewport content='width=device-width,initial-scale=1'><meta name=description content="0. Introduction Since the official stable kernel linux-3.4 for Cubieboard2 doesn&rsquo;t include native SPI driver support, we need to modify the kernel source code, compile and put it into NAND to replace the original uImage, and add the new kernel module files. Additionally, we need to modify system files to fully support full-duplex communication. 1. Flash Debian System to NAND (Windows) First, download the customized Debian system for Cubieboard2 from: http://dl."><title>Adding SPI Driver Support for Cubieboard2</title>
-<link rel=canonical href=https://nansenli.com/post/jianshu/%E5%B5%8C%E5%85%A5%E5%BC%8F/cubieboard2-%E6%B7%BB%E5%8A%A0spi-%E9%A9%B1%E5%8A%A8%E6%94%AF%E6%8C%81/><link rel=stylesheet href=/scss/style.min.b9b97e7c3f7f078f7ec4f60195f6139d30ad5972cc05950321ee04a9e98c542f.css><meta property='og:title' content="Adding SPI Driver Support for Cubieboard2"><meta property='og:description' content="0. Introduction Since the official stable kernel linux-3.4 for Cubieboard2 doesn&rsquo;t include native SPI driver support, we need to modify the kernel source code, compile and put it into NAND to replace the original uImage, and add the new kernel module files. Additionally, we need to modify system files to fully support full-duplex communication. 1. Flash Debian System to NAND (Windows) First, download the customized Debian system for Cubieboard2 from: http://dl."><meta property='og:url' content='https://nansenli.com/post/jianshu/%E5%B5%8C%E5%85%A5%E5%BC%8F/cubieboard2-%E6%B7%BB%E5%8A%A0spi-%E9%A9%B1%E5%8A%A8%E6%94%AF%E6%8C%81/'><meta property='og:site_name' content="Nansen Li's Blog
+<link rel=canonical href=https://nansenli.com/post/jianshu/%E5%B5%8C%E5%85%A5%E5%BC%8F/cubieboard2-%E6%B7%BB%E5%8A%A0spi-%E9%A9%B1%E5%8A%A8%E6%94%AF%E6%8C%81/><link rel=stylesheet href=/scss/style.min.13a07907ead250546ad0b764b76f2b704035157ccc91726856890c9c2e7e027e.css><meta property='og:title' content="Adding SPI Driver Support for Cubieboard2"><meta property='og:description' content="0. Introduction Since the official stable kernel linux-3.4 for Cubieboard2 doesn&rsquo;t include native SPI driver support, we need to modify the kernel source code, compile and put it into NAND to replace the original uImage, and add the new kernel module files. Additionally, we need to modify system files to fully support full-duplex communication. 1. Flash Debian System to NAND (Windows) First, download the customized Debian system for Cubieboard2 from: http://dl."><meta property='og:url' content='https://nansenli.com/post/jianshu/%E5%B5%8C%E5%85%A5%E5%BC%8F/cubieboard2-%E6%B7%BB%E5%8A%A0spi-%E9%A9%B1%E5%8A%A8%E6%94%AF%E6%8C%81/'><meta property='og:site_name' content="Nansen Li's Blog
 李楠森的博客
 "><meta property='og:type' content='article'><meta property='article:section' content='Post'><meta property='article:published_time' content='2017-02-28T12:14:00+00:00'><meta property='article:modified_time' content='2017-02-28T12:14:00+00:00'><meta name=twitter:title content="Adding SPI Driver Support for Cubieboard2"><meta name=twitter:description content="0. Introduction Since the official stable kernel linux-3.4 for Cubieboard2 doesn&rsquo;t include native SPI driver support, we need to modify the kernel source code, compile and put it into NAND to replace the original uImage, and add the new kernel module files. Additionally, we need to modify system files to fully support full-duplex communication. 1. Flash Debian System to NAND (Windows) First, download the customized Debian system for Cubieboard2 from: http://dl."><link rel="shortcut icon" href=/favicon.ico><script async src="https://www.googletagmanager.com/gtag/js?id=G-WC38C3XE3J"></script><script>var dnt,doNotTrack=!1;if(!1&&(dnt=navigator.doNotTrack||window.doNotTrack||navigator.msDoNotTrack,doNotTrack=dnt=="1"||dnt=="yes"),!doNotTrack){window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag("js",new Date),gtag("config","G-WC38C3XE3J")}</script></head><body class=article-page><script>(function(){const e="StackColorScheme";localStorage.getItem(e)||localStorage.setItem(e,"auto")})()</script><script>(function(){const t="StackColorScheme",e=localStorage.getItem(t),n=window.matchMedia("(prefers-color-scheme: dark)").matches===!0;e=="dark"||e==="auto"&&n?document.documentElement.dataset.scheme="dark":document.documentElement.dataset.scheme="light"})()</script><div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky"><button class="hamburger hamburger--spin" type=button id=toggle-menu aria-label="Toggle Menu">
 <span class=hamburger-box><span class=hamburger-inner></span></span></button><header><figure class=site-avatar><a href=/><img src=/img/avatar_hu96777ff80939aaa7d938dddcc232fcc6_1414962_300x0_resize_box_3.png width=300 height=300 class=site-logo loading=lazy alt=Avatar>
@@ -10,261 +10,512 @@
 <span>Search</span></a></li><li class=menu-bottom-section><ol class=menu><li id=i18n-switch><svg class="icon icon-tabler icon-tabler-language" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 5h7"/><path d="M9 3v2c0 4.418-2.239 8-5 8"/><path d="M5 9c-.003 2.144 2.952 3.908 6.7 4"/><path d="M12 20l4-9 4 9"/><path d="M19.1 18h-6.2"/></svg>
 <select name=language title=language onchange="window.location.href=this.selectedOptions[0].value"><option value=https://nansenli.com/ selected>English</option><option value=https://nansenli.com/zh-cn/>中文</option></select></li><li id=dark-mode-toggle><svg class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="8" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
 <svg class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="16" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
-<span>Dark Mode</span></li></ol></li></ol></aside><main class="main full-width"><article class=main-article><header class=article-header><div class=article-details><header class=article-category><a href=/categories/embedded/>Embedded</a></header><div class=article-title-wrapper><h2 class=article-title><a href=/post/jianshu/%E5%B5%8C%E5%85%A5%E5%BC%8F/cubieboard2-%E6%B7%BB%E5%8A%A0spi-%E9%A9%B1%E5%8A%A8%E6%94%AF%E6%8C%81/>Adding SPI Driver Support for Cubieboard2</a></h2></div><footer class=article-time><div><svg class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M11.795 21H5a2 2 0 01-2-2V7a2 2 0 012-2h12a2 2 0 012 2v4"/><circle cx="18" cy="18" r="4"/><path d="M15 3v4"/><path d="M7 3v4"/><path d="M3 11h16"/><path d="M18 16.496V18l1 1"/></svg>
+<span>Dark Mode</span></li></ol></li></ol></aside><aside class="sidebar right-sidebar sticky"><section class="widget archives"><div class=widget-icon><svg class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><line x1="5" y1="9" x2="19" y2="9"/><line x1="5" y1="15" x2="19" y2="15"/><line x1="11" y1="4" x2="7" y2="20"/><line x1="17" y1="4" x2="13" y2="20"/></svg></div><h2 class="widget-title section-title">Table of contents</h2><div class=widget--toc><nav id=TableOfContents><ul><li><a href=#0-introduction>0. Introduction</a></li><li><a href=#1-flash-debian-system-to-nand-windows>1. Flash Debian System to NAND (Windows)</a></li><li><a href=#2-log-in-to-the-system>2. Log in to the System</a></li><li><a href=#3-modify-the-kernel-ubuntu>3. Modify the Kernel (Ubuntu)</a></li><li><a href=#4-compile-the-kernel-ubuntu>4. Compile the Kernel (Ubuntu)</a></li><li><a href=#5-replace-the-kernel-cubieboard2>5. Replace the Kernel (Cubieboard2)</a></li><li><a href=#6-check-compilation-success>6. Check Compilation Success</a></li><li><a href=#7-modify-system-files-to-enable-spi-and-support-full-duplex-spi-cubieboard2>7. Modify System Files to Enable SPI and Support Full-Duplex SPI (Cubieboard2)</a></li><li><a href=#8-test-spi>8. Test SPI</a></li></ul></nav></div></section></aside><main class="main full-width"><article class=main-article><header class=article-header><div class=article-details><header class=article-category><a href=/categories/embedded/>Embedded</a></header><div class=article-title-wrapper><h2 class=article-title><a href=/post/jianshu/%E5%B5%8C%E5%85%A5%E5%BC%8F/cubieboard2-%E6%B7%BB%E5%8A%A0spi-%E9%A9%B1%E5%8A%A8%E6%94%AF%E6%8C%81/>Adding SPI Driver Support for Cubieboard2</a></h2></div><footer class=article-time><div><svg class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M11.795 21H5a2 2 0 01-2-2V7a2 2 0 012-2h12a2 2 0 012 2v4"/><circle cx="18" cy="18" r="4"/><path d="M15 3v4"/><path d="M7 3v4"/><path d="M3 11h16"/><path d="M18 16.496V18l1 1"/></svg>
 <time class=article-time--published>Feb 28, 2017</time></div><div><svg class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg>
-<time class=article-time--reading>6 minute read</time></div></footer><footer class=article-translations><svg class="icon icon-tabler icon-tabler-language" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 5h7"/><path d="M9 3v2c0 4.418-2.239 8-5 8"/><path d="M5 9c-.003 2.144 2.952 3.908 6.7 4"/><path d="M12 20l4-9 4 9"/><path d="M19.1 18h-6.2"/></svg><div><a href=https://nansenli.com/zh-cn/post/jianshu/%E5%B5%8C%E5%85%A5%E5%BC%8F/cubieboard2-%E6%B7%BB%E5%8A%A0spi-%E9%A9%B1%E5%8A%A8%E6%94%AF%E6%8C%81/ class=link>中文</a></div></footer></div></header><section class=article-content><h2 id=0-introduction>0. Introduction</h2><p>Since the official stable kernel linux-3.4 for Cubieboard2 doesn&rsquo;t include native SPI driver support, we need to modify the kernel source code, compile and put it into NAND to replace the original uImage, and add the new kernel module files. Additionally, we need to modify system files to fully support full-duplex communication.</p><h2 id=1-flash-debian-system-to-nand-windows>1. Flash Debian System to NAND (Windows)</h2><p>First, download the customized Debian system for Cubieboard2 from: <a class=link href=http://dl.cubieboard.org/software/a20-cubieboard/debian/nand/debian-nand.img.gz target=_blank rel=noopener>http://dl.cubieboard.org/software/a20-cubieboard/debian/nand/debian-nand.img.gz</a></p><p>Download Phoenixsuit and open the downloaded image through it. With the Cubieboard2 unpowered, hold down the FEL button while connecting it to the computer via an OTG cable. In Device Manager, install the driver for this unrecognized device, specifying the Phoenixsuit installation directory as the driver location, and confirm installation.</p><p>Then format and flash the image.</p><h2 id=2-log-in-to-the-system>2. Log in to the System</h2><p>Connect the Cubieboard2 to an Ethernet cable. The Debian system is set to a static IP address 192.168.1.124 by default, which you can access via SSH. You can also log in through a TTL line from UART, change to DHCP mode, then check the IP address from the router before logging in. The router username and password are root/cubieboard.</p><h2 id=3-modify-the-kernel-ubuntu>3. Modify the Kernel (Ubuntu)</h2><p>The current Linux kernel doesn&rsquo;t support SPI drivers for Cubieboard2. First, download the linux-3.4 branch kernel source: <a class=link href=https://github.com/linux-sunxi/linux-sunxi target=_blank rel=noopener>https://github.com/linux-sunxi/linux-sunxi</a>. Then add SPI support to the kernel (not recommended); for details, see <a class=link href=http://blog.csdn.net/u010352603/article/details/51657265# target=_blank rel=noopener>http://blog.csdn.net/u010352603/article/details/51657265#</a>. Instead, directly download a pre-modified version with SPI support from <a class=link href=https://github.com/linanwx/cubieboard2-spi-support target=_blank rel=noopener>https://github.com/linanwx/cubieboard2-spi-support</a>. After downloading, delete the drivers/spi directory in the kernel directory and place the downloaded spi folder in its place.</p><h2 id=4-compile-the-kernel-ubuntu>4. Compile the Kernel (Ubuntu)</h2><p>Prepare an arm-linux-gnueabihf-gcc compiler, version not higher than 5.0.</p><p>In the kernel directory, using the terminal, enter:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>make ARCH<span style=color:#f92672>=</span>arm CROSS_COMPILE<span style=color:#f92672>=</span>arm-linux-gnueabihf- sun7i_defconfig
-</span></span></code></pre></div><p>Enter:</p><pre tabindex=0><code>gedit .config
-</code></pre><p>Find the following options and change them to:</p><pre tabindex=0><code>CONFIG_SPI=y
-CONFIG_SUNXI_NAND_PARTITION=y
-CONFIG_SUNXI_NAND=y
-</code></pre><p>Enter the following command to start compiling the kernel:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>make -j4ARCH<span style=color:#f92672>=</span>arm CROSS_COMPILE<span style=color:#f92672>=</span>arm-linux-gnueabihf- uImage modules
-</span></span></code></pre></div><p>Since CONFIG_SPI and CONFIG_SUNXI_NAND support are enabled, a series of settings are required. When you encounter spi support, CONFIG_SPI_SUN7I, CONFIG_SUN7I_SPI_NDMA, enter y; in other cases, press enter.</p><p>Check if the uImage file exists in the path arch/arm/boot</p><p>Enter the following command to generate kernel modules:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>make ARCH<span style=color:#f92672>=</span>arm CROSS_COMPILE<span style=color:#f92672>=</span>arm-linux-gnueabihf- INSTALL_MOD_PATH<span style=color:#f92672>=</span>output modules_install
-</span></span></code></pre></div><p>Check if the <code>output/lib/modules/3.4.104</code> directory has been created.</p><h2 id=5-replace-the-kernel-cubieboard2>5. Replace the Kernel (Cubieboard2)</h2><p>On Cubieboard2, open the terminal and enter:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>mkdir /media/nanda
-</span></span><span style=display:flex><span>mount /dev/nanda /media/nanda
-</span></span></code></pre></div><p>Copy the uImage to the <code>/media/nanda</code> directory of the Cubieboard2 Debian system, overwriting the original kernel.</p><p>Use the tar command to pack the <code>output/lib/modules/3.4.104</code> directory, transfer this file to Cubieboard2&rsquo;s <code>/lib/modules</code> directory, then extract it.</p><h2 id=6-check-compilation-success>6. Check Compilation Success</h2><p>Restart. If the system enters normally, it was successful.</p><h2 id=7-modify-system-files-to-enable-spi-and-support-full-duplex-spi-cubieboard2>7. Modify System Files to Enable SPI and Support Full-Duplex SPI (Cubieboard2)</h2><p>Remount <code>/dev/nanda</code> to the <code>/media/nanda/</code> directory and enter it.</p><p>Enter the following commands:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>bin2fex script.bin script.fex
-</span></span><span style=display:flex><span>nano script.fex
-</span></span></code></pre></div><p>Find [spi0_para], change the line with &ldquo;used&rdquo; to 1, and add the following code:</p><pre tabindex=0><code>[spi_devices]
-spi_dev_num =1
-
-[spi_board0]
-modalias =&#34;spidev&#34;
-max_speed_hz =100000
-bus_num =0
-chip_select =0
-mode =0
-full_duplex =1
-manual_cs =0
-</code></pre><p>Enter the following commands:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>fex2bin script.fex script.bin
-</span></span><span style=display:flex><span>nano /usr/include/linux/spi/spidev.h
-</span></span></code></pre></div><p>Add the following line above <code>__u16 delay_usecs;</code>:</p><pre tabindex=0><code>__u16 interbyte_usecs;
-</code></pre><h2 id=8-test-spi>8. Test SPI</h2><p>Restart Cubieboard2. Check if the spidev device exists in the <code>/dev</code> path. Short-circuit pins 46 and 48; pin diagram available at <code>http://docs.cubieboard.org/products/a10_cubieboard/expansion_ports</code>.
-Create a new text file with the following code:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-c data-lang=c><span style=display:flex><span><span style=color:#75715e>/* 
-</span></span></span><span style=display:flex><span><span style=color:#75715e> * SPI testing utility (using spidev driver) 
-</span></span></span><span style=display:flex><span><span style=color:#75715e> * 
-</span></span></span><span style=display:flex><span><span style=color:#75715e> * Copyright (c) 2007  MontaVista Software, Inc. 
-</span></span></span><span style=display:flex><span><span style=color:#75715e> * Copyright (c) 2007  Anton Vorontsov &lt;avorontsov@ru.mvista.com&gt; 
-</span></span></span><span style=display:flex><span><span style=color:#75715e> * 
-</span></span></span><span style=display:flex><span><span style=color:#75715e> * This program is free software; you can redistribute it and/or modify 
-</span></span></span><span style=display:flex><span><span style=color:#75715e> * it under the terms of the GNU General Public License as published by 
-</span></span></span><span style=display:flex><span><span style=color:#75715e> * the Free Software Foundation; either version 2 of the License. 
-</span></span></span><span style=display:flex><span><span style=color:#75715e> * 
-</span></span></span><span style=display:flex><span><span style=color:#75715e> * Cross-compile with cross-gcc -I/path/to/cross-kernel/include 
-</span></span></span><span style=display:flex><span><span style=color:#75715e> */</span>
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;stdint.h&gt;</span><span style=color:#75715e>
-</span></span></span><span style=display:flex><span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;unistd.h&gt;</span><span style=color:#75715e>
-</span></span></span><span style=display:flex><span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;stdio.h&gt;</span><span style=color:#75715e>
-</span></span></span><span style=display:flex><span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;stdlib.h&gt;</span><span style=color:#75715e>
-</span></span></span><span style=display:flex><span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;getopt.h&gt;</span><span style=color:#75715e>
-</span></span></span><span style=display:flex><span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;fcntl.h&gt;</span><span style=color:#75715e>
-</span></span></span><span style=display:flex><span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;sys/ioctl.h&gt;</span><span style=color:#75715e>
-</span></span></span><span style=display:flex><span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;linux/types.h&gt;</span><span style=color:#75715e>
-</span></span></span><span style=display:flex><span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;linux/spi/spidev.h&gt;</span><span style=color:#75715e>
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span>
-</span></span><span style=display:flex><span><span style=color:#75715e>#define ARRAY_SIZE(a) (sizeof(a) / sizeof((a)[0]))
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span>
-</span></span><span style=display:flex><span><span style=color:#66d9ef>static</span> <span style=color:#66d9ef>void</span> <span style=color:#a6e22e>pabort</span>(<span style=color:#66d9ef>const</span> <span style=color:#66d9ef>char</span> <span style=color:#f92672>*</span>s)
-</span></span><span style=display:flex><span>{
-</span></span><span style=display:flex><span>    <span style=color:#a6e22e>perror</span>(s);
-</span></span><span style=display:flex><span>    <span style=color:#a6e22e>abort</span>();
-</span></span><span style=display:flex><span>}
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span><span style=color:#66d9ef>static</span> <span style=color:#66d9ef>const</span> <span style=color:#66d9ef>char</span> <span style=color:#f92672>*</span>device <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;/dev/spidev0.0&#34;</span>;
-</span></span><span style=display:flex><span><span style=color:#66d9ef>static</span> <span style=color:#66d9ef>uint8_t</span> mode;
-</span></span><span style=display:flex><span><span style=color:#66d9ef>static</span> <span style=color:#66d9ef>uint8_t</span> bits <span style=color:#f92672>=</span> <span style=color:#ae81ff>8</span>;
-</span></span><span style=display:flex><span><span style=color:#66d9ef>static</span> <span style=color:#66d9ef>uint32_t</span> speed <span style=color:#f92672>=</span> <span style=color:#ae81ff>500000</span>;
-</span></span><span style=display:flex><span><span style=color:#66d9ef>static</span> <span style=color:#66d9ef>uint16_t</span> delay;
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span><span style=color:#66d9ef>static</span> <span style=color:#66d9ef>void</span> <span style=color:#a6e22e>transfer</span>(<span style=color:#66d9ef>int</span> fd)
-</span></span><span style=display:flex><span>{
-</span></span><span style=display:flex><span>    <span style=color:#66d9ef>int</span> ret;
-</span></span><span style=display:flex><span>    <span style=color:#66d9ef>uint8_t</span> tx[] <span style=color:#f92672>=</span> {
-</span></span><span style=display:flex><span>        <span style=color:#ae81ff>0xFF</span>, <span style=color:#ae81ff>0xFF</span>, <span style=color:#ae81ff>0xFF</span>, <span style=color:#ae81ff>0xFF</span>, <span style=color:#ae81ff>0xFF</span>, <span style=color:#ae81ff>0xFF</span>,
-</span></span><span style=display:flex><span>        <span style=color:#ae81ff>0x40</span>, <span style=color:#ae81ff>0x00</span>, <span style=color:#ae81ff>0x00</span>, <span style=color:#ae81ff>0x00</span>, <span style=color:#ae81ff>0x00</span>, <span style=color:#ae81ff>0x95</span>,
-</span></span><span style=display:flex><span>        <span style=color:#ae81ff>0xFF</span>, <span style=color:#ae81ff>0xFF</span>, <span style=color:#ae81ff>0xFF</span>, <span style=color:#ae81ff>0xFF</span>, <span style=color:#ae81ff>0xFF</span>, <span style=color:#ae81ff>0xFF</span>,
-</span></span><span style=display:flex><span>        <span style=color:#ae81ff>0xFF</span>, <span style=color:#ae81ff>0xFF</span>, <span style=color:#ae81ff>0xFF</span>, <span style=color:#ae81ff>0xFF</span>, <span style=color:#ae81ff>0xFF</span>, <span style=color:#ae81ff>0xFF</span>,
-</span></span><span style=display:flex><span>        <span style=color:#ae81ff>0xFF</span>, <span style=color:#ae81ff>0xFF</span>, <span style=color:#ae81ff>0xFF</span>, <span style=color:#ae81ff>0xFF</span>, <span style=color:#ae81ff>0xFF</span>, <span style=color:#ae81ff>0xFF</span>,
-</span></span><span style=display:flex><span>        <span style=color:#ae81ff>0xDE</span>, <span style=color:#ae81ff>0xAD</span>, <span style=color:#ae81ff>0xBE</span>, <span style=color:#ae81ff>0xEF</span>, <span style=color:#ae81ff>0xBA</span>, <span style=color:#ae81ff>0xAD</span>,
-</span></span><span style=display:flex><span>        <span style=color:#ae81ff>0xF0</span>, <span style=color:#ae81ff>0x0D</span>,
-</span></span><span style=display:flex><span>    };
-</span></span><span style=display:flex><span>    <span style=color:#66d9ef>uint8_t</span> rx[<span style=color:#a6e22e>ARRAY_SIZE</span>(tx)] <span style=color:#f92672>=</span> {
-</span></span><span style=display:flex><span>        <span style=color:#ae81ff>0</span>,
-</span></span><span style=display:flex><span>    };
-</span></span><span style=display:flex><span>    <span style=color:#66d9ef>struct</span> spi_ioc_transfer tr <span style=color:#f92672>=</span> {
-</span></span><span style=display:flex><span>        .tx_buf <span style=color:#f92672>=</span> (<span style=color:#66d9ef>unsigned</span> <span style=color:#66d9ef>long</span>)tx,
-</span></span><span style=display:flex><span>        .rx_buf <span style=color:#f92672>=</span> (<span style=color:#66d9ef>unsigned</span> <span style=color:#66d9ef>long</span>)rx,
-</span></span><span style=display:flex><span>        .len <span style=color:#f92672>=</span> <span style=color:#a6e22e>ARRAY_SIZE</span>(tx),
-</span></span><span style=display:flex><span>        .delay_usecs <span style=color:#f92672>=</span> delay,
-</span></span><span style=display:flex><span>        .speed_hz <span style=color:#f92672>=</span> speed,
-</span></span><span style=display:flex><span>        .bits_per_word <span style=color:#f92672>=</span> bits,
-</span></span><span style=display:flex><span>    };
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span>    ret <span style=color:#f92672>=</span> <span style=color:#a6e22e>ioctl</span>(fd, <span style=color:#a6e22e>SPI_IOC_MESSAGE</span>(<span style=color:#ae81ff>1</span>), <span style=color:#f92672>&amp;</span>tr);
-</span></span><span style=display:flex><span>    <span style=color:#66d9ef>if</span> (ret <span style=color:#f92672>==</span> <span style=color:#ae81ff>1</span>)
-</span></span><span style=display:flex><span>        <span style=color:#a6e22e>pabort</span>(<span style=color:#e6db74>&#34;can&#39;t send spi message&#34;</span>);
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span>    <span style=color:#66d9ef>for</span> (ret <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>; ret <span style=color:#f92672>&lt;</span> <span style=color:#a6e22e>ARRAY_SIZE</span>(tx); ret<span style=color:#f92672>++</span>)
-</span></span><span style=display:flex><span>    {
-</span></span><span style=display:flex><span>        <span style=color:#66d9ef>if</span> (<span style=color:#f92672>!</span>(ret <span style=color:#f92672>%</span> <span style=color:#ae81ff>6</span>))
-</span></span><span style=display:flex><span>            <span style=color:#a6e22e>puts</span>(<span style=color:#e6db74>&#34;&#34;</span>);
-</span></span><span style=display:flex><span>        <span style=color:#a6e22e>printf</span>(<span style=color:#e6db74>&#34;%.2X &#34;</span>, rx[ret]);
-</span></span><span style=display:flex><span>    }
-</span></span><span style=display:flex><span>    <span style=color:#a6e22e>puts</span>(<span style=color:#e6db74>&#34;&#34;</span>);
-</span></span><span style=display:flex><span>}
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span><span style=color:#66d9ef>static</span> <span style=color:#66d9ef>void</span> <span style=color:#a6e22e>print_usage</span>(<span style=color:#66d9ef>const</span> <span style=color:#66d9ef>char</span> <span style=color:#f92672>*</span>prog)
-</span></span><span style=display:flex><span>{
-</span></span><span style=display:flex><span>    <span style=color:#a6e22e>printf</span>(<span style=color:#e6db74>&#34;Usage: %s [-DsbdlHOLC3]</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>, prog);
-</span></span><span style=display:flex><span>    <span style=color:#a6e22e>puts</span>(<span style=color:#e6db74>&#34;  -D --device   device to use (default /dev/spidev0.0)</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>
-</span></span><span style=display:flex><span>         <span style=color:#e6db74>&#34;  -s --speed    max speed (Hz)</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>
-</span></span><span style=display:flex><span>         <span style=color:#e6db74>&#34;  -d --delay    delay (usec)</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>
-</span></span><span style=display:flex><span>         <span style=color:#e6db74>&#34;  -b --bpw      bits per word </span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>
-</span></span><span style=display:flex><span>         <span style=color:#e6db74>&#34;  -l --loop     loopback</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>
-</span></span><span style=display:flex><span>         <span style=color:#e6db74>&#34;  -H --cpha     clock phase</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>
-</span></span><span style=display:flex><span>         <span style=color:#e6db74>&#34;  -O --cpol     clock polarity</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>
-</span></span><span style=display:flex><span>         <span style=color:#e6db74>&#34;  -L --lsb      least significant bit first</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>
-</span></span><span style=display:flex><span>         <span style=color:#e6db74>&#34;  -C --cs-high  chip select active high</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>
-</span></span><span style=display:flex><span>         <span style=color:#e6db74>&#34;  -3 --3wire    SI/SO signals shared</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>);
-</span></span><span style=display:flex><span>    <span style=color:#a6e22e>exit</span>(<span style=color:#ae81ff>1</span>);
-</span></span><span style=display:flex><span>}
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span><span style=color:#66d9ef>static</span> <span style=color:#66d9ef>void</span> <span style=color:#a6e22e>parse_opts</span>(<span style=color:#66d9ef>int</span> argc, <span style=color:#66d9ef>char</span> <span style=color:#f92672>*</span>argv[])
-</span></span><span style=display:flex><span>{
-</span></span><span style=display:flex><span>    <span style=color:#66d9ef>while</span> (<span style=color:#ae81ff>1</span>)
-</span></span><span style=display:flex><span>    {
-</span></span><span style=display:flex><span>        <span style=color:#66d9ef>static</span> <span style=color:#66d9ef>const</span> <span style=color:#66d9ef>struct</span> option lopts[] <span style=color:#f92672>=</span> {
-</span></span><span style=display:flex><span>            {<span style=color:#e6db74>&#34;device&#34;</span>, <span style=color:#ae81ff>1</span>, <span style=color:#ae81ff>0</span>, <span style=color:#e6db74>&#39;D&#39;</span>},
-</span></span><span style=display:flex><span>            {<span style=color:#e6db74>&#34;speed&#34;</span>, <span style=color:#ae81ff>1</span>, <span style=color:#ae81ff>0</span>, <span style=color:#e6db74>&#39;s&#39;</span>},
-</span></span><span style=display:flex><span>            {<span style=color:#e6db74>&#34;delay&#34;</span>, <span style=color:#ae81ff>1</span>, <span style=color:#ae81ff>0</span>, <span style=color:#e6db74>&#39;d&#39;</span>},
-</span></span><span style=display:flex><span>            {<span style=color:#e6db74>&#34;bpw&#34;</span>, <span style=color:#ae81ff>1</span>, <span style=color:#ae81ff>0</span>, <span style=color:#e6db74>&#39;b&#39;</span>},
-</span></span><span style=display:flex><span>            {<span style=color:#e6db74>&#34;loop&#34;</span>, <span style=color:#ae81ff>0</span>, <span style=color:#ae81ff>0</span>, <span style=color:#e6db74>&#39;l&#39;</span>},
-</span></span><span style=display:flex><span>            {<span style=color:#e6db74>&#34;cpha&#34;</span>, <span style=color:#ae81ff>0</span>, <span style=color:#ae81ff>0</span>, <span style=color:#e6db74>&#39;H&#39;</span>},
-</span></span><span style=display:flex><span>            {<span style=color:#e6db74>&#34;cpol&#34;</span>, <span style=color:#ae81ff>0</span>, <span style=color:#ae81ff>0</span>, <span style=color:#e6db74>&#39;O&#39;</span>},
-</span></span><span style=display:flex><span>            {<span style=color:#e6db74>&#34;lsb&#34;</span>, <span style=color:#ae81ff>0</span>, <span style=color:#ae81ff>0</span>, <span style=color:#e6db74>&#39;L&#39;</span>},
-</span></span><span style=display:flex><span>            {<span style=color:#e6db74>&#34;cs-high&#34;</span>, <span style=color:#ae81ff>0</span>, <span style=color:#ae81ff>0</span>, <span style=color:#e6db74>&#39;C&#39;</span>},
-</span></span><span style=display:flex><span>            {<span style=color:#e6db74>&#34;3wire&#34;</span>, <span style=color:#ae81ff>0</span>, <span style=color:#ae81ff>0</span>, <span style=color:#e6db74>&#39;3&#39;</span>},
-</span></span><span style=display:flex><span>            {<span style=color:#e6db74>&#34;no-cs&#34;</span>, <span style=color:#ae81ff>0</span>, <span style=color:#ae81ff>0</span>, <span style=color:#e6db74>&#39;N&#39;</span>},
-</span></span><span style=display:flex><span>            {<span style=color:#e6db74>&#34;ready&#34;</span>, <span style=color:#ae81ff>0</span>, <span style=color:#ae81ff>0</span>, <span style=color:#e6db74>&#39;R&#39;</span>},
-</span></span><span style=display:flex><span>            {NULL, <span style=color:#ae81ff>0</span>, <span style=color:#ae81ff>0</span>, <span style=color:#ae81ff>0</span>},
-</span></span><span style=display:flex><span>        };
-</span></span><span style=display:flex><span>        <span style=color:#66d9ef>int</span> c;
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span>        c <span style=color:#f92672>=</span> <span style=color:#a6e22e>getopt_long</span>(argc, argv, <span style=color:#e6db74>&#34;D:s:d:b:lHOLC3NR&#34;</span>, lopts, NULL);
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span>        <span style=color:#66d9ef>if</span> (c <span style=color:#f92672>==</span> <span style=color:#f92672>-</span><span style=color:#ae81ff>1</span>)
-</span></span><span style=display:flex><span>            <span style=color:#66d9ef>break</span>;
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span>        <span style=color:#66d9ef>switch</span> (c)
-</span></span><span style=display:flex><span>        {
-</span></span><span style=display:flex><span>        <span style=color:#66d9ef>case</span> <span style=color:#e6db74>&#39;D&#39;</span><span style=color:#f92672>:</span>
-</span></span><span style=display:flex><span>            device <span style=color:#f92672>=</span> optarg;
-</span></span><span style=display:flex><span>            <span style=color:#66d9ef>break</span>;
-</span></span><span style=display:flex><span>        <span style=color:#66d9ef>case</span> <span style=color:#e6db74>&#39;s&#39;</span><span style=color:#f92672>:</span>
-</span></span><span style=display:flex><span>            speed <span style=color:#f92672>=</span> <span style=color:#a6e22e>atoi</span>(optarg);
-</span></span><span style=display:flex><span>            <span style=color:#66d9ef>break</span>;
-</span></span><span style=display:flex><span>        <span style=color:#66d9ef>case</span> <span style=color:#e6db74>&#39;d&#39;</span><span style=color:#f92672>:</span>
-</span></span><span style=display:flex><span>            delay <span style=color:#f92672>=</span> <span style=color:#a6e22e>atoi</span>(optarg);
-</span></span><span style=display:flex><span>            <span style=color:#66d9ef>break</span>;
-</span></span><span style=display:flex><span>        <span style=color:#66d9ef>case</span> <span style=color:#e6db74>&#39;b&#39;</span><span style=color:#f92672>:</span>
-</span></span><span style=display:flex><span>            bits <span style=color:#f92672>=</span> <span style=color:#a6e22e>atoi</span>(optarg);
-</span></span><span style=display:flex><span>            <span style=color:#66d9ef>break</span>;
-</span></span><span style=display:flex><span>        <span style=color:#66d9ef>case</span> <span style=color:#e6db74>&#39;l&#39;</span><span style=color:#f92672>:</span>
-</span></span><span style=display:flex><span>            mode <span style=color:#f92672>|=</span> SPI_LOOP;
-</span></span><span style=display:flex><span>            <span style=color:#66d9ef>break</span>;
-</span></span><span style=display:flex><span>        <span style=color:#66d9ef>case</span> <span style=color:#e6db74>&#39;H&#39;</span><span style=color:#f92672>:</span>
-</span></span><span style=display:flex><span>            mode <span style=color:#f92672>|=</span> SPI_CPHA;
-</span></span><span style=display:flex><span>            <span style=color:#66d9ef>break</span>;
-</span></span><span style=display:flex><span>        <span style=color:#66d9ef>case</span> <span style=color:#e6db74>&#39;O&#39;</span><span style=color:#f92672>:</span>
-</span></span><span style=display:flex><span>            mode <span style=color:#f92672>|=</span> SPI_CPOL;
-</span></span><span style=display:flex><span>            <span style=color:#66d9ef>break</span>;
-</span></span><span style=display:flex><span>        <span style=color:#66d9ef>case</span> <span style=color:#e6db74>&#39;L&#39;</span><span style=color:#f92672>:</span>
-</span></span><span style=display:flex><span>            mode <span style=color:#f92672>|=</span> SPI_LSB_FIRST;
-</span></span><span style=display:flex><span>            <span style=color:#66d9ef>break</span>;
-</span></span><span style=display:flex><span>        <span style=color:#66d9ef>case</span> <span style=color:#e6db74>&#39;C&#39;</span><span style=color:#f92672>:</span>
-</span></span><span style=display:flex><span>            mode <span style=color:#f92672>|=</span> SPI_CS_HIGH;
-</span></span><span style=display:flex><span>            <span style=color:#66d9ef>break</span>;
-</span></span><span style=display:flex><span>        <span style=color:#66d9ef>case</span> <span style=color:#e6db74>&#39;3&#39;</span><span style=color:#f92672>:</span>
-</span></span><span style=display:flex><span>            mode <span style=color:#f92672>|=</span> SPI_3WIRE;
-</span></span><span style=display:flex><span>            <span style=color:#66d9ef>break</span>;
-</span></span><span style=display:flex><span>        <span style=color:#66d9ef>case</span> <span style=color:#e6db74>&#39;N&#39;</span><span style=color:#f92672>:</span>
-</span></span><span style=display:flex><span>            mode <span style=color:#f92672>|=</span> SPI_NO_CS;
-</span></span><span style=display:flex><span>            <span style=color:#66d9ef>break</span>;
-</span></span><span style=display:flex><span>        <span style=color:#66d9ef>case</span> <span style=color:#e6db74>&#39;R&#39;</span><span style=color:#f92672>:</span>
-</span></span><span style=display:flex><span>            mode <span style=color:#f92672>|=</span> SPI_READY;
-</span></span><span style=display:flex><span>            <span style=color:#66d9ef>break</span>;
-</span></span><span style=display:flex><span>        <span style=color:#66d9ef>default</span><span style=color:#f92672>:</span>
-</span></span><span style=display:flex><span>            <span style=color:#a6e22e>print_usage</span>(argv[<span style=color:#ae81ff>0</span>]);
-</span></span><span style=display:flex><span>            <span style=color:#66d9ef>break</span>;
-</span></span><span style=display:flex><span>        }
-</span></span><span style=display:flex><span>    }
-</span></span><span style=display:flex><span>}
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span><span style=color:#66d9ef>int</span> <span style=color:#a6e22e>main</span>(<span style=color:#66d9ef>int</span> argc, <span style=color:#66d9ef>char</span> <span style=color:#f92672>*</span>argv[])
-</span></span><span style=display:flex><span>{
-</span></span><span style=display:flex><span>    <span style=color:#66d9ef>int</span> ret <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>;
-</span></span><span style=display:flex><span>    <span style=color:#66d9ef>int</span> fd;
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span>    <span style=color:#a6e22e>parse_opts</span>(argc, argv);
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span>    fd <span style=color:#f92672>=</span> <span style=color:#a6e22e>open</span>(device, O_RDWR);
-</span></span><span style=display:flex><span>    <span style=color:#66d9ef>if</span> (fd <span style=color:#f92672>&lt;</span> <span style=color:#ae81ff>0</span>)
-</span></span><span style=display:flex><span>        <span style=color:#a6e22e>pabort</span>(<span style=color:#e6db74>&#34;can&#39;t open device&#34;</span>);
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span>    <span style=color:#75715e>/* 
-</span></span></span><span style=display:flex><span><span style=color:#75715e>         * spi mode 
-</span></span></span><span style=display:flex><span><span style=color:#75715e>         */</span>
-</span></span><span style=display:flex><span>    ret <span style=color:#f92672>=</span> <span style=color:#a6e22e>ioctl</span>(fd, SPI_IOC_WR_MODE, <span style=color:#f92672>&amp;</span>mode);
-</span></span><span style=display:flex><span>    <span style=color:#66d9ef>if</span> (ret <span style=color:#f92672>==</span> <span style=color:#f92672>-</span><span style=color:#ae81ff>1</span>)
-</span></span><span style=display:flex><span>        <span style=color:#a6e22e>pabort</span>(<span style=color:#e6db74>&#34;can&#39;t set spi mode&#34;</span>);
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span>    ret <span style=color:#f92672>=</span> <span style=color:#a6e22e>ioctl</span>(fd, SPI_IOC_RD_MODE, <span style=color:#f92672>&amp;</span>mode);
-</span></span><span style=display:flex><span>    <span style=color:#66d9ef>if</span> (ret <span style=color:#f92672>==</span> <span style=color:#f92672>-</span><span style=color:#ae81ff>1</span>)
-</span></span><span style=display:flex><span>        <span style=color:#a6e22e>pabort</span>(<span style=color:#e6db74>&#34;can&#39;t get spi mode&#34;</span>);
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span>    <span style=color:#75715e>/* 
-</span></span></span><span style=display:flex><span><span style=color:#75715e>         * bits per word 
-</span></span></span><span style=display:flex><span><span style=color:#75715e>         */</span>
-</span></span><span style=display:flex><span>    ret <span style=color:#f92672>=</span> <span style=color:#a6e22e>ioctl</span>(fd, SPI_IOC_WR_BITS_PER_WORD, <span style=color:#f92672>&amp;</span>bits);
-</span></span><span style=display:flex><span>    <span style=color:#66d9ef>if</span> (ret <span style=color:#f92672>==</span> <span style=color:#f92672>-</span><span style=color:#ae81ff>1</span>)
-</span></span><span style=display:flex><span>        <span style=color:#a6e22e>pabort</span>(<span style=color:#e6db74>&#34;can&#39;t set bits per word&#34;</span>);
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span>    ret <span style=color:#f92672>=</span> <span style=color:#a6e22e>ioctl</span>(fd, SPI_IOC_RD_BITS_PER_WORD, <span style=color:#f92672>&amp;</span>bits);
-</span></span><span style=display:flex><span>    <span style=color:#66d9ef>if</span> (ret <span style=color:#f92672>==</span> <span style=color:#f92672>-</span><span style=color:#ae81ff>1</span>)
-</span></span><span style=display:flex><span>        <span style=color:#a6e22e>pabort</span>(<span style=color:#e6db74>&#34;can&#39;t get bits per word&#34;</span>);
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span>    <span style=color:#75715e>/* 
-</span></span></span><span style=display:flex><span><span style=color:#75715e>         * max speed hz 
-</span></span></span><span style=display:flex><span><span style=color:#75715e>         */</span>
-</span></span><span style=display:flex><span>    ret <span style=color:#f92672>=</span> <span style=color:#a6e22e>ioctl</span>(fd, SPI_IOC_WR_MAX_SPEED_HZ, <span style=color:#f92672>&amp;</span>speed);
-</span></span><span style=display:flex><span>    <span style=color:#66d9ef>if</span> (ret <span style=color:#f92672>==</span> <span style=color:#f92672>-</span><span style=color:#ae81ff>1</span>)
-</span></span><span style=display:flex><span>        <span style=color:#a6e22e>pabort</span>(<span style=color:#e6db74>&#34;can&#39;t set max speed hz&#34;</span>);
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span>    ret <span style=color:#f92672>=</span> <span style=color:#a6e22e>ioctl</span>(fd, SPI_IOC_RD_MAX_SPEED_HZ, <span style=color:#f92672>&amp;</span>speed);
-</span></span><span style=display:flex><span>    <span style=color:#66d9ef>if</span> (ret <span style=color:#f92672>==</span> <span style=color:#f92672>-</span><span style=color:#ae81ff>1</span>)
-</span></span><span style=display:flex><span>        <span style=color:#a6e22e>pabort</span>(<span style=color:#e6db74>&#34;can&#39;t get max speed hz&#34;</span>);
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span>    <span style=color:#a6e22e>printf</span>(<span style=color:#e6db74>&#34;spi mode: %d</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>, mode);
-</span></span><span style=display:flex><span>    <span style=color:#a6e22e>printf</span>(<span style=color:#e6db74>&#34;bits per word: %d</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>, bits);
-</span></span><span style=display:flex><span>    <span style=color:#a6e22e>printf</span>(<span style=color:#e6db74>&#34;max speed: %d Hz (%d KHz)</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>, speed, speed <span style=color:#f92672>/</span> <span style=color:#ae81ff>1000</span>);
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span>    <span style=color:#a6e22e>transfer</span>(fd);
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span>    <span style=color:#a6e22e>close</span>(fd);
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span>    <span style=color:#66d9ef>return</span> ret;
-</span></span><span style=display:flex><span>}
-</span></span></code></pre></div><p>Compile this file and run it. If the output looks like the following, the modification was successful:</p><pre tabindex=0><code>spi mode: 0
-bits per word: 8
-max speed: 500000 Hz (500 KHz)
-
-FF FF FF FF FF FF 
-40 00 00 00 00 95 
-FF FF FF FF FF FF 
-FF FF FF FF FF FF 
-FF FF FF FF FF FF 
-DE AD BE EF BA AD 
-F0 0D 
-</code></pre></section><footer class=article-footer></footer></article><div class=disqus-container><div id=disqus_thread></div><script>window.disqus_config=function(){},function(){if(["localhost","127.0.0.1"].indexOf(window.location.hostname)!=-1){document.getElementById("disqus_thread").innerHTML="Disqus comments not available by default when the website is previewed locally.";return}var t=document,e=t.createElement("script");e.async=!0,e.src="//nansenli.disqus.com/embed.js",e.setAttribute("data-timestamp",+new Date),(t.head||t.body).appendChild(e)}()</script><noscript>Please enable JavaScript to view the <a href=https://disqus.com/?ref_noscript>comments powered by Disqus.</a></noscript><a href=https://disqus.com class=dsq-brlink>comments powered by <span class=logo-disqus>Disqus</span></a></div><style>.disqus-container{background-color:var(--card-background);border-radius:var(--card-border-radius);box-shadow:var(--shadow-l1);padding:var(--card-padding)}</style><script>window.addEventListener("onColorSchemeChange",e=>{typeof DISQUS=="object"&&DISQUS.reset({reload:!0})})</script><footer class=site-footer><section class=copyright>&copy;
+<time class=article-time--reading>7 minute read</time></div></footer><footer class=article-translations><svg class="icon icon-tabler icon-tabler-language" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 5h7"/><path d="M9 3v2c0 4.418-2.239 8-5 8"/><path d="M5 9c-.003 2.144 2.952 3.908 6.7 4"/><path d="M12 20l4-9 4 9"/><path d="M19.1 18h-6.2"/></svg><div><a href=https://nansenli.com/zh-cn/post/jianshu/%E5%B5%8C%E5%85%A5%E5%BC%8F/cubieboard2-%E6%B7%BB%E5%8A%A0spi-%E9%A9%B1%E5%8A%A8%E6%94%AF%E6%8C%81/ class=link>中文</a></div></footer></div></header><section class=article-content><h2 id=0-introduction>0. Introduction</h2><p>Since the official stable kernel linux-3.4 for Cubieboard2 doesn&rsquo;t include native SPI driver support, we need to modify the kernel source code, compile and put it into NAND to replace the original uImage, and add the new kernel module files. Additionally, we need to modify system files to fully support full-duplex communication.</p><h2 id=1-flash-debian-system-to-nand-windows>1. Flash Debian System to NAND (Windows)</h2><p>First, download the customized Debian system for Cubieboard2 from: <a class=link href=http://dl.cubieboard.org/software/a20-cubieboard/debian/nand/debian-nand.img.gz target=_blank rel=noopener>http://dl.cubieboard.org/software/a20-cubieboard/debian/nand/debian-nand.img.gz</a></p><p>Download Phoenixsuit and open the downloaded image through it. With the Cubieboard2 unpowered, hold down the FEL button while connecting it to the computer via an OTG cable. In Device Manager, install the driver for this unrecognized device, specifying the Phoenixsuit installation directory as the driver location, and confirm installation.</p><p>Then format and flash the image.</p><h2 id=2-log-in-to-the-system>2. Log in to the System</h2><p>Connect the Cubieboard2 to an Ethernet cable. The Debian system is set to a static IP address 192.168.1.124 by default, which you can access via SSH. You can also log in through a TTL line from UART, change to DHCP mode, then check the IP address from the router before logging in. The router username and password are root/cubieboard.</p><h2 id=3-modify-the-kernel-ubuntu>3. Modify the Kernel (Ubuntu)</h2><p>The current Linux kernel doesn&rsquo;t support SPI drivers for Cubieboard2. First, download the linux-3.4 branch kernel source: <a class=link href=https://github.com/linux-sunxi/linux-sunxi target=_blank rel=noopener>https://github.com/linux-sunxi/linux-sunxi</a>. Then add SPI support to the kernel (not recommended); for details, see <a class=link href=http://blog.csdn.net/u010352603/article/details/51657265# target=_blank rel=noopener>http://blog.csdn.net/u010352603/article/details/51657265#</a>. Instead, directly download a pre-modified version with SPI support from <a class=link href=https://github.com/linanwx/cubieboard2-spi-support target=_blank rel=noopener>https://github.com/linanwx/cubieboard2-spi-support</a>. After downloading, delete the drivers/spi directory in the kernel directory and place the downloaded spi folder in its place.</p><h2 id=4-compile-the-kernel-ubuntu>4. Compile the Kernel (Ubuntu)</h2><p>Prepare an arm-linux-gnueabihf-gcc compiler, version not higher than 5.0.</p><p>In the kernel directory, using the terminal, enter:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>make <span class=nv>ARCH</span><span class=o>=</span>arm <span class=nv>CROSS_COMPILE</span><span class=o>=</span>arm-linux-gnueabihf- sun7i_defconfig
+</span></span></code></pre></td></tr></table></div></div><p>Enter:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>gedit .config
+</span></span></code></pre></td></tr></table></div></div><p>Find the following options and change them to:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>CONFIG_SPI=y
+</span></span><span class=line><span class=cl>CONFIG_SUNXI_NAND_PARTITION=y
+</span></span><span class=line><span class=cl>CONFIG_SUNXI_NAND=y
+</span></span></code></pre></td></tr></table></div></div><p>Enter the following command to start compiling the kernel:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>make -j4ARCH<span class=o>=</span>arm <span class=nv>CROSS_COMPILE</span><span class=o>=</span>arm-linux-gnueabihf- uImage modules
+</span></span></code></pre></td></tr></table></div></div><p>Since CONFIG_SPI and CONFIG_SUNXI_NAND support are enabled, a series of settings are required. When you encounter spi support, CONFIG_SPI_SUN7I, CONFIG_SUN7I_SPI_NDMA, enter y; in other cases, press enter.</p><p>Check if the uImage file exists in the path arch/arm/boot</p><p>Enter the following command to generate kernel modules:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>make <span class=nv>ARCH</span><span class=o>=</span>arm <span class=nv>CROSS_COMPILE</span><span class=o>=</span>arm-linux-gnueabihf- <span class=nv>INSTALL_MOD_PATH</span><span class=o>=</span>output modules_install
+</span></span></code></pre></td></tr></table></div></div><p>Check if the <code>output/lib/modules/3.4.104</code> directory has been created.</p><h2 id=5-replace-the-kernel-cubieboard2>5. Replace the Kernel (Cubieboard2)</h2><p>On Cubieboard2, open the terminal and enter:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>mkdir /media/nanda
+</span></span><span class=line><span class=cl>mount /dev/nanda /media/nanda
+</span></span></code></pre></td></tr></table></div></div><p>Copy the uImage to the <code>/media/nanda</code> directory of the Cubieboard2 Debian system, overwriting the original kernel.</p><p>Use the tar command to pack the <code>output/lib/modules/3.4.104</code> directory, transfer this file to Cubieboard2&rsquo;s <code>/lib/modules</code> directory, then extract it.</p><h2 id=6-check-compilation-success>6. Check Compilation Success</h2><p>Restart. If the system enters normally, it was successful.</p><h2 id=7-modify-system-files-to-enable-spi-and-support-full-duplex-spi-cubieboard2>7. Modify System Files to Enable SPI and Support Full-Duplex SPI (Cubieboard2)</h2><p>Remount <code>/dev/nanda</code> to the <code>/media/nanda/</code> directory and enter it.</p><p>Enter the following commands:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>bin2fex script.bin script.fex
+</span></span><span class=line><span class=cl>nano script.fex
+</span></span></code></pre></td></tr></table></div></div><p>Find [spi0_para], change the line with &ldquo;used&rdquo; to 1, and add the following code:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>[spi_devices]
+</span></span><span class=line><span class=cl>spi_dev_num =1
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>[spi_board0]
+</span></span><span class=line><span class=cl>modalias =&#34;spidev&#34;
+</span></span><span class=line><span class=cl>max_speed_hz =100000
+</span></span><span class=line><span class=cl>bus_num =0
+</span></span><span class=line><span class=cl>chip_select =0
+</span></span><span class=line><span class=cl>mode =0
+</span></span><span class=line><span class=cl>full_duplex =1
+</span></span><span class=line><span class=cl>manual_cs =0
+</span></span></code></pre></td></tr></table></div></div><p>Enter the following commands:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>fex2bin script.fex script.bin
+</span></span><span class=line><span class=cl>nano /usr/include/linux/spi/spidev.h
+</span></span></code></pre></td></tr></table></div></div><p>Add the following line above <code>__u16 delay_usecs;</code>:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>__u16 interbyte_usecs;
+</span></span></code></pre></td></tr></table></div></div><h2 id=8-test-spi>8. Test SPI</h2><p>Restart Cubieboard2. Check if the spidev device exists in the <code>/dev</code> path. Short-circuit pins 46 and 48; pin diagram available at <code>http://docs.cubieboard.org/products/a10_cubieboard/expansion_ports</code>.
+Create a new text file with the following code:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>  1
+</span><span class=lnt>  2
+</span><span class=lnt>  3
+</span><span class=lnt>  4
+</span><span class=lnt>  5
+</span><span class=lnt>  6
+</span><span class=lnt>  7
+</span><span class=lnt>  8
+</span><span class=lnt>  9
+</span><span class=lnt> 10
+</span><span class=lnt> 11
+</span><span class=lnt> 12
+</span><span class=lnt> 13
+</span><span class=lnt> 14
+</span><span class=lnt> 15
+</span><span class=lnt> 16
+</span><span class=lnt> 17
+</span><span class=lnt> 18
+</span><span class=lnt> 19
+</span><span class=lnt> 20
+</span><span class=lnt> 21
+</span><span class=lnt> 22
+</span><span class=lnt> 23
+</span><span class=lnt> 24
+</span><span class=lnt> 25
+</span><span class=lnt> 26
+</span><span class=lnt> 27
+</span><span class=lnt> 28
+</span><span class=lnt> 29
+</span><span class=lnt> 30
+</span><span class=lnt> 31
+</span><span class=lnt> 32
+</span><span class=lnt> 33
+</span><span class=lnt> 34
+</span><span class=lnt> 35
+</span><span class=lnt> 36
+</span><span class=lnt> 37
+</span><span class=lnt> 38
+</span><span class=lnt> 39
+</span><span class=lnt> 40
+</span><span class=lnt> 41
+</span><span class=lnt> 42
+</span><span class=lnt> 43
+</span><span class=lnt> 44
+</span><span class=lnt> 45
+</span><span class=lnt> 46
+</span><span class=lnt> 47
+</span><span class=lnt> 48
+</span><span class=lnt> 49
+</span><span class=lnt> 50
+</span><span class=lnt> 51
+</span><span class=lnt> 52
+</span><span class=lnt> 53
+</span><span class=lnt> 54
+</span><span class=lnt> 55
+</span><span class=lnt> 56
+</span><span class=lnt> 57
+</span><span class=lnt> 58
+</span><span class=lnt> 59
+</span><span class=lnt> 60
+</span><span class=lnt> 61
+</span><span class=lnt> 62
+</span><span class=lnt> 63
+</span><span class=lnt> 64
+</span><span class=lnt> 65
+</span><span class=lnt> 66
+</span><span class=lnt> 67
+</span><span class=lnt> 68
+</span><span class=lnt> 69
+</span><span class=lnt> 70
+</span><span class=lnt> 71
+</span><span class=lnt> 72
+</span><span class=lnt> 73
+</span><span class=lnt> 74
+</span><span class=lnt> 75
+</span><span class=lnt> 76
+</span><span class=lnt> 77
+</span><span class=lnt> 78
+</span><span class=lnt> 79
+</span><span class=lnt> 80
+</span><span class=lnt> 81
+</span><span class=lnt> 82
+</span><span class=lnt> 83
+</span><span class=lnt> 84
+</span><span class=lnt> 85
+</span><span class=lnt> 86
+</span><span class=lnt> 87
+</span><span class=lnt> 88
+</span><span class=lnt> 89
+</span><span class=lnt> 90
+</span><span class=lnt> 91
+</span><span class=lnt> 92
+</span><span class=lnt> 93
+</span><span class=lnt> 94
+</span><span class=lnt> 95
+</span><span class=lnt> 96
+</span><span class=lnt> 97
+</span><span class=lnt> 98
+</span><span class=lnt> 99
+</span><span class=lnt>100
+</span><span class=lnt>101
+</span><span class=lnt>102
+</span><span class=lnt>103
+</span><span class=lnt>104
+</span><span class=lnt>105
+</span><span class=lnt>106
+</span><span class=lnt>107
+</span><span class=lnt>108
+</span><span class=lnt>109
+</span><span class=lnt>110
+</span><span class=lnt>111
+</span><span class=lnt>112
+</span><span class=lnt>113
+</span><span class=lnt>114
+</span><span class=lnt>115
+</span><span class=lnt>116
+</span><span class=lnt>117
+</span><span class=lnt>118
+</span><span class=lnt>119
+</span><span class=lnt>120
+</span><span class=lnt>121
+</span><span class=lnt>122
+</span><span class=lnt>123
+</span><span class=lnt>124
+</span><span class=lnt>125
+</span><span class=lnt>126
+</span><span class=lnt>127
+</span><span class=lnt>128
+</span><span class=lnt>129
+</span><span class=lnt>130
+</span><span class=lnt>131
+</span><span class=lnt>132
+</span><span class=lnt>133
+</span><span class=lnt>134
+</span><span class=lnt>135
+</span><span class=lnt>136
+</span><span class=lnt>137
+</span><span class=lnt>138
+</span><span class=lnt>139
+</span><span class=lnt>140
+</span><span class=lnt>141
+</span><span class=lnt>142
+</span><span class=lnt>143
+</span><span class=lnt>144
+</span><span class=lnt>145
+</span><span class=lnt>146
+</span><span class=lnt>147
+</span><span class=lnt>148
+</span><span class=lnt>149
+</span><span class=lnt>150
+</span><span class=lnt>151
+</span><span class=lnt>152
+</span><span class=lnt>153
+</span><span class=lnt>154
+</span><span class=lnt>155
+</span><span class=lnt>156
+</span><span class=lnt>157
+</span><span class=lnt>158
+</span><span class=lnt>159
+</span><span class=lnt>160
+</span><span class=lnt>161
+</span><span class=lnt>162
+</span><span class=lnt>163
+</span><span class=lnt>164
+</span><span class=lnt>165
+</span><span class=lnt>166
+</span><span class=lnt>167
+</span><span class=lnt>168
+</span><span class=lnt>169
+</span><span class=lnt>170
+</span><span class=lnt>171
+</span><span class=lnt>172
+</span><span class=lnt>173
+</span><span class=lnt>174
+</span><span class=lnt>175
+</span><span class=lnt>176
+</span><span class=lnt>177
+</span><span class=lnt>178
+</span><span class=lnt>179
+</span><span class=lnt>180
+</span><span class=lnt>181
+</span><span class=lnt>182
+</span><span class=lnt>183
+</span><span class=lnt>184
+</span><span class=lnt>185
+</span><span class=lnt>186
+</span><span class=lnt>187
+</span><span class=lnt>188
+</span><span class=lnt>189
+</span><span class=lnt>190
+</span><span class=lnt>191
+</span><span class=lnt>192
+</span><span class=lnt>193
+</span><span class=lnt>194
+</span><span class=lnt>195
+</span><span class=lnt>196
+</span><span class=lnt>197
+</span><span class=lnt>198
+</span><span class=lnt>199
+</span><span class=lnt>200
+</span><span class=lnt>201
+</span><span class=lnt>202
+</span><span class=lnt>203
+</span><span class=lnt>204
+</span><span class=lnt>205
+</span><span class=lnt>206
+</span><span class=lnt>207
+</span><span class=lnt>208
+</span><span class=lnt>209
+</span><span class=lnt>210
+</span><span class=lnt>211
+</span><span class=lnt>212
+</span><span class=lnt>213
+</span><span class=lnt>214
+</span><span class=lnt>215
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-c data-lang=c><span class=line><span class=cl><span class=cm>/* 
+</span></span></span><span class=line><span class=cl><span class=cm> * SPI testing utility (using spidev driver) 
+</span></span></span><span class=line><span class=cl><span class=cm> * 
+</span></span></span><span class=line><span class=cl><span class=cm> * Copyright (c) 2007  MontaVista Software, Inc. 
+</span></span></span><span class=line><span class=cl><span class=cm> * Copyright (c) 2007  Anton Vorontsov &lt;avorontsov@ru.mvista.com&gt; 
+</span></span></span><span class=line><span class=cl><span class=cm> * 
+</span></span></span><span class=line><span class=cl><span class=cm> * This program is free software; you can redistribute it and/or modify 
+</span></span></span><span class=line><span class=cl><span class=cm> * it under the terms of the GNU General Public License as published by 
+</span></span></span><span class=line><span class=cl><span class=cm> * the Free Software Foundation; either version 2 of the License. 
+</span></span></span><span class=line><span class=cl><span class=cm> * 
+</span></span></span><span class=line><span class=cl><span class=cm> * Cross-compile with cross-gcc -I/path/to/cross-kernel/include 
+</span></span></span><span class=line><span class=cl><span class=cm> */</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&lt;stdint.h&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&lt;unistd.h&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&lt;stdio.h&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&lt;stdlib.h&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&lt;getopt.h&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&lt;fcntl.h&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&lt;sys/ioctl.h&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&lt;linux/types.h&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&lt;linux/spi/spidev.h&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp></span>
+</span></span><span class=line><span class=cl><span class=cp>#define ARRAY_SIZE(a) (sizeof(a) / sizeof((a)[0]))
+</span></span></span><span class=line><span class=cl><span class=cp></span>
+</span></span><span class=line><span class=cl><span class=k>static</span> <span class=kt>void</span> <span class=nf>pabort</span><span class=p>(</span><span class=k>const</span> <span class=kt>char</span> <span class=o>*</span><span class=n>s</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nf>perror</span><span class=p>(</span><span class=n>s</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=nf>abort</span><span class=p>();</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>static</span> <span class=k>const</span> <span class=kt>char</span> <span class=o>*</span><span class=n>device</span> <span class=o>=</span> <span class=s>&#34;/dev/spidev0.0&#34;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=k>static</span> <span class=kt>uint8_t</span> <span class=n>mode</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=k>static</span> <span class=kt>uint8_t</span> <span class=n>bits</span> <span class=o>=</span> <span class=mi>8</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=k>static</span> <span class=kt>uint32_t</span> <span class=n>speed</span> <span class=o>=</span> <span class=mi>500000</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=k>static</span> <span class=kt>uint16_t</span> <span class=n>delay</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>static</span> <span class=kt>void</span> <span class=nf>transfer</span><span class=p>(</span><span class=kt>int</span> <span class=n>fd</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=kt>int</span> <span class=n>ret</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=kt>uint8_t</span> <span class=n>tx</span><span class=p>[]</span> <span class=o>=</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=mh>0xFF</span><span class=p>,</span> <span class=mh>0xFF</span><span class=p>,</span> <span class=mh>0xFF</span><span class=p>,</span> <span class=mh>0xFF</span><span class=p>,</span> <span class=mh>0xFF</span><span class=p>,</span> <span class=mh>0xFF</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=mh>0x40</span><span class=p>,</span> <span class=mh>0x00</span><span class=p>,</span> <span class=mh>0x00</span><span class=p>,</span> <span class=mh>0x00</span><span class=p>,</span> <span class=mh>0x00</span><span class=p>,</span> <span class=mh>0x95</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=mh>0xFF</span><span class=p>,</span> <span class=mh>0xFF</span><span class=p>,</span> <span class=mh>0xFF</span><span class=p>,</span> <span class=mh>0xFF</span><span class=p>,</span> <span class=mh>0xFF</span><span class=p>,</span> <span class=mh>0xFF</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=mh>0xFF</span><span class=p>,</span> <span class=mh>0xFF</span><span class=p>,</span> <span class=mh>0xFF</span><span class=p>,</span> <span class=mh>0xFF</span><span class=p>,</span> <span class=mh>0xFF</span><span class=p>,</span> <span class=mh>0xFF</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=mh>0xFF</span><span class=p>,</span> <span class=mh>0xFF</span><span class=p>,</span> <span class=mh>0xFF</span><span class=p>,</span> <span class=mh>0xFF</span><span class=p>,</span> <span class=mh>0xFF</span><span class=p>,</span> <span class=mh>0xFF</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=mh>0xDE</span><span class=p>,</span> <span class=mh>0xAD</span><span class=p>,</span> <span class=mh>0xBE</span><span class=p>,</span> <span class=mh>0xEF</span><span class=p>,</span> <span class=mh>0xBA</span><span class=p>,</span> <span class=mh>0xAD</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=mh>0xF0</span><span class=p>,</span> <span class=mh>0x0D</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=p>};</span>
+</span></span><span class=line><span class=cl>    <span class=kt>uint8_t</span> <span class=n>rx</span><span class=p>[</span><span class=nf>ARRAY_SIZE</span><span class=p>(</span><span class=n>tx</span><span class=p>)]</span> <span class=o>=</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=mi>0</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=p>};</span>
+</span></span><span class=line><span class=cl>    <span class=k>struct</span> <span class=n>spi_ioc_transfer</span> <span class=n>tr</span> <span class=o>=</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=p>.</span><span class=n>tx_buf</span> <span class=o>=</span> <span class=p>(</span><span class=kt>unsigned</span> <span class=kt>long</span><span class=p>)</span><span class=n>tx</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=p>.</span><span class=n>rx_buf</span> <span class=o>=</span> <span class=p>(</span><span class=kt>unsigned</span> <span class=kt>long</span><span class=p>)</span><span class=n>rx</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=p>.</span><span class=n>len</span> <span class=o>=</span> <span class=nf>ARRAY_SIZE</span><span class=p>(</span><span class=n>tx</span><span class=p>),</span>
+</span></span><span class=line><span class=cl>        <span class=p>.</span><span class=n>delay_usecs</span> <span class=o>=</span> <span class=n>delay</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=p>.</span><span class=n>speed_hz</span> <span class=o>=</span> <span class=n>speed</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=p>.</span><span class=n>bits_per_word</span> <span class=o>=</span> <span class=n>bits</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=p>};</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=n>ret</span> <span class=o>=</span> <span class=nf>ioctl</span><span class=p>(</span><span class=n>fd</span><span class=p>,</span> <span class=nf>SPI_IOC_MESSAGE</span><span class=p>(</span><span class=mi>1</span><span class=p>),</span> <span class=o>&amp;</span><span class=n>tr</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=p>(</span><span class=n>ret</span> <span class=o>==</span> <span class=mi>1</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=nf>pabort</span><span class=p>(</span><span class=s>&#34;can&#39;t send spi message&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>for</span> <span class=p>(</span><span class=n>ret</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span> <span class=n>ret</span> <span class=o>&lt;</span> <span class=nf>ARRAY_SIZE</span><span class=p>(</span><span class=n>tx</span><span class=p>);</span> <span class=n>ret</span><span class=o>++</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=p>(</span><span class=o>!</span><span class=p>(</span><span class=n>ret</span> <span class=o>%</span> <span class=mi>6</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>            <span class=nf>puts</span><span class=p>(</span><span class=s>&#34;&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=nf>printf</span><span class=p>(</span><span class=s>&#34;%.2X &#34;</span><span class=p>,</span> <span class=n>rx</span><span class=p>[</span><span class=n>ret</span><span class=p>]);</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=nf>puts</span><span class=p>(</span><span class=s>&#34;&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>static</span> <span class=kt>void</span> <span class=nf>print_usage</span><span class=p>(</span><span class=k>const</span> <span class=kt>char</span> <span class=o>*</span><span class=n>prog</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nf>printf</span><span class=p>(</span><span class=s>&#34;Usage: %s [-DsbdlHOLC3]</span><span class=se>\n</span><span class=s>&#34;</span><span class=p>,</span> <span class=n>prog</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=nf>puts</span><span class=p>(</span><span class=s>&#34;  -D --device   device to use (default /dev/spidev0.0)</span><span class=se>\n</span><span class=s>&#34;</span>
+</span></span><span class=line><span class=cl>         <span class=s>&#34;  -s --speed    max speed (Hz)</span><span class=se>\n</span><span class=s>&#34;</span>
+</span></span><span class=line><span class=cl>         <span class=s>&#34;  -d --delay    delay (usec)</span><span class=se>\n</span><span class=s>&#34;</span>
+</span></span><span class=line><span class=cl>         <span class=s>&#34;  -b --bpw      bits per word </span><span class=se>\n</span><span class=s>&#34;</span>
+</span></span><span class=line><span class=cl>         <span class=s>&#34;  -l --loop     loopback</span><span class=se>\n</span><span class=s>&#34;</span>
+</span></span><span class=line><span class=cl>         <span class=s>&#34;  -H --cpha     clock phase</span><span class=se>\n</span><span class=s>&#34;</span>
+</span></span><span class=line><span class=cl>         <span class=s>&#34;  -O --cpol     clock polarity</span><span class=se>\n</span><span class=s>&#34;</span>
+</span></span><span class=line><span class=cl>         <span class=s>&#34;  -L --lsb      least significant bit first</span><span class=se>\n</span><span class=s>&#34;</span>
+</span></span><span class=line><span class=cl>         <span class=s>&#34;  -C --cs-high  chip select active high</span><span class=se>\n</span><span class=s>&#34;</span>
+</span></span><span class=line><span class=cl>         <span class=s>&#34;  -3 --3wire    SI/SO signals shared</span><span class=se>\n</span><span class=s>&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=nf>exit</span><span class=p>(</span><span class=mi>1</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>static</span> <span class=kt>void</span> <span class=nf>parse_opts</span><span class=p>(</span><span class=kt>int</span> <span class=n>argc</span><span class=p>,</span> <span class=kt>char</span> <span class=o>*</span><span class=n>argv</span><span class=p>[])</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>while</span> <span class=p>(</span><span class=mi>1</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=k>static</span> <span class=k>const</span> <span class=k>struct</span> <span class=n>option</span> <span class=n>lopts</span><span class=p>[]</span> <span class=o>=</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=p>{</span><span class=s>&#34;device&#34;</span><span class=p>,</span> <span class=mi>1</span><span class=p>,</span> <span class=mi>0</span><span class=p>,</span> <span class=sc>&#39;D&#39;</span><span class=p>},</span>
+</span></span><span class=line><span class=cl>            <span class=p>{</span><span class=s>&#34;speed&#34;</span><span class=p>,</span> <span class=mi>1</span><span class=p>,</span> <span class=mi>0</span><span class=p>,</span> <span class=sc>&#39;s&#39;</span><span class=p>},</span>
+</span></span><span class=line><span class=cl>            <span class=p>{</span><span class=s>&#34;delay&#34;</span><span class=p>,</span> <span class=mi>1</span><span class=p>,</span> <span class=mi>0</span><span class=p>,</span> <span class=sc>&#39;d&#39;</span><span class=p>},</span>
+</span></span><span class=line><span class=cl>            <span class=p>{</span><span class=s>&#34;bpw&#34;</span><span class=p>,</span> <span class=mi>1</span><span class=p>,</span> <span class=mi>0</span><span class=p>,</span> <span class=sc>&#39;b&#39;</span><span class=p>},</span>
+</span></span><span class=line><span class=cl>            <span class=p>{</span><span class=s>&#34;loop&#34;</span><span class=p>,</span> <span class=mi>0</span><span class=p>,</span> <span class=mi>0</span><span class=p>,</span> <span class=sc>&#39;l&#39;</span><span class=p>},</span>
+</span></span><span class=line><span class=cl>            <span class=p>{</span><span class=s>&#34;cpha&#34;</span><span class=p>,</span> <span class=mi>0</span><span class=p>,</span> <span class=mi>0</span><span class=p>,</span> <span class=sc>&#39;H&#39;</span><span class=p>},</span>
+</span></span><span class=line><span class=cl>            <span class=p>{</span><span class=s>&#34;cpol&#34;</span><span class=p>,</span> <span class=mi>0</span><span class=p>,</span> <span class=mi>0</span><span class=p>,</span> <span class=sc>&#39;O&#39;</span><span class=p>},</span>
+</span></span><span class=line><span class=cl>            <span class=p>{</span><span class=s>&#34;lsb&#34;</span><span class=p>,</span> <span class=mi>0</span><span class=p>,</span> <span class=mi>0</span><span class=p>,</span> <span class=sc>&#39;L&#39;</span><span class=p>},</span>
+</span></span><span class=line><span class=cl>            <span class=p>{</span><span class=s>&#34;cs-high&#34;</span><span class=p>,</span> <span class=mi>0</span><span class=p>,</span> <span class=mi>0</span><span class=p>,</span> <span class=sc>&#39;C&#39;</span><span class=p>},</span>
+</span></span><span class=line><span class=cl>            <span class=p>{</span><span class=s>&#34;3wire&#34;</span><span class=p>,</span> <span class=mi>0</span><span class=p>,</span> <span class=mi>0</span><span class=p>,</span> <span class=sc>&#39;3&#39;</span><span class=p>},</span>
+</span></span><span class=line><span class=cl>            <span class=p>{</span><span class=s>&#34;no-cs&#34;</span><span class=p>,</span> <span class=mi>0</span><span class=p>,</span> <span class=mi>0</span><span class=p>,</span> <span class=sc>&#39;N&#39;</span><span class=p>},</span>
+</span></span><span class=line><span class=cl>            <span class=p>{</span><span class=s>&#34;ready&#34;</span><span class=p>,</span> <span class=mi>0</span><span class=p>,</span> <span class=mi>0</span><span class=p>,</span> <span class=sc>&#39;R&#39;</span><span class=p>},</span>
+</span></span><span class=line><span class=cl>            <span class=p>{</span><span class=nb>NULL</span><span class=p>,</span> <span class=mi>0</span><span class=p>,</span> <span class=mi>0</span><span class=p>,</span> <span class=mi>0</span><span class=p>},</span>
+</span></span><span class=line><span class=cl>        <span class=p>};</span>
+</span></span><span class=line><span class=cl>        <span class=kt>int</span> <span class=n>c</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=n>c</span> <span class=o>=</span> <span class=nf>getopt_long</span><span class=p>(</span><span class=n>argc</span><span class=p>,</span> <span class=n>argv</span><span class=p>,</span> <span class=s>&#34;D:s:d:b:lHOLC3NR&#34;</span><span class=p>,</span> <span class=n>lopts</span><span class=p>,</span> <span class=nb>NULL</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=p>(</span><span class=n>c</span> <span class=o>==</span> <span class=o>-</span><span class=mi>1</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>            <span class=k>break</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=k>switch</span> <span class=p>(</span><span class=n>c</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=k>case</span> <span class=sc>&#39;D&#39;</span><span class=o>:</span>
+</span></span><span class=line><span class=cl>            <span class=n>device</span> <span class=o>=</span> <span class=n>optarg</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>            <span class=k>break</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=k>case</span> <span class=sc>&#39;s&#39;</span><span class=o>:</span>
+</span></span><span class=line><span class=cl>            <span class=n>speed</span> <span class=o>=</span> <span class=nf>atoi</span><span class=p>(</span><span class=n>optarg</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>            <span class=k>break</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=k>case</span> <span class=sc>&#39;d&#39;</span><span class=o>:</span>
+</span></span><span class=line><span class=cl>            <span class=n>delay</span> <span class=o>=</span> <span class=nf>atoi</span><span class=p>(</span><span class=n>optarg</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>            <span class=k>break</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=k>case</span> <span class=sc>&#39;b&#39;</span><span class=o>:</span>
+</span></span><span class=line><span class=cl>            <span class=n>bits</span> <span class=o>=</span> <span class=nf>atoi</span><span class=p>(</span><span class=n>optarg</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>            <span class=k>break</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=k>case</span> <span class=sc>&#39;l&#39;</span><span class=o>:</span>
+</span></span><span class=line><span class=cl>            <span class=n>mode</span> <span class=o>|=</span> <span class=n>SPI_LOOP</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>            <span class=k>break</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=k>case</span> <span class=sc>&#39;H&#39;</span><span class=o>:</span>
+</span></span><span class=line><span class=cl>            <span class=n>mode</span> <span class=o>|=</span> <span class=n>SPI_CPHA</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>            <span class=k>break</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=k>case</span> <span class=sc>&#39;O&#39;</span><span class=o>:</span>
+</span></span><span class=line><span class=cl>            <span class=n>mode</span> <span class=o>|=</span> <span class=n>SPI_CPOL</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>            <span class=k>break</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=k>case</span> <span class=sc>&#39;L&#39;</span><span class=o>:</span>
+</span></span><span class=line><span class=cl>            <span class=n>mode</span> <span class=o>|=</span> <span class=n>SPI_LSB_FIRST</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>            <span class=k>break</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=k>case</span> <span class=sc>&#39;C&#39;</span><span class=o>:</span>
+</span></span><span class=line><span class=cl>            <span class=n>mode</span> <span class=o>|=</span> <span class=n>SPI_CS_HIGH</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>            <span class=k>break</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=k>case</span> <span class=sc>&#39;3&#39;</span><span class=o>:</span>
+</span></span><span class=line><span class=cl>            <span class=n>mode</span> <span class=o>|=</span> <span class=n>SPI_3WIRE</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>            <span class=k>break</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=k>case</span> <span class=sc>&#39;N&#39;</span><span class=o>:</span>
+</span></span><span class=line><span class=cl>            <span class=n>mode</span> <span class=o>|=</span> <span class=n>SPI_NO_CS</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>            <span class=k>break</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=k>case</span> <span class=sc>&#39;R&#39;</span><span class=o>:</span>
+</span></span><span class=line><span class=cl>            <span class=n>mode</span> <span class=o>|=</span> <span class=n>SPI_READY</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>            <span class=k>break</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=k>default</span><span class=o>:</span>
+</span></span><span class=line><span class=cl>            <span class=nf>print_usage</span><span class=p>(</span><span class=n>argv</span><span class=p>[</span><span class=mi>0</span><span class=p>]);</span>
+</span></span><span class=line><span class=cl>            <span class=k>break</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kt>int</span> <span class=nf>main</span><span class=p>(</span><span class=kt>int</span> <span class=n>argc</span><span class=p>,</span> <span class=kt>char</span> <span class=o>*</span><span class=n>argv</span><span class=p>[])</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=kt>int</span> <span class=n>ret</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=kt>int</span> <span class=n>fd</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=nf>parse_opts</span><span class=p>(</span><span class=n>argc</span><span class=p>,</span> <span class=n>argv</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=n>fd</span> <span class=o>=</span> <span class=nf>open</span><span class=p>(</span><span class=n>device</span><span class=p>,</span> <span class=n>O_RDWR</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=p>(</span><span class=n>fd</span> <span class=o>&lt;</span> <span class=mi>0</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=nf>pabort</span><span class=p>(</span><span class=s>&#34;can&#39;t open device&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=cm>/* 
+</span></span></span><span class=line><span class=cl><span class=cm>         * spi mode 
+</span></span></span><span class=line><span class=cl><span class=cm>         */</span>
+</span></span><span class=line><span class=cl>    <span class=n>ret</span> <span class=o>=</span> <span class=nf>ioctl</span><span class=p>(</span><span class=n>fd</span><span class=p>,</span> <span class=n>SPI_IOC_WR_MODE</span><span class=p>,</span> <span class=o>&amp;</span><span class=n>mode</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=p>(</span><span class=n>ret</span> <span class=o>==</span> <span class=o>-</span><span class=mi>1</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=nf>pabort</span><span class=p>(</span><span class=s>&#34;can&#39;t set spi mode&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=n>ret</span> <span class=o>=</span> <span class=nf>ioctl</span><span class=p>(</span><span class=n>fd</span><span class=p>,</span> <span class=n>SPI_IOC_RD_MODE</span><span class=p>,</span> <span class=o>&amp;</span><span class=n>mode</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=p>(</span><span class=n>ret</span> <span class=o>==</span> <span class=o>-</span><span class=mi>1</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=nf>pabort</span><span class=p>(</span><span class=s>&#34;can&#39;t get spi mode&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=cm>/* 
+</span></span></span><span class=line><span class=cl><span class=cm>         * bits per word 
+</span></span></span><span class=line><span class=cl><span class=cm>         */</span>
+</span></span><span class=line><span class=cl>    <span class=n>ret</span> <span class=o>=</span> <span class=nf>ioctl</span><span class=p>(</span><span class=n>fd</span><span class=p>,</span> <span class=n>SPI_IOC_WR_BITS_PER_WORD</span><span class=p>,</span> <span class=o>&amp;</span><span class=n>bits</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=p>(</span><span class=n>ret</span> <span class=o>==</span> <span class=o>-</span><span class=mi>1</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=nf>pabort</span><span class=p>(</span><span class=s>&#34;can&#39;t set bits per word&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=n>ret</span> <span class=o>=</span> <span class=nf>ioctl</span><span class=p>(</span><span class=n>fd</span><span class=p>,</span> <span class=n>SPI_IOC_RD_BITS_PER_WORD</span><span class=p>,</span> <span class=o>&amp;</span><span class=n>bits</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=p>(</span><span class=n>ret</span> <span class=o>==</span> <span class=o>-</span><span class=mi>1</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=nf>pabort</span><span class=p>(</span><span class=s>&#34;can&#39;t get bits per word&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=cm>/* 
+</span></span></span><span class=line><span class=cl><span class=cm>         * max speed hz 
+</span></span></span><span class=line><span class=cl><span class=cm>         */</span>
+</span></span><span class=line><span class=cl>    <span class=n>ret</span> <span class=o>=</span> <span class=nf>ioctl</span><span class=p>(</span><span class=n>fd</span><span class=p>,</span> <span class=n>SPI_IOC_WR_MAX_SPEED_HZ</span><span class=p>,</span> <span class=o>&amp;</span><span class=n>speed</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=p>(</span><span class=n>ret</span> <span class=o>==</span> <span class=o>-</span><span class=mi>1</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=nf>pabort</span><span class=p>(</span><span class=s>&#34;can&#39;t set max speed hz&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=n>ret</span> <span class=o>=</span> <span class=nf>ioctl</span><span class=p>(</span><span class=n>fd</span><span class=p>,</span> <span class=n>SPI_IOC_RD_MAX_SPEED_HZ</span><span class=p>,</span> <span class=o>&amp;</span><span class=n>speed</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=p>(</span><span class=n>ret</span> <span class=o>==</span> <span class=o>-</span><span class=mi>1</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=nf>pabort</span><span class=p>(</span><span class=s>&#34;can&#39;t get max speed hz&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=nf>printf</span><span class=p>(</span><span class=s>&#34;spi mode: %d</span><span class=se>\n</span><span class=s>&#34;</span><span class=p>,</span> <span class=n>mode</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=nf>printf</span><span class=p>(</span><span class=s>&#34;bits per word: %d</span><span class=se>\n</span><span class=s>&#34;</span><span class=p>,</span> <span class=n>bits</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=nf>printf</span><span class=p>(</span><span class=s>&#34;max speed: %d Hz (%d KHz)</span><span class=se>\n</span><span class=s>&#34;</span><span class=p>,</span> <span class=n>speed</span><span class=p>,</span> <span class=n>speed</span> <span class=o>/</span> <span class=mi>1000</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=nf>transfer</span><span class=p>(</span><span class=n>fd</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=nf>close</span><span class=p>(</span><span class=n>fd</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=n>ret</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>Compile this file and run it. If the output looks like the following, the modification was successful:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>spi mode: 0
+</span></span><span class=line><span class=cl>bits per word: 8
+</span></span><span class=line><span class=cl>max speed: 500000 Hz (500 KHz)
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>FF FF FF FF FF FF 
+</span></span><span class=line><span class=cl>40 00 00 00 00 95 
+</span></span><span class=line><span class=cl>FF FF FF FF FF FF 
+</span></span><span class=line><span class=cl>FF FF FF FF FF FF 
+</span></span><span class=line><span class=cl>FF FF FF FF FF FF 
+</span></span><span class=line><span class=cl>DE AD BE EF BA AD 
+</span></span><span class=line><span class=cl>F0 0D 
+</span></span></code></pre></td></tr></table></div></div></section><footer class=article-footer></footer></article><div class=disqus-container><div id=disqus_thread></div><script>window.disqus_config=function(){},function(){if(["localhost","127.0.0.1"].indexOf(window.location.hostname)!=-1){document.getElementById("disqus_thread").innerHTML="Disqus comments not available by default when the website is previewed locally.";return}var t=document,e=t.createElement("script");e.async=!0,e.src="//nansenli.disqus.com/embed.js",e.setAttribute("data-timestamp",+new Date),(t.head||t.body).appendChild(e)}()</script><noscript>Please enable JavaScript to view the <a href=https://disqus.com/?ref_noscript>comments powered by Disqus.</a></noscript><a href=https://disqus.com class=dsq-brlink>comments powered by <span class=logo-disqus>Disqus</span></a></div><style>.disqus-container{background-color:var(--card-background);border-radius:var(--card-border-radius);box-shadow:var(--shadow-l1);padding:var(--card-padding)}</style><script>window.addEventListener("onColorSchemeChange",e=>{typeof DISQUS=="object"&&DISQUS.reset({reload:!0})})</script><footer class=site-footer><section class=copyright>&copy;
 2026 Nansen Li 🌈 （李楠森）</section><section class=powerby>Built with <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a><br>Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.31.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a></section></footer><div class=pswp tabindex=-1 role=dialog aria-hidden=true><div class=pswp__bg></div><div class=pswp__scroll-wrap><div class=pswp__container><div class=pswp__item></div><div class=pswp__item></div><div class=pswp__item></div></div><div class="pswp__ui pswp__ui--hidden"><div class=pswp__top-bar><div class=pswp__counter></div><button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
 <button class="pswp__button pswp__button--share" title=Share></button>
 <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>

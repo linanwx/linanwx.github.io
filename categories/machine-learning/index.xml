@@ -22,24 +22,53 @@ Additionally, I&amp;rsquo;m not sure if it&amp;rsquo;s an issue with Deepin, Nvi
 &lt;p>In the program below, train_x is a series of numbers between -1 and 1, and train_y is twice x plus 10, with a random number between 0 and 1 added.
 Next, we build the model. X and Y are tensor placeholders waiting to be initialized. During optimization, the XY values in the model will continuously change to data from train_x and train_y, and then the optimizer will optimize by changing the slope w and intercept b in a direction that reduces error. Through iteration, w and b will eventually make the model fit the data.&lt;/p>
 &lt;p>After the model is built, we start running it. First, we open a session, and we must remember to initialize all variables. Next, we iterate through all the data 10 times. In each iteration, we input a coordinate, calculate the error, and use gradient descent to correct w and b. Finally, we output the calculated values of w and b.&lt;/p>
-&lt;pre tabindex="0">&lt;code>import tensorflow as tf
-import numpy as np
-train_x = np.linspace(-1, 1, 101)
-train_y = 2 * train_x + np.random.rand(train_x.shape[0]) + 10
-X = tf.placeholder(&amp;#34;float&amp;#34;)
-Y = tf.placeholder(&amp;#34;float&amp;#34;)
-w = tf.Variable(0.0, name = &amp;#34;w&amp;#34;)
-b = tf.Variable(0.0, name = &amp;#34;b&amp;#34;)
-loss = tf.square(Y - tf.multiply(X,w) - b)
-train_op = tf.train.GradientDescentOptimizer(0.01).minimize(loss)
-with tf.Session() as session:
-session.run(tf.global_variables_initializer())
-for i in range(10):
-for x,y in zip(train_x, train_y):
-session.run(train_op, feed_dict={X:x, Y:y})
-print(&amp;#34;w: &amp;#34;, session.run(w))
-print(&amp;#34;b: &amp;#34;, session.run(b))
-&lt;/code>&lt;/pre>&lt;p>Running results:
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-gdscript3" data-lang="gdscript3">&lt;span class="line">&lt;span class="cl">&lt;span class="n">import&lt;/span> &lt;span class="n">tensorflow&lt;/span> &lt;span class="n">as&lt;/span> &lt;span class="n">tf&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">import&lt;/span> &lt;span class="n">numpy&lt;/span> &lt;span class="n">as&lt;/span> &lt;span class="n">np&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">train_x&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">np&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">linspace&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">101&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">train_y&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">2&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="n">train_x&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="n">np&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">random&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">rand&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">train_x&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">shape&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="mi">0&lt;/span>&lt;span class="p">])&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="mi">10&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">X&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">tf&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">placeholder&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;float&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">Y&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">tf&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">placeholder&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;float&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">w&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">tf&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">Variable&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mf">0.0&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">name&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="s2">&amp;#34;w&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">b&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">tf&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">Variable&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mf">0.0&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">name&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="s2">&amp;#34;b&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">loss&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">tf&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">square&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">Y&lt;/span> &lt;span class="o">-&lt;/span> &lt;span class="n">tf&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">multiply&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">X&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="n">w&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="o">-&lt;/span> &lt;span class="n">b&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">train_op&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">tf&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">train&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">GradientDescentOptimizer&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mf">0.01&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">minimize&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">loss&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">with&lt;/span> &lt;span class="n">tf&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">Session&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="n">as&lt;/span> &lt;span class="n">session&lt;/span>&lt;span class="p">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">session&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">run&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">tf&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">global_variables_initializer&lt;/span>&lt;span class="p">())&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">for&lt;/span> &lt;span class="n">i&lt;/span> &lt;span class="ow">in&lt;/span> &lt;span class="nb">range&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">10&lt;/span>&lt;span class="p">):&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">for&lt;/span> &lt;span class="n">x&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="n">y&lt;/span> &lt;span class="ow">in&lt;/span> &lt;span class="n">zip&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">train_x&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">train_y&lt;/span>&lt;span class="p">):&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">session&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">run&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">train_op&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">feed_dict&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="p">{&lt;/span>&lt;span class="n">X&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="n">x&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">Y&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="n">y&lt;/span>&lt;span class="p">})&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">print&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;w: &amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">session&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">run&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">w&lt;/span>&lt;span class="p">))&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">print&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;b: &amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">session&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">run&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">b&lt;/span>&lt;span class="p">))&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>Running results:
 &lt;img src="http://otwwkzjm5.bkt.clouddn.com/17-8-9/99539186.jpg"
 loading="lazy"
 alt="Results"
@@ -87,123 +116,290 @@ Create a new Python 2 Jupyter file, enter the following code, and then click the
 &lt;/h2>&lt;p>TensorFlow is a programming system that uses graphs to represent computational tasks. Nodes in the graph are called &lt;strong>ops&lt;/strong> (short for operations). An op takes 0 or more Tensors, performs computations, and produces 0 or more Tensors. Each Tensor is a typed multi-dimensional array. For example, you can represent a small batch of images as a four-dimensional floating-point array with dimensions [batch, height, width, channels].&lt;/p>
 &lt;p>A TensorFlow graph &lt;strong>describes&lt;/strong> the computation process. To perform computation, the graph must be launched in a &lt;code>session&lt;/code>. The &lt;code>session&lt;/code> distributes the graph&amp;rsquo;s ops to devices like CPUs or GPUs and provides methods to execute ops. After execution, these methods return the resulting tensors. In Python, the returned tensors are &lt;a class="link" href="http://www.numpy.org/" target="_blank" rel="noopener"
 >numpy&lt;/a> &lt;code>ndarray&lt;/code> objects. In C and C++, the returned tensors are tensorflow::Tensor instances.&lt;/p></description></item><item><title>Using TensorFlow for a Kaggle Task — Titanic: Machine Learning from Disaster</title><link>https://nansenli.com/post/jianshu/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E4%BD%BF%E7%94%A8tensorflow%E5%AE%8C%E6%88%90kaggle%E4%BB%BB%E5%8A%A1%E6%B3%B0%E5%9D%A6%E5%B0%BC%E5%85%8B%E5%8F%B7titanic--machine-learning-from-disaster/</link><pubDate>Fri, 04 Aug 2017 10:08:00 +0000</pubDate><guid>https://nansenli.com/post/jianshu/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E4%BD%BF%E7%94%A8tensorflow%E5%AE%8C%E6%88%90kaggle%E4%BB%BB%E5%8A%A1%E6%B3%B0%E5%9D%A6%E5%B0%BC%E5%85%8B%E5%8F%B7titanic--machine-learning-from-disaster/</guid><description>&lt;h2 id="import-necessary-libraries">Import Necessary Libraries
-&lt;/h2>&lt;pre tabindex="0">&lt;code>import csv
-import tensorflow as tf
-import numpy as np
-import random
-import sys
-import pandas as pd
-from pandas import DataFrame
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
-&lt;/code>&lt;/pre>&lt;h2 id="read-source-file-and-display">Read Source File and Display
+&lt;/h2>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">import csv
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">import tensorflow as tf
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">import numpy as np
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">import random
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">import sys
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">import pandas as pd
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">from pandas import DataFrame
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">from __future__ import absolute_import
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">from __future__ import division
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">from __future__ import print_function
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="read-source-file-and-display">Read Source File and Display
 &lt;/h2>&lt;p>In this section, we&amp;rsquo;ll work with basic CSV operations and display the results.
 We&amp;rsquo;ll read the train.csv file downloaded from Kaggle and show its contents.&lt;/p>
-&lt;pre tabindex="0">&lt;code>trainFilePath = &amp;#39;./train.csv&amp;#39;
-trainSize = 0
-def testCSV(filePath):
-with open(filePath, &amp;#39;rb&amp;#39;) as trainFile:
-global trainSize
-csvReader = csv.reader(trainFile)
-dataList = [data for data in csvReader]
-df = DataFrame(dataList[1:], columns=dataList[0])
-trainSize = len(df)
-print(df)
-print(&amp;#34;trainSize&amp;#34;, trainSize)
-testCSV(trainFilePath)
-&lt;/code>&lt;/pre>&lt;h2 id="read-source-file-extract-data-and-build-neural-network">Read Source File, Extract Data, and Build Neural Network
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">trainFilePath = &amp;#39;./train.csv&amp;#39;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">trainSize = 0
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">def testCSV(filePath):
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> with open(filePath, &amp;#39;rb&amp;#39;) as trainFile:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> global trainSize
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> csvReader = csv.reader(trainFile)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> dataList = [data for data in csvReader]
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> df = DataFrame(dataList[1:], columns=dataList[0])
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> trainSize = len(df)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> print(df)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> print(&amp;#34;trainSize&amp;#34;, trainSize)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">testCSV(trainFilePath)
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="read-source-file-extract-data-and-build-neural-network">Read Source File, Extract Data, and Build Neural Network
 &lt;/h2>&lt;p>In this section, we&amp;rsquo;ll extract gender, class, ticket fare, and SibSp from the source file to fit the survival probability.
 Then we&amp;rsquo;ll build a 5-layer neural network with 3 hidden layers containing 4-10-20-10-2 neurons respectively.
 Finally, we&amp;rsquo;ll execute the reading function.&lt;/p>
-&lt;pre tabindex="0">&lt;code>def readTrainDataCSV(filePath):
-global trainData, targetData, classifier
-with open(filePath, &amp;#39;rb&amp;#39;) as trainFile:
-csvReader = csv.reader(trainFile)
-dataList = [data for data in csvReader]
-dataSize = len(dataList) - 1
-trainData = np.ndarray((dataSize, 4), dtype=np.float32)
-targetData = np.ndarray((dataSize, 1), dtype=np.int32)
-trainDataFrame = DataFrame(dataList[1:], columns=dataList[0])
-trainDataFrame_fliter = trainDataFrame.loc[:,[&amp;#39;Pclass&amp;#39;,&amp;#39;Sex&amp;#39;,&amp;#39;SibSp&amp;#39;,&amp;#39;Fare&amp;#39;,&amp;#39;Survived&amp;#39;]]
-for i in range(dataSize):
-thisData = np.array(trainDataFrame_fliter.iloc[i])
-Pclass,Sex,SibSp,Fare,Survived = thisData
-Pclass = float(Pclass)
-Sex = 0 if Sex == &amp;#39;female&amp;#39; else 1
-SibSp = float(SibSp)
-Fare = float(Fare)
-Survived = int(Survived)
-print(Pclass,Sex,SibSp,Fare,Survived)
-trainData[i,:] = [Pclass,Sex,SibSp,Fare]
-targetData[i,:] = [Survived]
-print(thisData)
-print(trainData)
-print(targetData)
-feature_columns = [tf.contrib.layers.real_valued_column(&amp;#34;&amp;#34;, dimension=4)]
-classifier = tf.contrib.learn.DNNClassifier(feature_columns=feature_columns,
-hidden_units=[10, 20, 10],
-n_classes=2)
-# model_dir=&amp;#34;/tmp/titanic_model&amp;#34;)
-readTrainDataCSV(trainFilePath)
-&lt;/code>&lt;/pre>&lt;h2 id="create-input-data">Create Input Data
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;span class="lnt">30
+&lt;/span>&lt;span class="lnt">31
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">def readTrainDataCSV(filePath):
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> global trainData, targetData, classifier
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> with open(filePath, &amp;#39;rb&amp;#39;) as trainFile:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> csvReader = csv.reader(trainFile)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> dataList = [data for data in csvReader]
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> dataSize = len(dataList) - 1
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> trainData = np.ndarray((dataSize, 4), dtype=np.float32)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> targetData = np.ndarray((dataSize, 1), dtype=np.int32)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> trainDataFrame = DataFrame(dataList[1:], columns=dataList[0])
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> trainDataFrame_fliter = trainDataFrame.loc[:,[&amp;#39;Pclass&amp;#39;,&amp;#39;Sex&amp;#39;,&amp;#39;SibSp&amp;#39;,&amp;#39;Fare&amp;#39;,&amp;#39;Survived&amp;#39;]]
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> for i in range(dataSize):
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> thisData = np.array(trainDataFrame_fliter.iloc[i])
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> Pclass,Sex,SibSp,Fare,Survived = thisData
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> Pclass = float(Pclass)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> Sex = 0 if Sex == &amp;#39;female&amp;#39; else 1
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> SibSp = float(SibSp)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> Fare = float(Fare)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> Survived = int(Survived)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> print(Pclass,Sex,SibSp,Fare,Survived)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> trainData[i,:] = [Pclass,Sex,SibSp,Fare]
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> targetData[i,:] = [Survived]
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> print(thisData)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> print(trainData)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> print(targetData)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> feature_columns = [tf.contrib.layers.real_valued_column(&amp;#34;&amp;#34;, dimension=4)]
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> classifier = tf.contrib.learn.DNNClassifier(feature_columns=feature_columns,
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> hidden_units=[10, 20, 10],
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> n_classes=2)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"># model_dir=&amp;#34;/tmp/titanic_model&amp;#34;)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">readTrainDataCSV(trainFilePath)
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="create-input-data">Create Input Data
 &lt;/h2>&lt;p>We&amp;rsquo;ll wrap the training data and labels into a tuple and return it.&lt;/p>
-&lt;pre tabindex="0">&lt;code>def get_train_inputs():
-x = tf.constant(trainData)
-y = tf.constant(targetData)
-print(x)
-print(y)
-return x, y
-get_train_inputs()
-&lt;/code>&lt;/pre>&lt;h2 id="train-the-model">Train the Model
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;span class="lnt">8
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-gdscript3" data-lang="gdscript3">&lt;span class="line">&lt;span class="cl">&lt;span class="k">def&lt;/span> &lt;span class="nf">get_train_inputs&lt;/span>&lt;span class="p">():&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">x&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">tf&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">constant&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">trainData&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">y&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">tf&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">constant&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">targetData&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">print&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">x&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">print&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">y&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="n">x&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">y&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">get_train_inputs&lt;/span>&lt;span class="p">()&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="train-the-model">Train the Model
 &lt;/h2>&lt;p>Now we start training the neural network.&lt;/p>
-&lt;pre tabindex="0">&lt;code>def train():
-classifier.fit(input_fn=get_train_inputs, steps=2000)
-train()
-&lt;/code>&lt;/pre>&lt;h2 id="check-accuracy">Check Accuracy
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">def train():
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> classifier.fit(input_fn=get_train_inputs, steps=2000)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">train()
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="check-accuracy">Check Accuracy
 &lt;/h2>&lt;p>We use the entire dataset to check accuracy. Note that we should use a validation set for this task, but since this is just for demonstration purposes, we&amp;rsquo;ll skip that step.&lt;/p>
-&lt;pre tabindex="0">&lt;code>accuracy_score = classifier.evaluate(input_fn=get_train_inputs,
-steps=1)[&amp;#34;accuracy&amp;#34;]
-print(&amp;#34;accuracy:&amp;#34;,accuracy_score)
-&lt;/code>&lt;/pre>&lt;h2 id="read-test-set-and-output-results">Read Test Set and Output Results
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">accuracy_score = classifier.evaluate(input_fn=get_train_inputs,
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> steps=1)[&amp;#34;accuracy&amp;#34;]
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">print(&amp;#34;accuracy:&amp;#34;,accuracy_score)
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="read-test-set-and-output-results">Read Test Set and Output Results
 &lt;/h2>&lt;p>In this section, we&amp;rsquo;ll read the test data from Kaggle and output the results to a file, which will ultimately be submitted to the official website.&lt;/p>
-&lt;pre tabindex="0">&lt;code>testFilePath = &amp;#39;./test.csv&amp;#39;
-def readTestDataCSV(filePath):
-global testData, PassengerIdStart
-with open(filePath, &amp;#39;rb&amp;#39;) as testFile:
-csvReader = csv.reader(testFile)
-dataList = [data for data in csvReader]
-dataSize = len(dataList)-1
-trainDataFrame = DataFrame(dataList[1:], columns=dataList[0])
-trainDataFrame_fliter = trainDataFrame.loc[:,[&amp;#39;Pclass&amp;#39;,&amp;#39;Sex&amp;#39;,&amp;#39;SibSp&amp;#39;,&amp;#39;Fare&amp;#39;]]
-testData = np.ndarray((dataSize, 4), dtype=np.float32)
-PassengerIdStart = trainDataFrame[&amp;#39;PassengerId&amp;#39;][0]
-PassengerIdStart = int(PassengerIdStart)
-print(&amp;#39;PassengerId&amp;#39;,PassengerIdStart)
-for i in range(dataSize):
-thisData = np.array(trainDataFrame_fliter.iloc[i])
-Pclass,Sex,SibSp,Fare = thisData
-Pclass = float(Pclass)
-Sex = 0 if Sex == &amp;#39;female&amp;#39; else 1
-SibSp = float(SibSp)
-Fare = 0 if Fare==&amp;#39;&amp;#39; else float(Fare)
-print(Pclass,Sex,SibSp,Fare)
-testData[i,:] = [Pclass,Sex,SibSp,Fare]
-print(thisData)
-print(testData)
-def testData_samples():
-return testData
-readTestDataCSV(testFilePath)
-predictions = list(classifier.predict(input_fn=testData_samples))
-print(predictions)
-with open(&amp;#39;predictions.csv&amp;#39;, &amp;#39;wb&amp;#39;) as csvfile:
-writer = csv.writer(csvfile, dialect=&amp;#39;excel&amp;#39;)
-writer.writerow([&amp;#39;PassengerId&amp;#39;,&amp;#39;Survived&amp;#39;])
-PassengerId = PassengerIdStart
-for i in predictions:
-writer.writerow([PassengerId, i])
-PassengerId += 1
-&lt;/code>&lt;/pre>&lt;p>Finally, using only 4 features, we achieved an accuracy of 75%. The next goal is to utilize the other available data.&lt;/p></description></item><item><title>Deep Learning Beginner's Study Notes One (Udacity)</title><link>https://nansenli.com/post/jianshu/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E9%9B%B6%E5%9F%BA%E7%A1%80%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%E4%B8%80%E4%BC%98%E8%BE%BE%E5%AD%A6%E5%9F%8E/</link><pubDate>Wed, 19 Jul 2017 07:42:00 +0000</pubDate><guid>https://nansenli.com/post/jianshu/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E9%9B%B6%E5%9F%BA%E7%A1%80%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%E4%B8%80%E4%BC%98%E8%BE%BE%E5%AD%A6%E5%9F%8E/</guid><description>&lt;h2 id="introduction">Introduction
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;span class="lnt">30
+&lt;/span>&lt;span class="lnt">31
+&lt;/span>&lt;span class="lnt">32
+&lt;/span>&lt;span class="lnt">33
+&lt;/span>&lt;span class="lnt">34
+&lt;/span>&lt;span class="lnt">35
+&lt;/span>&lt;span class="lnt">36
+&lt;/span>&lt;span class="lnt">37
+&lt;/span>&lt;span class="lnt">38
+&lt;/span>&lt;span class="lnt">39
+&lt;/span>&lt;span class="lnt">40
+&lt;/span>&lt;span class="lnt">41
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">testFilePath = &amp;#39;./test.csv&amp;#39;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">def readTestDataCSV(filePath):
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> global testData, PassengerIdStart
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> with open(filePath, &amp;#39;rb&amp;#39;) as testFile:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> csvReader = csv.reader(testFile)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> dataList = [data for data in csvReader]
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> dataSize = len(dataList)-1
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> trainDataFrame = DataFrame(dataList[1:], columns=dataList[0])
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> trainDataFrame_fliter = trainDataFrame.loc[:,[&amp;#39;Pclass&amp;#39;,&amp;#39;Sex&amp;#39;,&amp;#39;SibSp&amp;#39;,&amp;#39;Fare&amp;#39;]]
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> testData = np.ndarray((dataSize, 4), dtype=np.float32)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> PassengerIdStart = trainDataFrame[&amp;#39;PassengerId&amp;#39;][0]
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> PassengerIdStart = int(PassengerIdStart)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> print(&amp;#39;PassengerId&amp;#39;,PassengerIdStart)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> for i in range(dataSize):
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> thisData = np.array(trainDataFrame_fliter.iloc[i])
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> Pclass,Sex,SibSp,Fare = thisData
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> Pclass = float(Pclass)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> Sex = 0 if Sex == &amp;#39;female&amp;#39; else 1
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> SibSp = float(SibSp)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> Fare = 0 if Fare==&amp;#39;&amp;#39; else float(Fare)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> print(Pclass,Sex,SibSp,Fare)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> testData[i,:] = [Pclass,Sex,SibSp,Fare]
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> print(thisData)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> print(testData)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">def testData_samples():
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> return testData
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">readTestDataCSV(testFilePath)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">predictions = list(classifier.predict(input_fn=testData_samples))
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">print(predictions)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">with open(&amp;#39;predictions.csv&amp;#39;, &amp;#39;wb&amp;#39;) as csvfile:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> writer = csv.writer(csvfile, dialect=&amp;#39;excel&amp;#39;)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> writer.writerow([&amp;#39;PassengerId&amp;#39;,&amp;#39;Survived&amp;#39;])
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> PassengerId = PassengerIdStart
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> for i in predictions:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> writer.writerow([PassengerId, i])
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> PassengerId += 1
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>Finally, using only 4 features, we achieved an accuracy of 75%. The next goal is to utilize the other available data.&lt;/p></description></item><item><title>Deep Learning Beginner's Study Notes One (Udacity)</title><link>https://nansenli.com/post/jianshu/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E9%9B%B6%E5%9F%BA%E7%A1%80%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%E4%B8%80%E4%BC%98%E8%BE%BE%E5%AD%A6%E5%9F%8E/</link><pubDate>Wed, 19 Jul 2017 07:42:00 +0000</pubDate><guid>https://nansenli.com/post/jianshu/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E9%9B%B6%E5%9F%BA%E7%A1%80%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%E4%B8%80%E4%BC%98%E8%BE%BE%E5%AD%A6%E5%9F%8E/</guid><description>&lt;h2 id="introduction">Introduction
 &lt;/h2>&lt;p>On a whim, I decided to learn machine learning. These are notes from my learning process.&lt;/p>
 &lt;h2 id="preparation">Preparation
 &lt;/h2>&lt;p>I made these preparations:&lt;/p>
@@ -242,14 +438,27 @@ alt="softmax"
 &lt;ul>
 &lt;li>Algorithm&lt;/li>
 &lt;/ul>
-&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-python" data-lang="python">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">import&lt;/span> numpy &lt;span style="color:#66d9ef">as&lt;/span> np
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">def&lt;/span> &lt;span style="color:#a6e22e">softmax&lt;/span>(x):
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#e6db74">&amp;#34;&amp;#34;&amp;#34;Compute softmax values for each sets of scores in x.&amp;#34;&amp;#34;&amp;#34;&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> expList &lt;span style="color:#f92672">=&lt;/span> [np&lt;span style="color:#f92672">.&lt;/span>exp(i) &lt;span style="color:#66d9ef">for&lt;/span> i &lt;span style="color:#f92672">in&lt;/span> x]
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> expSum &lt;span style="color:#f92672">=&lt;/span> sum(expList)
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> x &lt;span style="color:#f92672">=&lt;/span> [i&lt;span style="color:#f92672">/&lt;/span>expSum &lt;span style="color:#66d9ef">for&lt;/span> i &lt;span style="color:#f92672">in&lt;/span> expList]
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> np&lt;span style="color:#f92672">.&lt;/span>array(x)
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>&lt;img src="https://nansenli.com/img/rescued/8ba75ea46168.png"
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-python" data-lang="python">&lt;span class="line">&lt;span class="cl">&lt;span class="kn">import&lt;/span> &lt;span class="nn">numpy&lt;/span> &lt;span class="k">as&lt;/span> &lt;span class="nn">np&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">def&lt;/span> &lt;span class="nf">softmax&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">x&lt;/span>&lt;span class="p">):&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;&amp;#34;&amp;#34;Compute softmax values for each sets of scores in x.&amp;#34;&amp;#34;&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">expList&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="p">[&lt;/span>&lt;span class="n">np&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">exp&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">i&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="k">for&lt;/span> &lt;span class="n">i&lt;/span> &lt;span class="ow">in&lt;/span> &lt;span class="n">x&lt;/span>&lt;span class="p">]&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">expSum&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="nb">sum&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">expList&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">x&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="p">[&lt;/span>&lt;span class="n">i&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">expSum&lt;/span> &lt;span class="k">for&lt;/span> &lt;span class="n">i&lt;/span> &lt;span class="ow">in&lt;/span> &lt;span class="n">expList&lt;/span>&lt;span class="p">]&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="n">np&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">array&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">x&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;img src="https://nansenli.com/img/rescued/8ba75ea46168.png"
 loading="lazy"
 alt="image.png"
 >&lt;/p>
@@ -268,12 +477,27 @@ loading="lazy"
 alt="image.png"
 >&lt;/p>
 &lt;p>Sections 17-20 explain how to use this classifier. Section 18 specifically discusses why special initial data is needed.&lt;/p>
-&lt;pre tabindex="0">&lt;code>sum = 1000000000
-for i in range(1000000):
-sum += 0.000001
-sum -= 1000000000
-print(sum)
-&lt;/code>&lt;/pre>&lt;p>The result of running this code is not 1. If we change sum to a very small number, like 1, instead of 1000000000, we find that the error becomes smaller. Based on this reason, we want our initial data to always have a mean of 0 and consistent variance in all directions. For example, for a grayscale image with pixel values from 0-255, we need to subtract 128 and then divide by 128, so that each number is between -1 and 1. Such initial data is more suitable for training.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">sum = 1000000000
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">for i in range(1000000):
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> sum += 0.000001
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">sum -= 1000000000
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">print(sum)
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>The result of running this code is not 1. If we change sum to a very small number, like 1, instead of 1000000000, we find that the error becomes smaller. Based on this reason, we want our initial data to always have a mean of 0 and consistent variance in all directions. For example, for a grayscale image with pixel values from 0-255, we need to subtract 128 and then divide by 128, so that each number is between -1 and 1. Such initial data is more suitable for training.&lt;/p>
 &lt;p>&lt;img src="https://nansenli.com/img/rescued/34f543ea3c1e.png"
 loading="lazy"
 alt="image.png"
@@ -314,150 +538,328 @@ alt="Assignment One Content"
 >&lt;/p>
 &lt;h2 id="assignment-code-segment-one">Assignment Code Segment One
 &lt;/h2>&lt;p>First, run the import statements in the first code segment. There should be no errors. If you see red error output, it means these imports were not successful.&lt;/p>
-&lt;pre tabindex="0">&lt;code># These are all the modules we&amp;#39;ll be using later. Make sure you can import them
-# before proceeding further.
-from __future__ import print_function
-# print function
-import matplotlib.pyplot as plt
-# plotting tool
-import numpy as np
-# matrix calculations
-import os
-# file paths
-import sys
-# file output
-import tarfile
-# decompression
-from IPython.display import display, Image
-# display images
-from scipy import ndimage
-# image processing
-from sklearn.linear_model import LogisticRegression
-# logistic regression module for linear models
-from six.moves.urllib.request import urlretrieve
-# url handling
-from six.moves import cPickle as pickle
-# data processing
-# Config the matplotlib backend as plotting inline in IPython
-%matplotlib inline
-# matplotlib is the most famous Python chart plotting extension library,
-# it supports outputting various formats of graphical images, and can use various GUI interface libraries to display charts interactively.
-# Using the %matplotlib command can embed matplotlib charts directly into the Notebook,
-# or display charts using a specified interface library, it has a parameter specifying how matplotlib charts are displayed.
-# inline indicates embedding charts in the Notebook.
-&lt;/code>&lt;/pre>&lt;h2 id="assignment-code-segment-two">Assignment Code Segment Two
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;span class="lnt">30
+&lt;/span>&lt;span class="lnt">31
+&lt;/span>&lt;span class="lnt">32
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-gdscript3" data-lang="gdscript3">&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># These are all the modules we&amp;#39;ll be using later. Make sure you can import them&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># before proceeding further.&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">from&lt;/span> &lt;span class="n">__future__&lt;/span> &lt;span class="n">import&lt;/span> &lt;span class="n">print_function&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># print function&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">import&lt;/span> &lt;span class="n">matplotlib&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">pyplot&lt;/span> &lt;span class="n">as&lt;/span> &lt;span class="n">plt&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># plotting tool&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">import&lt;/span> &lt;span class="n">numpy&lt;/span> &lt;span class="n">as&lt;/span> &lt;span class="n">np&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># matrix calculations&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">import&lt;/span> &lt;span class="n">os&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># file paths&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">import&lt;/span> &lt;span class="n">sys&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># file output&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">import&lt;/span> &lt;span class="n">tarfile&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># decompression&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">from&lt;/span> &lt;span class="n">IPython&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">display&lt;/span> &lt;span class="n">import&lt;/span> &lt;span class="n">display&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="ne">Image&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># display images&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">from&lt;/span> &lt;span class="n">scipy&lt;/span> &lt;span class="n">import&lt;/span> &lt;span class="n">ndimage&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># image processing&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">from&lt;/span> &lt;span class="n">sklearn&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">linear_model&lt;/span> &lt;span class="n">import&lt;/span> &lt;span class="n">LogisticRegression&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># logistic regression module for linear models&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">from&lt;/span> &lt;span class="n">six&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">moves&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">urllib&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">request&lt;/span> &lt;span class="n">import&lt;/span> &lt;span class="n">urlretrieve&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># url handling&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">from&lt;/span> &lt;span class="n">six&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">moves&lt;/span> &lt;span class="n">import&lt;/span> &lt;span class="n">cPickle&lt;/span> &lt;span class="n">as&lt;/span> &lt;span class="n">pickle&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># data processing&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># Config the matplotlib backend as plotting inline in IPython&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">%&lt;/span>&lt;span class="n">matplotlib&lt;/span> &lt;span class="n">inline&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># matplotlib is the most famous Python chart plotting extension library,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># it supports outputting various formats of graphical images, and can use various GUI interface libraries to display charts interactively.&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># Using the %matplotlib command can embed matplotlib charts directly into the Notebook,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># or display charts using a specified interface library, it has a parameter specifying how matplotlib charts are displayed.&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># inline indicates embedding charts in the Notebook.&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="assignment-code-segment-two">Assignment Code Segment Two
 &lt;/h2>&lt;p>Next is the second code segment, which will download letter sets for training and testing, approximately 300MB in size. After successful download, you can see these two files in the mounted directory.&lt;/p>
 &lt;p>&lt;img src="https://nansenli.com/img/rescued/66a1b044606a.png"
 loading="lazy"
 alt="Assignment"
 >&lt;/p>
-&lt;pre tabindex="0">&lt;code>url = &amp;#39;https://commondatastorage.googleapis.com/books1000/&amp;#39;
-last_percent_reported = None
-data_root = &amp;#39;.&amp;#39; # Change me to store data elsewhere
-def download_progress_hook(count, blockSize, totalSize):
-&amp;#34;&amp;#34;&amp;#34;A hook to report the progress of a download. This is mostly intended for users with
-slow internet connections. Reports every 5% change in download progress.
-&amp;#34;&amp;#34;&amp;#34;
-# Hook function to display download progress in real-time
-global last_percent_reported
-percent = int(count * blockSize * 100 / totalSize)
-if last_percent_reported != percent:
-if percent % 5 == 0:
-sys.stdout.write(&amp;#34;%s%%&amp;#34; % percent)
-sys.stdout.flush()
-else:
-sys.stdout.write(&amp;#34;.&amp;#34;)
-sys.stdout.flush()
-last_percent_reported = percent
-def maybe_download(filename, expected_bytes, force=False):
-&amp;#34;&amp;#34;&amp;#34;Download a file if not present, and make sure it&amp;#39;s the right size.&amp;#34;&amp;#34;&amp;#34;
-dest_filename = os.path.join(data_root, filename)
-# data_root is the current directory, add the filename to it, set as the location to save the file
-if force or not os.path.exists(dest_filename):
-# force is to force download, ignoring already downloaded files
-print(&amp;#39;Attempting to download:&amp;#39;, filename)
-filename, _ = urlretrieve(url + filename, dest_filename, reporthook=download_progress_hook)
-# Use urlretrieve to download the file, with the hook attached
-print(&amp;#39;\nDownload Complete!&amp;#39;)
-statinfo = os.stat(dest_filename)
-# Get information about the downloaded file
-if statinfo.st_size == expected_bytes:
-# Correct size
-print(&amp;#39;Found and verified&amp;#39;, dest_filename)
-else:
-# Wrong size, prompt user to use a browser to download
-raise Exception(
-&amp;#39;Failed to verify &amp;#39; + dest_filename + &amp;#39;. Can you get to it with a browser?&amp;#39;)
-return dest_filename
-train_filename = maybe_download(&amp;#39;notMNIST_large.tar.gz&amp;#39;, 247336696)
-test_filename = maybe_download(&amp;#39;notMNIST_small.tar.gz&amp;#39;, 8458043)
-&lt;/code>&lt;/pre>&lt;h2 id="assignment-code-segment-three">Assignment Code Segment Three
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;span class="lnt">30
+&lt;/span>&lt;span class="lnt">31
+&lt;/span>&lt;span class="lnt">32
+&lt;/span>&lt;span class="lnt">33
+&lt;/span>&lt;span class="lnt">34
+&lt;/span>&lt;span class="lnt">35
+&lt;/span>&lt;span class="lnt">36
+&lt;/span>&lt;span class="lnt">37
+&lt;/span>&lt;span class="lnt">38
+&lt;/span>&lt;span class="lnt">39
+&lt;/span>&lt;span class="lnt">40
+&lt;/span>&lt;span class="lnt">41
+&lt;/span>&lt;span class="lnt">42
+&lt;/span>&lt;span class="lnt">43
+&lt;/span>&lt;span class="lnt">44
+&lt;/span>&lt;span class="lnt">45
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-gdscript3" data-lang="gdscript3">&lt;span class="line">&lt;span class="cl">&lt;span class="n">url&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="s1">&amp;#39;https://commondatastorage.googleapis.com/books1000/&amp;#39;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">last_percent_reported&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">None&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">data_root&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="s1">&amp;#39;.&amp;#39;&lt;/span> &lt;span class="c1"># Change me to store data elsewhere&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">def&lt;/span> &lt;span class="nf">download_progress_hook&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">count&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">blockSize&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">totalSize&lt;/span>&lt;span class="p">):&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;&amp;#34;&amp;#34;A hook to report the progress of a download. This is mostly intended for users with
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="s2"> slow internet connections. Reports every 5&lt;/span>&lt;span class="si">% c&lt;/span>&lt;span class="s2">hange in download progress.
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="s2"> &amp;#34;&amp;#34;&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># Hook function to display download progress in real-time&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">global&lt;/span> &lt;span class="n">last_percent_reported&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">percent&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="ne">int&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">count&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="n">blockSize&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="mi">100&lt;/span> &lt;span class="o">/&lt;/span> &lt;span class="n">totalSize&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="n">last_percent_reported&lt;/span> &lt;span class="o">!=&lt;/span> &lt;span class="n">percent&lt;/span>&lt;span class="p">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="n">percent&lt;/span> &lt;span class="o">%&lt;/span> &lt;span class="mi">5&lt;/span> &lt;span class="o">==&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">sys&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">stdout&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">write&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;&lt;/span>&lt;span class="si">%s%%&lt;/span>&lt;span class="s2">&amp;#34;&lt;/span> &lt;span class="o">%&lt;/span> &lt;span class="n">percent&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">sys&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">stdout&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">flush&lt;/span>&lt;span class="p">()&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">else&lt;/span>&lt;span class="p">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">sys&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">stdout&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">write&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;.&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">sys&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">stdout&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">flush&lt;/span>&lt;span class="p">()&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">last_percent_reported&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">percent&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">def&lt;/span> &lt;span class="nf">maybe_download&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">filename&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">expected_bytes&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">force&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">False&lt;/span>&lt;span class="p">):&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;&amp;#34;&amp;#34;Download a file if not present, and make sure it&amp;#39;s the right size.&amp;#34;&amp;#34;&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">dest_filename&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">os&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">path&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">join&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">data_root&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">filename&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># data_root is the current directory, add the filename to it, set as the location to save the file&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="n">force&lt;/span> &lt;span class="ow">or&lt;/span> &lt;span class="ow">not&lt;/span> &lt;span class="n">os&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">path&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">exists&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">dest_filename&lt;/span>&lt;span class="p">):&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># force is to force download, ignoring already downloaded files&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">print&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s1">&amp;#39;Attempting to download:&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">filename&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">filename&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">_&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">urlretrieve&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">url&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="n">filename&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">dest_filename&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">reporthook&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">download_progress_hook&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># Use urlretrieve to download the file, with the hook attached&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">print&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s1">&amp;#39;&lt;/span>&lt;span class="se">\n&lt;/span>&lt;span class="s1">Download Complete!&amp;#39;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">statinfo&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">os&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">stat&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">dest_filename&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># Get information about the downloaded file&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="n">statinfo&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">st_size&lt;/span> &lt;span class="o">==&lt;/span> &lt;span class="n">expected_bytes&lt;/span>&lt;span class="p">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># Correct size&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">print&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s1">&amp;#39;Found and verified&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">dest_filename&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">else&lt;/span>&lt;span class="p">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># Wrong size, prompt user to use a browser to download&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">raise&lt;/span> &lt;span class="n">Exception&lt;/span>&lt;span class="p">(&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s1">&amp;#39;Failed to verify &amp;#39;&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="n">dest_filename&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="s1">&amp;#39;. Can you get to it with a browser?&amp;#39;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="n">dest_filename&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">train_filename&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">maybe_download&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s1">&amp;#39;notMNIST_large.tar.gz&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">247336696&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">test_filename&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">maybe_download&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s1">&amp;#39;notMNIST_small.tar.gz&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">8458043&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="assignment-code-segment-three">Assignment Code Segment Three
 &lt;/h2>&lt;p>Extracting use cases&lt;/p>
-&lt;pre tabindex="0">&lt;code>num_classes = 10
-# Total number of digits
-np.random.seed(133)
-# Initialize random seed
-def maybe_extract(filename, force=False):
-# Assuming already extracted
-root = os.path.splitext(os.path.splitext(filename)[0])[0] # remove .tar.gz
-# splitext(filename)[0] removes one suffix, used twice to remove both suffixes, i.e., remove the .tar.gz suffix
-if os.path.isdir(root) and not force:
-# You may override by setting force=True.
-# If already extracted, don&amp;#39;t extract again
-print(&amp;#39;%s already present - Skipping extraction of %s.&amp;#39; % (root, filename))
-else:
-print(&amp;#39;Extracting data for %s. This may take a while. Please wait.&amp;#39; % root)
-tar = tarfile.open(filename)
-sys.stdout.flush()
-tar.extractall(data_root)
-tar.close()
-# Extract to the current directory
-data_folders = [
-os.path.join(root, d) for d in sorted(os.listdir(root))
-if os.path.isdir(os.path.join(root, d))]
-if len(data_folders) != num_classes:
-raise Exception(
-&amp;#39;Expected %d folders, one per class. Found %d instead.&amp;#39; % (
-num_classes, len(data_folders)))
-print(data_folders)
-# Check if the number of extracted directories matches expectations, and print the extracted directories
-return data_folders
-train_folders = maybe_extract(train_filename)
-test_folders = maybe_extract(test_filename)
-&lt;/code>&lt;/pre>&lt;h2 id="question-one">Question One
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;span class="lnt">30
+&lt;/span>&lt;span class="lnt">31
+&lt;/span>&lt;span class="lnt">32
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">num_classes = 10
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"># Total number of digits
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">np.random.seed(133)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"># Initialize random seed
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">def maybe_extract(filename, force=False):
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"># Assuming already extracted
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> root = os.path.splitext(os.path.splitext(filename)[0])[0] # remove .tar.gz
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"># splitext(filename)[0] removes one suffix, used twice to remove both suffixes, i.e., remove the .tar.gz suffix
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> if os.path.isdir(root) and not force:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> # You may override by setting force=True.
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"># If already extracted, don&amp;#39;t extract again
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> print(&amp;#39;%s already present - Skipping extraction of %s.&amp;#39; % (root, filename))
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> else:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> print(&amp;#39;Extracting data for %s. This may take a while. Please wait.&amp;#39; % root)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> tar = tarfile.open(filename)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> sys.stdout.flush()
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> tar.extractall(data_root)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> tar.close()
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"># Extract to the current directory
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> data_folders = [
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> os.path.join(root, d) for d in sorted(os.listdir(root))
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> if os.path.isdir(os.path.join(root, d))]
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> if len(data_folders) != num_classes:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> raise Exception(
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &amp;#39;Expected %d folders, one per class. Found %d instead.&amp;#39; % (
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> num_classes, len(data_folders)))
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> print(data_folders)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"># Check if the number of extracted directories matches expectations, and print the extracted directories
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> return data_folders
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">train_folders = maybe_extract(train_filename)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">test_folders = maybe_extract(test_filename)
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="question-one">Question One
 &lt;/h2>&lt;p>Write code to display information about the extracted file contents&lt;/p>
 &lt;ul>
 &lt;li>Reference answer&lt;/li>
 &lt;/ul>
-&lt;pre tabindex="0">&lt;code>import random
-import matplotlib.image as mpimg
-def plot_samples(data_folders, sample_size, title=None):
-fig = plt.figure()
-# Create empty figure
-if title: fig.suptitle(title, fontsize=16, fontweight=&amp;#39;bold&amp;#39;)
-# Add title
-for folder in data_folders:
-# Loop through each letter
-image_files = os.listdir(folder)
-image_sample = random.sample(image_files, sample_size)
-# Randomly select a certain number of images from that letter
-for image in image_sample:
-image_file = os.path.join(folder, image)
-ax = fig.add_subplot(len(data_folders), sample_size, sample_size * data_folders.index(folder) +
-image_sample.index(image) + 1)
-# Create a subplot
-image = mpimg.imread(image_file)
-# Load subplot image
-ax.imshow(image)
-# Display subplot image
-ax.set_axis_off()
-# Turn off subplot coordinate lines
-fig.set_size_inches(18.5, 10.5)
-# Set the display size of the image
-plt.show()
-plot_samples(train_folders, 20, &amp;#39;Train&amp;#39;)
-plot_samples(test_folders, 20, &amp;#39;Test&amp;#39;)
-&lt;/code>&lt;/pre>&lt;p>Running results:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;span class="lnt">30
+&lt;/span>&lt;span class="lnt">31
+&lt;/span>&lt;span class="lnt">32
+&lt;/span>&lt;span class="lnt">33
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">import random
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">import matplotlib.image as mpimg
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">def plot_samples(data_folders, sample_size, title=None):
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> fig = plt.figure()
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"># Create empty figure
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> if title: fig.suptitle(title, fontsize=16, fontweight=&amp;#39;bold&amp;#39;)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"># Add title
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> for folder in data_folders:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"># Loop through each letter
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> image_files = os.listdir(folder)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> image_sample = random.sample(image_files, sample_size)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"># Randomly select a certain number of images from that letter
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> for image in image_sample:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> image_file = os.path.join(folder, image)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> ax = fig.add_subplot(len(data_folders), sample_size, sample_size * data_folders.index(folder) +
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> image_sample.index(image) + 1)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"># Create a subplot
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> image = mpimg.imread(image_file)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"># Load subplot image
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> ax.imshow(image)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"># Display subplot image
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> ax.set_axis_off()
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"># Turn off subplot coordinate lines
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> fig.set_size_inches(18.5, 10.5)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"># Set the display size of the image
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> plt.show()
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">plot_samples(train_folders, 20, &amp;#39;Train&amp;#39;)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">plot_samples(test_folders, 20, &amp;#39;Test&amp;#39;)
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>Running results:&lt;/p>
 &lt;p>&lt;img src="https://nansenli.com/img/rescued/94887f5b6eab.png"
 loading="lazy"
 alt="Training.png"
@@ -467,10 +869,21 @@ loading="lazy"
 alt="Testing.png"
 >&lt;/p>
 &lt;p>As we can see, some of the training data has issues.&lt;/p>
-&lt;pre tabindex="0">&lt;code>
-## Assignment Code Segment Four
-After this, we need to normalize the data, which means transforming each image pixel from 0~255 to -1.0~1.0, and persisting it to a file.
-&lt;/code>&lt;/pre>&lt;p>image_size = 28 # Pixel width and height.
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">## Assignment Code Segment Four
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">After this, we need to normalize the data, which means transforming each image pixel from 0~255 to -1.0~1.0, and persisting it to a file.
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>image_size = 28 # Pixel width and height.
 pixel_depth = 255.0 # Number of levels per pixel.&lt;/p>
 &lt;h1 id="image-width-height-and-pixel-depth">Image width, height and pixel depth
 &lt;/h1>&lt;p>def load_letter(folder, min_num_images):
@@ -554,11 +967,23 @@ print('Unable to save data to', set_filename, ':', e)
 &lt;p>return dataset_names&lt;/p>
 &lt;p>train_datasets = maybe_pickle(train_folders, 45000)
 test_datasets = maybe_pickle(test_folders, 1800)&lt;/p>
-&lt;pre tabindex="0">&lt;code>
-## Question Two
-Display processed images
-- Reference answer
-&lt;/code>&lt;/pre>&lt;p>def plot_samples_2(data_folders, sample_size, title=None):
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">## Question Two
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Display processed images
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">- Reference answer
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>def plot_samples_2(data_folders, sample_size, title=None):
 fig = plt.figure()&lt;/p>
 &lt;h1 id="create-empty-figure">Create empty figure
 &lt;/h1>&lt;pre>&lt;code>if title: fig.suptitle(title, fontsize=16, fontweight='bold')
@@ -590,13 +1015,35 @@ index + 1)
 &lt;/code>&lt;/pre>
 &lt;p>plot_samples_2(train_datasets, 20, &amp;lsquo;Train&amp;rsquo;)
 plot_samples_2(test_datasets, 20, &amp;lsquo;Test&amp;rsquo;)&lt;/p>
-&lt;pre tabindex="0">&lt;code>
-![image.png](/img/rescued/c09ea5ab69e9.png)
-![image.png](/img/rescued/d4363496653b.png)
-## Question Three
-Check if the number of files under each letter is similar.
-- Reference answer
-&lt;/code>&lt;/pre>&lt;p>file_path = &amp;rsquo;notMNIST_large/{0}.pickle&amp;rsquo;
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">![image.png](/img/rescued/c09ea5ab69e9.png)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">![image.png](/img/rescued/d4363496653b.png)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">## Question Three
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Check if the number of files under each letter is similar.
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">- Reference answer
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>file_path = &amp;rsquo;notMNIST_large/{0}.pickle&amp;rsquo;
 for ele in &amp;lsquo;ABCDEFJHIJ&amp;rsquo;:
 with open(file_path.format(ele), &amp;lsquo;rb&amp;rsquo;) as pk_f:&lt;/p>
 &lt;h1 id="loop-through-each-directory">Loop through each directory
@@ -606,11 +1053,23 @@ with open(file_path.format(ele), &amp;lsquo;rb&amp;rsquo;) as pk_f:&lt;/p>
 &lt;/h1>&lt;pre>&lt;code>print('number of pictures in {}.pickle = '.format(ele), dat.shape[0])
 &lt;/code>&lt;/pre>
 &lt;h1 id="print-relevant-information">Print relevant information
-&lt;/h1>&lt;pre tabindex="0">&lt;code>Results show that the numbers are basically consistent.
-![Question 3 Result](/img/rescued/31bcb36f8c25.png)
-## Code Segment—Data Splitting
-Data cannot be loaded all at once into memory. This code segment splits the data.
-&lt;/code>&lt;/pre>&lt;p>def make_arrays(nb_rows, img_size):
+&lt;/h1>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-gdscript3" data-lang="gdscript3">&lt;span class="line">&lt;span class="cl">&lt;span class="n">Results&lt;/span> &lt;span class="n">show&lt;/span> &lt;span class="n">that&lt;/span> &lt;span class="n">the&lt;/span> &lt;span class="n">numbers&lt;/span> &lt;span class="n">are&lt;/span> &lt;span class="n">basically&lt;/span> &lt;span class="n">consistent&lt;/span>&lt;span class="o">.&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">!&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">Question&lt;/span> &lt;span class="mi">3&lt;/span> &lt;span class="n">Result&lt;/span>&lt;span class="p">](&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">img&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">rescued&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="mi">31&lt;/span>&lt;span class="n">bcb36f8c25&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">png&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">## Code Segment—Data Splitting&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">Data&lt;/span> &lt;span class="n">cannot&lt;/span> &lt;span class="n">be&lt;/span> &lt;span class="n">loaded&lt;/span> &lt;span class="n">all&lt;/span> &lt;span class="n">at&lt;/span> &lt;span class="n">once&lt;/span> &lt;span class="n">into&lt;/span> &lt;span class="n">memory&lt;/span>&lt;span class="o">.&lt;/span> &lt;span class="n">This&lt;/span> &lt;span class="n">code&lt;/span> &lt;span class="n">segment&lt;/span> &lt;span class="n">splits&lt;/span> &lt;span class="n">the&lt;/span> &lt;span class="n">data&lt;/span>&lt;span class="o">.&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>def make_arrays(nb_rows, img_size):
 if nb_rows:
 dataset = np.ndarray((nb_rows, img_size, img_size), dtype=np.float32)&lt;/p>
 &lt;h1 id="create-an-empty-set-data-type-is-a-matrix-with-rows-length-img_size-width-img_size-height-data-type-is-32-bit-float">Create an empty set, data type is a matrix with rows length, img_size width, img_size height, data type is 32-bit float
@@ -695,10 +1154,19 @@ _, _, test_dataset, test_labels = merge_datasets(test_datasets, test_size)&lt;/p
 &lt;p>print(&amp;lsquo;Training:&amp;rsquo;, train_dataset.shape, train_labels.shape)
 print(&amp;lsquo;Validation:&amp;rsquo;, valid_dataset.shape, valid_labels.shape)
 print(&amp;lsquo;Testing:&amp;rsquo;, test_dataset.shape, test_labels.shape)&lt;/p>
-&lt;pre tabindex="0">&lt;code>
-## Code Segment—Shuffling Data
-Introduction to the permutation function: http://www.jianshu.com/p/f0eb10acaa2d
-&lt;/code>&lt;/pre>&lt;p>def randomize(dataset, labels):&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">## Code Segment—Shuffling Data
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Introduction to the permutation function: http://www.jianshu.com/p/f0eb10acaa2d
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>def randomize(dataset, labels):&lt;/p>
 &lt;h1 id="labelsshape0-is-the-length-of-labels">labels.shape[0] is the length of labels
 &lt;/h1>&lt;p>permutation = np.random.permutation(labels.shape[0])&lt;/p>
 &lt;h1 id="randomly-select-a-shuffled-set-of-this-many-numbers">Randomly select a shuffled set of this many numbers
@@ -711,11 +1179,23 @@ shuffled_dataset = dataset[permutation,:,:]&lt;/p>
 train_dataset, train_labels = randomize(train_dataset, train_labels)
 test_dataset, test_labels = randomize(test_dataset, test_labels)
 valid_dataset, valid_labels = randomize(valid_dataset, valid_labels)&lt;/p>
-&lt;pre tabindex="0">&lt;code>
-## Question Four
-Verify if the shuffled data is correct
-- Reference answer
-&lt;/code>&lt;/pre>&lt;p>import random
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">## Question Four
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Verify if the shuffled data is correct
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">- Reference answer
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>import random
 def plot_sample_3(dataset, labels, title):
 fig = plt.figure()
 plt.suptitle(title, fontsize=16, fontweight=&amp;lsquo;bold&amp;rsquo;)&lt;/p>
@@ -745,11 +1225,25 @@ plt.show()
 &lt;/h1>&lt;p>plot_sample_3(train_dataset, train_labels, &amp;rsquo;train dataset suffled&amp;rsquo;)
 plot_sample_3(valid_dataset, valid_labels, &amp;lsquo;valid dataset suffled&amp;rsquo;)
 plot_sample_3(test_dataset, test_labels, &amp;rsquo;test dataset suffled&amp;rsquo;)&lt;/p>
-&lt;pre tabindex="0">&lt;code>
-![Question 4](/img/rescued/2041fe44668c.png)
-Similar two figures omitted
-## Code Segment—Saving Data
-&lt;/code>&lt;/pre>&lt;p>pickle_file = os.path.join(data_root, &amp;rsquo;notMNIST.pickle&amp;rsquo;)&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">![Question 4](/img/rescued/2041fe44668c.png)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Similar two figures omitted
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">## Code Segment—Saving Data
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>pickle_file = os.path.join(data_root, &amp;rsquo;notMNIST.pickle&amp;rsquo;)&lt;/p>
 &lt;h1 id="output-file-path">Output file path
 &lt;/h1>&lt;p>try:
 f = open(pickle_file, &amp;lsquo;wb&amp;rsquo;)&lt;/p>
@@ -768,21 +1262,51 @@ f.close()
 except Exception as e:
 print(&amp;lsquo;Unable to save data to&amp;rsquo;, pickle_file, &amp;lsquo;:&amp;rsquo;, e)
 raise&lt;/p>
-&lt;pre tabindex="0">&lt;code>
-## Code Segment—Displaying Saved Data Size
-&lt;/code>&lt;/pre>&lt;p>statinfo = os.stat(pickle_file)
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">## Code Segment—Displaying Saved Data Size
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>statinfo = os.stat(pickle_file)
 print(&amp;lsquo;Compressed pickle size:&amp;rsquo;, statinfo.st_size)&lt;/p>
-&lt;pre tabindex="0">&lt;code>
-## Question Five
-Google translation of the question:
-By construction, this dataset may contain a lot of overlapping samples, including in the validation and test sets. Overlap between training and test can skew the results if you expect to use your model in an environment where there is never an overlap, but in practice this doesn&amp;#39;t usually matter. Measure how much overlap there is between training, validation, and test samples.
-Optional question:
-What about the duplicates between datasets? (For instance, the same letter images)
-Create a sanitized validation and test set, and compare your accuracy on those versus your accuracy on the original sets.
-The basic idea is that training data should not overlap with testing data, otherwise it leads to inaccurate accuracy.
-Reference code:
-- Just check the number of duplicate images
-&lt;/code>&lt;/pre>&lt;p>import hashlib&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-gdscript3" data-lang="gdscript3">&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">## Question Five&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">Google&lt;/span> &lt;span class="n">translation&lt;/span> &lt;span class="n">of&lt;/span> &lt;span class="n">the&lt;/span> &lt;span class="n">question&lt;/span>&lt;span class="p">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">By&lt;/span> &lt;span class="n">construction&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">this&lt;/span> &lt;span class="n">dataset&lt;/span> &lt;span class="n">may&lt;/span> &lt;span class="n">contain&lt;/span> &lt;span class="n">a&lt;/span> &lt;span class="n">lot&lt;/span> &lt;span class="n">of&lt;/span> &lt;span class="n">overlapping&lt;/span> &lt;span class="n">samples&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">including&lt;/span> &lt;span class="ow">in&lt;/span> &lt;span class="n">the&lt;/span> &lt;span class="n">validation&lt;/span> &lt;span class="ow">and&lt;/span> &lt;span class="n">test&lt;/span> &lt;span class="n">sets&lt;/span>&lt;span class="o">.&lt;/span> &lt;span class="n">Overlap&lt;/span> &lt;span class="n">between&lt;/span> &lt;span class="n">training&lt;/span> &lt;span class="ow">and&lt;/span> &lt;span class="n">test&lt;/span> &lt;span class="n">can&lt;/span> &lt;span class="n">skew&lt;/span> &lt;span class="n">the&lt;/span> &lt;span class="n">results&lt;/span> &lt;span class="k">if&lt;/span> &lt;span class="n">you&lt;/span> &lt;span class="n">expect&lt;/span> &lt;span class="n">to&lt;/span> &lt;span class="n">use&lt;/span> &lt;span class="n">your&lt;/span> &lt;span class="n">model&lt;/span> &lt;span class="ow">in&lt;/span> &lt;span class="n">an&lt;/span> &lt;span class="n">environment&lt;/span> &lt;span class="n">where&lt;/span> &lt;span class="n">there&lt;/span> &lt;span class="n">is&lt;/span> &lt;span class="n">never&lt;/span> &lt;span class="n">an&lt;/span> &lt;span class="n">overlap&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">but&lt;/span> &lt;span class="ow">in&lt;/span> &lt;span class="n">practice&lt;/span> &lt;span class="n">this&lt;/span> &lt;span class="n">doesn&lt;/span>&lt;span class="s1">&amp;#39;t usually matter. Measure how much overlap there is between training, validation, and test samples.&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">Optional&lt;/span> &lt;span class="n">question&lt;/span>&lt;span class="p">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">What&lt;/span> &lt;span class="n">about&lt;/span> &lt;span class="n">the&lt;/span> &lt;span class="n">duplicates&lt;/span> &lt;span class="n">between&lt;/span> &lt;span class="n">datasets&lt;/span>&lt;span class="err">?&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">For&lt;/span> &lt;span class="n">instance&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">the&lt;/span> &lt;span class="n">same&lt;/span> &lt;span class="n">letter&lt;/span> &lt;span class="n">images&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">Create&lt;/span> &lt;span class="n">a&lt;/span> &lt;span class="n">sanitized&lt;/span> &lt;span class="n">validation&lt;/span> &lt;span class="ow">and&lt;/span> &lt;span class="n">test&lt;/span> &lt;span class="n">set&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="ow">and&lt;/span> &lt;span class="n">compare&lt;/span> &lt;span class="n">your&lt;/span> &lt;span class="n">accuracy&lt;/span> &lt;span class="n">on&lt;/span> &lt;span class="n">those&lt;/span> &lt;span class="n">versus&lt;/span> &lt;span class="n">your&lt;/span> &lt;span class="n">accuracy&lt;/span> &lt;span class="n">on&lt;/span> &lt;span class="n">the&lt;/span> &lt;span class="n">original&lt;/span> &lt;span class="n">sets&lt;/span>&lt;span class="o">.&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">The&lt;/span> &lt;span class="n">basic&lt;/span> &lt;span class="n">idea&lt;/span> &lt;span class="n">is&lt;/span> &lt;span class="n">that&lt;/span> &lt;span class="n">training&lt;/span> &lt;span class="n">data&lt;/span> &lt;span class="n">should&lt;/span> &lt;span class="ow">not&lt;/span> &lt;span class="n">overlap&lt;/span> &lt;span class="n">with&lt;/span> &lt;span class="n">testing&lt;/span> &lt;span class="n">data&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">otherwise&lt;/span> &lt;span class="n">it&lt;/span> &lt;span class="n">leads&lt;/span> &lt;span class="n">to&lt;/span> &lt;span class="n">inaccurate&lt;/span> &lt;span class="n">accuracy&lt;/span>&lt;span class="o">.&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="ne">Reference&lt;/span> &lt;span class="n">code&lt;/span>&lt;span class="p">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">-&lt;/span> &lt;span class="n">Just&lt;/span> &lt;span class="n">check&lt;/span> &lt;span class="n">the&lt;/span> &lt;span class="n">number&lt;/span> &lt;span class="n">of&lt;/span> &lt;span class="n">duplicate&lt;/span> &lt;span class="n">images&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>import hashlib&lt;/p>
 &lt;p>pickle_file = os.path.join(&amp;rsquo;.&amp;rsquo;, &amp;rsquo;notMNIST.pickle&amp;rsquo;)
 try:
 with open(pickle_file, &amp;lsquo;rb&amp;rsquo;) as f:
@@ -809,14 +1333,33 @@ print(&amp;quot;rate&amp;quot;,overlap.shape[0]*100.0/sourceSetMd5.shape[0],&amp
 &lt;/h1>&lt;p>calcOverlap(data[&amp;rsquo;train_dataset&amp;rsquo;], data[&amp;lsquo;valid_dataset&amp;rsquo;], &amp;ldquo;train_dataset &amp;amp; valid_dataset&amp;rdquo;)
 calcOverlap(data[&amp;rsquo;train_dataset&amp;rsquo;], data[&amp;rsquo;test_dataset&amp;rsquo;], &amp;ldquo;train_dataset &amp;amp; test_dataset&amp;rdquo;)
 calcOverlap(data[&amp;rsquo;test_dataset&amp;rsquo;], data[&amp;lsquo;valid_dataset&amp;rsquo;], &amp;ldquo;test_dataset &amp;amp; valid_dataset&amp;rdquo;)&lt;/p>
-&lt;pre tabindex="0">&lt;code>
-![Running result](/img/rescued/fc3c3db78e52.png)
-- Remove duplicate image resources
-To be updated
-## Question Six
-Use logistic regression to train the model and test it
-- Reference code
-&lt;/code>&lt;/pre>&lt;p>import random
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">![Running result](/img/rescued/fc3c3db78e52.png)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">- Remove duplicate image resources
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">To be updated
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">## Question Six
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Use logistic regression to train the model and test it
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">- Reference code
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>import random
 def disp_sample_dataset(dataset, labels,trueLabels, title=None):&lt;/p>
 &lt;h1 id="display-training-results">Display training results
 &lt;/h1>&lt;pre>&lt;code>fig = plt.figure()
@@ -873,17 +1416,54 @@ regr = LogisticRegression()&lt;/p>
 disp_sample_dataset(test_dataset, pred_labels, test_labels, 'sample_size=' + str(sample_size))
 &lt;/code>&lt;/pre>
 &lt;p>train_and_predict(data[&amp;rsquo;train_dataset&amp;rsquo;],data[&amp;rsquo;train_labels&amp;rsquo;],data[&amp;rsquo;test_dataset&amp;rsquo;],data[&amp;rsquo;test_labels&amp;rsquo;], 1000)&lt;/p>
-&lt;pre tabindex="0">&lt;code>
-![image.png](/img/rescued/abdb5d761390.png)
-## Model Performance
-Sections 22~27 discuss model performance-related knowledge. We usually hope that the model&amp;#39;s performance can reach 100%, which is obviously impossible. Also, in order to improve the accuracy of the training set, the model may overfit. At this point, we should follow two points:
-- Don&amp;#39;t use all training data at once, but use it in blocks, train a portion each time
-- When model parameter changes cause 30 or more cases to change from error to correct, then this parameter change is effective.
-![Model Performance](/img/rescued/a8e154206ab8.png)
-## Stochastic Gradient Descent
-Sections 29~31 explain what stochastic gradient descent is.
-During training, to make the model move in the optimal direction, we need to calculate the derivative at that point. 1. The calculation of derivatives is quite large, so we need to randomly select a subset of samples to calculate derivatives, to substitute for the real derivative. This is stochastic gradient descent. 2. To reduce the randomness of random selection, we use momentum inertia to reduce randomness. 3. To make the model stable in later stages, we reduce the learning step size.
-End of Course One
-&amp;gt; Reference for assignment code
-&amp;gt; http://www.hankcs.com/ml/notmnist.html
-&lt;/code>&lt;/pre></description></item></channel></rss>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">![image.png](/img/rescued/abdb5d761390.png)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">## Model Performance
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Sections 22~27 discuss model performance-related knowledge. We usually hope that the model&amp;#39;s performance can reach 100%, which is obviously impossible. Also, in order to improve the accuracy of the training set, the model may overfit. At this point, we should follow two points:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">- Don&amp;#39;t use all training data at once, but use it in blocks, train a portion each time
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">- When model parameter changes cause 30 or more cases to change from error to correct, then this parameter change is effective.
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">![Model Performance](/img/rescued/a8e154206ab8.png)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">## Stochastic Gradient Descent
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Sections 29~31 explain what stochastic gradient descent is.
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">During training, to make the model move in the optimal direction, we need to calculate the derivative at that point. 1. The calculation of derivatives is quite large, so we need to randomly select a subset of samples to calculate derivatives, to substitute for the real derivative. This is stochastic gradient descent. 2. To reduce the randomness of random selection, we use momentum inertia to reduce randomness. 3. To make the model stable in later stages, we reduce the learning step size.
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">End of Course One
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&amp;gt; Reference for assignment code
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&amp;gt; http://www.hankcs.com/ml/notmnist.html
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div></description></item></channel></rss>

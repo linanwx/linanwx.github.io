@@ -116,27 +116,57 @@
 &lt;pre>&lt;code>docker pull mysql
 &lt;/code>&lt;/pre>
 &lt;p>使用下面的命令建立一个master和一个slave&lt;/p>
-&lt;pre tabindex="0">&lt;code>docker run --name mysql-master -P -d -e MYSQL_ROOT_PASSWORD=ln mysql
-docker run --name mysql-slave1 -P -d -e MYSQL_ROOT_PASSWORD=ln mysql
-&lt;/code>&lt;/pre>&lt;p>其中-d是配置成为守护进程。-P暴露所有端口。设置root密码为ln。&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">docker run --name mysql-master -P -d -e MYSQL_ROOT_PASSWORD=ln mysql
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">docker run --name mysql-slave1 -P -d -e MYSQL_ROOT_PASSWORD=ln mysql
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>其中-d是配置成为守护进程。-P暴露所有端口。设置root密码为ln。&lt;/p>
 &lt;p>使用下面命令分别进入两个docker中&lt;/p>
 &lt;pre>&lt;code>docker exec -it mysql-master bash
 docker exec -it mysql-slave1 bash
 &lt;/code>&lt;/pre>
 &lt;p>查看网卡ip。这里首先要安装net-tools，安装前要update，update前要换源&lt;/p>
-&lt;pre tabindex="0">&lt;code>sed -i &amp;#39;s/deb.debian.org/mirrors.ustc.edu.cn/g&amp;#39; /etc/apt/sources.list
-apt updaet
-apt install net-tools
-&lt;/code>&lt;/pre>&lt;p>输入ifconfig查看ip。
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-gdscript3" data-lang="gdscript3">&lt;span class="line">&lt;span class="cl">&lt;span class="n">sed&lt;/span> &lt;span class="o">-&lt;/span>&lt;span class="n">i&lt;/span> &lt;span class="s1">&amp;#39;s/deb.debian.org/mirrors.ustc.edu.cn/g&amp;#39;&lt;/span> &lt;span class="o">/&lt;/span>&lt;span class="n">etc&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">apt&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">sources&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">list&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">apt&lt;/span> &lt;span class="n">updaet&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">apt&lt;/span> &lt;span class="n">install&lt;/span> &lt;span class="n">net&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">tools&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>输入ifconfig查看ip。
 其中master是172.17.0.2，slave1是172.17.0.3&lt;/p>
 &lt;p>设置登录权限
 在master中的mysql中按照如下步骤操作，首先登录，然后设置名称为root用户都可以无密码访问。&lt;/p>
-&lt;pre tabindex="0">&lt;code>mysql -uroot -p
-mysql&amp;gt; grant all privileges on *.* to root@&amp;#39;%&amp;#39; identified by &amp;#39;&amp;#39;;
-Query OK, 0 rows affected (0.02 sec)
-mysql&amp;gt; flush privileges;
-Query OK, 0 rows affected (0.02 sec)
-&lt;/code>&lt;/pre>&lt;p>在slave1中使用master的数据库，密码为空&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">mysql -uroot -p
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">mysql&amp;gt; grant all privileges on *.* to root@&amp;#39;%&amp;#39; identified by &amp;#39;&amp;#39;;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Query OK, 0 rows affected (0.02 sec)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">mysql&amp;gt; flush privileges;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Query OK, 0 rows affected (0.02 sec)
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>在slave1中使用master的数据库，密码为空&lt;/p>
 &lt;pre>&lt;code>mysql -uroot -p -h 172.17.0.2
 &lt;/code>&lt;/pre>
 &lt;p>在master中创建一个database&lt;/p>
@@ -151,12 +181,23 @@ sql语句后面最好加上分号。
 use用于选择数据库。set用于设置值。
 添加用户的方式使用create来添加。
 然后授权用户使用数据库与表。&lt;/p>
-&lt;pre tabindex="0">&lt;code>mysql -u root -p
-Enter password:**
-mysql&amp;gt; use mysql;
-mysql&amp;gt; create user &amp;#39;linanwx&amp;#39;@&amp;#39;%&amp;#39; identified by &amp;#39;ln&amp;#39;;
-mysql&amp;gt; grant all on *.* to &amp;#39;linanwx&amp;#39;@&amp;#39;%&amp;#39;;
-&lt;/code>&lt;/pre>&lt;p>SHOW DATABASES用于展示当前数据库中的数据。
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">mysql -u root -p
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Enter password:**
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">mysql&amp;gt; use mysql;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">mysql&amp;gt; create user &amp;#39;linanwx&amp;#39;@&amp;#39;%&amp;#39; identified by &amp;#39;ln&amp;#39;;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">mysql&amp;gt; grant all on *.* to &amp;#39;linanwx&amp;#39;@&amp;#39;%&amp;#39;;
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>SHOW DATABASES用于展示当前数据库中的数据。
 SHOW TABLES则用于展示当前的表。&lt;/p></description></item><item><title>牛客数据库笔记</title><link>https://nansenli.com/zh-cn/post/jianshu/%E6%95%B0%E6%8D%AE%E5%BA%93/%E7%89%9B%E5%AE%A2%E6%95%B0%E6%8D%AE%E5%BA%93%E7%AC%94%E8%AE%B0/</link><pubDate>Mon, 05 Mar 2018 07:04:00 +0000</pubDate><guid>https://nansenli.com/zh-cn/post/jianshu/%E6%95%B0%E6%8D%AE%E5%BA%93/%E7%89%9B%E5%AE%A2%E6%95%B0%E6%8D%AE%E5%BA%93%E7%AC%94%E8%AE%B0/</guid><description>&lt;h2 id="前言">前言
 &lt;/h2>&lt;p>对SQL不熟悉，但是又不想花时间学习。那就以题代学吧。&lt;/p>
 &lt;h2 id="事务">事务

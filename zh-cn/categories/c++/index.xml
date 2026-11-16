@@ -2,250 +2,518 @@
 李楠森的博客</title><link>https://nansenli.com/zh-cn/categories/c++/</link><description>Recent content in C++ on Nansen Li's Blog
 李楠森的博客</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><copyright>Nansen Li 🌈 （李楠森）</copyright><lastBuildDate>Fri, 02 Nov 2018 06:49:00 +0000</lastBuildDate><atom:link href="https://nansenli.com/zh-cn/categories/c++/index.xml" rel="self" type="application/rss+xml"/><item><title>openssl aes 加密算法 api使用</title><link>https://nansenli.com/zh-cn/post/jianshu/c++/openssl-aes-%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95-api%E4%BD%BF%E7%94%A8/</link><pubDate>Fri, 02 Nov 2018 06:49:00 +0000</pubDate><guid>https://nansenli.com/zh-cn/post/jianshu/c++/openssl-aes-%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95-api%E4%BD%BF%E7%94%A8/</guid><description>&lt;h2 id="示例-使用-aes-128-cbc加密算法">示例 使用 AES-128-CBC加密算法
 &lt;/h2>&lt;p>使用了pkcs5_encode padding 方式 pkcs7_encode也是兼容的&lt;/p>
-&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-c++" data-lang="c++">&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#include&lt;/span> &lt;span style="color:#75715e">&amp;lt;stdio.h&amp;gt;&lt;/span>&lt;span style="color:#75715e">
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#include&lt;/span> &lt;span style="color:#75715e">&amp;lt;stdlib.h&amp;gt;&lt;/span>&lt;span style="color:#75715e">
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#include&lt;/span> &lt;span style="color:#75715e">&amp;lt;string.h&amp;gt;&lt;/span>&lt;span style="color:#75715e">
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#include&lt;/span> &lt;span style="color:#75715e">&amp;lt;openssl/aes.h&amp;gt;&lt;/span>&lt;span style="color:#75715e">
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#include&lt;/span> &lt;span style="color:#75715e">&amp;lt;openssl/rand.h&amp;gt;&lt;/span>&lt;span style="color:#75715e">
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">// a simple hex-print routine. could be modified to print 16 bytes-per-line
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>&lt;span style="color:#66d9ef">static&lt;/span> &lt;span style="color:#66d9ef">void&lt;/span> &lt;span style="color:#a6e22e">hex_print&lt;/span>(&lt;span style="color:#66d9ef">const&lt;/span> &lt;span style="color:#66d9ef">void&lt;/span>&lt;span style="color:#f92672">*&lt;/span> pv, size_t len)
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>{
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">const&lt;/span> &lt;span style="color:#66d9ef">unsigned&lt;/span> &lt;span style="color:#66d9ef">char&lt;/span> &lt;span style="color:#f92672">*&lt;/span> p &lt;span style="color:#f92672">=&lt;/span> (&lt;span style="color:#66d9ef">const&lt;/span> &lt;span style="color:#66d9ef">unsigned&lt;/span> &lt;span style="color:#66d9ef">char&lt;/span>&lt;span style="color:#f92672">*&lt;/span>)pv;
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">if&lt;/span> (NULL &lt;span style="color:#f92672">==&lt;/span> pv)
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> printf(&lt;span style="color:#e6db74">&amp;#34;NULL&amp;#34;&lt;/span>);
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">else&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> size_t i &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>;
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">for&lt;/span> (; i&lt;span style="color:#f92672">&amp;lt;&lt;/span>len;&lt;span style="color:#f92672">++&lt;/span>i)
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> printf(&lt;span style="color:#e6db74">&amp;#34;%02X &amp;#34;&lt;/span>, &lt;span style="color:#f92672">*&lt;/span>p&lt;span style="color:#f92672">++&lt;/span>);
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> printf(&lt;span style="color:#e6db74">&amp;#34;&lt;/span>&lt;span style="color:#ae81ff">\n&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>);
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">void&lt;/span> &lt;span style="color:#a6e22e">pkcs7_encode&lt;/span>(&lt;span style="color:#66d9ef">uint8_t&lt;/span> &lt;span style="color:#f92672">*&lt;/span>in, &lt;span style="color:#66d9ef">uint8_t&lt;/span> &lt;span style="color:#f92672">*&lt;/span>out, &lt;span style="color:#66d9ef">int&lt;/span> inlen, &lt;span style="color:#66d9ef">int&lt;/span> &lt;span style="color:#f92672">*&lt;/span>outlen, &lt;span style="color:#66d9ef">const&lt;/span> &lt;span style="color:#66d9ef">int&lt;/span> enc)
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>{
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// uint8_t padchr[16] = {0x10, 0x0f, 0x0e, 0x0d, 0x0c, 0x0b, 0x0a, 0x09, 0x08, 0x07, 0x06, 0x05, 0x04, 0x03, 0x02, 0x01};
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#66d9ef">if&lt;/span>(inlen &lt;span style="color:#f92672">&amp;lt;=&lt;/span>&lt;span style="color:#ae81ff">0&lt;/span>) &lt;span style="color:#66d9ef">return&lt;/span>;
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// 添加padding
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#66d9ef">if&lt;/span> (enc &lt;span style="color:#f92672">==&lt;/span> AES_ENCRYPT) {
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">*&lt;/span>outlen &lt;span style="color:#f92672">=&lt;/span> inlen &lt;span style="color:#f92672">+&lt;/span> &lt;span style="color:#ae81ff">16&lt;/span> &lt;span style="color:#f92672">-&lt;/span> inlen &lt;span style="color:#f92672">%&lt;/span> &lt;span style="color:#ae81ff">16&lt;/span>;
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">for&lt;/span> (&lt;span style="color:#66d9ef">int&lt;/span> i &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>; i &lt;span style="color:#f92672">&amp;lt;&lt;/span> &lt;span style="color:#f92672">*&lt;/span>outlen; i&lt;span style="color:#f92672">++&lt;/span>)
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">if&lt;/span> (i &lt;span style="color:#f92672">&amp;lt;&lt;/span> inlen)
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> out[i] &lt;span style="color:#f92672">=&lt;/span> in[i];
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">else&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> out[i] &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">16&lt;/span> &lt;span style="color:#f92672">-&lt;/span> inlen &lt;span style="color:#f92672">%&lt;/span> &lt;span style="color:#ae81ff">16&lt;/span>;
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// 删除padding
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#66d9ef">else&lt;/span> &lt;span style="color:#66d9ef">if&lt;/span> (enc &lt;span style="color:#f92672">==&lt;/span> AES_DECRYPT) {
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">*&lt;/span>outlen &lt;span style="color:#f92672">=&lt;/span> inlen &lt;span style="color:#f92672">-&lt;/span> (in[inlen&lt;span style="color:#f92672">-&lt;/span>&lt;span style="color:#ae81ff">1&lt;/span>]);
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">for&lt;/span> (&lt;span style="color:#66d9ef">int&lt;/span> i&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#ae81ff">0&lt;/span>; i&lt;span style="color:#f92672">&amp;lt;&lt;/span> &lt;span style="color:#f92672">*&lt;/span>outlen; i&lt;span style="color:#f92672">++&lt;/span>) {
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> out[i] &lt;span style="color:#f92672">=&lt;/span> in[i];
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">int&lt;/span> &lt;span style="color:#a6e22e">main&lt;/span>(&lt;span style="color:#66d9ef">int&lt;/span> argc, &lt;span style="color:#66d9ef">char&lt;/span> &lt;span style="color:#f92672">**&lt;/span>argv)
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>{
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">int&lt;/span> keylength;
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> printf(&lt;span style="color:#e6db74">&amp;#34;Give a key length [only 128 or 192 or 256!]:&lt;/span>&lt;span style="color:#ae81ff">\n&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>);
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> scanf(&lt;span style="color:#e6db74">&amp;#34;%d&amp;#34;&lt;/span>, &lt;span style="color:#f92672">&amp;amp;&lt;/span>keylength);
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">/* generate a key with a given length */&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">unsigned&lt;/span> &lt;span style="color:#66d9ef">char&lt;/span> aes_key[&lt;span style="color:#ae81ff">16&lt;/span>] &lt;span style="color:#f92672">=&lt;/span> {&lt;span style="color:#ae81ff">0x00&lt;/span>,&lt;span style="color:#ae81ff">0x01&lt;/span>,&lt;span style="color:#ae81ff">0x02&lt;/span>,&lt;span style="color:#ae81ff">0x03&lt;/span>,&lt;span style="color:#ae81ff">0x04&lt;/span>,&lt;span style="color:#ae81ff">0x05&lt;/span>,&lt;span style="color:#ae81ff">0x06&lt;/span>,&lt;span style="color:#ae81ff">0x07&lt;/span>,&lt;span style="color:#ae81ff">0x08&lt;/span>,&lt;span style="color:#ae81ff">0x09&lt;/span>,&lt;span style="color:#ae81ff">0x0a&lt;/span>,&lt;span style="color:#ae81ff">0x0b&lt;/span>,&lt;span style="color:#ae81ff">0x0c&lt;/span>,&lt;span style="color:#ae81ff">0x0d&lt;/span>,&lt;span style="color:#ae81ff">0x0e&lt;/span>,&lt;span style="color:#ae81ff">0x0f&lt;/span>};
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> size_t inputslength &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>;
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> printf(&lt;span style="color:#e6db74">&amp;#34;Give an input&amp;#39;s length:&lt;/span>&lt;span style="color:#ae81ff">\n&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>);
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> scanf(&lt;span style="color:#e6db74">&amp;#34;%lu&amp;#34;&lt;/span>, &lt;span style="color:#f92672">&amp;amp;&lt;/span>inputslength);
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">/* generate input with a given length */&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">unsigned&lt;/span> &lt;span style="color:#66d9ef">char&lt;/span> &lt;span style="color:#f92672">*&lt;/span> aes_input &lt;span style="color:#f92672">=&lt;/span> malloc(inputslength);
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">unsigned&lt;/span> &lt;span style="color:#66d9ef">char&lt;/span> &lt;span style="color:#f92672">*&lt;/span> aes_out &lt;span style="color:#f92672">=&lt;/span> malloc(inputslength);
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> memset(aes_input, &lt;span style="color:#e6db74">&amp;#39;X&amp;#39;&lt;/span>, inputslength);
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">/* init vector */&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">unsigned&lt;/span> &lt;span style="color:#66d9ef">char&lt;/span> iv_enc[AES_BLOCK_SIZE] &lt;span style="color:#f92672">=&lt;/span> {&lt;span style="color:#ae81ff">0&lt;/span>}, iv_dec[AES_BLOCK_SIZE]&lt;span style="color:#f92672">=&lt;/span>{&lt;span style="color:#ae81ff">0&lt;/span>};
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">const&lt;/span> size_t encslength &lt;span style="color:#f92672">=&lt;/span> ((inputslength &lt;span style="color:#f92672">+&lt;/span> AES_BLOCK_SIZE) &lt;span style="color:#f92672">/&lt;/span> AES_BLOCK_SIZE) &lt;span style="color:#f92672">*&lt;/span> AES_BLOCK_SIZE;
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">unsigned&lt;/span> &lt;span style="color:#66d9ef">char&lt;/span> &lt;span style="color:#f92672">*&lt;/span> enc_in &lt;span style="color:#f92672">=&lt;/span> malloc(encslength);
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> pkcs7_encode(aes_input, enc_in, inputslength, &lt;span style="color:#f92672">&amp;amp;&lt;/span>encslength, AES_ENCRYPT);
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">unsigned&lt;/span> &lt;span style="color:#66d9ef">char&lt;/span> &lt;span style="color:#f92672">*&lt;/span> enc_out &lt;span style="color:#f92672">=&lt;/span> malloc(encslength);
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> AES_KEY enc_key;
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> AES_set_encrypt_key(aes_key, keylength, &lt;span style="color:#f92672">&amp;amp;&lt;/span>enc_key);
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> AES_cbc_encrypt(enc_in, enc_out, encslength, &lt;span style="color:#f92672">&amp;amp;&lt;/span>enc_key, iv_enc, AES_ENCRYPT);
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> printf(&lt;span style="color:#e6db74">&amp;#34;original:&lt;/span>&lt;span style="color:#ae81ff">\t&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>);
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> hex_print(aes_input, inputslength);
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> printf(&lt;span style="color:#e6db74">&amp;#34;padding:&lt;/span>&lt;span style="color:#ae81ff">\t&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>);
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> hex_print(enc_in, encslength);
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> printf(&lt;span style="color:#e6db74">&amp;#34;encrypt:&lt;/span>&lt;span style="color:#ae81ff">\t&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>);
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> hex_print(enc_out, encslength);
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">unsigned&lt;/span> &lt;span style="color:#66d9ef">char&lt;/span> &lt;span style="color:#f92672">*&lt;/span> dec_out &lt;span style="color:#f92672">=&lt;/span> malloc(encslength);
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> AES_KEY dec_key;
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> AES_set_decrypt_key(aes_key, keylength, &lt;span style="color:#f92672">&amp;amp;&lt;/span>dec_key);
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> AES_cbc_encrypt(enc_out, dec_out, encslength, &lt;span style="color:#f92672">&amp;amp;&lt;/span>dec_key, iv_dec, AES_DECRYPT);
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> pkcs7_encode(dec_out, aes_out, encslength, &lt;span style="color:#f92672">&amp;amp;&lt;/span>inputslength, AES_DECRYPT);
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> printf(&lt;span style="color:#e6db74">&amp;#34;decrypt:&lt;/span>&lt;span style="color:#ae81ff">\t&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>);
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> hex_print(dec_out, encslength);
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> printf(&lt;span style="color:#e6db74">&amp;#34;depadding:&lt;/span>&lt;span style="color:#ae81ff">\t&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>);
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> hex_print(aes_out, inputslength);
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">int8_t&lt;/span> buff[&lt;span style="color:#ae81ff">100&lt;/span>];
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">long&lt;/span> bufflen;
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>;
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div></description></item><item><title>GDB从零学习</title><link>https://nansenli.com/zh-cn/post/jianshu/c++/gdb-%E4%BB%8E%E9%9B%B6%E5%AD%A6%E4%B9%A0/</link><pubDate>Wed, 25 Apr 2018 16:45:00 +0000</pubDate><guid>https://nansenli.com/zh-cn/post/jianshu/c++/gdb-%E4%BB%8E%E9%9B%B6%E5%AD%A6%E4%B9%A0/</guid><description>&lt;p>从例子入手。&lt;/p>
-&lt;pre tabindex="0">&lt;code>#include &amp;lt;stdio.h&amp;gt;
-void my_itoa(int n,char s[])
-{
-int i,j,sign;
-if((sign=n)&amp;lt;0) //记录符号
-n=-n; //使n成为正数
-i=0;
-do{
-s[i++]=n%10+&amp;#39;0&amp;#39;; //取下一个数字
-}while((n/=10)&amp;gt;0); //循环相除
-if(sign&amp;lt;0)
-s[i++]=&amp;#39;-&amp;#39;;
-s[i]=&amp;#39;\0&amp;#39;;
-for(j=i-1;j&amp;gt;=0;j--) //生成的数字是逆序的，所以要逆序输出
-printf(&amp;#34;%c&amp;#34;,s[j]);
-}
-void main()
-{
-int n;
-char str[100];
-my_itoa(-123,str);
-printf(&amp;#34;\n&amp;#34;);
-printf(&amp;#34;%d\n&amp;#34;,my_atoi(&amp;#34;123&amp;#34;));
-system(&amp;#34;pause&amp;#34;);
-}
-&lt;/code>&lt;/pre>&lt;p>将上述文件保存到test.cpp文件，然后编译运行。&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt"> 10
+&lt;/span>&lt;span class="lnt"> 11
+&lt;/span>&lt;span class="lnt"> 12
+&lt;/span>&lt;span class="lnt"> 13
+&lt;/span>&lt;span class="lnt"> 14
+&lt;/span>&lt;span class="lnt"> 15
+&lt;/span>&lt;span class="lnt"> 16
+&lt;/span>&lt;span class="lnt"> 17
+&lt;/span>&lt;span class="lnt"> 18
+&lt;/span>&lt;span class="lnt"> 19
+&lt;/span>&lt;span class="lnt"> 20
+&lt;/span>&lt;span class="lnt"> 21
+&lt;/span>&lt;span class="lnt"> 22
+&lt;/span>&lt;span class="lnt"> 23
+&lt;/span>&lt;span class="lnt"> 24
+&lt;/span>&lt;span class="lnt"> 25
+&lt;/span>&lt;span class="lnt"> 26
+&lt;/span>&lt;span class="lnt"> 27
+&lt;/span>&lt;span class="lnt"> 28
+&lt;/span>&lt;span class="lnt"> 29
+&lt;/span>&lt;span class="lnt"> 30
+&lt;/span>&lt;span class="lnt"> 31
+&lt;/span>&lt;span class="lnt"> 32
+&lt;/span>&lt;span class="lnt"> 33
+&lt;/span>&lt;span class="lnt"> 34
+&lt;/span>&lt;span class="lnt"> 35
+&lt;/span>&lt;span class="lnt"> 36
+&lt;/span>&lt;span class="lnt"> 37
+&lt;/span>&lt;span class="lnt"> 38
+&lt;/span>&lt;span class="lnt"> 39
+&lt;/span>&lt;span class="lnt"> 40
+&lt;/span>&lt;span class="lnt"> 41
+&lt;/span>&lt;span class="lnt"> 42
+&lt;/span>&lt;span class="lnt"> 43
+&lt;/span>&lt;span class="lnt"> 44
+&lt;/span>&lt;span class="lnt"> 45
+&lt;/span>&lt;span class="lnt"> 46
+&lt;/span>&lt;span class="lnt"> 47
+&lt;/span>&lt;span class="lnt"> 48
+&lt;/span>&lt;span class="lnt"> 49
+&lt;/span>&lt;span class="lnt"> 50
+&lt;/span>&lt;span class="lnt"> 51
+&lt;/span>&lt;span class="lnt"> 52
+&lt;/span>&lt;span class="lnt"> 53
+&lt;/span>&lt;span class="lnt"> 54
+&lt;/span>&lt;span class="lnt"> 55
+&lt;/span>&lt;span class="lnt"> 56
+&lt;/span>&lt;span class="lnt"> 57
+&lt;/span>&lt;span class="lnt"> 58
+&lt;/span>&lt;span class="lnt"> 59
+&lt;/span>&lt;span class="lnt"> 60
+&lt;/span>&lt;span class="lnt"> 61
+&lt;/span>&lt;span class="lnt"> 62
+&lt;/span>&lt;span class="lnt"> 63
+&lt;/span>&lt;span class="lnt"> 64
+&lt;/span>&lt;span class="lnt"> 65
+&lt;/span>&lt;span class="lnt"> 66
+&lt;/span>&lt;span class="lnt"> 67
+&lt;/span>&lt;span class="lnt"> 68
+&lt;/span>&lt;span class="lnt"> 69
+&lt;/span>&lt;span class="lnt"> 70
+&lt;/span>&lt;span class="lnt"> 71
+&lt;/span>&lt;span class="lnt"> 72
+&lt;/span>&lt;span class="lnt"> 73
+&lt;/span>&lt;span class="lnt"> 74
+&lt;/span>&lt;span class="lnt"> 75
+&lt;/span>&lt;span class="lnt"> 76
+&lt;/span>&lt;span class="lnt"> 77
+&lt;/span>&lt;span class="lnt"> 78
+&lt;/span>&lt;span class="lnt"> 79
+&lt;/span>&lt;span class="lnt"> 80
+&lt;/span>&lt;span class="lnt"> 81
+&lt;/span>&lt;span class="lnt"> 82
+&lt;/span>&lt;span class="lnt"> 83
+&lt;/span>&lt;span class="lnt"> 84
+&lt;/span>&lt;span class="lnt"> 85
+&lt;/span>&lt;span class="lnt"> 86
+&lt;/span>&lt;span class="lnt"> 87
+&lt;/span>&lt;span class="lnt"> 88
+&lt;/span>&lt;span class="lnt"> 89
+&lt;/span>&lt;span class="lnt"> 90
+&lt;/span>&lt;span class="lnt"> 91
+&lt;/span>&lt;span class="lnt"> 92
+&lt;/span>&lt;span class="lnt"> 93
+&lt;/span>&lt;span class="lnt"> 94
+&lt;/span>&lt;span class="lnt"> 95
+&lt;/span>&lt;span class="lnt"> 96
+&lt;/span>&lt;span class="lnt"> 97
+&lt;/span>&lt;span class="lnt"> 98
+&lt;/span>&lt;span class="lnt"> 99
+&lt;/span>&lt;span class="lnt">100
+&lt;/span>&lt;span class="lnt">101
+&lt;/span>&lt;span class="lnt">102
+&lt;/span>&lt;span class="lnt">103
+&lt;/span>&lt;span class="lnt">104
+&lt;/span>&lt;span class="lnt">105
+&lt;/span>&lt;span class="lnt">106
+&lt;/span>&lt;span class="lnt">107
+&lt;/span>&lt;span class="lnt">108
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-c++" data-lang="c++">&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp">#include&lt;/span> &lt;span class="cpf">&amp;lt;stdio.h&amp;gt;&lt;/span>&lt;span class="cp">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp">#include&lt;/span> &lt;span class="cpf">&amp;lt;stdlib.h&amp;gt;&lt;/span>&lt;span class="cp">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp">#include&lt;/span> &lt;span class="cpf">&amp;lt;string.h&amp;gt;&lt;/span>&lt;span class="cp">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp">#include&lt;/span> &lt;span class="cpf">&amp;lt;openssl/aes.h&amp;gt;&lt;/span>&lt;span class="cp">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp">#include&lt;/span> &lt;span class="cpf">&amp;lt;openssl/rand.h&amp;gt;&lt;/span>&lt;span class="cp">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp">&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// a simple hex-print routine. could be modified to print 16 bytes-per-line
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="k">static&lt;/span> &lt;span class="kt">void&lt;/span> &lt;span class="nf">hex_print&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="k">const&lt;/span> &lt;span class="kt">void&lt;/span>&lt;span class="o">*&lt;/span> &lt;span class="n">pv&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">size_t&lt;/span> &lt;span class="n">len&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">const&lt;/span> &lt;span class="kt">unsigned&lt;/span> &lt;span class="kt">char&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="n">p&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="k">const&lt;/span> &lt;span class="kt">unsigned&lt;/span> &lt;span class="kt">char&lt;/span>&lt;span class="o">*&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="n">pv&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nb">NULL&lt;/span> &lt;span class="o">==&lt;/span> &lt;span class="n">pv&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">printf&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;NULL&amp;#34;&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">else&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">size_t&lt;/span> &lt;span class="n">i&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">for&lt;/span> &lt;span class="p">(;&lt;/span> &lt;span class="n">i&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">len&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="o">++&lt;/span>&lt;span class="n">i&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">printf&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;%02X &amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="n">p&lt;/span>&lt;span class="o">++&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">printf&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;&lt;/span>&lt;span class="se">\n&lt;/span>&lt;span class="s">&amp;#34;&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kt">void&lt;/span> &lt;span class="nf">pkcs7_encode&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="kt">uint8_t&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="n">in&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="kt">uint8_t&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="n">out&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="kt">int&lt;/span> &lt;span class="n">inlen&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="kt">int&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="n">outlen&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="k">const&lt;/span> &lt;span class="kt">int&lt;/span> &lt;span class="n">enc&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// uint8_t padchr[16] = {0x10, 0x0f, 0x0e, 0x0d, 0x0c, 0x0b, 0x0a, 0x09, 0x08, 0x07, 0x06, 0x05, 0x04, 0x03, 0x02, 0x01};
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="k">if&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">inlen&lt;/span> &lt;span class="o">&amp;lt;=&lt;/span>&lt;span class="mi">0&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="k">return&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// 添加padding
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="k">if&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">enc&lt;/span> &lt;span class="o">==&lt;/span> &lt;span class="n">AES_ENCRYPT&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">*&lt;/span>&lt;span class="n">outlen&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">inlen&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="mi">16&lt;/span> &lt;span class="o">-&lt;/span> &lt;span class="n">inlen&lt;/span> &lt;span class="o">%&lt;/span> &lt;span class="mi">16&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">for&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="kt">int&lt;/span> &lt;span class="n">i&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="n">i&lt;/span> &lt;span class="o">&amp;lt;&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="n">outlen&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="n">i&lt;/span>&lt;span class="o">++&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">i&lt;/span> &lt;span class="o">&amp;lt;&lt;/span> &lt;span class="n">inlen&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">out&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">i&lt;/span>&lt;span class="p">]&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">in&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">i&lt;/span>&lt;span class="p">];&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">else&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">out&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">i&lt;/span>&lt;span class="p">]&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">16&lt;/span> &lt;span class="o">-&lt;/span> &lt;span class="n">inlen&lt;/span> &lt;span class="o">%&lt;/span> &lt;span class="mi">16&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// 删除padding
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="k">else&lt;/span> &lt;span class="k">if&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">enc&lt;/span> &lt;span class="o">==&lt;/span> &lt;span class="n">AES_DECRYPT&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">*&lt;/span>&lt;span class="n">outlen&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">inlen&lt;/span> &lt;span class="o">-&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">in&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">inlen&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="p">]);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">for&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="kt">int&lt;/span> &lt;span class="n">i&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="mi">0&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="n">i&lt;/span>&lt;span class="o">&amp;lt;&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="n">outlen&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="n">i&lt;/span>&lt;span class="o">++&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">out&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">i&lt;/span>&lt;span class="p">]&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">in&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">i&lt;/span>&lt;span class="p">];&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kt">int&lt;/span> &lt;span class="nf">main&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="kt">int&lt;/span> &lt;span class="n">argc&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="kt">char&lt;/span> &lt;span class="o">**&lt;/span>&lt;span class="n">argv&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">int&lt;/span> &lt;span class="n">keylength&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">printf&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;Give a key length [only 128 or 192 or 256!]:&lt;/span>&lt;span class="se">\n&lt;/span>&lt;span class="s">&amp;#34;&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">scanf&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;%d&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="o">&amp;amp;&lt;/span>&lt;span class="n">keylength&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="cm">/* generate a key with a given length */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">unsigned&lt;/span> &lt;span class="kt">char&lt;/span> &lt;span class="n">aes_key&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="mi">16&lt;/span>&lt;span class="p">]&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="mh">0x00&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="mh">0x01&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="mh">0x02&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="mh">0x03&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="mh">0x04&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="mh">0x05&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="mh">0x06&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="mh">0x07&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="mh">0x08&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="mh">0x09&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="mh">0x0a&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="mh">0x0b&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="mh">0x0c&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="mh">0x0d&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="mh">0x0e&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="mh">0x0f&lt;/span>&lt;span class="p">};&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">size_t&lt;/span> &lt;span class="n">inputslength&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">printf&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;Give an input&amp;#39;s length:&lt;/span>&lt;span class="se">\n&lt;/span>&lt;span class="s">&amp;#34;&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">scanf&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;%lu&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="o">&amp;amp;&lt;/span>&lt;span class="n">inputslength&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="cm">/* generate input with a given length */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">unsigned&lt;/span> &lt;span class="kt">char&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="n">aes_input&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">malloc&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">inputslength&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">unsigned&lt;/span> &lt;span class="kt">char&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="n">aes_out&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">malloc&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">inputslength&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">memset&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">aes_input&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="sc">&amp;#39;X&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">inputslength&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="cm">/* init vector */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">unsigned&lt;/span> &lt;span class="kt">char&lt;/span> &lt;span class="n">iv_enc&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">AES_BLOCK_SIZE&lt;/span>&lt;span class="p">]&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="mi">0&lt;/span>&lt;span class="p">},&lt;/span> &lt;span class="n">iv_dec&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">AES_BLOCK_SIZE&lt;/span>&lt;span class="p">]&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="p">{&lt;/span>&lt;span class="mi">0&lt;/span>&lt;span class="p">};&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">const&lt;/span> &lt;span class="n">size_t&lt;/span> &lt;span class="n">encslength&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="p">((&lt;/span>&lt;span class="n">inputslength&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="n">AES_BLOCK_SIZE&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="o">/&lt;/span> &lt;span class="n">AES_BLOCK_SIZE&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="n">AES_BLOCK_SIZE&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">unsigned&lt;/span> &lt;span class="kt">char&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="n">enc_in&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">malloc&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">encslength&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">pkcs7_encode&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">aes_input&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">enc_in&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">inputslength&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="o">&amp;amp;&lt;/span>&lt;span class="n">encslength&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">AES_ENCRYPT&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">unsigned&lt;/span> &lt;span class="kt">char&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="n">enc_out&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">malloc&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">encslength&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">AES_KEY&lt;/span> &lt;span class="n">enc_key&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">AES_set_encrypt_key&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">aes_key&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">keylength&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="o">&amp;amp;&lt;/span>&lt;span class="n">enc_key&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">AES_cbc_encrypt&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">enc_in&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">enc_out&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">encslength&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="o">&amp;amp;&lt;/span>&lt;span class="n">enc_key&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">iv_enc&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">AES_ENCRYPT&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">printf&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;original:&lt;/span>&lt;span class="se">\t&lt;/span>&lt;span class="s">&amp;#34;&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">hex_print&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">aes_input&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">inputslength&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">printf&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;padding:&lt;/span>&lt;span class="se">\t&lt;/span>&lt;span class="s">&amp;#34;&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">hex_print&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">enc_in&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">encslength&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">printf&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;encrypt:&lt;/span>&lt;span class="se">\t&lt;/span>&lt;span class="s">&amp;#34;&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">hex_print&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">enc_out&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">encslength&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">unsigned&lt;/span> &lt;span class="kt">char&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="n">dec_out&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">malloc&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">encslength&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">AES_KEY&lt;/span> &lt;span class="n">dec_key&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">AES_set_decrypt_key&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">aes_key&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">keylength&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="o">&amp;amp;&lt;/span>&lt;span class="n">dec_key&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">AES_cbc_encrypt&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">enc_out&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">dec_out&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">encslength&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="o">&amp;amp;&lt;/span>&lt;span class="n">dec_key&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">iv_dec&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">AES_DECRYPT&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">pkcs7_encode&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">dec_out&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">aes_out&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">encslength&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="o">&amp;amp;&lt;/span>&lt;span class="n">inputslength&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">AES_DECRYPT&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">printf&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;decrypt:&lt;/span>&lt;span class="se">\t&lt;/span>&lt;span class="s">&amp;#34;&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">hex_print&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">dec_out&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">encslength&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">printf&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;depadding:&lt;/span>&lt;span class="se">\t&lt;/span>&lt;span class="s">&amp;#34;&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">hex_print&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">aes_out&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">inputslength&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">int8_t&lt;/span> &lt;span class="n">buff&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="mi">100&lt;/span>&lt;span class="p">];&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">long&lt;/span> &lt;span class="n">bufflen&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div></description></item><item><title>GDB从零学习</title><link>https://nansenli.com/zh-cn/post/jianshu/c++/gdb-%E4%BB%8E%E9%9B%B6%E5%AD%A6%E4%B9%A0/</link><pubDate>Wed, 25 Apr 2018 16:45:00 +0000</pubDate><guid>https://nansenli.com/zh-cn/post/jianshu/c++/gdb-%E4%BB%8E%E9%9B%B6%E5%AD%A6%E4%B9%A0/</guid><description>&lt;p>从例子入手。&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-c" data-lang="c">&lt;span class="line">&lt;span class="cl">&lt;span class="cp">#include&lt;/span> &lt;span class="cpf">&amp;lt;stdio.h&amp;gt;&lt;/span>&lt;span class="cp">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp">&lt;/span>&lt;span class="kt">void&lt;/span> &lt;span class="nf">my_itoa&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="kt">int&lt;/span> &lt;span class="n">n&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="kt">char&lt;/span> &lt;span class="n">s&lt;/span>&lt;span class="p">[])&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">int&lt;/span> &lt;span class="n">i&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="n">j&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="n">sign&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span>&lt;span class="p">((&lt;/span>&lt;span class="n">sign&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">n&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="mi">0&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="c1">//记录符号
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="n">n&lt;/span>&lt;span class="o">=-&lt;/span>&lt;span class="n">n&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="c1">//使n成为正数
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="n">i&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="mi">0&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">do&lt;/span>&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">s&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">i&lt;/span>&lt;span class="o">++&lt;/span>&lt;span class="p">]&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">n&lt;/span>&lt;span class="o">%&lt;/span>&lt;span class="mi">10&lt;/span>&lt;span class="o">+&lt;/span>&lt;span class="sc">&amp;#39;0&amp;#39;&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="c1">//取下一个数字
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="p">}&lt;/span>&lt;span class="k">while&lt;/span>&lt;span class="p">((&lt;/span>&lt;span class="n">n&lt;/span>&lt;span class="o">/=&lt;/span>&lt;span class="mi">10&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="mi">0&lt;/span>&lt;span class="p">);&lt;/span> &lt;span class="c1">//循环相除
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">sign&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="mi">0&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">s&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">i&lt;/span>&lt;span class="o">++&lt;/span>&lt;span class="p">]&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="sc">&amp;#39;-&amp;#39;&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">s&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">i&lt;/span>&lt;span class="p">]&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="sc">&amp;#39;\0&amp;#39;&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">for&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">j&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">i&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="n">j&lt;/span>&lt;span class="o">&amp;gt;=&lt;/span>&lt;span class="mi">0&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="n">j&lt;/span>&lt;span class="o">--&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="c1">//生成的数字是逆序的，所以要逆序输出
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="nf">printf&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;%c&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="n">s&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">j&lt;/span>&lt;span class="p">]);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kt">void&lt;/span> &lt;span class="nf">main&lt;/span>&lt;span class="p">()&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">int&lt;/span> &lt;span class="n">n&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">char&lt;/span> &lt;span class="n">str&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="mi">100&lt;/span>&lt;span class="p">];&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nf">my_itoa&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="mi">123&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="n">str&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nf">printf&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;&lt;/span>&lt;span class="se">\n&lt;/span>&lt;span class="s">&amp;#34;&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nf">printf&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;%d&lt;/span>&lt;span class="se">\n&lt;/span>&lt;span class="s">&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="nf">my_atoi&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;123&amp;#34;&lt;/span>&lt;span class="p">));&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nf">system&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;pause&amp;#34;&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>将上述文件保存到test.cpp文件，然后编译运行。&lt;/p>
 &lt;p>&lt;img src="https://nansenli.com/img/rescued/3132a6a25dab.gif"
 loading="lazy"
 alt="Peek 2018-04-16 17-25.gif"
 >&lt;/p>
 &lt;p>然后我们来调试一下，看看具体应该怎么调试。按照下面的方式来调试代码。&lt;/p>
-&lt;pre tabindex="0">&lt;code>linan@linan-PC:~$ gdb test
-GNU gdb (Debian 7.12-6) 7.12.0.20161007-git
-Copyright (C) 2016 Free Software Foundation, Inc.
-License GPLv3+: GNU GPL version 3 or later &amp;lt;http://gnu.org/licenses/gpl.html&amp;gt;
-This is free software: you are free to change and redistribute it.
-There is NO WARRANTY, to the extent permitted by law. Type &amp;#34;show copying&amp;#34;
-and &amp;#34;show warranty&amp;#34; for details.
-This GDB was configured as &amp;#34;x86_64-linux-gnu&amp;#34;.
-Type &amp;#34;show configuration&amp;#34; for configuration details.
-For bug reporting instructions, please see:
-&amp;lt;http://www.gnu.org/software/gdb/bugs/&amp;gt;.
-Find the GDB manual and other documentation resources online at:
-&amp;lt;http://www.gnu.org/software/gdb/documentation/&amp;gt;.
-For help, type &amp;#34;help&amp;#34;.
-Type &amp;#34;apropos word&amp;#34; to search for commands related to &amp;#34;word&amp;#34;...
-Reading symbols from test...done.
-(gdb) l
-2
-3 int func(int n)
-4 {
-5 int sum=0,i;
-6 for(i=0; i&amp;lt;n; i++)
-7 {
-8 sum+=i;
-9 }
-10 return sum;
-11 }
-(gdb)
-12
-13 main()
-14 {
-15 int i;
-16 long result = 0;
-17 for(i=1; i&amp;lt;=100; i++)
-18 {
-19 result += i;
-20 }
-21
-(gdb)
-22 printf(&amp;#34;result[1-100] = %d \n&amp;#34;, result );
-23 printf(&amp;#34;result[1-250] = %d \n&amp;#34;, func(250) );
-24 }
-(gdb)
-Line number 25 out of range; test.cpp has 24 lines.
-(gdb) break 15
-Breakpoint 1 at 0x706: file test.cpp, line 15.
-(gdb) break func
-Breakpoint 2 at 0x6d7: file test.cpp, line 5.
-(gdb) info break
-Num Type Disp Enb Address What
-1 breakpoint keep y 0x0000000000000706 in main() at test.cpp:15
-2 breakpoint keep y 0x00000000000006d7 in func(int) at test.cpp:5
-(gdb) run
-Starting program: /home/linan/test
-Breakpoint 1, main () at test.cpp:16
-16 long result = 0;
-(gdb) next
-17 for(i=1; i&amp;lt;=100; i++)
-(gdb) next
-19 result += i;
-(gdb) next
-17 for(i=1; i&amp;lt;=100; i++)
-(gdb) continue
-Continuing.
-result[1-100] = 5050
-Breakpoint 2, func (n=250) at test.cpp:5
-5 int sum=0,i;
-(gdb) p sum
-$1 = 32767
-(gdb) n
-6 for(i=0; i&amp;lt;n; i++)
-(gdb) p sum
-$2 = 0
-(gdb) p i
-$3 = -134225552
-(gdb) print i
-$4 = -134225552
-(gdb) n
-8 sum+=i;
-(gdb) print i
-$5 = 0
-(gdb) bt
-#0 func (n=250) at test.cpp:8
-#1 0x000055555555474c in main () at test.cpp:23
-(gdb) help bt
-Print backtrace of all stack frames, or innermost COUNT frames.
-With a negative argument, print outermost -COUNT frames.
-Use of the &amp;#39;full&amp;#39; qualifier also prints the values of the local variables.
-Use of the &amp;#39;no-filters&amp;#39; qualifier prohibits frame filters from executing
-on this backtrace.
-(gdb) bt
-#0 func (n=250) at test.cpp:8
-#1 0x000055555555474c in main () at test.cpp:23
-(gdb) finish
-Run till exit from #0 func (n=250) at test.cpp:8
-0x000055555555474c in main () at test.cpp:23
-23 printf(&amp;#34;result[1-250] = %d \n&amp;#34;, func(250) );
-Value returned is $6 = 31125
-(gdb) c
-Continuing.
-result[1-250] = 31125
-[Inferior 1 (process 11480) exited normally]
-(gdb)
-&lt;/code>&lt;/pre>&lt;p>&lt;img src="https://nansenli.com/img/rescued/32228d4f4a18.gif"
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt"> 10
+&lt;/span>&lt;span class="lnt"> 11
+&lt;/span>&lt;span class="lnt"> 12
+&lt;/span>&lt;span class="lnt"> 13
+&lt;/span>&lt;span class="lnt"> 14
+&lt;/span>&lt;span class="lnt"> 15
+&lt;/span>&lt;span class="lnt"> 16
+&lt;/span>&lt;span class="lnt"> 17
+&lt;/span>&lt;span class="lnt"> 18
+&lt;/span>&lt;span class="lnt"> 19
+&lt;/span>&lt;span class="lnt"> 20
+&lt;/span>&lt;span class="lnt"> 21
+&lt;/span>&lt;span class="lnt"> 22
+&lt;/span>&lt;span class="lnt"> 23
+&lt;/span>&lt;span class="lnt"> 24
+&lt;/span>&lt;span class="lnt"> 25
+&lt;/span>&lt;span class="lnt"> 26
+&lt;/span>&lt;span class="lnt"> 27
+&lt;/span>&lt;span class="lnt"> 28
+&lt;/span>&lt;span class="lnt"> 29
+&lt;/span>&lt;span class="lnt"> 30
+&lt;/span>&lt;span class="lnt"> 31
+&lt;/span>&lt;span class="lnt"> 32
+&lt;/span>&lt;span class="lnt"> 33
+&lt;/span>&lt;span class="lnt"> 34
+&lt;/span>&lt;span class="lnt"> 35
+&lt;/span>&lt;span class="lnt"> 36
+&lt;/span>&lt;span class="lnt"> 37
+&lt;/span>&lt;span class="lnt"> 38
+&lt;/span>&lt;span class="lnt"> 39
+&lt;/span>&lt;span class="lnt"> 40
+&lt;/span>&lt;span class="lnt"> 41
+&lt;/span>&lt;span class="lnt"> 42
+&lt;/span>&lt;span class="lnt"> 43
+&lt;/span>&lt;span class="lnt"> 44
+&lt;/span>&lt;span class="lnt"> 45
+&lt;/span>&lt;span class="lnt"> 46
+&lt;/span>&lt;span class="lnt"> 47
+&lt;/span>&lt;span class="lnt"> 48
+&lt;/span>&lt;span class="lnt"> 49
+&lt;/span>&lt;span class="lnt"> 50
+&lt;/span>&lt;span class="lnt"> 51
+&lt;/span>&lt;span class="lnt"> 52
+&lt;/span>&lt;span class="lnt"> 53
+&lt;/span>&lt;span class="lnt"> 54
+&lt;/span>&lt;span class="lnt"> 55
+&lt;/span>&lt;span class="lnt"> 56
+&lt;/span>&lt;span class="lnt"> 57
+&lt;/span>&lt;span class="lnt"> 58
+&lt;/span>&lt;span class="lnt"> 59
+&lt;/span>&lt;span class="lnt"> 60
+&lt;/span>&lt;span class="lnt"> 61
+&lt;/span>&lt;span class="lnt"> 62
+&lt;/span>&lt;span class="lnt"> 63
+&lt;/span>&lt;span class="lnt"> 64
+&lt;/span>&lt;span class="lnt"> 65
+&lt;/span>&lt;span class="lnt"> 66
+&lt;/span>&lt;span class="lnt"> 67
+&lt;/span>&lt;span class="lnt"> 68
+&lt;/span>&lt;span class="lnt"> 69
+&lt;/span>&lt;span class="lnt"> 70
+&lt;/span>&lt;span class="lnt"> 71
+&lt;/span>&lt;span class="lnt"> 72
+&lt;/span>&lt;span class="lnt"> 73
+&lt;/span>&lt;span class="lnt"> 74
+&lt;/span>&lt;span class="lnt"> 75
+&lt;/span>&lt;span class="lnt"> 76
+&lt;/span>&lt;span class="lnt"> 77
+&lt;/span>&lt;span class="lnt"> 78
+&lt;/span>&lt;span class="lnt"> 79
+&lt;/span>&lt;span class="lnt"> 80
+&lt;/span>&lt;span class="lnt"> 81
+&lt;/span>&lt;span class="lnt"> 82
+&lt;/span>&lt;span class="lnt"> 83
+&lt;/span>&lt;span class="lnt"> 84
+&lt;/span>&lt;span class="lnt"> 85
+&lt;/span>&lt;span class="lnt"> 86
+&lt;/span>&lt;span class="lnt"> 87
+&lt;/span>&lt;span class="lnt"> 88
+&lt;/span>&lt;span class="lnt"> 89
+&lt;/span>&lt;span class="lnt"> 90
+&lt;/span>&lt;span class="lnt"> 91
+&lt;/span>&lt;span class="lnt"> 92
+&lt;/span>&lt;span class="lnt"> 93
+&lt;/span>&lt;span class="lnt"> 94
+&lt;/span>&lt;span class="lnt"> 95
+&lt;/span>&lt;span class="lnt"> 96
+&lt;/span>&lt;span class="lnt"> 97
+&lt;/span>&lt;span class="lnt"> 98
+&lt;/span>&lt;span class="lnt"> 99
+&lt;/span>&lt;span class="lnt">100
+&lt;/span>&lt;span class="lnt">101
+&lt;/span>&lt;span class="lnt">102
+&lt;/span>&lt;span class="lnt">103
+&lt;/span>&lt;span class="lnt">104
+&lt;/span>&lt;span class="lnt">105
+&lt;/span>&lt;span class="lnt">106
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-gdscript3" data-lang="gdscript3">&lt;span class="line">&lt;span class="cl">&lt;span class="n">linan&lt;/span>&lt;span class="err">@&lt;/span>&lt;span class="n">linan&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">PC&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="o">~$&lt;/span> &lt;span class="n">gdb&lt;/span> &lt;span class="n">test&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">GNU&lt;/span> &lt;span class="n">gdb&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">Debian&lt;/span> &lt;span class="mf">7.12&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="mi">6&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="mf">7.12&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="mf">0.20161007&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">git&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">Copyright&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">C&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="mi">2016&lt;/span> &lt;span class="n">Free&lt;/span> &lt;span class="n">Software&lt;/span> &lt;span class="n">Foundation&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">Inc&lt;/span>&lt;span class="o">.&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">License&lt;/span> &lt;span class="n">GPLv3&lt;/span>&lt;span class="o">+&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="n">GNU&lt;/span> &lt;span class="n">GPL&lt;/span> &lt;span class="n">version&lt;/span> &lt;span class="mi">3&lt;/span> &lt;span class="ow">or&lt;/span> &lt;span class="n">later&lt;/span> &lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">http&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="o">//&lt;/span>&lt;span class="n">gnu&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">org&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">licenses&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">gpl&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">html&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">This&lt;/span> &lt;span class="n">is&lt;/span> &lt;span class="n">free&lt;/span> &lt;span class="n">software&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="n">you&lt;/span> &lt;span class="n">are&lt;/span> &lt;span class="n">free&lt;/span> &lt;span class="n">to&lt;/span> &lt;span class="n">change&lt;/span> &lt;span class="ow">and&lt;/span> &lt;span class="n">redistribute&lt;/span> &lt;span class="n">it&lt;/span>&lt;span class="o">.&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">There&lt;/span> &lt;span class="n">is&lt;/span> &lt;span class="n">NO&lt;/span> &lt;span class="n">WARRANTY&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">to&lt;/span> &lt;span class="n">the&lt;/span> &lt;span class="n">extent&lt;/span> &lt;span class="n">permitted&lt;/span> &lt;span class="n">by&lt;/span> &lt;span class="n">law&lt;/span>&lt;span class="o">.&lt;/span> &lt;span class="n">Type&lt;/span> &lt;span class="s2">&amp;#34;show copying&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="ow">and&lt;/span> &lt;span class="s2">&amp;#34;show warranty&amp;#34;&lt;/span> &lt;span class="k">for&lt;/span> &lt;span class="n">details&lt;/span>&lt;span class="o">.&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">This&lt;/span> &lt;span class="n">GDB&lt;/span> &lt;span class="n">was&lt;/span> &lt;span class="n">configured&lt;/span> &lt;span class="n">as&lt;/span> &lt;span class="s2">&amp;#34;x86_64-linux-gnu&amp;#34;&lt;/span>&lt;span class="o">.&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">Type&lt;/span> &lt;span class="s2">&amp;#34;show configuration&amp;#34;&lt;/span> &lt;span class="k">for&lt;/span> &lt;span class="n">configuration&lt;/span> &lt;span class="n">details&lt;/span>&lt;span class="o">.&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">For&lt;/span> &lt;span class="n">bug&lt;/span> &lt;span class="n">reporting&lt;/span> &lt;span class="n">instructions&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">please&lt;/span> &lt;span class="n">see&lt;/span>&lt;span class="p">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">http&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="o">//&lt;/span>&lt;span class="n">www&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">gnu&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">org&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">software&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">gdb&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">bugs&lt;/span>&lt;span class="o">/&amp;gt;.&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">Find&lt;/span> &lt;span class="n">the&lt;/span> &lt;span class="n">GDB&lt;/span> &lt;span class="n">manual&lt;/span> &lt;span class="ow">and&lt;/span> &lt;span class="n">other&lt;/span> &lt;span class="n">documentation&lt;/span> &lt;span class="n">resources&lt;/span> &lt;span class="n">online&lt;/span> &lt;span class="n">at&lt;/span>&lt;span class="p">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">http&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="o">//&lt;/span>&lt;span class="n">www&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">gnu&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">org&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">software&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">gdb&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">documentation&lt;/span>&lt;span class="o">/&amp;gt;.&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">For&lt;/span> &lt;span class="n">help&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">type&lt;/span> &lt;span class="s2">&amp;#34;help&amp;#34;&lt;/span>&lt;span class="o">.&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">Type&lt;/span> &lt;span class="s2">&amp;#34;apropos word&amp;#34;&lt;/span> &lt;span class="n">to&lt;/span> &lt;span class="n">search&lt;/span> &lt;span class="k">for&lt;/span> &lt;span class="n">commands&lt;/span> &lt;span class="n">related&lt;/span> &lt;span class="n">to&lt;/span> &lt;span class="s2">&amp;#34;word&amp;#34;&lt;/span>&lt;span class="o">...&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">Reading&lt;/span> &lt;span class="n">symbols&lt;/span> &lt;span class="n">from&lt;/span> &lt;span class="n">test&lt;/span>&lt;span class="o">...&lt;/span>&lt;span class="n">done&lt;/span>&lt;span class="o">.&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">(&lt;/span>&lt;span class="n">gdb&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="n">l&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="mi">2&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="mi">3&lt;/span> &lt;span class="ne">int&lt;/span> &lt;span class="k">func&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="ne">int&lt;/span> &lt;span class="n">n&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="mi">4&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="mi">5&lt;/span> &lt;span class="ne">int&lt;/span> &lt;span class="n">sum&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="mi">0&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="n">i&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="mi">6&lt;/span> &lt;span class="k">for&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">i&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="mi">0&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="n">i&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">n&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="n">i&lt;/span>&lt;span class="o">++&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="mi">7&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="mi">8&lt;/span> &lt;span class="n">sum&lt;/span>&lt;span class="o">+=&lt;/span>&lt;span class="n">i&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="mi">9&lt;/span> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="mi">10&lt;/span> &lt;span class="k">return&lt;/span> &lt;span class="n">sum&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="mi">11&lt;/span> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">(&lt;/span>&lt;span class="n">gdb&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="mi">12&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="mi">13&lt;/span> &lt;span class="n">main&lt;/span>&lt;span class="p">()&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="mi">14&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="mi">15&lt;/span> &lt;span class="ne">int&lt;/span> &lt;span class="n">i&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="mi">16&lt;/span> &lt;span class="n">long&lt;/span> &lt;span class="n">result&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="mi">17&lt;/span> &lt;span class="k">for&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">i&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="n">i&lt;/span>&lt;span class="o">&amp;lt;=&lt;/span>&lt;span class="mi">100&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="n">i&lt;/span>&lt;span class="o">++&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="mi">18&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="mi">19&lt;/span> &lt;span class="n">result&lt;/span> &lt;span class="o">+=&lt;/span> &lt;span class="n">i&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="mi">20&lt;/span> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="mi">21&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">(&lt;/span>&lt;span class="n">gdb&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="mi">22&lt;/span> &lt;span class="n">printf&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;result[1-100] = &lt;/span>&lt;span class="si">%d&lt;/span>&lt;span class="s2"> &lt;/span>&lt;span class="se">\n&lt;/span>&lt;span class="s2">&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">result&lt;/span> &lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="mi">23&lt;/span> &lt;span class="n">printf&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;result[1-250] = &lt;/span>&lt;span class="si">%d&lt;/span>&lt;span class="s2"> &lt;/span>&lt;span class="se">\n&lt;/span>&lt;span class="s2">&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="k">func&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">250&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="mi">24&lt;/span> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">(&lt;/span>&lt;span class="n">gdb&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">Line&lt;/span> &lt;span class="n">number&lt;/span> &lt;span class="mi">25&lt;/span> &lt;span class="n">out&lt;/span> &lt;span class="n">of&lt;/span> &lt;span class="nb">range&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="n">test&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">cpp&lt;/span> &lt;span class="n">has&lt;/span> &lt;span class="mi">24&lt;/span> &lt;span class="n">lines&lt;/span>&lt;span class="o">.&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">(&lt;/span>&lt;span class="n">gdb&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="k">break&lt;/span> &lt;span class="mi">15&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">Breakpoint&lt;/span> &lt;span class="mi">1&lt;/span> &lt;span class="n">at&lt;/span> &lt;span class="mh">0x706&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="n">file&lt;/span> &lt;span class="n">test&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">cpp&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">line&lt;/span> &lt;span class="mf">15.&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">(&lt;/span>&lt;span class="n">gdb&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="k">break&lt;/span> &lt;span class="k">func&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">Breakpoint&lt;/span> &lt;span class="mi">2&lt;/span> &lt;span class="n">at&lt;/span> &lt;span class="mh">0x6d7&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="n">file&lt;/span> &lt;span class="n">test&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">cpp&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">line&lt;/span> &lt;span class="mf">5.&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">(&lt;/span>&lt;span class="n">gdb&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="n">info&lt;/span> &lt;span class="k">break&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">Num&lt;/span> &lt;span class="n">Type&lt;/span> &lt;span class="n">Disp&lt;/span> &lt;span class="n">Enb&lt;/span> &lt;span class="n">Address&lt;/span> &lt;span class="n">What&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="mi">1&lt;/span> &lt;span class="k">breakpoint&lt;/span> &lt;span class="n">keep&lt;/span> &lt;span class="n">y&lt;/span> &lt;span class="mh">0x0000000000000706&lt;/span> &lt;span class="ow">in&lt;/span> &lt;span class="n">main&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="n">at&lt;/span> &lt;span class="n">test&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">cpp&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="mi">15&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="mi">2&lt;/span> &lt;span class="k">breakpoint&lt;/span> &lt;span class="n">keep&lt;/span> &lt;span class="n">y&lt;/span> &lt;span class="mh">0x00000000000006d7&lt;/span> &lt;span class="ow">in&lt;/span> &lt;span class="k">func&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="ne">int&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="n">at&lt;/span> &lt;span class="n">test&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">cpp&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="mi">5&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">(&lt;/span>&lt;span class="n">gdb&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="n">run&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">Starting&lt;/span> &lt;span class="n">program&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="o">/&lt;/span>&lt;span class="n">home&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">linan&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">test&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">Breakpoint&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">main&lt;/span> &lt;span class="p">()&lt;/span> &lt;span class="n">at&lt;/span> &lt;span class="n">test&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">cpp&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="mi">16&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="mi">16&lt;/span> &lt;span class="n">long&lt;/span> &lt;span class="n">result&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">(&lt;/span>&lt;span class="n">gdb&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="n">next&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="mi">17&lt;/span> &lt;span class="k">for&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">i&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="n">i&lt;/span>&lt;span class="o">&amp;lt;=&lt;/span>&lt;span class="mi">100&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="n">i&lt;/span>&lt;span class="o">++&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">(&lt;/span>&lt;span class="n">gdb&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="n">next&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="mi">19&lt;/span> &lt;span class="n">result&lt;/span> &lt;span class="o">+=&lt;/span> &lt;span class="n">i&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">(&lt;/span>&lt;span class="n">gdb&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="n">next&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="mi">17&lt;/span> &lt;span class="k">for&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">i&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="n">i&lt;/span>&lt;span class="o">&amp;lt;=&lt;/span>&lt;span class="mi">100&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="n">i&lt;/span>&lt;span class="o">++&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">(&lt;/span>&lt;span class="n">gdb&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="k">continue&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">Continuing&lt;/span>&lt;span class="o">.&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">result&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="mi">100&lt;/span>&lt;span class="p">]&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">5050&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">Breakpoint&lt;/span> &lt;span class="mi">2&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="k">func&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">n&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="mi">250&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="n">at&lt;/span> &lt;span class="n">test&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">cpp&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="mi">5&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="mi">5&lt;/span> &lt;span class="ne">int&lt;/span> &lt;span class="n">sum&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="mi">0&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="n">i&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">(&lt;/span>&lt;span class="n">gdb&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="n">p&lt;/span> &lt;span class="n">sum&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">$&lt;/span>&lt;span class="mi">1&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">32767&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">(&lt;/span>&lt;span class="n">gdb&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="n">n&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="mi">6&lt;/span> &lt;span class="k">for&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">i&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="mi">0&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="n">i&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">n&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="n">i&lt;/span>&lt;span class="o">++&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">(&lt;/span>&lt;span class="n">gdb&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="n">p&lt;/span> &lt;span class="n">sum&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">$&lt;/span>&lt;span class="mi">2&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">0&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">(&lt;/span>&lt;span class="n">gdb&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="n">p&lt;/span> &lt;span class="n">i&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">$&lt;/span>&lt;span class="mi">3&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="o">-&lt;/span>&lt;span class="mi">134225552&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">(&lt;/span>&lt;span class="n">gdb&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="nb">print&lt;/span> &lt;span class="n">i&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">$&lt;/span>&lt;span class="mi">4&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="o">-&lt;/span>&lt;span class="mi">134225552&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">(&lt;/span>&lt;span class="n">gdb&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="n">n&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="mi">8&lt;/span> &lt;span class="n">sum&lt;/span>&lt;span class="o">+=&lt;/span>&lt;span class="n">i&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">(&lt;/span>&lt;span class="n">gdb&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="nb">print&lt;/span> &lt;span class="n">i&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">$&lt;/span>&lt;span class="mi">5&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">0&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">(&lt;/span>&lt;span class="n">gdb&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="n">bt&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">#0 func (n=250) at test.cpp:8&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">#1 0x000055555555474c in main () at test.cpp:23&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">(&lt;/span>&lt;span class="n">gdb&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="n">help&lt;/span> &lt;span class="n">bt&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">Print&lt;/span> &lt;span class="n">backtrace&lt;/span> &lt;span class="n">of&lt;/span> &lt;span class="n">all&lt;/span> &lt;span class="n">stack&lt;/span> &lt;span class="n">frames&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="ow">or&lt;/span> &lt;span class="n">innermost&lt;/span> &lt;span class="n">COUNT&lt;/span> &lt;span class="n">frames&lt;/span>&lt;span class="o">.&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">With&lt;/span> &lt;span class="n">a&lt;/span> &lt;span class="n">negative&lt;/span> &lt;span class="n">argument&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nb">print&lt;/span> &lt;span class="n">outermost&lt;/span> &lt;span class="o">-&lt;/span>&lt;span class="n">COUNT&lt;/span> &lt;span class="n">frames&lt;/span>&lt;span class="o">.&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">Use&lt;/span> &lt;span class="n">of&lt;/span> &lt;span class="n">the&lt;/span> &lt;span class="s1">&amp;#39;full&amp;#39;&lt;/span> &lt;span class="n">qualifier&lt;/span> &lt;span class="n">also&lt;/span> &lt;span class="nb">prints&lt;/span> &lt;span class="n">the&lt;/span> &lt;span class="n">values&lt;/span> &lt;span class="n">of&lt;/span> &lt;span class="n">the&lt;/span> &lt;span class="n">local&lt;/span> &lt;span class="n">variables&lt;/span>&lt;span class="o">.&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">Use&lt;/span> &lt;span class="n">of&lt;/span> &lt;span class="n">the&lt;/span> &lt;span class="s1">&amp;#39;no-filters&amp;#39;&lt;/span> &lt;span class="n">qualifier&lt;/span> &lt;span class="n">prohibits&lt;/span> &lt;span class="n">frame&lt;/span> &lt;span class="n">filters&lt;/span> &lt;span class="n">from&lt;/span> &lt;span class="n">executing&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">on&lt;/span> &lt;span class="n">this&lt;/span> &lt;span class="n">backtrace&lt;/span>&lt;span class="o">.&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">(&lt;/span>&lt;span class="n">gdb&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="n">bt&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">#0 func (n=250) at test.cpp:8&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">#1 0x000055555555474c in main () at test.cpp:23&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">(&lt;/span>&lt;span class="n">gdb&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="n">finish&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">Run&lt;/span> &lt;span class="n">till&lt;/span> &lt;span class="n">exit&lt;/span> &lt;span class="n">from&lt;/span> &lt;span class="c1">#0 func (n=250) at test.cpp:8&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="mh">0x000055555555474c&lt;/span> &lt;span class="ow">in&lt;/span> &lt;span class="n">main&lt;/span> &lt;span class="p">()&lt;/span> &lt;span class="n">at&lt;/span> &lt;span class="n">test&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">cpp&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="mi">23&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="mi">23&lt;/span> &lt;span class="n">printf&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;result[1-250] = &lt;/span>&lt;span class="si">%d&lt;/span>&lt;span class="s2"> &lt;/span>&lt;span class="se">\n&lt;/span>&lt;span class="s2">&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="k">func&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">250&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">Value&lt;/span> &lt;span class="n">returned&lt;/span> &lt;span class="n">is&lt;/span> &lt;span class="o">$&lt;/span>&lt;span class="mi">6&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">31125&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">(&lt;/span>&lt;span class="n">gdb&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="n">c&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">Continuing&lt;/span>&lt;span class="o">.&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">result&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="mi">250&lt;/span>&lt;span class="p">]&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">31125&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">[&lt;/span>&lt;span class="n">Inferior&lt;/span> &lt;span class="mi">1&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">process&lt;/span> &lt;span class="mi">11480&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="n">exited&lt;/span> &lt;span class="n">normally&lt;/span>&lt;span class="p">]&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">(&lt;/span>&lt;span class="n">gdb&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;img src="https://nansenli.com/img/rescued/32228d4f4a18.gif"
 loading="lazy"
 alt="Peek 2018-04-16 17-39.gif"
 >&lt;/p>
@@ -270,15 +538,33 @@ program也就是你的执行文件，一般在当然目录下。&lt;/p>
 &lt;h2 id="使用gdb的新手注意事项">使用GDB的新手注意事项
 &lt;/h2>&lt;p>GDB调试的时候需要知道源码的文件在哪里，在上面的例子中，源码和运行程序在一起。但是实际中不可能这样。在GDB命令加入参数-d或者在运行时使用direcotry 命令来添加源码目录。&lt;/p>
 &lt;p>其他注意点：&lt;/p>
-&lt;pre tabindex="0">&lt;code> -symbols &amp;lt;file&amp;gt;
--s &amp;lt;file&amp;gt;
-从指定文件中读取符号表。
--se file
-从指定文件中读取符号表信息，并把他用在可执行文件中。
--core &amp;lt;file&amp;gt;
--c &amp;lt;file&amp;gt;
-调试时core dump的core文件。
-&lt;/code>&lt;/pre></description></item><item><title>effective C++ 笔记</title><link>https://nansenli.com/zh-cn/post/jianshu/c++/effective-c++-%E7%AC%94%E8%AE%B0/</link><pubDate>Mon, 23 Apr 2018 10:40:00 +0000</pubDate><guid>https://nansenli.com/zh-cn/post/jianshu/c++/effective-c++-%E7%AC%94%E8%AE%B0/</guid><description>&lt;h2 id="第一章-从-c-到-c">第一章 从 C 到 C++
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl"> -symbols &amp;lt;file&amp;gt;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> -s &amp;lt;file&amp;gt;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> 从指定文件中读取符号表。
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> -se file
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> 从指定文件中读取符号表信息，并把他用在可执行文件中。
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> -core &amp;lt;file&amp;gt;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> -c &amp;lt;file&amp;gt;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> 调试时core dump的core文件。
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div></description></item><item><title>effective C++ 笔记</title><link>https://nansenli.com/zh-cn/post/jianshu/c++/effective-c++-%E7%AC%94%E8%AE%B0/</link><pubDate>Mon, 23 Apr 2018 10:40:00 +0000</pubDate><guid>https://nansenli.com/zh-cn/post/jianshu/c++/effective-c++-%E7%AC%94%E8%AE%B0/</guid><description>&lt;h2 id="第一章-从-c-到-c">第一章 从 C 到 C++
 &lt;/h2>&lt;ul>
 &lt;li>
 &lt;p>条款1 C++是语言联邦
@@ -532,44 +818,113 @@ placement delete会在placement new出现错误的时候自动运行&lt;/p>
 &lt;p>&lt;a class="link" href="https://kelvinh.github.io/blog/2014/04/19/research-on-operator-new-and-delete/" target="_blank" rel="noopener"
 >https://kelvinh.github.io/blog/2014/04/19/research-on-operator-new-and-delete/&lt;/a>&lt;/p>
 &lt;h2 id="new-与-delete代码意味着什么">new 与 delete代码意味着什么
-&lt;/h2>&lt;pre tabindex="0">&lt;code>Class *pc = new Class;
-// ...
-delete pc;
-&lt;/code>&lt;/pre>&lt;p>上面代码的第一行即为 new operator ，而第三行即为 delete operator ，代码很简单，但对编译器来说，它需要做额外的工作，将上述代码翻译为近似于下面的代码：&lt;/p>
-&lt;pre tabindex="0">&lt;code>void *p = operator new(sizeof(Class));
-// 对p指向的内存调用Class的构造函数，此处无法用直观的代码展现
-Class *pc = static_cast&amp;lt;Class*&amp;gt;(p);
-// ...
-pc-&amp;gt;~Class();
-operator delete(pc);
-&lt;/code>&lt;/pre>&lt;h2 id="operator-new-操作符到底做了什么delete-操作符又做了什么">operator new 操作符到底做了什么，delete 操作符又做了什么？
-&lt;/h2>&lt;pre tabindex="0">&lt;code>void * operator new(std::size_t size) throw(std::bad_alloc) {
-if (size == 0)
-size = 1;
-void* p;
-while ((p = ::malloc(size)) == 0) {
-std::new_handler nh = std::get_new_handler();
-if (nh)
-nh();
-else
-throw std::bad_alloc();
-}
-return p;
-}
-void operator delete(void* ptr) {
-if (ptr)
-::free(ptr);
-}
-&lt;/code>&lt;/pre>&lt;p>实际上是malloc的包装，但是至少分配一个字节，并且在内存失败时会尝试获取用户设置的new_handler，如果用户事先设置了new_handler，那么会调用new_handler，否则会执行异常抛出bad_alloc。&lt;/p>
+&lt;/h2>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">Class *pc = new Class;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">// ...
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">delete pc;
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>上面代码的第一行即为 new operator ，而第三行即为 delete operator ，代码很简单，但对编译器来说，它需要做额外的工作，将上述代码翻译为近似于下面的代码：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">void *p = operator new(sizeof(Class));
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">// 对p指向的内存调用Class的构造函数，此处无法用直观的代码展现
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Class *pc = static_cast&amp;lt;Class*&amp;gt;(p);
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">// ...
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">pc-&amp;gt;~Class();
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">operator delete(pc);
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="operator-new-操作符到底做了什么delete-操作符又做了什么">operator new 操作符到底做了什么，delete 操作符又做了什么？
+&lt;/h2>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">void * operator new(std::size_t size) throw(std::bad_alloc) {
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> if (size == 0)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> size = 1;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> void* p;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> while ((p = ::malloc(size)) == 0) {
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> std::new_handler nh = std::get_new_handler();
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> if (nh)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> nh();
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> else
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> throw std::bad_alloc();
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> }
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> return p;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">}
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">void operator delete(void* ptr) {
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> if (ptr)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> ::free(ptr);
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>实际上是malloc的包装，但是至少分配一个字节，并且在内存失败时会尝试获取用户设置的new_handler，如果用户事先设置了new_handler，那么会调用new_handler，否则会执行异常抛出bad_alloc。&lt;/p>
 &lt;h2 id="placement-new是什么">placement new是什么
-&lt;/h2>&lt;pre tabindex="0">&lt;code>inline _LIBCPP_INLINE_VISIBILITY void* operator new (std::size_t, void* __p) _NOEXCEPT {return __p;}
-&lt;/code>&lt;/pre>&lt;p>这个是operator new的一个重载。直接返回指针的值。感觉挺没有用的。那怎么使用呢？&lt;/p>
-&lt;pre tabindex="0">&lt;code>void *buf = // 在这里为buf分配内存
-Class *pc = new (buf) Class();
-&lt;/code>&lt;/pre>&lt;p>上面是将buf的内存分给pc指针。其实就相当于：&lt;/p>
-&lt;pre tabindex="0">&lt;code>((* Class)buf)-&amp;gt;Class();
-Class *pc = buf;
-&lt;/code>&lt;/pre></description></item><item><title>C++基本问题——指针与引用的区别</title><link>https://nansenli.com/zh-cn/post/jianshu/c++/c++%E5%9F%BA%E6%9C%AC%E9%97%AE%E9%A2%98%E6%8C%87%E9%92%88%E4%B8%8E%E5%BC%95%E7%94%A8%E7%9A%84%E5%8C%BA%E5%88%AB/</link><pubDate>Wed, 10 Jan 2018 08:44:00 +0000</pubDate><guid>https://nansenli.com/zh-cn/post/jianshu/c++/c++%E5%9F%BA%E6%9C%AC%E9%97%AE%E9%A2%98%E6%8C%87%E9%92%88%E4%B8%8E%E5%BC%95%E7%94%A8%E7%9A%84%E5%8C%BA%E5%88%AB/</guid><description>&lt;h3 id="指针与引用的区别">指针与引用的区别
+&lt;/h2>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">inline _LIBCPP_INLINE_VISIBILITY void* operator new (std::size_t, void* __p) _NOEXCEPT {return __p;}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>这个是operator new的一个重载。直接返回指针的值。感觉挺没有用的。那怎么使用呢？&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">void *buf = // 在这里为buf分配内存
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Class *pc = new (buf) Class();
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>上面是将buf的内存分给pc指针。其实就相当于：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">((* Class)buf)-&amp;gt;Class();
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Class *pc = buf;
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div></description></item><item><title>C++基本问题——指针与引用的区别</title><link>https://nansenli.com/zh-cn/post/jianshu/c++/c++%E5%9F%BA%E6%9C%AC%E9%97%AE%E9%A2%98%E6%8C%87%E9%92%88%E4%B8%8E%E5%BC%95%E7%94%A8%E7%9A%84%E5%8C%BA%E5%88%AB/</link><pubDate>Wed, 10 Jan 2018 08:44:00 +0000</pubDate><guid>https://nansenli.com/zh-cn/post/jianshu/c++/c++%E5%9F%BA%E6%9C%AC%E9%97%AE%E9%A2%98%E6%8C%87%E9%92%88%E4%B8%8E%E5%BC%95%E7%94%A8%E7%9A%84%E5%8C%BA%E5%88%AB/</guid><description>&lt;h3 id="指针与引用的区别">指针与引用的区别
 &lt;/h3>&lt;ul>
 &lt;li>指针可以是空指针，但是引用不能是空引用。这就导致下面一个区别。&lt;/li>
 &lt;li>指针可能是非法的，引用总是合法的。如果指针是空指针，那么就不能合法的使用它。这要求在每次使用指针时都需要判断它的合法性。相反引用则不用判断。&lt;/li>
@@ -604,141 +959,324 @@ Add element at the end (public member function )
 pop_back
 Delete last element (public member function )&lt;/p>
 &lt;h2 id="基础的vector的主要结构">基础的vector的主要结构
-&lt;/h2>&lt;pre tabindex="0">&lt;code>#include &amp;lt;cstddef&amp;gt;
-#include &amp;lt;stdexcept&amp;gt;
-#include &amp;lt;memory&amp;gt;
-#include &amp;lt;iterator&amp;gt;
-template &amp;lt;typename T&amp;gt;
-class vector
-{
-public:
-using value_type = T;
-using iterator = value_type *;
-using size_type = std::size_t;
-public:
-vector() = default;
-~vector();
-iterator begin() const;
-iterator end() const;
-size_type size() const;
-value_type &amp;amp;operator[](size_type i) const;
-value_type &amp;amp;at(size_type i) const;
-void push_back(const value_type &amp;amp;new_elem);
-void pop_back();
-private:
-iterator startptr = nullptr;
-iterator endptr = nullptr;
-iterator capptr = nullptr;
-std::allocator&amp;lt;value_type&amp;gt; alloc;
-private:
-void check_cap();
-void free();
-};
-&lt;/code>&lt;/pre>&lt;p>在我们这个类中，简单的实现了迭代器，push_back，pop_back，以及[]，at函数，size函数。为了实现内存管理还需要实现构造、析构函数，以及检查容量函数。&lt;/p>
+&lt;/h2>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;span class="lnt">30
+&lt;/span>&lt;span class="lnt">31
+&lt;/span>&lt;span class="lnt">32
+&lt;/span>&lt;span class="lnt">33
+&lt;/span>&lt;span class="lnt">34
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-c++" data-lang="c++">&lt;span class="line">&lt;span class="cl">&lt;span class="cp">#include&lt;/span> &lt;span class="cpf">&amp;lt;cstddef&amp;gt;&lt;/span>&lt;span class="cp">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp">#include&lt;/span> &lt;span class="cpf">&amp;lt;stdexcept&amp;gt;&lt;/span>&lt;span class="cp">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp">#include&lt;/span> &lt;span class="cpf">&amp;lt;memory&amp;gt;&lt;/span>&lt;span class="cp">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp">#include&lt;/span> &lt;span class="cpf">&amp;lt;iterator&amp;gt;&lt;/span>&lt;span class="cp">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp">&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">template&lt;/span> &lt;span class="o">&amp;lt;&lt;/span>&lt;span class="k">typename&lt;/span> &lt;span class="n">T&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">class&lt;/span> &lt;span class="nc">vector&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">public&lt;/span>&lt;span class="o">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">using&lt;/span> &lt;span class="n">value_type&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">T&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">using&lt;/span> &lt;span class="n">iterator&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">value_type&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">using&lt;/span> &lt;span class="n">size_type&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">size_t&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">public&lt;/span>&lt;span class="o">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">vector&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="k">default&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">~&lt;/span>&lt;span class="n">vector&lt;/span>&lt;span class="p">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">iterator&lt;/span> &lt;span class="nf">begin&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="k">const&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">iterator&lt;/span> &lt;span class="nf">end&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="k">const&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">size_type&lt;/span> &lt;span class="nf">size&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="k">const&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">value_type&lt;/span> &lt;span class="o">&amp;amp;&lt;/span>&lt;span class="k">operator&lt;/span>&lt;span class="p">[](&lt;/span>&lt;span class="n">size_type&lt;/span> &lt;span class="n">i&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="k">const&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">value_type&lt;/span> &lt;span class="o">&amp;amp;&lt;/span>&lt;span class="n">at&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">size_type&lt;/span> &lt;span class="n">i&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="k">const&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">void&lt;/span> &lt;span class="nf">push_back&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="k">const&lt;/span> &lt;span class="n">value_type&lt;/span> &lt;span class="o">&amp;amp;&lt;/span>&lt;span class="n">new_elem&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">void&lt;/span> &lt;span class="nf">pop_back&lt;/span>&lt;span class="p">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">private&lt;/span>&lt;span class="o">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">iterator&lt;/span> &lt;span class="n">startptr&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="k">nullptr&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">iterator&lt;/span> &lt;span class="n">endptr&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="k">nullptr&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">iterator&lt;/span> &lt;span class="n">capptr&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="k">nullptr&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">allocator&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">value_type&lt;/span>&lt;span class="o">&amp;gt;&lt;/span> &lt;span class="n">alloc&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">private&lt;/span>&lt;span class="o">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">void&lt;/span> &lt;span class="n">check_cap&lt;/span>&lt;span class="p">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">void&lt;/span> &lt;span class="nf">free&lt;/span>&lt;span class="p">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">};&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>在我们这个类中，简单的实现了迭代器，push_back，pop_back，以及[]，at函数，size函数。为了实现内存管理还需要实现构造、析构函数，以及检查容量函数。&lt;/p>
 &lt;h2 id="基础功能的内部实现">基础功能的内部实现
-&lt;/h2>&lt;pre tabindex="0">&lt;code>template &amp;lt;typename T&amp;gt;
-typename vector&amp;lt;T&amp;gt;::iterator vector&amp;lt;T&amp;gt;::begin() const
-{
-return startptr;
-}
-template &amp;lt;typename T&amp;gt;
-typename vector&amp;lt;T&amp;gt;::iterator vector&amp;lt;T&amp;gt;::end() const
-{
-return endptr;
-}
-template &amp;lt;typename T&amp;gt;
-typename vector&amp;lt;T&amp;gt;::size_type vector&amp;lt;T&amp;gt;::size() const
-{
-return endptr - startptr;
-}
-template &amp;lt;typename T&amp;gt;
-typename vector&amp;lt;T&amp;gt;::value_type &amp;amp;vector&amp;lt;T&amp;gt;::operator[](size_type i) const
-{
-return *(startptr + i);
-}
-template &amp;lt;typename T&amp;gt;
-typename vector&amp;lt;T&amp;gt;::value_type &amp;amp;vector&amp;lt;T&amp;gt;::at(size_type i) const
-{
-if (startptr + i &amp;gt;= endptr)
-{
-throw std::runtime_error(&amp;#34;out of range!&amp;#34;);
-}
-return *(startptr + i);
-}
-template &amp;lt;typename T&amp;gt;
-vector&amp;lt;T&amp;gt;::~vector()
-{
-free();
-}
-&lt;/code>&lt;/pre>&lt;p>上面是简单函数的实现。仅仅是取出内部的数据而已。&lt;/p>
-&lt;pre tabindex="0">&lt;code>template &amp;lt;typename T&amp;gt;
-void vector&amp;lt;T&amp;gt;::free()
-{
-if (startptr)
-{
-for (auto p = startptr; p != endptr; p++)
-{
-alloc.destroy(p);
-}
-alloc.deallocate(startptr, endptr - startptr);
-}
-}
-template &amp;lt;typename T&amp;gt;
-void vector&amp;lt;T&amp;gt;::check_cap()
-{
-if (endptr == capptr)
-{
-int newsize = size() ? size() &amp;lt;&amp;lt; 1 : 1;
-auto newstartptr = alloc.allocate(newsize);
-auto newendptr = uninitialized_copy(std::make_move_iterator(startptr), std::make_move_iterator(endptr), newstartptr);
-free();
-startptr = newstartptr;
-endptr = newendptr;
-capptr = newstartptr + newsize;
-}
-}
-template &amp;lt;typename T&amp;gt;
-void vector&amp;lt;T&amp;gt;::push_back(const value_type &amp;amp;new_elem)
-{
-check_cap();
-alloc.construct(endptr, new_elem);
-endptr++;
-}
-template &amp;lt;typename T&amp;gt;
-void vector&amp;lt;T&amp;gt;::pop_back()
-{
-if(endptr-startptr&amp;gt;0){
-alloc.destroy(endptr);
-endptr--;
-}
-}
-&lt;/code>&lt;/pre>&lt;p>这部分是涉及到内存的部分，使用了allocator来管理内存。构造器将分配空间和构造函数分开，分为分配空间、回收空间、析构过程、构造过程，检查容量这部分涉及到这四个情况，首先分配新空间，然后在新位置上构造新元素，然后析构旧元素，释放旧空间。析构旧元素、释放旧空间使用free函数来完成。这里使用uninitialized_copy函数和make_move_iterator，移动迭代器以及无初始化拷贝函数来实现在新的位置上构造新的元素，以求加速新元素构造的速度。&lt;/p>
+&lt;/h2>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;span class="lnt">30
+&lt;/span>&lt;span class="lnt">31
+&lt;/span>&lt;span class="lnt">32
+&lt;/span>&lt;span class="lnt">33
+&lt;/span>&lt;span class="lnt">34
+&lt;/span>&lt;span class="lnt">35
+&lt;/span>&lt;span class="lnt">36
+&lt;/span>&lt;span class="lnt">37
+&lt;/span>&lt;span class="lnt">38
+&lt;/span>&lt;span class="lnt">39
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-gdscript3" data-lang="gdscript3">&lt;span class="line">&lt;span class="cl">&lt;span class="n">template&lt;/span> &lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">typename&lt;/span> &lt;span class="n">T&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">typename&lt;/span> &lt;span class="n">vector&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">T&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="p">::&lt;/span>&lt;span class="n">iterator&lt;/span> &lt;span class="n">vector&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">T&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="p">::&lt;/span>&lt;span class="n">begin&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="k">const&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="n">startptr&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">template&lt;/span> &lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">typename&lt;/span> &lt;span class="n">T&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">typename&lt;/span> &lt;span class="n">vector&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">T&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="p">::&lt;/span>&lt;span class="n">iterator&lt;/span> &lt;span class="n">vector&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">T&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="p">::&lt;/span>&lt;span class="n">end&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="k">const&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="n">endptr&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">template&lt;/span> &lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">typename&lt;/span> &lt;span class="n">T&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">typename&lt;/span> &lt;span class="n">vector&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">T&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="p">::&lt;/span>&lt;span class="n">size_type&lt;/span> &lt;span class="n">vector&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">T&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="p">::&lt;/span>&lt;span class="n">size&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="k">const&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="n">endptr&lt;/span> &lt;span class="o">-&lt;/span> &lt;span class="n">startptr&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">template&lt;/span> &lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">typename&lt;/span> &lt;span class="n">T&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">typename&lt;/span> &lt;span class="n">vector&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">T&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="p">::&lt;/span>&lt;span class="n">value_type&lt;/span> &lt;span class="o">&amp;amp;&lt;/span>&lt;span class="n">vector&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">T&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="p">::&lt;/span>&lt;span class="n">operator&lt;/span>&lt;span class="p">[](&lt;/span>&lt;span class="n">size_type&lt;/span> &lt;span class="n">i&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="k">const&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">startptr&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="n">i&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">template&lt;/span> &lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">typename&lt;/span> &lt;span class="n">T&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">typename&lt;/span> &lt;span class="n">vector&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">T&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="p">::&lt;/span>&lt;span class="n">value_type&lt;/span> &lt;span class="o">&amp;amp;&lt;/span>&lt;span class="n">vector&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">T&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="p">::&lt;/span>&lt;span class="n">at&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">size_type&lt;/span> &lt;span class="n">i&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="k">const&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">startptr&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="n">i&lt;/span> &lt;span class="o">&amp;gt;=&lt;/span> &lt;span class="n">endptr&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">throw&lt;/span> &lt;span class="n">std&lt;/span>&lt;span class="p">::&lt;/span>&lt;span class="n">runtime_error&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;out of range!&amp;#34;&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">startptr&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="n">i&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">template&lt;/span> &lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">typename&lt;/span> &lt;span class="n">T&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">vector&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">T&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="p">::&lt;/span>&lt;span class="o">~&lt;/span>&lt;span class="n">vector&lt;/span>&lt;span class="p">()&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">free&lt;/span>&lt;span class="p">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>上面是简单函数的实现。仅仅是取出内部的数据而已。&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;span class="lnt">30
+&lt;/span>&lt;span class="lnt">31
+&lt;/span>&lt;span class="lnt">32
+&lt;/span>&lt;span class="lnt">33
+&lt;/span>&lt;span class="lnt">34
+&lt;/span>&lt;span class="lnt">35
+&lt;/span>&lt;span class="lnt">36
+&lt;/span>&lt;span class="lnt">37
+&lt;/span>&lt;span class="lnt">38
+&lt;/span>&lt;span class="lnt">39
+&lt;/span>&lt;span class="lnt">40
+&lt;/span>&lt;span class="lnt">41
+&lt;/span>&lt;span class="lnt">42
+&lt;/span>&lt;span class="lnt">43
+&lt;/span>&lt;span class="lnt">44
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-gdscript3" data-lang="gdscript3">&lt;span class="line">&lt;span class="cl">&lt;span class="n">template&lt;/span> &lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">typename&lt;/span> &lt;span class="n">T&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">void&lt;/span> &lt;span class="n">vector&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">T&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="p">::&lt;/span>&lt;span class="n">free&lt;/span>&lt;span class="p">()&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">startptr&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">for&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">auto&lt;/span> &lt;span class="n">p&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">startptr&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="n">p&lt;/span> &lt;span class="o">!=&lt;/span> &lt;span class="n">endptr&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="n">p&lt;/span>&lt;span class="o">++&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">alloc&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">destroy&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">p&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">alloc&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">deallocate&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">startptr&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">endptr&lt;/span> &lt;span class="o">-&lt;/span> &lt;span class="n">startptr&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">template&lt;/span> &lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">typename&lt;/span> &lt;span class="n">T&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">void&lt;/span> &lt;span class="n">vector&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">T&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="p">::&lt;/span>&lt;span class="n">check_cap&lt;/span>&lt;span class="p">()&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">endptr&lt;/span> &lt;span class="o">==&lt;/span> &lt;span class="n">capptr&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="ne">int&lt;/span> &lt;span class="n">newsize&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">size&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="err">?&lt;/span> &lt;span class="n">size&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="o">&amp;lt;&amp;lt;&lt;/span> &lt;span class="mi">1&lt;/span> &lt;span class="p">:&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">auto&lt;/span> &lt;span class="n">newstartptr&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">alloc&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">allocate&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">newsize&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">auto&lt;/span> &lt;span class="n">newendptr&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">uninitialized_copy&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">std&lt;/span>&lt;span class="p">::&lt;/span>&lt;span class="n">make_move_iterator&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">startptr&lt;/span>&lt;span class="p">),&lt;/span> &lt;span class="n">std&lt;/span>&lt;span class="p">::&lt;/span>&lt;span class="n">make_move_iterator&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">endptr&lt;/span>&lt;span class="p">),&lt;/span> &lt;span class="n">newstartptr&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">free&lt;/span>&lt;span class="p">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">startptr&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">newstartptr&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">endptr&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">newendptr&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">capptr&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">newstartptr&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="n">newsize&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">template&lt;/span> &lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">typename&lt;/span> &lt;span class="n">T&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">void&lt;/span> &lt;span class="n">vector&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">T&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="p">::&lt;/span>&lt;span class="n">push_back&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="k">const&lt;/span> &lt;span class="n">value_type&lt;/span> &lt;span class="o">&amp;amp;&lt;/span>&lt;span class="n">new_elem&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">check_cap&lt;/span>&lt;span class="p">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">alloc&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">construct&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">endptr&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">new_elem&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">endptr&lt;/span>&lt;span class="o">++&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">template&lt;/span> &lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">typename&lt;/span> &lt;span class="n">T&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">void&lt;/span> &lt;span class="n">vector&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">T&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="p">::&lt;/span>&lt;span class="n">pop_back&lt;/span>&lt;span class="p">()&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">endptr&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">startptr&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="mi">0&lt;/span>&lt;span class="p">){&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">alloc&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">destroy&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">endptr&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">endptr&lt;/span>&lt;span class="o">--&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>这部分是涉及到内存的部分，使用了allocator来管理内存。构造器将分配空间和构造函数分开，分为分配空间、回收空间、析构过程、构造过程，检查容量这部分涉及到这四个情况，首先分配新空间，然后在新位置上构造新元素，然后析构旧元素，释放旧空间。析构旧元素、释放旧空间使用free函数来完成。这里使用uninitialized_copy函数和make_move_iterator，移动迭代器以及无初始化拷贝函数来实现在新的位置上构造新的元素，以求加速新元素构造的速度。&lt;/p>
 &lt;h2 id="高级函数与实现">高级函数与实现
 &lt;/h2>&lt;h3 id="erase">erase
 &lt;/h3>&lt;p>接下来完成一些额外的函数的实现，我们先从erase开始吧
 erase删除从指定位置到指定位置的所有内容。函数原型为如下：&lt;/p>
-&lt;pre tabindex="0">&lt;code> public:
-iterator erase(const_iterator position);
-iterator erase(const_iterator first, const_iterator last);
-&lt;/code>&lt;/pre>&lt;p>第一个函数也可以看做是第二个函数的调用而已。我们实现第二个函数如下：&lt;/p>
-&lt;pre tabindex="0">&lt;code>template &amp;lt;typename T&amp;gt;
-typename vector&amp;lt;T&amp;gt;::iterator vector&amp;lt;T&amp;gt;::erase(const_iterator first, const_iterator last)
-{
-if(last &amp;gt;= endptr || first &amp;lt; startptr) throw std::runtime_error(&amp;#34;out of range!&amp;#34;);
-iterator newendptr = std::copy(last, static_cast&amp;lt;const_iterator&amp;gt;(endptr), first);
-while(newendptr &amp;lt; endptr){
-alloc.destroy(--endptr);
-}
-return endptr;
-}
-&lt;/code>&lt;/pre>&lt;p>首先进行合法性检测。然后，使用std::copy将后面的内容部分复制到被删除的部分。注意copy被覆盖的部分会自动调用赋值函数，赋值函数内应该会调用析构函数。然后，如果还有需要析构的内容（这种情况发生在所移动的内容没有删除的内容长时才会发生），析构这些内容。之后返回end指针。&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-gdscript3" data-lang="gdscript3">&lt;span class="line">&lt;span class="cl"> &lt;span class="n">public&lt;/span>&lt;span class="p">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">iterator&lt;/span> &lt;span class="n">erase&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">const_iterator&lt;/span> &lt;span class="n">position&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">iterator&lt;/span> &lt;span class="n">erase&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">const_iterator&lt;/span> &lt;span class="n">first&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">const_iterator&lt;/span> &lt;span class="n">last&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>第一个函数也可以看做是第二个函数的调用而已。我们实现第二个函数如下：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-gdscript3" data-lang="gdscript3">&lt;span class="line">&lt;span class="cl">&lt;span class="n">template&lt;/span> &lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">typename&lt;/span> &lt;span class="n">T&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">typename&lt;/span> &lt;span class="n">vector&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">T&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="p">::&lt;/span>&lt;span class="n">iterator&lt;/span> &lt;span class="n">vector&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">T&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="p">::&lt;/span>&lt;span class="n">erase&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">const_iterator&lt;/span> &lt;span class="n">first&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">const_iterator&lt;/span> &lt;span class="n">last&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">last&lt;/span> &lt;span class="o">&amp;gt;=&lt;/span> &lt;span class="n">endptr&lt;/span> &lt;span class="o">||&lt;/span> &lt;span class="n">first&lt;/span> &lt;span class="o">&amp;lt;&lt;/span> &lt;span class="n">startptr&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="n">throw&lt;/span> &lt;span class="n">std&lt;/span>&lt;span class="p">::&lt;/span>&lt;span class="n">runtime_error&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;out of range!&amp;#34;&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">iterator&lt;/span> &lt;span class="n">newendptr&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">std&lt;/span>&lt;span class="p">::&lt;/span>&lt;span class="n">copy&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">last&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">static_cast&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">const_iterator&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">endptr&lt;/span>&lt;span class="p">),&lt;/span> &lt;span class="n">first&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">while&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">newendptr&lt;/span> &lt;span class="o">&amp;lt;&lt;/span> &lt;span class="n">endptr&lt;/span>&lt;span class="p">){&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">alloc&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">destroy&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="o">--&lt;/span>&lt;span class="n">endptr&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="n">endptr&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>首先进行合法性检测。然后，使用std::copy将后面的内容部分复制到被删除的部分。注意copy被覆盖的部分会自动调用赋值函数，赋值函数内应该会调用析构函数。然后，如果还有需要析构的内容（这种情况发生在所移动的内容没有删除的内容长时才会发生），析构这些内容。之后返回end指针。&lt;/p>
 &lt;p>另外一个重载函数实现比较简单：&lt;/p>
-&lt;pre tabindex="0">&lt;code>template&amp;lt;typename T&amp;gt;
-typename vector&amp;lt;T&amp;gt;::iterator vector&amp;lt;T&amp;gt;::erase(const_iterator position)
-{
-return erase(position, position+1);
-}
-&lt;/code>&lt;/pre></description></item><item><title>c++11 特性 简单介绍</title><link>https://nansenli.com/zh-cn/post/jianshu/c++/c++11-%E7%89%B9%E6%80%A7-%E7%AE%80%E5%8D%95%E4%BB%8B%E7%BB%8D/</link><pubDate>Thu, 28 Dec 2017 07:31:00 +0000</pubDate><guid>https://nansenli.com/zh-cn/post/jianshu/c++/c++11-%E7%89%B9%E6%80%A7-%E7%AE%80%E5%8D%95%E4%BB%8B%E7%BB%8D/</guid><description>&lt;h2 id="根据c-primer第五版总结可以用来快速回顾一下这些性质">根据c++ primer第五版总结，可以用来快速回顾一下这些性质
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-gdscript3" data-lang="gdscript3">&lt;span class="line">&lt;span class="cl">&lt;span class="n">template&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">typename&lt;/span> &lt;span class="n">T&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">typename&lt;/span> &lt;span class="n">vector&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">T&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="p">::&lt;/span>&lt;span class="n">iterator&lt;/span> &lt;span class="n">vector&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">T&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="p">::&lt;/span>&lt;span class="n">erase&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">const_iterator&lt;/span> &lt;span class="n">position&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="n">erase&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">position&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">position&lt;/span>&lt;span class="o">+&lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div></description></item><item><title>c++11 特性 简单介绍</title><link>https://nansenli.com/zh-cn/post/jianshu/c++/c++11-%E7%89%B9%E6%80%A7-%E7%AE%80%E5%8D%95%E4%BB%8B%E7%BB%8D/</link><pubDate>Thu, 28 Dec 2017 07:31:00 +0000</pubDate><guid>https://nansenli.com/zh-cn/post/jianshu/c++/c++11-%E7%89%B9%E6%80%A7-%E7%AE%80%E5%8D%95%E4%BB%8B%E7%BB%8D/</guid><description>&lt;h2 id="根据c-primer第五版总结可以用来快速回顾一下这些性质">根据c++ primer第五版总结，可以用来快速回顾一下这些性质
 &lt;/h2>&lt;ul>
 &lt;li>
 &lt;p>long long 类型
@@ -779,17 +1317,38 @@ typedef uint unsigned int
 &lt;p>类内初始化&lt;/p>
 &lt;/li>
 &lt;/ul>
-&lt;pre tabindex="0">&lt;code> class A {
-public:
-int a = 7;
-};
-&lt;/code>&lt;/pre>&lt;p>这等同于之前版本中的：&lt;/p>
-&lt;pre tabindex="0">&lt;code> class A {
-public:
-int a;
-A() : a(7) {}
-};
-&lt;/code>&lt;/pre>&lt;ul>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl"> class A {
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> public:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> int a = 7;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> };
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>这等同于之前版本中的：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl"> class A {
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> public:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> int a;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> A() : a(7) {}
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> };
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;ul>
 &lt;li>
 &lt;p>使用auto或decltype推断类型
 auto len = line.size(); 自动推断string::size_type更好&lt;/p>
@@ -816,19 +1375,37 @@ vector&lt;!-- raw HTML omitted --> strs = {&amp;ldquo;a&amp;rdquo;, &amp;ldquo;b
 &lt;p>在二维数组中使用auto&lt;/p>
 &lt;/li>
 &lt;/ul>
-&lt;pre tabindex="0">&lt;code>int mat[3][4];
-int main()
-{
-for (int(*p)[4] = mat; p != mat + 3; p++)
-{
-/* ... */
-}
-for (auto p = mat; p != mat + 3; p++)
-{
-/* ... */
-}
-}
-&lt;/code>&lt;/pre>&lt;ul>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">int mat[3][4];
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">int main()
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">{
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> for (int(*p)[4] = mat; p != mat + 3; p++)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> {
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> /* ... */
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> }
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> for (auto p = mat; p != mat + 3; p++)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> {
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> /* ... */
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> }
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;ul>
 &lt;li>
 &lt;p>除法取整
 c++11规定除法一律向0取整&lt;/p>
@@ -966,45 +1543,102 @@ shared_ptr&lt;!-- raw HTML omitted --> p1;&lt;/p>
 &lt;/h3>&lt;p>面向对象程序设计又称为OOP，其核心思想是：数据抽象、继承和动态绑定。数据抽象指的是，声明与实现分离，继承指的是子类获得父类的所有成员，动态绑定是调用类的函数时根据类的不同进行区别调用。&lt;/p>
 &lt;h3 id="声明基类与派生类">声明基类与派生类
 &lt;/h3>&lt;p>下面的代码进行简单的示例，声明了一个基类animal与派生类cat。&lt;/p>
-&lt;pre tabindex="0">&lt;code>#include &amp;lt;stdio.h&amp;gt;
-#include &amp;lt;iostream&amp;gt;
-class animal
-{
-public:
-virtual void eat(){};
-};
-class cat : public animal
-{
-public:
-void eat() { std::cout &amp;lt;&amp;lt; &amp;#34;eat fish&amp;#34; &amp;lt;&amp;lt; std::endl; }
-};
-int main()
-{
-cat c;
-c.eat();
-}
-&lt;/code>&lt;/pre>&lt;h3 id="类型转换与继承">类型转换与继承
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-c++" data-lang="c++">&lt;span class="line">&lt;span class="cl">&lt;span class="cp">#include&lt;/span> &lt;span class="cpf">&amp;lt;stdio.h&amp;gt;&lt;/span>&lt;span class="cp">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp">#include&lt;/span> &lt;span class="cpf">&amp;lt;iostream&amp;gt;&lt;/span>&lt;span class="cp">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp">&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">class&lt;/span> &lt;span class="nc">animal&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">public&lt;/span>&lt;span class="o">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">virtual&lt;/span> &lt;span class="kt">void&lt;/span> &lt;span class="n">eat&lt;/span>&lt;span class="p">(){};&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">};&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">class&lt;/span> &lt;span class="nc">cat&lt;/span> &lt;span class="o">:&lt;/span> &lt;span class="k">public&lt;/span> &lt;span class="n">animal&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">public&lt;/span>&lt;span class="o">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">void&lt;/span> &lt;span class="n">eat&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">cout&lt;/span> &lt;span class="o">&amp;lt;&amp;lt;&lt;/span> &lt;span class="s">&amp;#34;eat fish&amp;#34;&lt;/span> &lt;span class="o">&amp;lt;&amp;lt;&lt;/span> &lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">endl&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">};&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kt">int&lt;/span> &lt;span class="nf">main&lt;/span>&lt;span class="p">()&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">cat&lt;/span> &lt;span class="n">c&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">c&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">eat&lt;/span>&lt;span class="p">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="类型转换与继承">类型转换与继承
 &lt;/h3>&lt;p>派生类的指针和引用可以转为基类的指针或引用，基类的指针或引用不能转化为派生类的指针或引用。这意味着，一个基类的指针，指向的对象，有可能是基类，也有可能是派生类，但肯定不是基类的父类。&lt;/p>
 &lt;p>派生类对象可以赋值给基类，但只会拷贝基类的部分。&lt;/p>
 &lt;h3 id="虚函数">虚函数
 &lt;/h3>&lt;p>虚函数在运行时进行解析。我们继续上面的例子，假如我们写了一个新的函数，是doeat，内部调用了animal的eat方法。eat对animal是eat meat or grass，但是最后显示的结果是eat fish。这就证明了，在运行时，doeat函数调用animal的eat方法时，eat方法找到了引用对象的真实对象cat的eat方法并进行了调用。&lt;/p>
-&lt;pre tabindex="0">&lt;code>class animal
-{
-public:
-virtual void eat() { std::cout &amp;lt;&amp;lt; &amp;#34;eat meat or grass&amp;#34; &amp;lt;&amp;lt; std::endl; };
-};
-class cat : public animal
-{
-public:
-void eat() { std::cout &amp;lt;&amp;lt; &amp;#34;eat fish&amp;#34; &amp;lt;&amp;lt; std::endl; }
-};
-void doeat(animal &amp;amp;a) { a.eat(); }
-int main()
-{
-cat c;
-doeat(c);
-}
-&lt;/code>&lt;/pre>&lt;p>另外，为了养成良好的习惯，在派生类中最好使用override来显式的声明覆盖的虚函数。&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">class animal
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">{
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> public:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> virtual void eat() { std::cout &amp;lt;&amp;lt; &amp;#34;eat meat or grass&amp;#34; &amp;lt;&amp;lt; std::endl; };
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">};
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">class cat : public animal
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">{
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> public:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> void eat() { std::cout &amp;lt;&amp;lt; &amp;#34;eat fish&amp;#34; &amp;lt;&amp;lt; std::endl; }
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">};
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">void doeat(animal &amp;amp;a) { a.eat(); }
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">int main()
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">{
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> cat c;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> doeat(c);
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>另外，为了养成良好的习惯，在派生类中最好使用override来显式的声明覆盖的虚函数。&lt;/p>
 &lt;h3 id="纯虚函数">纯虚函数
 &lt;/h3>&lt;p>在定义虚函数后赋值为0则声明了纯虚函数，纯虚函数相当于接口，派生类必须实现该接口。&lt;/p>
 &lt;h2 id="抽象基类">抽象基类

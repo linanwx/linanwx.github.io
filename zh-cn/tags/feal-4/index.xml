@@ -87,10 +87,24 @@ $$&lt;br>
 只要找到满足差分方程 $= 0x02000000$ 的候选即保留。&lt;/li>
 &lt;/ol>
 &lt;p>通过这种方法，我成功得到四个候选子密钥：&lt;/p>
-&lt;pre tabindex="0">&lt;code>cfa38976, cfa309f6, 4f238976, 4f2309f6
-&lt;/code>&lt;/pre>&lt;p>执行以上过程的命令示例为：&lt;/p>
-&lt;pre tabindex="0">&lt;code>./main -mode=attackk3 -file=K3.txt
-&lt;/code>&lt;/pre>&lt;p>该实现与我在 &lt;a class="link" href="https://www.theamazingking.com" target="_blank" rel="noopener"
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">cfa38976, cfa309f6, 4f238976, 4f2309f6
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>执行以上过程的命令示例为：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">./main -mode=attackk3 -file=K3.txt
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>该实现与我在 &lt;a class="link" href="https://www.theamazingking.com" target="_blank" rel="noopener"
 >www.theamazingking.com&lt;/a> 上介绍的方法一致。&lt;/p>
 &lt;hr>
 &lt;h2 id="攻击-k2">攻击 K2
@@ -107,15 +121,33 @@ P_0 \oplus P_1 = 0x0000000080800000.
 $$&lt;/li>
 &lt;li>抓取加密后密文差分，通过遍历所有可能 $K_2$ 值，检查是否能满足差分约束 $=0x02000000$。&lt;/li>
 &lt;li>命令示例：
-&lt;pre tabindex="0">&lt;code>./main -mode=attackk2 -file=K2.txt -k3=cfa38976,cfa309f6,4f238976,4f2309f6
-&lt;/code>&lt;/pre>&lt;/li>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">./main -mode=attackk2 -file=K2.txt -k3=cfa38976,cfa309f6,4f238976,4f2309f6
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;/li>
 &lt;li>最终输出示例如下所示：
-&lt;pre tabindex="0">&lt;code>Candidate K2: 8b722e41 (K3: cfa38976)
-Candidate K2: 8b72aec1 (K3: cfa38976)
-...
-Candidate K2: 89722e43 (K3: 4f2309f6)
-Candidate K2: 8972aec3 (K3: 4f2309f6)
-&lt;/code>&lt;/pre>&lt;/li>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">Candidate K2: 8b722e41 (K3: cfa38976)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Candidate K2: 8b72aec1 (K3: cfa38976)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">...
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Candidate K2: 89722e43 (K3: 4f2309f6)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Candidate K2: 8972aec3 (K3: 4f2309f6)
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;/li>
 &lt;/ol>
 &lt;hr>
 &lt;h2 id="攻击-k1">攻击 K1
@@ -126,8 +158,15 @@ P_0 \oplus P_1 = 0x0000000002000000
 $$&lt;br>
 的明文，并验证其加密输出。&lt;/p>
 &lt;p>命令示例：&lt;/p>
-&lt;pre tabindex="0">&lt;code>./main -mode=attackk1 -file=K1.txt -k3k2=&amp;#34;cfa38976,8b722e41; cfa38976,8b72aec1; ...&amp;#34;
-&lt;/code>&lt;/pre>&lt;p>可一次性将前面得到的所有 $K_3, K_2$ 候选组合带入，最终找到对应的 $K_1$ 候选。&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">./main -mode=attackk1 -file=K1.txt -k3k2=&amp;#34;cfa38976,8b722e41; cfa38976,8b72aec1; ...&amp;#34;
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>可一次性将前面得到的所有 $K_3, K_2$ 候选组合带入，最终找到对应的 $K_1$ 候选。&lt;/p>
 &lt;hr>
 &lt;h2 id="攻击-k0-k4-k5">攻击 K0, K4, K5
 &lt;/h2>&lt;p>当 $K_3, K_2, K_1$ 全部到手后，就可以反推最后一轮所需的 $K_0, K_4, K_5$。&lt;br>
@@ -140,8 +179,15 @@ $$&lt;br>
 &lt;/ul>
 &lt;p>只要枚举所有可能的 $K_0$，即可通过上述方程解出相应的 $K_4$ 与 $K_5$。然后用其他明文-密文对交叉验证正确性。若都满足，则得到正确的最终密钥集。&lt;/p>
 &lt;p>命令示例：&lt;/p>
-&lt;pre tabindex="0">&lt;code>./main -mode=attackk0k4k5 -k3k2k1=&amp;#34;...&amp;#34; -file=K1.txt -file2=K1_p.txt
-&lt;/code>&lt;/pre>&lt;hr>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">./main -mode=attackk0k4k5 -k3k2k1=&amp;#34;...&amp;#34; -file=K1.txt -file2=K1_p.txt
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;hr>
 &lt;h2 id="实现优化与验证">实现、优化与验证
 &lt;/h2>&lt;h3 id="1-自动化生成与并行计算">1. 自动化生成与并行计算
 &lt;/h3>&lt;ul>
@@ -165,21 +211,66 @@ $$&lt;br>
 &lt;h2 id="最终结果">最终结果
 &lt;/h2>&lt;p>所有解出的 $K_0$–$K_5$ 存放于 &lt;code>final_result.txt&lt;/code>。去重后包括以下范围：&lt;/p>
 &lt;h3 id="possible-values-for-k0">Possible Values for K0
-&lt;/h3>&lt;pre tabindex="0">&lt;code>890c2148 890ca1c8 098c2148 098ca1c8 ...
-0b8c214a 0b8ca1ca 8b0c214a 8b0ca1ca
-&lt;/code>&lt;/pre>&lt;h3 id="possible-values-for-k1">Possible Values for K1
-&lt;/h3>&lt;pre tabindex="0">&lt;code>471f077e 471f87fe c79f077e c79f87fc ...
-451f077c 451f87fc c59f077c c59f87fc
-&lt;/code>&lt;/pre>&lt;h3 id="possible-values-for-k2">Possible Values for K2
-&lt;/h3>&lt;pre tabindex="0">&lt;code>8b722e41 8b72aec1 8b722e43 8b72aec3 ...
-89722e43 8972aec3
-&lt;/code>&lt;/pre>&lt;h3 id="possible-values-for-k3">Possible Values for K3
-&lt;/h3>&lt;pre tabindex="0">&lt;code>cfa38976 cfa309f6 4f238976 4f2309f6
-&lt;/code>&lt;/pre>&lt;h3 id="possible-values-for-k4">Possible Values for K4
-&lt;/h3>&lt;pre tabindex="0">&lt;code>89eb0024 89eb0026 8beb0024 8beb0026
-&lt;/code>&lt;/pre>&lt;h3 id="possible-values-for-k5">Possible Values for K5
-&lt;/h3>&lt;pre tabindex="0">&lt;code>b85e6bc0 b85e6bc2 ba5e6bc0 ba5e6bc2
-&lt;/code>&lt;/pre>&lt;p>借助差分分析，我们最终能获得一批子密钥候选集。与现代分组密码（AES 等）相比，FEAL-4 的轮数较少、结构也更为简洁，因此在教学和研究中非常适合用于演示差分分析思路。&lt;/p>
+&lt;/h3>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">890c2148 890ca1c8 098c2148 098ca1c8 ...
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">0b8c214a 0b8ca1ca 8b0c214a 8b0ca1ca
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="possible-values-for-k1">Possible Values for K1
+&lt;/h3>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">471f077e 471f87fe c79f077e c79f87fc ...
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">451f077c 451f87fc c59f077c c59f87fc
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="possible-values-for-k2">Possible Values for K2
+&lt;/h3>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">8b722e41 8b72aec1 8b722e43 8b72aec3 ...
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">89722e43 8972aec3
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="possible-values-for-k3">Possible Values for K3
+&lt;/h3>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">cfa38976 cfa309f6 4f238976 4f2309f6
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="possible-values-for-k4">Possible Values for K4
+&lt;/h3>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">89eb0024 89eb0026 8beb0024 8beb0026
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="possible-values-for-k5">Possible Values for K5
+&lt;/h3>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">b85e6bc0 b85e6bc2 ba5e6bc0 ba5e6bc2
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>借助差分分析，我们最终能获得一批子密钥候选集。与现代分组密码（AES 等）相比，FEAL-4 的轮数较少、结构也更为简洁，因此在教学和研究中非常适合用于演示差分分析思路。&lt;/p>
 &lt;hr>
 &lt;h2 id="总结">总结
 &lt;/h2>&lt;p>本文详细展示了对 FEAL-4 进行差分攻击的完整流程，包括从差分路径设计、生成明文对、中间子密钥 ($K_3, K_2, K_1$) 攻击，再到最后对 $K_0, K_4, K_5$ 的逆向求解。同时也介绍了代码实现过程中的几处优化和验证方法。&lt;br>

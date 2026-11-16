@@ -116,27 +116,57 @@ When a sentinel sends a ping command and receives no reply, it will consider the
 &lt;pre>&lt;code>docker pull mysql
 &lt;/code>&lt;/pre>
 &lt;p>Use the following commands to set up one master and one slave:&lt;/p>
-&lt;pre tabindex="0">&lt;code>docker run --name mysql-master -P -d -e MYSQL_ROOT_PASSWORD=ln mysql
-docker run --name mysql-slave1 -P -d -e MYSQL_ROOT_PASSWORD=ln mysql
-&lt;/code>&lt;/pre>&lt;p>Where -d configures it as a daemon process, -P exposes all ports, and the root password is set to &amp;ldquo;ln&amp;rdquo;.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">docker run --name mysql-master -P -d -e MYSQL_ROOT_PASSWORD=ln mysql
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">docker run --name mysql-slave1 -P -d -e MYSQL_ROOT_PASSWORD=ln mysql
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>Where -d configures it as a daemon process, -P exposes all ports, and the root password is set to &amp;ldquo;ln&amp;rdquo;.&lt;/p>
 &lt;p>Use the following commands to enter the two Docker containers:&lt;/p>
 &lt;pre>&lt;code>docker exec -it mysql-master bash
 docker exec -it mysql-slave1 bash
 &lt;/code>&lt;/pre>
 &lt;p>Check the network IP. First, we need to install net-tools, which requires an update, and before updating, we need to change the source:&lt;/p>
-&lt;pre tabindex="0">&lt;code>sed -i &amp;#39;s/deb.debian.org/mirrors.ustc.edu.cn/g&amp;#39; /etc/apt/sources.list
-apt update
-apt install net-tools
-&lt;/code>&lt;/pre>&lt;p>Enter ifconfig to check the IP address.
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-gdscript3" data-lang="gdscript3">&lt;span class="line">&lt;span class="cl">&lt;span class="n">sed&lt;/span> &lt;span class="o">-&lt;/span>&lt;span class="n">i&lt;/span> &lt;span class="s1">&amp;#39;s/deb.debian.org/mirrors.ustc.edu.cn/g&amp;#39;&lt;/span> &lt;span class="o">/&lt;/span>&lt;span class="n">etc&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">apt&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">sources&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">list&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">apt&lt;/span> &lt;span class="n">update&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">apt&lt;/span> &lt;span class="n">install&lt;/span> &lt;span class="n">net&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">tools&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>Enter ifconfig to check the IP address.
 The master is 172.17.0.2, and slave1 is 172.17.0.3.&lt;/p>
 &lt;p>Set login permissions
 In the MySQL master, follow these steps. First login, then set the root user to be accessible without a password from anywhere.&lt;/p>
-&lt;pre tabindex="0">&lt;code>mysql -uroot -p
-mysql&amp;gt; grant all privileges on *.* to root@&amp;#39;%&amp;#39; identified by &amp;#39;&amp;#39;;
-Query OK, 0 rows affected (0.02 sec)
-mysql&amp;gt; flush privileges;
-Query OK, 0 rows affected (0.02 sec)
-&lt;/code>&lt;/pre>&lt;p>In slave1, use the master&amp;rsquo;s database with an empty password:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">mysql -uroot -p
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">mysql&amp;gt; grant all privileges on *.* to root@&amp;#39;%&amp;#39; identified by &amp;#39;&amp;#39;;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Query OK, 0 rows affected (0.02 sec)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">mysql&amp;gt; flush privileges;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Query OK, 0 rows affected (0.02 sec)
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>In slave1, use the master&amp;rsquo;s database with an empty password:&lt;/p>
 &lt;pre>&lt;code>mysql -uroot -p -h 172.17.0.2
 &lt;/code>&lt;/pre>
 &lt;p>Create a database in the master:&lt;/p>
@@ -151,12 +181,23 @@ It&amp;rsquo;s better to add a semicolon at the end of SQL statements.
 Use &amp;ldquo;use&amp;rdquo; to select a database. Use &amp;ldquo;set&amp;rdquo; to set values.
 The method to add users is with &amp;ldquo;create&amp;rdquo;.
 Then grant permissions to users for databases and tables.&lt;/p>
-&lt;pre tabindex="0">&lt;code>mysql -u root -p
-Enter password:**
-mysql&amp;gt; use mysql;
-mysql&amp;gt; create user &amp;#39;linanwx&amp;#39;@&amp;#39;%&amp;#39; identified by &amp;#39;ln&amp;#39;;
-mysql&amp;gt; grant all on *.* to &amp;#39;linanwx&amp;#39;@&amp;#39;%&amp;#39;;
-&lt;/code>&lt;/pre>&lt;p>SHOW DATABASES is used to display the current databases.
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">mysql -u root -p
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Enter password:**
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">mysql&amp;gt; use mysql;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">mysql&amp;gt; create user &amp;#39;linanwx&amp;#39;@&amp;#39;%&amp;#39; identified by &amp;#39;ln&amp;#39;;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">mysql&amp;gt; grant all on *.* to &amp;#39;linanwx&amp;#39;@&amp;#39;%&amp;#39;;
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>SHOW DATABASES is used to display the current databases.
 SHOW TABLES is used to display the current tables.&lt;/p></description></item><item><title>Nowcoder Database Notes</title><link>https://nansenli.com/post/jianshu/%E6%95%B0%E6%8D%AE%E5%BA%93/%E7%89%9B%E5%AE%A2%E6%95%B0%E6%8D%AE%E5%BA%93%E7%AC%94%E8%AE%B0/</link><pubDate>Mon, 05 Mar 2018 07:04:00 +0000</pubDate><guid>https://nansenli.com/post/jianshu/%E6%95%B0%E6%8D%AE%E5%BA%93/%E7%89%9B%E5%AE%A2%E6%95%B0%E6%8D%AE%E5%BA%93%E7%AC%94%E8%AE%B0/</guid><description>&lt;h2 id="introduction">Introduction
 &lt;/h2>&lt;p>I&amp;rsquo;m not familiar with SQL but don&amp;rsquo;t want to spend time learning it. So let&amp;rsquo;s learn through practice.&lt;/p>
 &lt;h2 id="transactions">Transactions

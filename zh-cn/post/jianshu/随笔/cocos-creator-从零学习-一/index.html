@@ -1,7 +1,7 @@
-<!doctype html><html lang=zh-cn dir=ltr><head><meta charset=utf-8><meta name=viewport content='width=device-width,initial-scale=1'><meta name=description content="前言 尽管知乎上对Cocos2dx成见很大，但是徘徊于纠结用什么游戏引擎不如都试试。况且这个软件是国人开发的，学习起来应该不算困难。 虽然没有学过JavaScript，但是似乎也可以边查边写吧。JavaScript的教程： http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000 Cocos creator目前版本为1.5.1，官网有一份很详细的手册，网址为 http://www.cocos.com/docs/creator/ 。这篇文章是该快速上手这一章的精简版，并且对游戏性进行了提升。 安装 windows下面的安装是没有任何问题的。mac下的安装，需要注意一下。 在官网下载安装包之后，拖动到applications中之后，打开会提示该应用是未被信任的开发者。此时，打开系统偏好设置中的安全性与隐私中的通用，会看到打开的按钮，通过此方式打开之后，不再进行提醒了。 快速开始 从dashboard开始新建项目，或者打开项目。根据教程中关于快速上手的部分，我们从这个地址可以下载到一个初始工程项目 下载初始项目 。 或者点击这里下载 https://github.com/cocos-creator/tutorial-first-game/releases/download/v1.2/start_project.zip 这个快速上手最终做出的游戏效果是这样的： http://fbdemos.avosapps.com/star-catcher/ 。 这个游戏有点类似于接金币这样的游戏，但是更加困难，游戏的学习曲线非常的大，由于这个小怪物的水平加速度难以驾驭以及上下蹦跳的关系，几乎很难已去接到五角星，而且也没有什么剧情。我们最好把他改的好玩一点吧。 打开这个项目，我们先学习一下界面。左下角是资源面板，在初始项目中，已经建立了一个工程目录，这里有最基本的资源，已经目录组织。assets的意思是资产，在这个总目录下面，有三个子目录，包含有字体，音频，与图片资源。 创建场景 场景是至关重要的，因为场景包含了游戏脚本，而场景在游戏开始的时候会自动加载。在资源面板中的assets下点击加号创建一个场景，重命名为game，双击打开。 左上角的层级管理器显示的是当前的场景中节点之间的关系。 在这个game场景中，只有一个根节点canvas（画布），现在这个节点上是空的，意味着什么都不会加载。 点击根结点在右侧数据面板中，我们可以设置根节点的分辨率。分辨率的高度设置为自适应，总为960x640，和iPhone第一代长宽比一致，推测这个分辨率应该是dp而不是pixel吧。 场景图像 将资源background拖拽到canvas上，使得background成为canvas的一个子节点，注意不要将background变成另一个根节点。 使用cmd+s来保存刚刚的变动。 选中场景中的background图片，然后，在左上角找到变换工具的第四个按钮，分别是平移，旋转，缩放，矩形变换。选中矩形变换，将background变换为一个能覆盖场景的大小，如下图所示。 上述步骤也可以直接对background的属性进行设置，设置位置为0，0，宽高为1600和800就行。 用同样的方法添加地面。 用同样的方法插入小怪物，并且重命名为player。图片的默认锚点为中心位置，这里将锚点anchor的y设置为0。 创建脚步 接下来出现了惊人的一幕，教程居然说不会编程也没关系，你可以交给你的程序员小伙伴来解决，果然是我现在只差一个程序员了。 在下图中资源的player的位置建立一个js脚本文件，并打开。 在properties中插入以下内容，这部分是小怪物的物理属性 jumpHeight:0, jumpDuration:0, maxMoveSpeed:0, accel:0, 选中小怪物图片，在属性框中找到添加组件，把player脚本添加到player图片上，并且设置好相关参数。 完善脚本 我们在脚本中继续加入其他功能。首先是跳跃的动作。 在properties下面加入这一段 setJumpAction: function(){ var jumpUp = cc.moveBy(this.jumpDuration, cc.p(0,this.jumpHeight)).easing(cc.easeQuadraticActionOut()); var jumpDown = cc.moveBy(this.jumpDuration, cc.p(0,-this.jumpHeight)).easing(cc.easeQuadraticActionIn()); return cc.repeatForever(cc.sequence(jumpUp, jumpDown)); }, moveBy是官方的API，在官方API中查询一下该API的使用，第一个参数是移动的距离，第二个参数是移动的位置。很显然是向上移动了一段距离。后面的easing是生成缓动运动，生成的对象是easeQuadraticActionIn和Out，这两个是二次曲线。原来的教程中是三次曲线，这个和真实世界中的物理运动差的太多了。 在onload方法中加入下面这段代码，启动动画。 onLoad: function () { this.jumpAction = this."><title>Cocos Creator 从零学习 一</title>
-<link rel=canonical href=https://nansenli.com/zh-cn/post/jianshu/%E9%9A%8F%E7%AC%94/cocos-creator-%E4%BB%8E%E9%9B%B6%E5%AD%A6%E4%B9%A0-%E4%B8%80/><link rel=stylesheet href=/scss/style.min.b9b97e7c3f7f078f7ec4f60195f6139d30ad5972cc05950321ee04a9e98c542f.css><meta property='og:title' content="Cocos Creator 从零学习 一"><meta property='og:description' content="前言 尽管知乎上对Cocos2dx成见很大，但是徘徊于纠结用什么游戏引擎不如都试试。况且这个软件是国人开发的，学习起来应该不算困难。 虽然没有学过JavaScript，但是似乎也可以边查边写吧。JavaScript的教程： http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000 Cocos creator目前版本为1.5.1，官网有一份很详细的手册，网址为 http://www.cocos.com/docs/creator/ 。这篇文章是该快速上手这一章的精简版，并且对游戏性进行了提升。 安装 windows下面的安装是没有任何问题的。mac下的安装，需要注意一下。 在官网下载安装包之后，拖动到applications中之后，打开会提示该应用是未被信任的开发者。此时，打开系统偏好设置中的安全性与隐私中的通用，会看到打开的按钮，通过此方式打开之后，不再进行提醒了。 快速开始 从dashboard开始新建项目，或者打开项目。根据教程中关于快速上手的部分，我们从这个地址可以下载到一个初始工程项目 下载初始项目 。 或者点击这里下载 https://github.com/cocos-creator/tutorial-first-game/releases/download/v1.2/start_project.zip 这个快速上手最终做出的游戏效果是这样的： http://fbdemos.avosapps.com/star-catcher/ 。 这个游戏有点类似于接金币这样的游戏，但是更加困难，游戏的学习曲线非常的大，由于这个小怪物的水平加速度难以驾驭以及上下蹦跳的关系，几乎很难已去接到五角星，而且也没有什么剧情。我们最好把他改的好玩一点吧。 打开这个项目，我们先学习一下界面。左下角是资源面板，在初始项目中，已经建立了一个工程目录，这里有最基本的资源，已经目录组织。assets的意思是资产，在这个总目录下面，有三个子目录，包含有字体，音频，与图片资源。 创建场景 场景是至关重要的，因为场景包含了游戏脚本，而场景在游戏开始的时候会自动加载。在资源面板中的assets下点击加号创建一个场景，重命名为game，双击打开。 左上角的层级管理器显示的是当前的场景中节点之间的关系。 在这个game场景中，只有一个根节点canvas（画布），现在这个节点上是空的，意味着什么都不会加载。 点击根结点在右侧数据面板中，我们可以设置根节点的分辨率。分辨率的高度设置为自适应，总为960x640，和iPhone第一代长宽比一致，推测这个分辨率应该是dp而不是pixel吧。 场景图像 将资源background拖拽到canvas上，使得background成为canvas的一个子节点，注意不要将background变成另一个根节点。 使用cmd+s来保存刚刚的变动。 选中场景中的background图片，然后，在左上角找到变换工具的第四个按钮，分别是平移，旋转，缩放，矩形变换。选中矩形变换，将background变换为一个能覆盖场景的大小，如下图所示。 上述步骤也可以直接对background的属性进行设置，设置位置为0，0，宽高为1600和800就行。 用同样的方法添加地面。 用同样的方法插入小怪物，并且重命名为player。图片的默认锚点为中心位置，这里将锚点anchor的y设置为0。 创建脚步 接下来出现了惊人的一幕，教程居然说不会编程也没关系，你可以交给你的程序员小伙伴来解决，果然是我现在只差一个程序员了。 在下图中资源的player的位置建立一个js脚本文件，并打开。 在properties中插入以下内容，这部分是小怪物的物理属性 jumpHeight:0, jumpDuration:0, maxMoveSpeed:0, accel:0, 选中小怪物图片，在属性框中找到添加组件，把player脚本添加到player图片上，并且设置好相关参数。 完善脚本 我们在脚本中继续加入其他功能。首先是跳跃的动作。 在properties下面加入这一段 setJumpAction: function(){ var jumpUp = cc.moveBy(this.jumpDuration, cc.p(0,this.jumpHeight)).easing(cc.easeQuadraticActionOut()); var jumpDown = cc.moveBy(this.jumpDuration, cc.p(0,-this.jumpHeight)).easing(cc.easeQuadraticActionIn()); return cc.repeatForever(cc.sequence(jumpUp, jumpDown)); }, moveBy是官方的API，在官方API中查询一下该API的使用，第一个参数是移动的距离，第二个参数是移动的位置。很显然是向上移动了一段距离。后面的easing是生成缓动运动，生成的对象是easeQuadraticActionIn和Out，这两个是二次曲线。原来的教程中是三次曲线，这个和真实世界中的物理运动差的太多了。 在onload方法中加入下面这段代码，启动动画。 onLoad: function () { this.jumpAction = this."><meta property='og:url' content='https://nansenli.com/zh-cn/post/jianshu/%E9%9A%8F%E7%AC%94/cocos-creator-%E4%BB%8E%E9%9B%B6%E5%AD%A6%E4%B9%A0-%E4%B8%80/'><meta property='og:site_name' content="Nansen Li's Blog
+<!doctype html><html lang=zh-cn dir=ltr><head><meta charset=utf-8><meta name=viewport content='width=device-width,initial-scale=1'><meta name=description content="前言 尽管知乎上对Cocos2dx成见很大，但是徘徊于纠结用什么游戏引擎不如都试试。况且这个软件是国人开发的，学习起来应该不算困难。 虽然没有学"><title>Cocos Creator 从零学习 一</title>
+<link rel=canonical href=https://nansenli.com/zh-cn/post/jianshu/%E9%9A%8F%E7%AC%94/cocos-creator-%E4%BB%8E%E9%9B%B6%E5%AD%A6%E4%B9%A0-%E4%B8%80/><link rel=stylesheet href=/scss/style.min.13a07907ead250546ad0b764b76f2b704035157ccc91726856890c9c2e7e027e.css><meta property='og:title' content="Cocos Creator 从零学习 一"><meta property='og:description' content="前言 尽管知乎上对Cocos2dx成见很大，但是徘徊于纠结用什么游戏引擎不如都试试。况且这个软件是国人开发的，学习起来应该不算困难。 虽然没有学"><meta property='og:url' content='https://nansenli.com/zh-cn/post/jianshu/%E9%9A%8F%E7%AC%94/cocos-creator-%E4%BB%8E%E9%9B%B6%E5%AD%A6%E4%B9%A0-%E4%B8%80/'><meta property='og:site_name' content="Nansen Li's Blog
 李楠森的博客
-"><meta property='og:type' content='article'><meta property='article:section' content='Post'><meta property='article:published_time' content='2017-06-27T09:31:00+00:00'><meta property='article:modified_time' content='2017-06-27T09:31:00+00:00'><meta name=twitter:title content="Cocos Creator 从零学习 一"><meta name=twitter:description content="前言 尽管知乎上对Cocos2dx成见很大，但是徘徊于纠结用什么游戏引擎不如都试试。况且这个软件是国人开发的，学习起来应该不算困难。 虽然没有学过JavaScript，但是似乎也可以边查边写吧。JavaScript的教程： http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000 Cocos creator目前版本为1.5.1，官网有一份很详细的手册，网址为 http://www.cocos.com/docs/creator/ 。这篇文章是该快速上手这一章的精简版，并且对游戏性进行了提升。 安装 windows下面的安装是没有任何问题的。mac下的安装，需要注意一下。 在官网下载安装包之后，拖动到applications中之后，打开会提示该应用是未被信任的开发者。此时，打开系统偏好设置中的安全性与隐私中的通用，会看到打开的按钮，通过此方式打开之后，不再进行提醒了。 快速开始 从dashboard开始新建项目，或者打开项目。根据教程中关于快速上手的部分，我们从这个地址可以下载到一个初始工程项目 下载初始项目 。 或者点击这里下载 https://github.com/cocos-creator/tutorial-first-game/releases/download/v1.2/start_project.zip 这个快速上手最终做出的游戏效果是这样的： http://fbdemos.avosapps.com/star-catcher/ 。 这个游戏有点类似于接金币这样的游戏，但是更加困难，游戏的学习曲线非常的大，由于这个小怪物的水平加速度难以驾驭以及上下蹦跳的关系，几乎很难已去接到五角星，而且也没有什么剧情。我们最好把他改的好玩一点吧。 打开这个项目，我们先学习一下界面。左下角是资源面板，在初始项目中，已经建立了一个工程目录，这里有最基本的资源，已经目录组织。assets的意思是资产，在这个总目录下面，有三个子目录，包含有字体，音频，与图片资源。 创建场景 场景是至关重要的，因为场景包含了游戏脚本，而场景在游戏开始的时候会自动加载。在资源面板中的assets下点击加号创建一个场景，重命名为game，双击打开。 左上角的层级管理器显示的是当前的场景中节点之间的关系。 在这个game场景中，只有一个根节点canvas（画布），现在这个节点上是空的，意味着什么都不会加载。 点击根结点在右侧数据面板中，我们可以设置根节点的分辨率。分辨率的高度设置为自适应，总为960x640，和iPhone第一代长宽比一致，推测这个分辨率应该是dp而不是pixel吧。 场景图像 将资源background拖拽到canvas上，使得background成为canvas的一个子节点，注意不要将background变成另一个根节点。 使用cmd+s来保存刚刚的变动。 选中场景中的background图片，然后，在左上角找到变换工具的第四个按钮，分别是平移，旋转，缩放，矩形变换。选中矩形变换，将background变换为一个能覆盖场景的大小，如下图所示。 上述步骤也可以直接对background的属性进行设置，设置位置为0，0，宽高为1600和800就行。 用同样的方法添加地面。 用同样的方法插入小怪物，并且重命名为player。图片的默认锚点为中心位置，这里将锚点anchor的y设置为0。 创建脚步 接下来出现了惊人的一幕，教程居然说不会编程也没关系，你可以交给你的程序员小伙伴来解决，果然是我现在只差一个程序员了。 在下图中资源的player的位置建立一个js脚本文件，并打开。 在properties中插入以下内容，这部分是小怪物的物理属性 jumpHeight:0, jumpDuration:0, maxMoveSpeed:0, accel:0, 选中小怪物图片，在属性框中找到添加组件，把player脚本添加到player图片上，并且设置好相关参数。 完善脚本 我们在脚本中继续加入其他功能。首先是跳跃的动作。 在properties下面加入这一段 setJumpAction: function(){ var jumpUp = cc.moveBy(this.jumpDuration, cc.p(0,this.jumpHeight)).easing(cc.easeQuadraticActionOut()); var jumpDown = cc.moveBy(this.jumpDuration, cc.p(0,-this.jumpHeight)).easing(cc.easeQuadraticActionIn()); return cc.repeatForever(cc.sequence(jumpUp, jumpDown)); }, moveBy是官方的API，在官方API中查询一下该API的使用，第一个参数是移动的距离，第二个参数是移动的位置。很显然是向上移动了一段距离。后面的easing是生成缓动运动，生成的对象是easeQuadraticActionIn和Out，这两个是二次曲线。原来的教程中是三次曲线，这个和真实世界中的物理运动差的太多了。 在onload方法中加入下面这段代码，启动动画。 onLoad: function () { this.jumpAction = this."><link rel="shortcut icon" href=/favicon.ico><script async src="https://www.googletagmanager.com/gtag/js?id=G-WC38C3XE3J"></script><script>var dnt,doNotTrack=!1;if(!1&&(dnt=navigator.doNotTrack||window.doNotTrack||navigator.msDoNotTrack,doNotTrack=dnt=="1"||dnt=="yes"),!doNotTrack){window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag("js",new Date),gtag("config","G-WC38C3XE3J")}</script></head><body class=article-page><script>(function(){const e="StackColorScheme";localStorage.getItem(e)||localStorage.setItem(e,"auto")})()</script><script>(function(){const t="StackColorScheme",e=localStorage.getItem(t),n=window.matchMedia("(prefers-color-scheme: dark)").matches===!0;e=="dark"||e==="auto"&&n?document.documentElement.dataset.scheme="dark":document.documentElement.dataset.scheme="light"})()</script><div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky"><button class="hamburger hamburger--spin" type=button id=toggle-menu aria-label=切换菜单>
+"><meta property='og:type' content='article'><meta property='article:section' content='Post'><meta property='article:published_time' content='2017-06-27T09:31:00+00:00'><meta property='article:modified_time' content='2017-06-27T09:31:00+00:00'><meta name=twitter:title content="Cocos Creator 从零学习 一"><meta name=twitter:description content="前言 尽管知乎上对Cocos2dx成见很大，但是徘徊于纠结用什么游戏引擎不如都试试。况且这个软件是国人开发的，学习起来应该不算困难。 虽然没有学"><link rel="shortcut icon" href=/favicon.ico><script async src="https://www.googletagmanager.com/gtag/js?id=G-WC38C3XE3J"></script><script>var dnt,doNotTrack=!1;if(!1&&(dnt=navigator.doNotTrack||window.doNotTrack||navigator.msDoNotTrack,doNotTrack=dnt=="1"||dnt=="yes"),!doNotTrack){window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag("js",new Date),gtag("config","G-WC38C3XE3J")}</script></head><body class=article-page><script>(function(){const e="StackColorScheme";localStorage.getItem(e)||localStorage.setItem(e,"auto")})()</script><script>(function(){const t="StackColorScheme",e=localStorage.getItem(t),n=window.matchMedia("(prefers-color-scheme: dark)").matches===!0;e=="dark"||e==="auto"&&n?document.documentElement.dataset.scheme="dark":document.documentElement.dataset.scheme="light"})()</script><div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky"><button class="hamburger hamburger--spin" type=button id=toggle-menu aria-label=切换菜单>
 <span class=hamburger-box><span class=hamburger-inner></span></span></button><header><figure class=site-avatar><a href=/zh-cn/><img src=/img/avatar_hu96777ff80939aaa7d938dddcc232fcc6_1414962_300x0_resize_box_3.png width=300 height=300 class=site-logo loading=lazy alt=Avatar>
 </a><span class=emoji>🌈</span></figure><div class=site-meta><h1 class=site-name><a href=/zh-cn>Nansen Li's Blog
 李楠森的博客</a></h1><h2 class=site-description></h2></div></header><ol class=menu-social><li><a href=https://github.com/linanwx target=_blank title=GitHub rel=me><svg class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 19c-4.3 1.4-4.3-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6.0 00-1.3-3.2 4.2 4.2.0 00-.1-3.2s-1.1-.3-3.5 1.3a12.3 12.3.0 00-6.2.0C6.5 2.8 5.4 3.1 5.4 3.1a4.2 4.2.0 00-.1 3.2A4.6 4.6.0 004 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"/></svg></a></li><li><a href=https://www.linkedin.com/in/nansen-li-3bb0a3146/ target=_blank title=LinkedIn rel=me><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-brand-linkedin"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M8 11v5"/><path d="M8 8v.01"/><path d="M12 16v-5"/><path d="M16 16v-3a2 2 0 10-4 0"/><path d="M3 7a4 4 0 014-4h10a4 4 0 014 4v10a4 4 0 01-4 4H7a4 4 0 01-4-4z"/></svg></a></li><li><a href=index.xml target=_blank title=RSS rel=me><svg class="icon icon-tabler icon-tabler-rss" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="5" cy="19" r="1"/><path d="M4 4a16 16 0 0116 16"/><path d="M4 11a9 9 0 019 9"/></svg></a></li></ol><ol class=menu id=main-menu><li><a href=/zh-cn/><svg class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><polyline points="5 12 3 12 12 3 21 12 19 12"/><path d="M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/><path d="M9 21v-6a2 2 0 012-2h2a2 2 0 012 2v6"/></svg>
@@ -10,9 +10,9 @@
 <span>搜索</span></a></li><li class=menu-bottom-section><ol class=menu><li id=i18n-switch><svg class="icon icon-tabler icon-tabler-language" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 5h7"/><path d="M9 3v2c0 4.418-2.239 8-5 8"/><path d="M5 9c-.003 2.144 2.952 3.908 6.7 4"/><path d="M12 20l4-9 4 9"/><path d="M19.1 18h-6.2"/></svg>
 <select name=language title=language onchange="window.location.href=this.selectedOptions[0].value"><option value=https://nansenli.com/>English</option><option value=https://nansenli.com/zh-cn/ selected>中文</option></select></li><li id=dark-mode-toggle><svg class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="8" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
 <svg class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="16" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
-<span>暗色模式</span></li></ol></li></ol></aside><main class="main full-width"><article class=main-article><header class=article-header><div class=article-details><header class=article-category><a href=/zh-cn/categories/%E9%9A%8F%E7%AC%94/>随笔</a></header><div class=article-title-wrapper><h2 class=article-title><a href=/zh-cn/post/jianshu/%E9%9A%8F%E7%AC%94/cocos-creator-%E4%BB%8E%E9%9B%B6%E5%AD%A6%E4%B9%A0-%E4%B8%80/>Cocos Creator 从零学习 一</a></h2></div><footer class=article-time><div><svg class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M11.795 21H5a2 2 0 01-2-2V7a2 2 0 012-2h12a2 2 0 012 2v4"/><circle cx="18" cy="18" r="4"/><path d="M15 3v4"/><path d="M7 3v4"/><path d="M3 11h16"/><path d="M18 16.496V18l1 1"/></svg>
+<span>暗色模式</span></li></ol></li></ol></aside><aside class="sidebar right-sidebar sticky"><section class="widget archives"><div class=widget-icon><svg class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><line x1="5" y1="9" x2="19" y2="9"/><line x1="5" y1="15" x2="19" y2="15"/><line x1="11" y1="4" x2="7" y2="20"/><line x1="17" y1="4" x2="13" y2="20"/></svg></div><h2 class="widget-title section-title">目录</h2><div class=widget--toc><nav id=TableOfContents><ul><li><a href=#前言>前言</a></li><li><a href=#安装>安装</a></li><li><a href=#快速开始>快速开始</a></li><li><a href=#创建场景>创建场景</a></li><li><a href=#场景图像>场景图像</a></li><li><a href=#创建脚步>创建脚步</a></li><li><a href=#完善脚本>完善脚本</a></li><li><a href=#控制角色>控制角色</a></li><li><a href=#增加五角星>增加五角星</a></li></ul></nav></div></section></aside><main class="main full-width"><article class=main-article><header class=article-header><div class=article-details><header class=article-category><a href=/zh-cn/categories/%E9%9A%8F%E7%AC%94/>随笔</a></header><div class=article-title-wrapper><h2 class=article-title><a href=/zh-cn/post/jianshu/%E9%9A%8F%E7%AC%94/cocos-creator-%E4%BB%8E%E9%9B%B6%E5%AD%A6%E4%B9%A0-%E4%B8%80/>Cocos Creator 从零学习 一</a></h2></div><footer class=article-time><div><svg class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M11.795 21H5a2 2 0 01-2-2V7a2 2 0 012-2h12a2 2 0 012 2v4"/><circle cx="18" cy="18" r="4"/><path d="M15 3v4"/><path d="M7 3v4"/><path d="M3 11h16"/><path d="M18 16.496V18l1 1"/></svg>
 <time class=article-time--published>Jun 27, 2017</time></div><div><svg class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg>
-<time class=article-time--reading>阅读时长: 3 分钟</time></div></footer><footer class=article-translations><svg class="icon icon-tabler icon-tabler-language" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 5h7"/><path d="M9 3v2c0 4.418-2.239 8-5 8"/><path d="M5 9c-.003 2.144 2.952 3.908 6.7 4"/><path d="M12 20l4-9 4 9"/><path d="M19.1 18h-6.2"/></svg><div><a href=https://nansenli.com/post/jianshu/%E9%9A%8F%E7%AC%94/cocos-creator-%E4%BB%8E%E9%9B%B6%E5%AD%A6%E4%B9%A0-%E4%B8%80/ class=link>English</a></div></footer></div></header><section class=article-content><h2 id=前言>前言</h2><p>尽管知乎上对Cocos2dx成见很大，但是徘徊于纠结用什么游戏引擎不如都试试。况且这个软件是国人开发的，学习起来应该不算困难。</p><p>虽然没有学过JavaScript，但是似乎也可以边查边写吧。JavaScript的教程： <a class=link href=http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000 target=_blank rel=noopener>http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000</a></p><p>Cocos creator目前版本为1.5.1，官网有一份很详细的手册，网址为 <a class=link href=http://www.cocos.com/docs/creator/ target=_blank rel=noopener>http://www.cocos.com/docs/creator/</a> 。这篇文章是该快速上手这一章的精简版，并且对游戏性进行了提升。</p><p><img src=/img/rescued/62b797900564.png loading=lazy alt=知乎网友表情.png></p><h2 id=安装>安装</h2><p>windows下面的安装是没有任何问题的。mac下的安装，需要注意一下。
+<time class=article-time--reading>阅读时长: 7 分钟</time></div></footer><footer class=article-translations><svg class="icon icon-tabler icon-tabler-language" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 5h7"/><path d="M9 3v2c0 4.418-2.239 8-5 8"/><path d="M5 9c-.003 2.144 2.952 3.908 6.7 4"/><path d="M12 20l4-9 4 9"/><path d="M19.1 18h-6.2"/></svg><div><a href=https://nansenli.com/post/jianshu/%E9%9A%8F%E7%AC%94/cocos-creator-%E4%BB%8E%E9%9B%B6%E5%AD%A6%E4%B9%A0-%E4%B8%80/ class=link>English</a></div></footer></div></header><section class=article-content><h2 id=前言>前言</h2><p>尽管知乎上对Cocos2dx成见很大，但是徘徊于纠结用什么游戏引擎不如都试试。况且这个软件是国人开发的，学习起来应该不算困难。</p><p>虽然没有学过JavaScript，但是似乎也可以边查边写吧。JavaScript的教程： <a class=link href=http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000 target=_blank rel=noopener>http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000</a></p><p>Cocos creator目前版本为1.5.1，官网有一份很详细的手册，网址为 <a class=link href=http://www.cocos.com/docs/creator/ target=_blank rel=noopener>http://www.cocos.com/docs/creator/</a> 。这篇文章是该快速上手这一章的精简版，并且对游戏性进行了提升。</p><p><img src=/img/rescued/62b797900564.png loading=lazy alt=知乎网友表情.png></p><h2 id=安装>安装</h2><p>windows下面的安装是没有任何问题的。mac下的安装，需要注意一下。
 在官网下载安装包之后，拖动到applications中之后，打开会提示该应用是未被信任的开发者。此时，打开系统偏好设置中的安全性与隐私中的通用，会看到打开的按钮，通过此方式打开之后，不再进行提醒了。</p><h2 id=快速开始>快速开始</h2><p><img src=/img/rescued/9e8dbbc03ce7.png loading=lazy alt=dashboard></p><p>从dashboard开始新建项目，或者打开项目。根据教程中关于快速上手的部分，我们从这个地址可以下载到一个初始工程项目 <a class=link href=https://github.com/cocos-creator/tutorial-first-game/releases/download/v1.2/start_project.zip target=_blank rel=noopener>下载初始项目</a> 。
 或者点击这里下载 <a class=link href=https://github.com/cocos-creator/tutorial-first-game/releases/download/v1.2/start_project.zip target=_blank rel=noopener>https://github.com/cocos-creator/tutorial-first-game/releases/download/v1.2/start_project.zip</a></p><p>这个快速上手最终做出的游戏效果是这样的： <a class=link href=http://fbdemos.avosapps.com/star-catcher/ target=_blank rel=noopener>http://fbdemos.avosapps.com/star-catcher/</a> 。
 这个游戏有点类似于接金币这样的游戏，但是更加困难，游戏的学习曲线非常的大，由于这个小怪物的水平加速度难以驾驭以及上下蹦跳的关系，几乎很难已去接到五角星，而且也没有什么剧情。我们最好把他改的好玩一点吧。</p><p>打开这个项目，我们先学习一下界面。左下角是资源面板，在初始项目中，已经建立了一个工程目录，这里有最基本的资源，已经目录组织。assets的意思是资产，在这个总目录下面，有三个子目录，包含有字体，音频，与图片资源。</p><h2 id=创建场景>创建场景</h2><p>场景是至关重要的，因为场景包含了游戏脚本，而场景在游戏开始的时候会自动加载。在资源面板中的assets下点击加号创建一个场景，重命名为game，双击打开。</p><p><img src=/img/rescued/a862f7b07015.png loading=lazy alt="屏幕快照 2017-06-20 上午11.01.53.png"></p><p>左上角的层级管理器显示的是当前的场景中节点之间的关系。
@@ -20,203 +20,397 @@
 使用cmd+s来保存刚刚的变动。
 选中场景中的background图片，然后，在左上角找到变换工具的第四个按钮，分别是平移，旋转，缩放，矩形变换。选中矩形变换，将background变换为一个能覆盖场景的大小，如下图所示。</p><p><img src=/img/rescued/6b7b8f0da17f.png loading=lazy alt=场景图像></p><p>上述步骤也可以直接对background的属性进行设置，设置位置为0，0，宽高为1600和800就行。</p><p>用同样的方法添加地面。
 用同样的方法插入小怪物，并且重命名为player。图片的默认锚点为中心位置，这里将锚点anchor的y设置为0。</p><h2 id=创建脚步>创建脚步</h2><p>接下来出现了惊人的一幕，教程居然说不会编程也没关系，<strong>你可以交给你的程序员小伙伴来解决</strong>，果然是我现在只差一个程序员了。</p><p>在下图中资源的player的位置建立一个js脚本文件，并打开。
-<img src=/img/rescued/f7c5d8668523.png loading=lazy alt=脚本></p><p>在properties中插入以下内容，这部分是小怪物的物理属性</p><pre tabindex=0><code>        jumpHeight:0,
-        jumpDuration:0,
-        maxMoveSpeed:0,
-        accel:0,
-</code></pre><p>选中小怪物图片，在属性框中找到添加组件，把player脚本添加到player图片上，并且设置好相关参数。</p><p><img src=/img/rescued/83e4e58a11e8.png loading=lazy alt=参数设置></p><h2 id=完善脚本>完善脚本</h2><p>我们在脚本中继续加入其他功能。首先是跳跃的动作。</p><p>在properties下面加入这一段</p><pre tabindex=0><code>    setJumpAction: function(){
-        var jumpUp = cc.moveBy(this.jumpDuration, cc.p(0,this.jumpHeight)).easing(cc.easeQuadraticActionOut());
-        var jumpDown = cc.moveBy(this.jumpDuration, cc.p(0,-this.jumpHeight)).easing(cc.easeQuadraticActionIn());
-        return cc.repeatForever(cc.sequence(jumpUp, jumpDown));
-    },
-</code></pre><p>moveBy是官方的API，在官方API中查询一下该API的使用，第一个参数是移动的距离，第二个参数是移动的位置。很显然是向上移动了一段距离。后面的easing是生成缓动运动，生成的对象是easeQuadraticActionIn和Out，这两个是二次曲线。原来的教程中是三次曲线，这个和真实世界中的物理运动差的太多了。</p><p>在onload方法中加入下面这段代码，启动动画。</p><pre tabindex=0><code>    onLoad: function () {
-        this.jumpAction = this.setJumpAction();
-        this.node.runAction(this.jumpAction);
-    },
-</code></pre><p>现在点击播放按钮刻可以查看初始的效果。</p><h2 id=控制角色>控制角色</h2><p>为主角加上移动的控制。
-在setJumpAction下面继续添加方法。</p><pre tabindex=0><code>    setInputControl: function(){
-        var self = this;
-        cc.eventManager.addListener({
-            event: cc.EventListener.KEYBOARD,
-            onKeyPressed: function(keyCode, event){
-                switch(keyCode){
-                    case cc.KEY.a:
-                        self.accLeft = true;
-                        self.accRight = false;
-                        break;
-                    case cc.KEY.d:
-                        self.accRight = true;
-                        self.accLeft = false;
-                }
-            },
-            onKeyReleased: function(keyCode, event){
-                switch(keyCode){
-                    case cc.KEY.a:
-                        self.accLeft = false;
-                        break;
-                    case cc.KEY.d:
-                        self.accRight = false;
-                        break;
-                }
-            }
-        }, self.node)
-    },
-</code></pre><p>更新onload和update代码</p><pre tabindex=0><code>    onLoad: function () {
-        this.jumpAction = this.setJumpAction();
-        this.node.runAction(this.jumpAction);
-        
-        this.accLeft = false;
-        this.accRight = false;
-        
-        this.xSpeed = 0;
-        
-        this.setInputControl();
-    },
-
-    update: function(dt){
-        if(this.accLeft){
-            this.xSpeed -= this.accel * dt;
-        }
-        else if(this.accRight){
-            this.xSpeed += this.accel * dt;
-        }
-        if(this.xSpeed &gt;0){
-            this.xSpeed -= this.accel/2 * dt;
-        }
-        else if( this.xSpeed &lt;0){
-            this.xSpeed += this.accel/2 * dt;
-        }
-        if(Math.abs(this.xSpeed) &gt; this.maxMoveSpeed){
-            this.xSpeed = this.maxMoveSpeed * this.xSpeed / Math.abs(this.xSpeed);
-        }
-        
-        this.node.x += this.xSpeed * dt;
-    },
-</code></pre><p>第一个代码添加了个监听器，按键变动的时候改变accLeft和accRight的值。启动时打开监听，然后，在每一帧需要更新的时候，计算怪物的位置。</p><h2 id=增加五角星>增加五角星</h2><p>添加Game脚本到assets/scripts文件夹下，双击打开脚本，加入以下代码</p><pre tabindex=0><code>cc.Class({
-    extends: cc.Component,
-
-    properties: {
-        // 这个属性引用了星星预制资源
-        starPrefab: {
-            default: null,
-            type: cc.Prefab
-        },
-        // 星星产生后消失时间的随机范围
-        maxStarDuration: 0,
-        minStarDuration: 0,
-        // 地面节点，用于确定星星生成的高度
-        ground: {
-            default: null,
-            type: cc.Node
-        },
-        // player 节点，用于获取主角弹跳的高度，和控制主角行动开关
-        player: {
-            default: null,
-            type: cc.Node
-        },
-        scoreDisplay: {
-            default: null,
-            type: cc.Label
-        }
-    },
-
-    onLoad: function () {
-        // 获取地平面的 y 轴坐标
-        this.groundY = this.ground.y + this.ground.height/2;
-        // 生成一个新的星星
-        this.spawnNewStar();
-        this.score = 0;
-    },
-    
-    gainScore: function () {
-        this.score += 1;
-        // 更新 scoreDisplay Label 的文字
-        this.scoreDisplay.string = &#39;Score: &#39; + this.score.toString();
-    },
-
-    spawnNewStar: function() {
-        // 使用给定的模板在场景中生成一个新节点
-        var newStar = cc.instantiate(this.starPrefab);
-        // 将新增的节点添加到 Canvas 节点下面
-        this.node.addChild(newStar);
-        // 为星星设置一个随机位置
-        newStar.setPosition(this.getNewStarPosition());
-        newStar.getComponent(&#39;star&#39;).game = this;
-    },
-
-    getNewStarPosition: function () {
-        var randX = 0;
-        // 根据地平面位置和主角跳跃高度，随机得到一个星星的 y 坐标
-        var randY = this.groundY + cc.random0To1() * this.player.getComponent(&#39;Player&#39;).jumpHeight + 50;
-        // 根据屏幕宽度，随机得到一个星星 x 坐标
-        var maxX = this.node.width/2;
-        randX = cc.randomMinus1To1() * maxX;
-        // 返回星星坐标
-        return cc.p(randX, randY);
-    },
-    
-    // called every frame, uncomment this function to activate update callback
-    // update: function (dt) {
-
-    // },
-});
-</code></pre><p>从 资源管理器 中拖拽 assets/textures/star 资源到场景中，添加名叫 Star 的JavaScript脚本到assets/scripts/中，并关联脚本。
-打开star脚本，添加如下代码</p><pre tabindex=0><code>cc.Class({
-    extends: cc.Component,
-
-    properties: {
-        // foo: {
-        //    default: null,      // The default value will be used only when the component attaching
-        //                           to a node for the first time
-        //    url: cc.Texture2D,  // optional, default is typeof default
-        //    serializable: true, // optional, default is true
-        //    visible: true,      // optional, default is true
-        //    displayName: &#39;Foo&#39;, // optional
-        //    readonly: false,    // optional, default is false
-        // },
-        // ...
-        pickRadius:0,
-    },
-
-    // use this for initialization
-    onLoad: function () {
-
-    },
-    
-    getPlayerDistance: function () {
-        // 根据 player 节点位置判断距离
-        var playerPos = this.game.player.getPosition();
-        // 根据两点位置计算两点之间距离
-        var dist = cc.pDistance(this.node.position, playerPos);
-        return dist;
-    },
-
-    onPicked: function() {
-        // 当星星被收集时，调用 Game 脚本中的接口，生成一个新的星星
-        this.game.spawnNewStar();
-        this.game.gainScore();
-        // 然后销毁当前星星节
-        this.node.destroy();
-        
-    },
-    
-    update: function (dt) {
-        // 每帧判断和主角之间的距离是否小于收集距离
-        if (this.getPlayerDistance() &lt; this.pickRadius) {
-            // 调用收集行为
-            this.onPicked();
-            return;
-        }
-    },    
-    
-    
-
-    // called every frame, uncomment this function to activate update callback
-    // update: function (dt) {
-
-    // },
-});
-</code></pre><p>现在在star的属性中设置pickRadius为60。
+<img src=/img/rescued/f7c5d8668523.png loading=lazy alt=脚本></p><p>在properties中插入以下内容，这部分是小怪物的物理属性</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>        jumpHeight:0,
+</span></span><span class=line><span class=cl>        jumpDuration:0,
+</span></span><span class=line><span class=cl>        maxMoveSpeed:0,
+</span></span><span class=line><span class=cl>        accel:0,
+</span></span></code></pre></td></tr></table></div></div><p>选中小怪物图片，在属性框中找到添加组件，把player脚本添加到player图片上，并且设置好相关参数。</p><p><img src=/img/rescued/83e4e58a11e8.png loading=lazy alt=参数设置></p><h2 id=完善脚本>完善脚本</h2><p>我们在脚本中继续加入其他功能。首先是跳跃的动作。</p><p>在properties下面加入这一段</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-gdscript3 data-lang=gdscript3><span class=line><span class=cl>    <span class=n>setJumpAction</span><span class=p>:</span> <span class=n>function</span><span class=p>(){</span>
+</span></span><span class=line><span class=cl>        <span class=k>var</span> <span class=n>jumpUp</span> <span class=o>=</span> <span class=n>cc</span><span class=o>.</span><span class=n>moveBy</span><span class=p>(</span><span class=n>this</span><span class=o>.</span><span class=n>jumpDuration</span><span class=p>,</span> <span class=n>cc</span><span class=o>.</span><span class=n>p</span><span class=p>(</span><span class=mi>0</span><span class=p>,</span><span class=n>this</span><span class=o>.</span><span class=n>jumpHeight</span><span class=p>))</span><span class=o>.</span><span class=n>easing</span><span class=p>(</span><span class=n>cc</span><span class=o>.</span><span class=n>easeQuadraticActionOut</span><span class=p>());</span>
+</span></span><span class=line><span class=cl>        <span class=k>var</span> <span class=n>jumpDown</span> <span class=o>=</span> <span class=n>cc</span><span class=o>.</span><span class=n>moveBy</span><span class=p>(</span><span class=n>this</span><span class=o>.</span><span class=n>jumpDuration</span><span class=p>,</span> <span class=n>cc</span><span class=o>.</span><span class=n>p</span><span class=p>(</span><span class=mi>0</span><span class=p>,</span><span class=o>-</span><span class=n>this</span><span class=o>.</span><span class=n>jumpHeight</span><span class=p>))</span><span class=o>.</span><span class=n>easing</span><span class=p>(</span><span class=n>cc</span><span class=o>.</span><span class=n>easeQuadraticActionIn</span><span class=p>());</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=n>cc</span><span class=o>.</span><span class=n>repeatForever</span><span class=p>(</span><span class=n>cc</span><span class=o>.</span><span class=n>sequence</span><span class=p>(</span><span class=n>jumpUp</span><span class=p>,</span> <span class=n>jumpDown</span><span class=p>));</span>
+</span></span><span class=line><span class=cl>    <span class=p>},</span>
+</span></span></code></pre></td></tr></table></div></div><p>moveBy是官方的API，在官方API中查询一下该API的使用，第一个参数是移动的距离，第二个参数是移动的位置。很显然是向上移动了一段距离。后面的easing是生成缓动运动，生成的对象是easeQuadraticActionIn和Out，这两个是二次曲线。原来的教程中是三次曲线，这个和真实世界中的物理运动差的太多了。</p><p>在onload方法中加入下面这段代码，启动动画。</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>    onLoad: function () {
+</span></span><span class=line><span class=cl>        this.jumpAction = this.setJumpAction();
+</span></span><span class=line><span class=cl>        this.node.runAction(this.jumpAction);
+</span></span><span class=line><span class=cl>    },
+</span></span></code></pre></td></tr></table></div></div><p>现在点击播放按钮刻可以查看初始的效果。</p><h2 id=控制角色>控制角色</h2><p>为主角加上移动的控制。
+在setJumpAction下面继续添加方法。</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-gdscript3 data-lang=gdscript3><span class=line><span class=cl>    <span class=n>setInputControl</span><span class=p>:</span> <span class=n>function</span><span class=p>(){</span>
+</span></span><span class=line><span class=cl>        <span class=k>var</span> <span class=bp>self</span> <span class=o>=</span> <span class=n>this</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=n>cc</span><span class=o>.</span><span class=n>eventManager</span><span class=o>.</span><span class=n>addListener</span><span class=p>({</span>
+</span></span><span class=line><span class=cl>            <span class=n>event</span><span class=p>:</span> <span class=n>cc</span><span class=o>.</span><span class=n>EventListener</span><span class=o>.</span><span class=n>KEYBOARD</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>            <span class=n>onKeyPressed</span><span class=p>:</span> <span class=n>function</span><span class=p>(</span><span class=n>keyCode</span><span class=p>,</span> <span class=n>event</span><span class=p>){</span>
+</span></span><span class=line><span class=cl>                <span class=k>switch</span><span class=p>(</span><span class=n>keyCode</span><span class=p>){</span>
+</span></span><span class=line><span class=cl>                    <span class=k>case</span> <span class=n>cc</span><span class=o>.</span><span class=n>KEY</span><span class=o>.</span><span class=n>a</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>                        <span class=bp>self</span><span class=o>.</span><span class=n>accLeft</span> <span class=o>=</span> <span class=bp>true</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>                        <span class=bp>self</span><span class=o>.</span><span class=n>accRight</span> <span class=o>=</span> <span class=bp>false</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>                        <span class=k>break</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>                    <span class=k>case</span> <span class=n>cc</span><span class=o>.</span><span class=n>KEY</span><span class=o>.</span><span class=n>d</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>                        <span class=bp>self</span><span class=o>.</span><span class=n>accRight</span> <span class=o>=</span> <span class=bp>true</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>                        <span class=bp>self</span><span class=o>.</span><span class=n>accLeft</span> <span class=o>=</span> <span class=bp>false</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>                <span class=p>}</span>
+</span></span><span class=line><span class=cl>            <span class=p>},</span>
+</span></span><span class=line><span class=cl>            <span class=n>onKeyReleased</span><span class=p>:</span> <span class=n>function</span><span class=p>(</span><span class=n>keyCode</span><span class=p>,</span> <span class=n>event</span><span class=p>){</span>
+</span></span><span class=line><span class=cl>                <span class=k>switch</span><span class=p>(</span><span class=n>keyCode</span><span class=p>){</span>
+</span></span><span class=line><span class=cl>                    <span class=k>case</span> <span class=n>cc</span><span class=o>.</span><span class=n>KEY</span><span class=o>.</span><span class=n>a</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>                        <span class=bp>self</span><span class=o>.</span><span class=n>accLeft</span> <span class=o>=</span> <span class=bp>false</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>                        <span class=k>break</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>                    <span class=k>case</span> <span class=n>cc</span><span class=o>.</span><span class=n>KEY</span><span class=o>.</span><span class=n>d</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>                        <span class=bp>self</span><span class=o>.</span><span class=n>accRight</span> <span class=o>=</span> <span class=bp>false</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>                        <span class=k>break</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>                <span class=p>}</span>
+</span></span><span class=line><span class=cl>            <span class=p>}</span>
+</span></span><span class=line><span class=cl>        <span class=p>},</span> <span class=bp>self</span><span class=o>.</span><span class=n>node</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=p>},</span>
+</span></span></code></pre></td></tr></table></div></div><p>更新onload和update代码</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>    onLoad: function () {
+</span></span><span class=line><span class=cl>        this.jumpAction = this.setJumpAction();
+</span></span><span class=line><span class=cl>        this.node.runAction(this.jumpAction);
+</span></span><span class=line><span class=cl>        
+</span></span><span class=line><span class=cl>        this.accLeft = false;
+</span></span><span class=line><span class=cl>        this.accRight = false;
+</span></span><span class=line><span class=cl>        
+</span></span><span class=line><span class=cl>        this.xSpeed = 0;
+</span></span><span class=line><span class=cl>        
+</span></span><span class=line><span class=cl>        this.setInputControl();
+</span></span><span class=line><span class=cl>    },
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    update: function(dt){
+</span></span><span class=line><span class=cl>        if(this.accLeft){
+</span></span><span class=line><span class=cl>            this.xSpeed -= this.accel * dt;
+</span></span><span class=line><span class=cl>        }
+</span></span><span class=line><span class=cl>        else if(this.accRight){
+</span></span><span class=line><span class=cl>            this.xSpeed += this.accel * dt;
+</span></span><span class=line><span class=cl>        }
+</span></span><span class=line><span class=cl>        if(this.xSpeed &gt;0){
+</span></span><span class=line><span class=cl>            this.xSpeed -= this.accel/2 * dt;
+</span></span><span class=line><span class=cl>        }
+</span></span><span class=line><span class=cl>        else if( this.xSpeed &lt;0){
+</span></span><span class=line><span class=cl>            this.xSpeed += this.accel/2 * dt;
+</span></span><span class=line><span class=cl>        }
+</span></span><span class=line><span class=cl>        if(Math.abs(this.xSpeed) &gt; this.maxMoveSpeed){
+</span></span><span class=line><span class=cl>            this.xSpeed = this.maxMoveSpeed * this.xSpeed / Math.abs(this.xSpeed);
+</span></span><span class=line><span class=cl>        }
+</span></span><span class=line><span class=cl>        
+</span></span><span class=line><span class=cl>        this.node.x += this.xSpeed * dt;
+</span></span><span class=line><span class=cl>    },
+</span></span></code></pre></td></tr></table></div></div><p>第一个代码添加了个监听器，按键变动的时候改变accLeft和accRight的值。启动时打开监听，然后，在每一帧需要更新的时候，计算怪物的位置。</p><h2 id=增加五角星>增加五角星</h2><p>添加Game脚本到assets/scripts文件夹下，双击打开脚本，加入以下代码</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span><span class=lnt>45
+</span><span class=lnt>46
+</span><span class=lnt>47
+</span><span class=lnt>48
+</span><span class=lnt>49
+</span><span class=lnt>50
+</span><span class=lnt>51
+</span><span class=lnt>52
+</span><span class=lnt>53
+</span><span class=lnt>54
+</span><span class=lnt>55
+</span><span class=lnt>56
+</span><span class=lnt>57
+</span><span class=lnt>58
+</span><span class=lnt>59
+</span><span class=lnt>60
+</span><span class=lnt>61
+</span><span class=lnt>62
+</span><span class=lnt>63
+</span><span class=lnt>64
+</span><span class=lnt>65
+</span><span class=lnt>66
+</span><span class=lnt>67
+</span><span class=lnt>68
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-gdscript3 data-lang=gdscript3><span class=line><span class=cl><span class=n>cc</span><span class=o>.</span><span class=n>Class</span><span class=p>({</span>
+</span></span><span class=line><span class=cl>    <span class=k>extends</span><span class=p>:</span> <span class=n>cc</span><span class=o>.</span><span class=n>Component</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=n>properties</span><span class=p>:</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=o>//</span> <span class=err>这个属性引用了星星预制资源</span>
+</span></span><span class=line><span class=cl>        <span class=n>starPrefab</span><span class=p>:</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=n>default</span><span class=p>:</span> <span class=n>null</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>            <span class=n>type</span><span class=p>:</span> <span class=n>cc</span><span class=o>.</span><span class=n>Prefab</span>
+</span></span><span class=line><span class=cl>        <span class=p>},</span>
+</span></span><span class=line><span class=cl>        <span class=o>//</span> <span class=err>星星产生后消失时间的随机范围</span>
+</span></span><span class=line><span class=cl>        <span class=n>maxStarDuration</span><span class=p>:</span> <span class=mi>0</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=n>minStarDuration</span><span class=p>:</span> <span class=mi>0</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=o>//</span> <span class=err>地面节点，用于确定星星生成的高度</span>
+</span></span><span class=line><span class=cl>        <span class=n>ground</span><span class=p>:</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=n>default</span><span class=p>:</span> <span class=n>null</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>            <span class=n>type</span><span class=p>:</span> <span class=n>cc</span><span class=o>.</span><span class=n>Node</span>
+</span></span><span class=line><span class=cl>        <span class=p>},</span>
+</span></span><span class=line><span class=cl>        <span class=o>//</span> <span class=n>player</span> <span class=err>节点，用于获取主角弹跳的高度，和控制主角行动开关</span>
+</span></span><span class=line><span class=cl>        <span class=n>player</span><span class=p>:</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=n>default</span><span class=p>:</span> <span class=n>null</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>            <span class=n>type</span><span class=p>:</span> <span class=n>cc</span><span class=o>.</span><span class=n>Node</span>
+</span></span><span class=line><span class=cl>        <span class=p>},</span>
+</span></span><span class=line><span class=cl>        <span class=n>scoreDisplay</span><span class=p>:</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=n>default</span><span class=p>:</span> <span class=n>null</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>            <span class=n>type</span><span class=p>:</span> <span class=n>cc</span><span class=o>.</span><span class=n>Label</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=p>},</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=n>onLoad</span><span class=p>:</span> <span class=n>function</span> <span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=o>//</span> <span class=err>获取地平面的</span> <span class=n>y</span> <span class=err>轴坐标</span>
+</span></span><span class=line><span class=cl>        <span class=n>this</span><span class=o>.</span><span class=n>groundY</span> <span class=o>=</span> <span class=n>this</span><span class=o>.</span><span class=n>ground</span><span class=o>.</span><span class=n>y</span> <span class=o>+</span> <span class=n>this</span><span class=o>.</span><span class=n>ground</span><span class=o>.</span><span class=n>height</span><span class=o>/</span><span class=mi>2</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=o>//</span> <span class=err>生成一个新的星星</span>
+</span></span><span class=line><span class=cl>        <span class=n>this</span><span class=o>.</span><span class=n>spawnNewStar</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>        <span class=n>this</span><span class=o>.</span><span class=n>score</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=p>},</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=n>gainScore</span><span class=p>:</span> <span class=n>function</span> <span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=n>this</span><span class=o>.</span><span class=n>score</span> <span class=o>+=</span> <span class=mi>1</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=o>//</span> <span class=err>更新</span> <span class=n>scoreDisplay</span> <span class=ne>Label</span> <span class=err>的文字</span>
+</span></span><span class=line><span class=cl>        <span class=n>this</span><span class=o>.</span><span class=n>scoreDisplay</span><span class=o>.</span><span class=n>string</span> <span class=o>=</span> <span class=s1>&#39;Score: &#39;</span> <span class=o>+</span> <span class=n>this</span><span class=o>.</span><span class=n>score</span><span class=o>.</span><span class=n>toString</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>    <span class=p>},</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=n>spawnNewStar</span><span class=p>:</span> <span class=n>function</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=o>//</span> <span class=err>使用给定的模板在场景中生成一个新节点</span>
+</span></span><span class=line><span class=cl>        <span class=k>var</span> <span class=n>newStar</span> <span class=o>=</span> <span class=n>cc</span><span class=o>.</span><span class=n>instantiate</span><span class=p>(</span><span class=n>this</span><span class=o>.</span><span class=n>starPrefab</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=o>//</span> <span class=err>将新增的节点添加到</span> <span class=n>Canvas</span> <span class=err>节点下面</span>
+</span></span><span class=line><span class=cl>        <span class=n>this</span><span class=o>.</span><span class=n>node</span><span class=o>.</span><span class=n>addChild</span><span class=p>(</span><span class=n>newStar</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=o>//</span> <span class=err>为星星设置一个随机位置</span>
+</span></span><span class=line><span class=cl>        <span class=n>newStar</span><span class=o>.</span><span class=n>setPosition</span><span class=p>(</span><span class=n>this</span><span class=o>.</span><span class=n>getNewStarPosition</span><span class=p>());</span>
+</span></span><span class=line><span class=cl>        <span class=n>newStar</span><span class=o>.</span><span class=n>getComponent</span><span class=p>(</span><span class=s1>&#39;star&#39;</span><span class=p>)</span><span class=o>.</span><span class=n>game</span> <span class=o>=</span> <span class=n>this</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=p>},</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=n>getNewStarPosition</span><span class=p>:</span> <span class=n>function</span> <span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=k>var</span> <span class=n>randX</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=o>//</span> <span class=err>根据地平面位置和主角跳跃高度，随机得到一个星星的</span> <span class=n>y</span> <span class=err>坐标</span>
+</span></span><span class=line><span class=cl>        <span class=k>var</span> <span class=n>randY</span> <span class=o>=</span> <span class=n>this</span><span class=o>.</span><span class=n>groundY</span> <span class=o>+</span> <span class=n>cc</span><span class=o>.</span><span class=n>random0To1</span><span class=p>()</span> <span class=o>*</span> <span class=n>this</span><span class=o>.</span><span class=n>player</span><span class=o>.</span><span class=n>getComponent</span><span class=p>(</span><span class=s1>&#39;Player&#39;</span><span class=p>)</span><span class=o>.</span><span class=n>jumpHeight</span> <span class=o>+</span> <span class=mi>50</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=o>//</span> <span class=err>根据屏幕宽度，随机得到一个星星</span> <span class=n>x</span> <span class=err>坐标</span>
+</span></span><span class=line><span class=cl>        <span class=k>var</span> <span class=n>maxX</span> <span class=o>=</span> <span class=n>this</span><span class=o>.</span><span class=n>node</span><span class=o>.</span><span class=n>width</span><span class=o>/</span><span class=mi>2</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=n>randX</span> <span class=o>=</span> <span class=n>cc</span><span class=o>.</span><span class=n>randomMinus1To1</span><span class=p>()</span> <span class=o>*</span> <span class=n>maxX</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=o>//</span> <span class=err>返回星星坐标</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=n>cc</span><span class=o>.</span><span class=n>p</span><span class=p>(</span><span class=n>randX</span><span class=p>,</span> <span class=n>randY</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=p>},</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=o>//</span> <span class=n>called</span> <span class=n>every</span> <span class=n>frame</span><span class=p>,</span> <span class=n>uncomment</span> <span class=n>this</span> <span class=n>function</span> <span class=n>to</span> <span class=n>activate</span> <span class=n>update</span> <span class=n>callback</span>
+</span></span><span class=line><span class=cl>    <span class=o>//</span> <span class=n>update</span><span class=p>:</span> <span class=n>function</span> <span class=p>(</span><span class=n>dt</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=o>//</span> <span class=p>},</span>
+</span></span><span class=line><span class=cl><span class=p>});</span>
+</span></span></code></pre></td></tr></table></div></div><p>从 资源管理器 中拖拽 assets/textures/star 资源到场景中，添加名叫 Star 的JavaScript脚本到assets/scripts/中，并关联脚本。
+打开star脚本，添加如下代码</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span><span class=lnt>45
+</span><span class=lnt>46
+</span><span class=lnt>47
+</span><span class=lnt>48
+</span><span class=lnt>49
+</span><span class=lnt>50
+</span><span class=lnt>51
+</span><span class=lnt>52
+</span><span class=lnt>53
+</span><span class=lnt>54
+</span><span class=lnt>55
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-gdscript3 data-lang=gdscript3><span class=line><span class=cl><span class=n>cc</span><span class=o>.</span><span class=n>Class</span><span class=p>({</span>
+</span></span><span class=line><span class=cl>    <span class=k>extends</span><span class=p>:</span> <span class=n>cc</span><span class=o>.</span><span class=n>Component</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=n>properties</span><span class=p>:</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=o>//</span> <span class=n>foo</span><span class=p>:</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=o>//</span>    <span class=n>default</span><span class=p>:</span> <span class=n>null</span><span class=p>,</span>      <span class=o>//</span> <span class=n>The</span> <span class=n>default</span> <span class=n>value</span> <span class=n>will</span> <span class=n>be</span> <span class=n>used</span> <span class=n>only</span> <span class=n>when</span> <span class=n>the</span> <span class=n>component</span> <span class=n>attaching</span>
+</span></span><span class=line><span class=cl>        <span class=o>//</span>                           <span class=n>to</span> <span class=n>a</span> <span class=n>node</span> <span class=k>for</span> <span class=n>the</span> <span class=n>first</span> <span class=n>time</span>
+</span></span><span class=line><span class=cl>        <span class=o>//</span>    <span class=n>url</span><span class=p>:</span> <span class=n>cc</span><span class=o>.</span><span class=n>Texture2D</span><span class=p>,</span>  <span class=o>//</span> <span class=n>optional</span><span class=p>,</span> <span class=n>default</span> <span class=n>is</span> <span class=nb>typeof</span> <span class=n>default</span>
+</span></span><span class=line><span class=cl>        <span class=o>//</span>    <span class=n>serializable</span><span class=p>:</span> <span class=bp>true</span><span class=p>,</span> <span class=o>//</span> <span class=n>optional</span><span class=p>,</span> <span class=n>default</span> <span class=n>is</span> <span class=bp>true</span>
+</span></span><span class=line><span class=cl>        <span class=o>//</span>    <span class=n>visible</span><span class=p>:</span> <span class=bp>true</span><span class=p>,</span>      <span class=o>//</span> <span class=n>optional</span><span class=p>,</span> <span class=n>default</span> <span class=n>is</span> <span class=bp>true</span>
+</span></span><span class=line><span class=cl>        <span class=o>//</span>    <span class=n>displayName</span><span class=p>:</span> <span class=s1>&#39;Foo&#39;</span><span class=p>,</span> <span class=o>//</span> <span class=n>optional</span>
+</span></span><span class=line><span class=cl>        <span class=o>//</span>    <span class=n>readonly</span><span class=p>:</span> <span class=bp>false</span><span class=p>,</span>    <span class=o>//</span> <span class=n>optional</span><span class=p>,</span> <span class=n>default</span> <span class=n>is</span> <span class=bp>false</span>
+</span></span><span class=line><span class=cl>        <span class=o>//</span> <span class=p>},</span>
+</span></span><span class=line><span class=cl>        <span class=o>//</span> <span class=o>...</span>
+</span></span><span class=line><span class=cl>        <span class=n>pickRadius</span><span class=p>:</span><span class=mi>0</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=p>},</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=o>//</span> <span class=n>use</span> <span class=n>this</span> <span class=k>for</span> <span class=n>initialization</span>
+</span></span><span class=line><span class=cl>    <span class=n>onLoad</span><span class=p>:</span> <span class=n>function</span> <span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=p>},</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=n>getPlayerDistance</span><span class=p>:</span> <span class=n>function</span> <span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=o>//</span> <span class=err>根据</span> <span class=n>player</span> <span class=err>节点位置判断距离</span>
+</span></span><span class=line><span class=cl>        <span class=k>var</span> <span class=n>playerPos</span> <span class=o>=</span> <span class=n>this</span><span class=o>.</span><span class=n>game</span><span class=o>.</span><span class=n>player</span><span class=o>.</span><span class=n>getPosition</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>        <span class=o>//</span> <span class=err>根据两点位置计算两点之间距离</span>
+</span></span><span class=line><span class=cl>        <span class=k>var</span> <span class=n>dist</span> <span class=o>=</span> <span class=n>cc</span><span class=o>.</span><span class=n>pDistance</span><span class=p>(</span><span class=n>this</span><span class=o>.</span><span class=n>node</span><span class=o>.</span><span class=n>position</span><span class=p>,</span> <span class=n>playerPos</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=n>dist</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=p>},</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=n>onPicked</span><span class=p>:</span> <span class=n>function</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=o>//</span> <span class=err>当星星被收集时，调用</span> <span class=n>Game</span> <span class=err>脚本中的接口，生成一个新的星星</span>
+</span></span><span class=line><span class=cl>        <span class=n>this</span><span class=o>.</span><span class=n>game</span><span class=o>.</span><span class=n>spawnNewStar</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>        <span class=n>this</span><span class=o>.</span><span class=n>game</span><span class=o>.</span><span class=n>gainScore</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>        <span class=o>//</span> <span class=err>然后销毁当前星星节</span>
+</span></span><span class=line><span class=cl>        <span class=n>this</span><span class=o>.</span><span class=n>node</span><span class=o>.</span><span class=n>destroy</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>        
+</span></span><span class=line><span class=cl>    <span class=p>},</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=n>update</span><span class=p>:</span> <span class=n>function</span> <span class=p>(</span><span class=n>dt</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=o>//</span> <span class=err>每帧判断和主角之间的距离是否小于收集距离</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=p>(</span><span class=n>this</span><span class=o>.</span><span class=n>getPlayerDistance</span><span class=p>()</span> <span class=o>&lt;</span> <span class=n>this</span><span class=o>.</span><span class=n>pickRadius</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=o>//</span> <span class=err>调用收集行为</span>
+</span></span><span class=line><span class=cl>            <span class=n>this</span><span class=o>.</span><span class=n>onPicked</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>            <span class=k>return</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=p>},</span>    
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=o>//</span> <span class=n>called</span> <span class=n>every</span> <span class=n>frame</span><span class=p>,</span> <span class=n>uncomment</span> <span class=n>this</span> <span class=n>function</span> <span class=n>to</span> <span class=n>activate</span> <span class=n>update</span> <span class=n>callback</span>
+</span></span><span class=line><span class=cl>    <span class=o>//</span> <span class=n>update</span><span class=p>:</span> <span class=n>function</span> <span class=p>(</span><span class=n>dt</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=o>//</span> <span class=p>},</span>
+</span></span><span class=line><span class=cl><span class=p>});</span>
+</span></span></code></pre></td></tr></table></div></div><p>现在在star的属性中设置pickRadius为60。
 从层级管理器中将star节点拖拽到资源管理器中的assets文件夹下，就生成了名叫star的 Prefab 资源。
 从场景中删除star节点。
 选中Canvas节点后，拖拽脚本到 属性检查器，从资源管理器中拖拽star Prefab 资源到Game组件的Star Prefab属性中，从层级编辑器中拖拽ground和Player 节点到组件中相同名字的属性上。</p><p>接下来再加入计分机制，和上面的过程十分的类似，这里就略去不详细写了，此时，测试一下游戏的效果，已经可以看到游戏大致效果。</p><p>如果你有任何问题，可以查看官方的上手的教程，也可以点击这里可以下载到此为止的工程：

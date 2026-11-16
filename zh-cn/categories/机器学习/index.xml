@@ -21,24 +21,53 @@
 &lt;p>下面的程序中，train_x是一系列从-1到1之间的数字，train_y是x的两倍加10，然后随机加了一个0~1之间的数字
 接下来我们建立模型，X和Y是一个待初始化的张量占位符，在优化过程中，模型中的XY会一直改变为train_x和train_y中的数据，然后优化器会进行优化，使得w斜率和b截距按照使误差减小的方向变化，这样，w和b经过迭代最终就使模型满足数据了&lt;/p>
 &lt;p>模型建立好了以后，我们开始运行模型。首先打开一个会话，然后一定要记得初始化全部变量。接下来我们对全体数据进行10次遍历，在每一次迭代过程中，将一个坐标输入，并计算误差，然后利用梯度下降更正w和b。最后，我们输出解出来的w和b。&lt;/p>
-&lt;pre tabindex="0">&lt;code>import tensorflow as tf
-import numpy as np
-train_x = np.linspace(-1, 1, 101)
-train_y = 2 * train_x + np.random.rand(train_x.shape[0]) + 10
-X = tf.placeholder(&amp;#34;float&amp;#34;)
-Y = tf.placeholder(&amp;#34;float&amp;#34;)
-w = tf.Variable(0.0, name = &amp;#34;w&amp;#34;)
-b = tf.Variable(0.0, name = &amp;#34;b&amp;#34;)
-loss = tf.square(Y - tf.multiply(X,w) - b)
-train_op = tf.train.GradientDescentOptimizer(0.01).minimize(loss)
-with tf.Session() as session:
-session.run(tf.global_variables_initializer())
-for i in range(10):
-for x,y in zip(train_x, train_y):
-session.run(train_op, feed_dict={X:x, Y:y})
-print(&amp;#34;w: &amp;#34;, session.run(w))
-print(&amp;#34;b: &amp;#34;, session.run(b))
-&lt;/code>&lt;/pre>&lt;p>运行效果：
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-gdscript3" data-lang="gdscript3">&lt;span class="line">&lt;span class="cl">&lt;span class="n">import&lt;/span> &lt;span class="n">tensorflow&lt;/span> &lt;span class="n">as&lt;/span> &lt;span class="n">tf&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">import&lt;/span> &lt;span class="n">numpy&lt;/span> &lt;span class="n">as&lt;/span> &lt;span class="n">np&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">train_x&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">np&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">linspace&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">101&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">train_y&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">2&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="n">train_x&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="n">np&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">random&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">rand&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">train_x&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">shape&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="mi">0&lt;/span>&lt;span class="p">])&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="mi">10&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">X&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">tf&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">placeholder&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;float&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">Y&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">tf&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">placeholder&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;float&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">w&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">tf&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">Variable&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mf">0.0&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">name&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="s2">&amp;#34;w&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">b&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">tf&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">Variable&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mf">0.0&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">name&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="s2">&amp;#34;b&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">loss&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">tf&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">square&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">Y&lt;/span> &lt;span class="o">-&lt;/span> &lt;span class="n">tf&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">multiply&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">X&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="n">w&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="o">-&lt;/span> &lt;span class="n">b&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">train_op&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">tf&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">train&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">GradientDescentOptimizer&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mf">0.01&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">minimize&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">loss&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">with&lt;/span> &lt;span class="n">tf&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">Session&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="n">as&lt;/span> &lt;span class="n">session&lt;/span>&lt;span class="p">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">session&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">run&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">tf&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">global_variables_initializer&lt;/span>&lt;span class="p">())&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">for&lt;/span> &lt;span class="n">i&lt;/span> &lt;span class="ow">in&lt;/span> &lt;span class="nb">range&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">10&lt;/span>&lt;span class="p">):&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">for&lt;/span> &lt;span class="n">x&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="n">y&lt;/span> &lt;span class="ow">in&lt;/span> &lt;span class="n">zip&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">train_x&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">train_y&lt;/span>&lt;span class="p">):&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">session&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">run&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">train_op&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">feed_dict&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="p">{&lt;/span>&lt;span class="n">X&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="n">x&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">Y&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="n">y&lt;/span>&lt;span class="p">})&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">print&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;w: &amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">session&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">run&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">w&lt;/span>&lt;span class="p">))&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">print&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;b: &amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">session&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">run&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">b&lt;/span>&lt;span class="p">))&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>运行效果：
 &lt;img src="http://otwwkzjm5.bkt.clouddn.com/17-8-9/99539186.jpg"
 loading="lazy"
 alt="效果"
@@ -87,123 +116,290 @@ alt="image.png"
 &lt;p>一个 TensorFlow 图 &lt;strong>描述&lt;/strong> 了计算的过程。 为了进行计算，图必须在&lt;code>会话&lt;/code> 里被启动。 &lt;code>会话&lt;/code> 将图的 op 分发到诸如 CPU 或 GPU 之类的设备上，同时提供执行 op 的方法。这些方法执行后， 将产生的 tensor 返回。 在 Python 语言中, 返回的类型是 tensor 是&lt;a class="link" href="http://www.numpy.org/" target="_blank" rel="noopener"
 >numpy&lt;/a>中的&lt;code>ndarray&lt;/code>对象。在 C 和 C++ 语言中, 返回的 tensor 是 tensorflow::Tensor
  实例。&lt;/p></description></item><item><title>使用Tensorflow完成Kaggle任务——泰坦尼克号Titanic: Machine Learning from Disaster</title><link>https://nansenli.com/zh-cn/post/jianshu/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E4%BD%BF%E7%94%A8tensorflow%E5%AE%8C%E6%88%90kaggle%E4%BB%BB%E5%8A%A1%E6%B3%B0%E5%9D%A6%E5%B0%BC%E5%85%8B%E5%8F%B7titanic--machine-learning-from-disaster/</link><pubDate>Fri, 04 Aug 2017 10:08:00 +0000</pubDate><guid>https://nansenli.com/zh-cn/post/jianshu/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E4%BD%BF%E7%94%A8tensorflow%E5%AE%8C%E6%88%90kaggle%E4%BB%BB%E5%8A%A1%E6%B3%B0%E5%9D%A6%E5%B0%BC%E5%85%8B%E5%8F%B7titanic--machine-learning-from-disaster/</guid><description>&lt;h2 id="引入必要库">引入必要库
-&lt;/h2>&lt;pre tabindex="0">&lt;code>import csv
-import tensorflow as tf
-import numpy as np
-import random
-import sys
-import pandas as pd
-from pandas import DataFrame
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
-&lt;/code>&lt;/pre>&lt;h2 id="读取源文件并打印">读取源文件并打印
+&lt;/h2>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">import csv
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">import tensorflow as tf
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">import numpy as np
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">import random
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">import sys
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">import pandas as pd
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">from pandas import DataFrame
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">from __future__ import absolute_import
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">from __future__ import division
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">from __future__ import print_function
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="读取源文件并打印">读取源文件并打印
 &lt;/h2>&lt;p>在这部分，我们接触了基本的csv操作，并显示结果。
 我们读入kaggle上下载的train.csv文件，并展示内容&lt;/p>
-&lt;pre tabindex="0">&lt;code>trainFilePath = &amp;#39;./train.csv&amp;#39;
-trainSize = 0
-def testCSV(filePath):
-with open(filePath, &amp;#39;rb&amp;#39;) as trainFile:
-global trainSize
-csvReader = csv.reader(trainFile)
-dataList = [data for data in csvReader]
-df = DataFrame(dataList[1:], columns=dataList[0])
-trainSize = len(df)
-print(df)
-print(&amp;#34;trainSize&amp;#34;, trainSize)
-testCSV(trainFilePath)
-&lt;/code>&lt;/pre>&lt;h2 id="读取源文件并提取数据建立神经网络">读取源文件并提取数据，建立神经网络
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">trainFilePath = &amp;#39;./train.csv&amp;#39;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">trainSize = 0
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">def testCSV(filePath):
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> with open(filePath, &amp;#39;rb&amp;#39;) as trainFile:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> global trainSize
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> csvReader = csv.reader(trainFile)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> dataList = [data for data in csvReader]
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> df = DataFrame(dataList[1:], columns=dataList[0])
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> trainSize = len(df)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> print(df)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> print(&amp;#34;trainSize&amp;#34;, trainSize)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">testCSV(trainFilePath)
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="读取源文件并提取数据建立神经网络">读取源文件并提取数据，建立神经网络
 &lt;/h2>&lt;p>在这部分，我们读取源文件中的性别，阶级，船费以及SibSp，用于拟合最终的生存概率
 然后我们建立一个总共5层，中间3层的神经网络，神经元的个数分别是4-10-20-10-2。
 然后运行读取函数。&lt;/p>
-&lt;pre tabindex="0">&lt;code>def readTrainDataCSV(filePath):
-global trainData, targetData, classifier
-with open(filePath, &amp;#39;rb&amp;#39;) as trainFile:
-csvReader = csv.reader(trainFile)
-dataList = [data for data in csvReader]
-dataSize = len(dataList) - 1
-trainData = np.ndarray((dataSize, 4), dtype=np.float32)
-targetData = np.ndarray((dataSize, 1), dtype=np.int32)
-trainDataFrame = DataFrame(dataList[1:], columns=dataList[0])
-trainDataFrame_fliter = trainDataFrame.loc[:,[&amp;#39;Pclass&amp;#39;,&amp;#39;Sex&amp;#39;,&amp;#39;SibSp&amp;#39;,&amp;#39;Fare&amp;#39;,&amp;#39;Survived&amp;#39;]]
-for i in range(dataSize):
-thisData = np.array(trainDataFrame_fliter.iloc[i])
-Pclass,Sex,SibSp,Fare,Survived = thisData
-Pclass = float(Pclass)
-Sex = 0 if Sex == &amp;#39;female&amp;#39; else 1
-SibSp = float(SibSp)
-Fare = float(Fare)
-Survived = int(Survived)
-print(Pclass,Sex,SibSp,Fare,Survived)
-trainData[i,:] = [Pclass,Sex,SibSp,Fare]
-targetData[i,:] = [Survived]
-print(thisData)
-print(trainData)
-print(targetData)
-feature_columns = [tf.contrib.layers.real_valued_column(&amp;#34;&amp;#34;, dimension=4)]
-classifier = tf.contrib.learn.DNNClassifier(feature_columns=feature_columns,
-hidden_units=[10, 20, 10],
-n_classes=2)
-# model_dir=&amp;#34;/tmp/titanic_model&amp;#34;)
-readTrainDataCSV(trainFilePath)
-&lt;/code>&lt;/pre>&lt;h2 id="创建输入数据">创建输入数据
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;span class="lnt">30
+&lt;/span>&lt;span class="lnt">31
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">def readTrainDataCSV(filePath):
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> global trainData, targetData, classifier
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> with open(filePath, &amp;#39;rb&amp;#39;) as trainFile:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> csvReader = csv.reader(trainFile)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> dataList = [data for data in csvReader]
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> dataSize = len(dataList) - 1
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> trainData = np.ndarray((dataSize, 4), dtype=np.float32)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> targetData = np.ndarray((dataSize, 1), dtype=np.int32)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> trainDataFrame = DataFrame(dataList[1:], columns=dataList[0])
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> trainDataFrame_fliter = trainDataFrame.loc[:,[&amp;#39;Pclass&amp;#39;,&amp;#39;Sex&amp;#39;,&amp;#39;SibSp&amp;#39;,&amp;#39;Fare&amp;#39;,&amp;#39;Survived&amp;#39;]]
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> for i in range(dataSize):
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> thisData = np.array(trainDataFrame_fliter.iloc[i])
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> Pclass,Sex,SibSp,Fare,Survived = thisData
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> Pclass = float(Pclass)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> Sex = 0 if Sex == &amp;#39;female&amp;#39; else 1
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> SibSp = float(SibSp)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> Fare = float(Fare)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> Survived = int(Survived)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> print(Pclass,Sex,SibSp,Fare,Survived)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> trainData[i,:] = [Pclass,Sex,SibSp,Fare]
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> targetData[i,:] = [Survived]
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> print(thisData)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> print(trainData)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> print(targetData)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> feature_columns = [tf.contrib.layers.real_valued_column(&amp;#34;&amp;#34;, dimension=4)]
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> classifier = tf.contrib.learn.DNNClassifier(feature_columns=feature_columns,
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> hidden_units=[10, 20, 10],
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> n_classes=2)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"># model_dir=&amp;#34;/tmp/titanic_model&amp;#34;)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">readTrainDataCSV(trainFilePath)
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="创建输入数据">创建输入数据
 &lt;/h2>&lt;p>我们将训练数据和标签包装成一个二元组，并返回&lt;/p>
-&lt;pre tabindex="0">&lt;code>def get_train_inputs():
-x = tf.constant(trainData)
-y = tf.constant(targetData)
-print(x)
-print(y)
-return x, y
-get_train_inputs()
-&lt;/code>&lt;/pre>&lt;h2 id="训练数据">训练数据
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;span class="lnt">8
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-gdscript3" data-lang="gdscript3">&lt;span class="line">&lt;span class="cl">&lt;span class="k">def&lt;/span> &lt;span class="nf">get_train_inputs&lt;/span>&lt;span class="p">():&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">x&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">tf&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">constant&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">trainData&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">y&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">tf&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">constant&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">targetData&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">print&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">x&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">print&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">y&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="n">x&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">y&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">get_train_inputs&lt;/span>&lt;span class="p">()&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="训练数据">训练数据
 &lt;/h2>&lt;p>我们开始训练神经网络&lt;/p>
-&lt;pre tabindex="0">&lt;code>def train():
-classifier.fit(input_fn=get_train_inputs, steps=2000)
-train()
-&lt;/code>&lt;/pre>&lt;h2 id="检查准确度">检查准确度
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">def train():
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> classifier.fit(input_fn=get_train_inputs, steps=2000)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">train()
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="检查准确度">检查准确度
 &lt;/h2>&lt;p>我们使用整个数据集来查看准确度。注意，我们应该使用验证集来完成这件事。但是由于我们只是用来演示，所以就算了&lt;/p>
-&lt;pre tabindex="0">&lt;code>accuracy_score = classifier.evaluate(input_fn=get_train_inputs,
-steps=1)[&amp;#34;accuracy&amp;#34;]
-print(&amp;#34;accuracy:&amp;#34;,accuracy_score)
-&lt;/code>&lt;/pre>&lt;h2 id="读入测试集并输出结果">读入测试集，并输出结果
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">accuracy_score = classifier.evaluate(input_fn=get_train_inputs,
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> steps=1)[&amp;#34;accuracy&amp;#34;]
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">print(&amp;#34;accuracy:&amp;#34;,accuracy_score)
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="读入测试集并输出结果">读入测试集，并输出结果
 &lt;/h2>&lt;p>在这一部分，我们将读入kaggle中的数据，并输出到文件中，最终提交官网&lt;/p>
-&lt;pre tabindex="0">&lt;code>testFilePath = &amp;#39;./test.csv&amp;#39;
-def readTestDataCSV(filePath):
-global testData, PassengerIdStart
-with open(filePath, &amp;#39;rb&amp;#39;) as testFile:
-csvReader = csv.reader(testFile)
-dataList = [data for data in csvReader]
-dataSize = len(dataList)-1
-trainDataFrame = DataFrame(dataList[1:], columns=dataList[0])
-trainDataFrame_fliter = trainDataFrame.loc[:,[&amp;#39;Pclass&amp;#39;,&amp;#39;Sex&amp;#39;,&amp;#39;SibSp&amp;#39;,&amp;#39;Fare&amp;#39;]]
-testData = np.ndarray((dataSize, 4), dtype=np.float32)
-PassengerIdStart = trainDataFrame[&amp;#39;PassengerId&amp;#39;][0]
-PassengerIdStart = int(PassengerIdStart)
-print(&amp;#39;PassengerId&amp;#39;,PassengerIdStart)
-for i in range(dataSize):
-thisData = np.array(trainDataFrame_fliter.iloc[i])
-Pclass,Sex,SibSp,Fare = thisData
-Pclass = float(Pclass)
-Sex = 0 if Sex == &amp;#39;female&amp;#39; else 1
-SibSp = float(SibSp)
-Fare = 0 if Fare==&amp;#39;&amp;#39; else float(Fare)
-print(Pclass,Sex,SibSp,Fare)
-testData[i,:] = [Pclass,Sex,SibSp,Fare]
-print(thisData)
-print(testData)
-def testData_samples():
-return testData
-readTestDataCSV(testFilePath)
-predictions = list(classifier.predict(input_fn=testData_samples))
-print(predictions)
-with open(&amp;#39;predictions.csv&amp;#39;, &amp;#39;wb&amp;#39;) as csvfile:
-writer = csv.writer(csvfile, dialect=&amp;#39;excel&amp;#39;)
-writer.writerow([&amp;#39;PassengerId&amp;#39;,&amp;#39;Survived&amp;#39;])
-PassengerId = PassengerIdStart
-for i in predictions:
-writer.writerow([PassengerId, i])
-PassengerId += 1
-&lt;/code>&lt;/pre>&lt;p>最终在只使用了4个特征值的情况下，准确率有75%。接下来的目标是将其他数据进行利用。&lt;/p></description></item><item><title>深度学习零基础学习笔记一（优达学城）</title><link>https://nansenli.com/zh-cn/post/jianshu/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E9%9B%B6%E5%9F%BA%E7%A1%80%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%E4%B8%80%E4%BC%98%E8%BE%BE%E5%AD%A6%E5%9F%8E/</link><pubDate>Wed, 19 Jul 2017 07:42:00 +0000</pubDate><guid>https://nansenli.com/zh-cn/post/jianshu/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E9%9B%B6%E5%9F%BA%E7%A1%80%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%E4%B8%80%E4%BC%98%E8%BE%BE%E5%AD%A6%E5%9F%8E/</guid><description>&lt;h2 id="前言">前言
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;span class="lnt">30
+&lt;/span>&lt;span class="lnt">31
+&lt;/span>&lt;span class="lnt">32
+&lt;/span>&lt;span class="lnt">33
+&lt;/span>&lt;span class="lnt">34
+&lt;/span>&lt;span class="lnt">35
+&lt;/span>&lt;span class="lnt">36
+&lt;/span>&lt;span class="lnt">37
+&lt;/span>&lt;span class="lnt">38
+&lt;/span>&lt;span class="lnt">39
+&lt;/span>&lt;span class="lnt">40
+&lt;/span>&lt;span class="lnt">41
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">testFilePath = &amp;#39;./test.csv&amp;#39;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">def readTestDataCSV(filePath):
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> global testData, PassengerIdStart
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> with open(filePath, &amp;#39;rb&amp;#39;) as testFile:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> csvReader = csv.reader(testFile)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> dataList = [data for data in csvReader]
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> dataSize = len(dataList)-1
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> trainDataFrame = DataFrame(dataList[1:], columns=dataList[0])
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> trainDataFrame_fliter = trainDataFrame.loc[:,[&amp;#39;Pclass&amp;#39;,&amp;#39;Sex&amp;#39;,&amp;#39;SibSp&amp;#39;,&amp;#39;Fare&amp;#39;]]
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> testData = np.ndarray((dataSize, 4), dtype=np.float32)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> PassengerIdStart = trainDataFrame[&amp;#39;PassengerId&amp;#39;][0]
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> PassengerIdStart = int(PassengerIdStart)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> print(&amp;#39;PassengerId&amp;#39;,PassengerIdStart)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> for i in range(dataSize):
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> thisData = np.array(trainDataFrame_fliter.iloc[i])
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> Pclass,Sex,SibSp,Fare = thisData
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> Pclass = float(Pclass)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> Sex = 0 if Sex == &amp;#39;female&amp;#39; else 1
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> SibSp = float(SibSp)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> Fare = 0 if Fare==&amp;#39;&amp;#39; else float(Fare)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> print(Pclass,Sex,SibSp,Fare)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> testData[i,:] = [Pclass,Sex,SibSp,Fare]
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> print(thisData)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> print(testData)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">def testData_samples():
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> return testData
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">readTestDataCSV(testFilePath)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">predictions = list(classifier.predict(input_fn=testData_samples))
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">print(predictions)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">with open(&amp;#39;predictions.csv&amp;#39;, &amp;#39;wb&amp;#39;) as csvfile:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> writer = csv.writer(csvfile, dialect=&amp;#39;excel&amp;#39;)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> writer.writerow([&amp;#39;PassengerId&amp;#39;,&amp;#39;Survived&amp;#39;])
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> PassengerId = PassengerIdStart
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> for i in predictions:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> writer.writerow([PassengerId, i])
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> PassengerId += 1
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>最终在只使用了4个特征值的情况下，准确率有75%。接下来的目标是将其他数据进行利用。&lt;/p></description></item><item><title>深度学习零基础学习笔记一（优达学城）</title><link>https://nansenli.com/zh-cn/post/jianshu/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E9%9B%B6%E5%9F%BA%E7%A1%80%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%E4%B8%80%E4%BC%98%E8%BE%BE%E5%AD%A6%E5%9F%8E/</link><pubDate>Wed, 19 Jul 2017 07:42:00 +0000</pubDate><guid>https://nansenli.com/zh-cn/post/jianshu/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E9%9B%B6%E5%9F%BA%E7%A1%80%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%E4%B8%80%E4%BC%98%E8%BE%BE%E5%AD%A6%E5%9F%8E/</guid><description>&lt;h2 id="前言">前言
 &lt;/h2>&lt;p>突发奇想想学机器学习，这里是学习过程的笔记&lt;/p>
 &lt;h2 id="准备">准备
 &lt;/h2>&lt;p>我做了这些准备工作&lt;/p>
@@ -242,14 +438,27 @@ alt="softmax"
 &lt;ul>
 &lt;li>算法&lt;/li>
 &lt;/ul>
-&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-python" data-lang="python">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">import&lt;/span> numpy &lt;span style="color:#66d9ef">as&lt;/span> np
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">def&lt;/span> &lt;span style="color:#a6e22e">softmax&lt;/span>(x):
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#e6db74">&amp;#34;&amp;#34;&amp;#34;Compute softmax values for each sets of scores in x.&amp;#34;&amp;#34;&amp;#34;&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> expList &lt;span style="color:#f92672">=&lt;/span> [np&lt;span style="color:#f92672">.&lt;/span>exp(i) &lt;span style="color:#66d9ef">for&lt;/span> i &lt;span style="color:#f92672">in&lt;/span> x]
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> expSum &lt;span style="color:#f92672">=&lt;/span> sum(expList)
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> x &lt;span style="color:#f92672">=&lt;/span> [i&lt;span style="color:#f92672">/&lt;/span>expSum &lt;span style="color:#66d9ef">for&lt;/span> i &lt;span style="color:#f92672">in&lt;/span> expList]
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> np&lt;span style="color:#f92672">.&lt;/span>array(x)
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>&lt;img src="https://nansenli.com/img/rescued/8ba75ea46168.png"
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-python" data-lang="python">&lt;span class="line">&lt;span class="cl">&lt;span class="kn">import&lt;/span> &lt;span class="nn">numpy&lt;/span> &lt;span class="k">as&lt;/span> &lt;span class="nn">np&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">def&lt;/span> &lt;span class="nf">softmax&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">x&lt;/span>&lt;span class="p">):&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;&amp;#34;&amp;#34;Compute softmax values for each sets of scores in x.&amp;#34;&amp;#34;&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">expList&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="p">[&lt;/span>&lt;span class="n">np&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">exp&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">i&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="k">for&lt;/span> &lt;span class="n">i&lt;/span> &lt;span class="ow">in&lt;/span> &lt;span class="n">x&lt;/span>&lt;span class="p">]&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">expSum&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="nb">sum&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">expList&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">x&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="p">[&lt;/span>&lt;span class="n">i&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">expSum&lt;/span> &lt;span class="k">for&lt;/span> &lt;span class="n">i&lt;/span> &lt;span class="ow">in&lt;/span> &lt;span class="n">expList&lt;/span>&lt;span class="p">]&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="n">np&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">array&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">x&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;img src="https://nansenli.com/img/rescued/8ba75ea46168.png"
 loading="lazy"
 alt="image.png"
 >&lt;/p>
@@ -268,12 +477,27 @@ loading="lazy"
 alt="image.png"
 >&lt;/p>
 &lt;p>17-20 节讲解了如何使用这个分类器。其中，18节讲了为什么需要采用一种特殊的初始数据。&lt;/p>
-&lt;pre tabindex="0">&lt;code>sum = 1000000000
-for i in range(1000000):
-sum += 0.000001
-sum -= 1000000000
-print(sum)
-&lt;/code>&lt;/pre>&lt;p>这段代码运行结果不是1。如果把sum换成一个很小的数字，例如1，而不是1000000000，我们发现结果误差变小了。基于这个原因，我们希望初始数据总是均值为0，并且各个方向的方差为一致的。例如一个灰度图片的像素值0-255，我们需要把它减去128，然后除以128，这样每一个数字都是-1到1之间的数字，这样的初始数据更适合用来训练。&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">sum = 1000000000
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">for i in range(1000000):
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> sum += 0.000001
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">sum -= 1000000000
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">print(sum)
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>这段代码运行结果不是1。如果把sum换成一个很小的数字，例如1，而不是1000000000，我们发现结果误差变小了。基于这个原因，我们希望初始数据总是均值为0，并且各个方向的方差为一致的。例如一个灰度图片的像素值0-255，我们需要把它减去128，然后除以128，这样每一个数字都是-1到1之间的数字，这样的初始数据更适合用来训练。&lt;/p>
 &lt;p>&lt;img src="https://nansenli.com/img/rescued/34f543ea3c1e.png"
 loading="lazy"
 alt="image.png"
@@ -314,150 +538,328 @@ alt="作业一内容"
 >&lt;/p>
 &lt;h2 id="作业代码段一">作业代码段一
 &lt;/h2>&lt;p>首先运行一下第一段代码的import，应该是没有任何出错的，此时什么也不会发生，如果出现了红色的输出错误，那就说明这些from import没有导入成功。&lt;/p>
-&lt;pre tabindex="0">&lt;code># These are all the modules we&amp;#39;ll be using later. Make sure you can import them
-# before proceeding further.
-from __future__ import print_function
-# print函数
-import matplotlib.pyplot as plt
-# 绘图工具
-import numpy as np
-# 矩阵计算
-import os
-# 文件路径
-import sys
-# 文件输出
-import tarfile
-# 解压缩
-from IPython.display import display, Image
-# 显示图片
-from scipy import ndimage
-# 图像处理
-from sklearn.linear_model import LogisticRegression
-# 逻辑回归模块线性模型
-from six.moves.urllib.request import urlretrieve
-# url处理
-from six.moves import cPickle as pickle
-# 数据处理
-# Config the matplotlib backend as plotting inline in IPython
-%matplotlib inline
-# matplotlib是最著名的Python图表绘制扩展库，
-# 它支持输出多种格式的图形图像，并且可以使用多种GUI界面库交互式地显示图表。
-# 使用%matplotlib命令可以将matplotlib的图表直接嵌入到Notebook之中，
-# 或者使用指定的界面库显示图表，它有一个参数指定matplotlib图表的显示方式。
-# inline表示将图表嵌入到Notebook中。
-&lt;/code>&lt;/pre>&lt;h2 id="作业代码段二">作业代码段二
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;span class="lnt">30
+&lt;/span>&lt;span class="lnt">31
+&lt;/span>&lt;span class="lnt">32
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl"># These are all the modules we&amp;#39;ll be using later. Make sure you can import them
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"># before proceeding further.
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">from __future__ import print_function
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"># print函数
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">import matplotlib.pyplot as plt
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"># 绘图工具
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">import numpy as np
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"># 矩阵计算
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">import os
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"># 文件路径
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">import sys
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"># 文件输出
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">import tarfile
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"># 解压缩
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">from IPython.display import display, Image
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"># 显示图片
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">from scipy import ndimage
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"># 图像处理
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">from sklearn.linear_model import LogisticRegression
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"># 逻辑回归模块线性模型
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">from six.moves.urllib.request import urlretrieve
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"># url处理
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">from six.moves import cPickle as pickle
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"># 数据处理
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"># Config the matplotlib backend as plotting inline in IPython
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">%matplotlib inline
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"># matplotlib是最著名的Python图表绘制扩展库，
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"># 它支持输出多种格式的图形图像，并且可以使用多种GUI界面库交互式地显示图表。
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"># 使用%matplotlib命令可以将matplotlib的图表直接嵌入到Notebook之中，
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"># 或者使用指定的界面库显示图表，它有一个参数指定matplotlib图表的显示方式。
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"># inline表示将图表嵌入到Notebook中。
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="作业代码段二">作业代码段二
 &lt;/h2>&lt;p>接下来是第二段代码，会进行下载用于训练和测试的字母集合，大概是300mb大小。下载成功后，可以看到挂载目录下面的这两个文件。&lt;/p>
 &lt;p>&lt;img src="https://nansenli.com/img/rescued/66a1b044606a.png"
 loading="lazy"
 alt="作业"
 >&lt;/p>
-&lt;pre tabindex="0">&lt;code>url = &amp;#39;https://commondatastorage.googleapis.com/books1000/&amp;#39;
-last_percent_reported = None
-data_root = &amp;#39;.&amp;#39; # Change me to store data elsewhere
-def download_progress_hook(count, blockSize, totalSize):
-&amp;#34;&amp;#34;&amp;#34;A hook to report the progress of a download. This is mostly intended for users with
-slow internet connections. Reports every 5% change in download progress.
-&amp;#34;&amp;#34;&amp;#34;
-# 钩子函数用来实时显示下载进度
-global last_percent_reported
-percent = int(count * blockSize * 100 / totalSize)
-if last_percent_reported != percent:
-if percent % 5 == 0:
-sys.stdout.write(&amp;#34;%s%%&amp;#34; % percent)
-sys.stdout.flush()
-else:
-sys.stdout.write(&amp;#34;.&amp;#34;)
-sys.stdout.flush()
-last_percent_reported = percent
-def maybe_download(filename, expected_bytes, force=False):
-&amp;#34;&amp;#34;&amp;#34;Download a file if not present, and make sure it&amp;#39;s the right size.&amp;#34;&amp;#34;&amp;#34;
-dest_filename = os.path.join(data_root, filename)
-# data_root是当前目录，在这个目录上加上文件名，设置为要保存的文件位置
-if force or not os.path.exists(dest_filename):
-# force是强制下载，忽略已经下载的文件
-print(&amp;#39;Attempting to download:&amp;#39;, filename)
-filename, _ = urlretrieve(url + filename, dest_filename, reporthook=download_progress_hook)
-# 使用urlretrieve来下载文件，挂上钩子
-print(&amp;#39;\nDownload Complete!&amp;#39;)
-statinfo = os.stat(dest_filename)
-# 获取下载到的文件的信息
-if statinfo.st_size == expected_bytes:
-# 正确大小
-print(&amp;#39;Found and verified&amp;#39;, dest_filename)
-else:
-# 错误大小，提示用户使用浏览器下载
-raise Exception(
-&amp;#39;Failed to verify &amp;#39; + dest_filename + &amp;#39;. Can you get to it with a browser?&amp;#39;)
-return dest_filename
-train_filename = maybe_download(&amp;#39;notMNIST_large.tar.gz&amp;#39;, 247336696)
-test_filename = maybe_download(&amp;#39;notMNIST_small.tar.gz&amp;#39;, 8458043)
-&lt;/code>&lt;/pre>&lt;h2 id="作业代码段三">作业代码段三
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;span class="lnt">30
+&lt;/span>&lt;span class="lnt">31
+&lt;/span>&lt;span class="lnt">32
+&lt;/span>&lt;span class="lnt">33
+&lt;/span>&lt;span class="lnt">34
+&lt;/span>&lt;span class="lnt">35
+&lt;/span>&lt;span class="lnt">36
+&lt;/span>&lt;span class="lnt">37
+&lt;/span>&lt;span class="lnt">38
+&lt;/span>&lt;span class="lnt">39
+&lt;/span>&lt;span class="lnt">40
+&lt;/span>&lt;span class="lnt">41
+&lt;/span>&lt;span class="lnt">42
+&lt;/span>&lt;span class="lnt">43
+&lt;/span>&lt;span class="lnt">44
+&lt;/span>&lt;span class="lnt">45
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-gdscript3" data-lang="gdscript3">&lt;span class="line">&lt;span class="cl">&lt;span class="n">url&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="s1">&amp;#39;https://commondatastorage.googleapis.com/books1000/&amp;#39;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">last_percent_reported&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">None&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">data_root&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="s1">&amp;#39;.&amp;#39;&lt;/span> &lt;span class="c1"># Change me to store data elsewhere&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">def&lt;/span> &lt;span class="nf">download_progress_hook&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">count&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">blockSize&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">totalSize&lt;/span>&lt;span class="p">):&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;&amp;#34;&amp;#34;A hook to report the progress of a download. This is mostly intended for users with
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="s2"> slow internet connections. Reports every 5&lt;/span>&lt;span class="si">% c&lt;/span>&lt;span class="s2">hange in download progress.
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="s2"> &amp;#34;&amp;#34;&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 钩子函数用来实时显示下载进度&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">global&lt;/span> &lt;span class="n">last_percent_reported&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">percent&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="ne">int&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">count&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="n">blockSize&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="mi">100&lt;/span> &lt;span class="o">/&lt;/span> &lt;span class="n">totalSize&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="n">last_percent_reported&lt;/span> &lt;span class="o">!=&lt;/span> &lt;span class="n">percent&lt;/span>&lt;span class="p">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="n">percent&lt;/span> &lt;span class="o">%&lt;/span> &lt;span class="mi">5&lt;/span> &lt;span class="o">==&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">sys&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">stdout&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">write&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;&lt;/span>&lt;span class="si">%s%%&lt;/span>&lt;span class="s2">&amp;#34;&lt;/span> &lt;span class="o">%&lt;/span> &lt;span class="n">percent&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">sys&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">stdout&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">flush&lt;/span>&lt;span class="p">()&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">else&lt;/span>&lt;span class="p">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">sys&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">stdout&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">write&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;.&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">sys&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">stdout&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">flush&lt;/span>&lt;span class="p">()&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">last_percent_reported&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">percent&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">def&lt;/span> &lt;span class="nf">maybe_download&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">filename&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">expected_bytes&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">force&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">False&lt;/span>&lt;span class="p">):&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;&amp;#34;&amp;#34;Download a file if not present, and make sure it&amp;#39;s the right size.&amp;#34;&amp;#34;&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">dest_filename&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">os&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">path&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">join&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">data_root&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">filename&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># data_root是当前目录，在这个目录上加上文件名，设置为要保存的文件位置&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="n">force&lt;/span> &lt;span class="ow">or&lt;/span> &lt;span class="ow">not&lt;/span> &lt;span class="n">os&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">path&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">exists&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">dest_filename&lt;/span>&lt;span class="p">):&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># force是强制下载，忽略已经下载的文件&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">print&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s1">&amp;#39;Attempting to download:&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">filename&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">filename&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">_&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">urlretrieve&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">url&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="n">filename&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">dest_filename&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">reporthook&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">download_progress_hook&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 使用urlretrieve来下载文件，挂上钩子&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">print&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s1">&amp;#39;&lt;/span>&lt;span class="se">\n&lt;/span>&lt;span class="s1">Download Complete!&amp;#39;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">statinfo&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">os&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">stat&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">dest_filename&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 获取下载到的文件的信息&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="n">statinfo&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">st_size&lt;/span> &lt;span class="o">==&lt;/span> &lt;span class="n">expected_bytes&lt;/span>&lt;span class="p">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 正确大小&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">print&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s1">&amp;#39;Found and verified&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">dest_filename&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">else&lt;/span>&lt;span class="p">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 错误大小，提示用户使用浏览器下载&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">raise&lt;/span> &lt;span class="n">Exception&lt;/span>&lt;span class="p">(&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s1">&amp;#39;Failed to verify &amp;#39;&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="n">dest_filename&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="s1">&amp;#39;. Can you get to it with a browser?&amp;#39;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="n">dest_filename&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">train_filename&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">maybe_download&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s1">&amp;#39;notMNIST_large.tar.gz&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">247336696&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">test_filename&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">maybe_download&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s1">&amp;#39;notMNIST_small.tar.gz&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">8458043&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="作业代码段三">作业代码段三
 &lt;/h2>&lt;p>解压缩用例&lt;/p>
-&lt;pre tabindex="0">&lt;code>num_classes = 10
-# 数字总共有多少个
-np.random.seed(133)
-# 初始化随机种子
-def maybe_extract(filename, force=False):
-# 假设已经解压缩了
-root = os.path.splitext(os.path.splitext(filename)[0])[0] # remove .tar.gz
-# splitext(filename)[0]用于去除一个后缀，用两次就是去除两次后缀，也就是去除.tar.gz这个后缀
-if os.path.isdir(root) and not force:
-# You may override by setting force=True.
-# 已经解压缩了就不再解压缩了
-print(&amp;#39;%s already present - Skipping extraction of %s.&amp;#39; % (root, filename))
-else:
-print(&amp;#39;Extracting data for %s. This may take a while. Please wait.&amp;#39; % root)
-tar = tarfile.open(filename)
-sys.stdout.flush()
-tar.extractall(data_root)
-tar.close()
-# 解压缩到当前目录下面
-data_folders = [
-os.path.join(root, d) for d in sorted(os.listdir(root))
-if os.path.isdir(os.path.join(root, d))]
-if len(data_folders) != num_classes:
-raise Exception(
-&amp;#39;Expected %d folders, one per class. Found %d instead.&amp;#39; % (
-num_classes, len(data_folders)))
-print(data_folders)
-# 检查解压缩文件目录的数量与期待是否一致，并且打印解压缩出来文件的目录
-return data_folders
-train_folders = maybe_extract(train_filename)
-test_folders = maybe_extract(test_filename)
-&lt;/code>&lt;/pre>&lt;h2 id="问题一">问题一
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;span class="lnt">30
+&lt;/span>&lt;span class="lnt">31
+&lt;/span>&lt;span class="lnt">32
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">num_classes = 10
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"># 数字总共有多少个
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">np.random.seed(133)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"># 初始化随机种子
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">def maybe_extract(filename, force=False):
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"># 假设已经解压缩了
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> root = os.path.splitext(os.path.splitext(filename)[0])[0] # remove .tar.gz
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"># splitext(filename)[0]用于去除一个后缀，用两次就是去除两次后缀，也就是去除.tar.gz这个后缀
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> if os.path.isdir(root) and not force:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> # You may override by setting force=True.
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"># 已经解压缩了就不再解压缩了
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> print(&amp;#39;%s already present - Skipping extraction of %s.&amp;#39; % (root, filename))
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> else:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> print(&amp;#39;Extracting data for %s. This may take a while. Please wait.&amp;#39; % root)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> tar = tarfile.open(filename)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> sys.stdout.flush()
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> tar.extractall(data_root)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> tar.close()
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"># 解压缩到当前目录下面
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> data_folders = [
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> os.path.join(root, d) for d in sorted(os.listdir(root))
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> if os.path.isdir(os.path.join(root, d))]
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> if len(data_folders) != num_classes:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> raise Exception(
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &amp;#39;Expected %d folders, one per class. Found %d instead.&amp;#39; % (
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> num_classes, len(data_folders)))
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> print(data_folders)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"># 检查解压缩文件目录的数量与期待是否一致，并且打印解压缩出来文件的目录
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> return data_folders
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">train_folders = maybe_extract(train_filename)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">test_folders = maybe_extract(test_filename)
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="问题一">问题一
 &lt;/h2>&lt;p>写出代码显示解压缩的文件内容信息&lt;/p>
 &lt;ul>
 &lt;li>参考答案&lt;/li>
 &lt;/ul>
-&lt;pre tabindex="0">&lt;code>import random
-import matplotlib.image as mpimg
-def plot_samples(data_folders, sample_size, title=None):
-fig = plt.figure()
-# 建立空图像
-if title: fig.suptitle(title, fontsize=16, fontweight=&amp;#39;bold&amp;#39;)
-# 加入标题
-for folder in data_folders:
-# 遍历每个字母
-image_files = os.listdir(folder)
-image_sample = random.sample(image_files, sample_size)
-# 从该字母中随机选取一定数量的图片
-for image in image_sample:
-image_file = os.path.join(folder, image)
-ax = fig.add_subplot(len(data_folders), sample_size, sample_size * data_folders.index(folder) +
-image_sample.index(image) + 1)
-# 创建一个子图
-image = mpimg.imread(image_file)
-# 加载子图图片
-ax.imshow(image)
-# 显示子图图片
-ax.set_axis_off()
-# 关闭子图坐标线
-fig.set_size_inches(18.5, 10.5)
-# 设置图片显示的大小
-plt.show()
-plot_samples(train_folders, 20, &amp;#39;Train&amp;#39;)
-plot_samples(test_folders, 20, &amp;#39;Test&amp;#39;)
-&lt;/code>&lt;/pre>&lt;p>运行效果如下&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;span class="lnt">30
+&lt;/span>&lt;span class="lnt">31
+&lt;/span>&lt;span class="lnt">32
+&lt;/span>&lt;span class="lnt">33
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">import random
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">import matplotlib.image as mpimg
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">def plot_samples(data_folders, sample_size, title=None):
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> fig = plt.figure()
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"># 建立空图像
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> if title: fig.suptitle(title, fontsize=16, fontweight=&amp;#39;bold&amp;#39;)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"># 加入标题
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> for folder in data_folders:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"># 遍历每个字母
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> image_files = os.listdir(folder)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> image_sample = random.sample(image_files, sample_size)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"># 从该字母中随机选取一定数量的图片
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> for image in image_sample:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> image_file = os.path.join(folder, image)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> ax = fig.add_subplot(len(data_folders), sample_size, sample_size * data_folders.index(folder) +
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> image_sample.index(image) + 1)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"># 创建一个子图
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> image = mpimg.imread(image_file)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"># 加载子图图片
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> ax.imshow(image)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"># 显示子图图片
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> ax.set_axis_off()
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"># 关闭子图坐标线
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> fig.set_size_inches(18.5, 10.5)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"># 设置图片显示的大小
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> plt.show()
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">plot_samples(train_folders, 20, &amp;#39;Train&amp;#39;)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">plot_samples(test_folders, 20, &amp;#39;Test&amp;#39;)
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>运行效果如下&lt;/p>
 &lt;p>&lt;img src="https://nansenli.com/img/rescued/94887f5b6eab.png"
 loading="lazy"
 alt="训练.png"
@@ -469,107 +871,230 @@ alt="测试.png"
 &lt;p>可以看出，部分训练数据是有问题的&lt;/p>
 &lt;h2 id="作业代码段四">作业代码段四
 &lt;/h2>&lt;p>这之后需要进行数据的归一化处理，就是让图像的每一个像素由0&lt;del>255变换到-1.0&lt;/del>1.0，并且持久化到文件中&lt;/p>
-&lt;pre tabindex="0">&lt;code>image_size = 28 # Pixel width and height.
-pixel_depth = 255.0 # Number of levels per pixel.
-# 图片长宽和图片像素深度
-def load_letter(folder, min_num_images):
-&amp;#34;&amp;#34;&amp;#34;Load the data for a single letter label.&amp;#34;&amp;#34;&amp;#34;
-# 处理一个属于一个字母文件夹下面的文件
-image_files = os.listdir(folder)
-# 列出该文件夹目录下面的所有文件
-dataset = np.ndarray(shape=(len(image_files), image_size, image_size),
-dtype=np.float32)
-# 创建一个长度为文件个数，宽度和高度为28的
-print(folder)
-# 打印目录
-num_images = 0
-# 初始化num_images
-for image in image_files:
-# 对每一个文件处理
-image_file = os.path.join(folder, image)
-# 获取完整文件路径
-try:
-image_data = (ndimage.imread(image_file).astype(float) -
-pixel_depth / 2) / pixel_depth
-# 读入图像，并且归一化处理
-if image_data.shape != (image_size, image_size):
-# 检查图像的宽高
-raise Exception(&amp;#39;Unexpected image shape: %s&amp;#39; % str(image_data.shape))
-dataset[num_images, :, :] = image_data
-# 读入到数据集合中
-num_images = num_images + 1
-# 图片序号加一
-except IOError as e:
-# 如果无法读取文件的话，则忽略该文件
-print(&amp;#39;Could not read:&amp;#39;, image_file, &amp;#39;:&amp;#39;, e, &amp;#39;- it\&amp;#39;s ok, skipping.&amp;#39;)
-dataset = dataset[0:num_images, :, :]
-# 如果读进来的文件数量少于最小需要文件数量
-if num_images &amp;lt; min_num_images:
-raise Exception(&amp;#39;Many fewer images than expected: %d &amp;lt; %d&amp;#39; %
-(num_images, min_num_images))
-# 显示缺少的文件数量
-print(&amp;#39;Full dataset tensor:&amp;#39;, dataset.shape)
-# 显示文件数量，图片长宽
-print(&amp;#39;Mean:&amp;#39;, np.mean(dataset))
-# 平均值
-print(&amp;#39;Standard deviation:&amp;#39;, np.std(dataset))
-# 标准差
-return dataset
-def maybe_pickle(data_folders, min_num_images_per_class, force=False):
-dataset_names = []
-for folder in data_folders:
-# 对每一个字母文件夹处理
-set_filename = folder + &amp;#39;.pickle&amp;#39;
-# 设置输出的文件
-dataset_names.append(set_filename)
-# 设置处理过的文件夹
-if os.path.exists(set_filename) and not force:
-# You may override by setting force=True.
-# 检查是否存在已处理过的文件
-print(&amp;#39;%s already present - Skipping pickling.&amp;#39; % set_filename)
-else:
-print(&amp;#39;Pickling %s.&amp;#39; % set_filename)
-dataset = load_letter(folder, min_num_images_per_class)
-# 归一化处理这个文件夹下面的所有图片
-try:
-with open(set_filename, &amp;#39;wb&amp;#39;) as f:
-pickle.dump(dataset, f, pickle.HIGHEST_PROTOCOL)
-# 持久化数据，将数据保存在硬盘上，而不是一直放在内存中
-except Exception as e:
-print(&amp;#39;Unable to save data to&amp;#39;, set_filename, &amp;#39;:&amp;#39;, e)
-return dataset_names
-train_datasets = maybe_pickle(train_folders, 45000)
-test_datasets = maybe_pickle(test_folders, 1800)
-&lt;/code>&lt;/pre>&lt;h2 id="问题2">问题2
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;span class="lnt">30
+&lt;/span>&lt;span class="lnt">31
+&lt;/span>&lt;span class="lnt">32
+&lt;/span>&lt;span class="lnt">33
+&lt;/span>&lt;span class="lnt">34
+&lt;/span>&lt;span class="lnt">35
+&lt;/span>&lt;span class="lnt">36
+&lt;/span>&lt;span class="lnt">37
+&lt;/span>&lt;span class="lnt">38
+&lt;/span>&lt;span class="lnt">39
+&lt;/span>&lt;span class="lnt">40
+&lt;/span>&lt;span class="lnt">41
+&lt;/span>&lt;span class="lnt">42
+&lt;/span>&lt;span class="lnt">43
+&lt;/span>&lt;span class="lnt">44
+&lt;/span>&lt;span class="lnt">45
+&lt;/span>&lt;span class="lnt">46
+&lt;/span>&lt;span class="lnt">47
+&lt;/span>&lt;span class="lnt">48
+&lt;/span>&lt;span class="lnt">49
+&lt;/span>&lt;span class="lnt">50
+&lt;/span>&lt;span class="lnt">51
+&lt;/span>&lt;span class="lnt">52
+&lt;/span>&lt;span class="lnt">53
+&lt;/span>&lt;span class="lnt">54
+&lt;/span>&lt;span class="lnt">55
+&lt;/span>&lt;span class="lnt">56
+&lt;/span>&lt;span class="lnt">57
+&lt;/span>&lt;span class="lnt">58
+&lt;/span>&lt;span class="lnt">59
+&lt;/span>&lt;span class="lnt">60
+&lt;/span>&lt;span class="lnt">61
+&lt;/span>&lt;span class="lnt">62
+&lt;/span>&lt;span class="lnt">63
+&lt;/span>&lt;span class="lnt">64
+&lt;/span>&lt;span class="lnt">65
+&lt;/span>&lt;span class="lnt">66
+&lt;/span>&lt;span class="lnt">67
+&lt;/span>&lt;span class="lnt">68
+&lt;/span>&lt;span class="lnt">69
+&lt;/span>&lt;span class="lnt">70
+&lt;/span>&lt;span class="lnt">71
+&lt;/span>&lt;span class="lnt">72
+&lt;/span>&lt;span class="lnt">73
+&lt;/span>&lt;span class="lnt">74
+&lt;/span>&lt;span class="lnt">75
+&lt;/span>&lt;span class="lnt">76
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-gdscript3" data-lang="gdscript3">&lt;span class="line">&lt;span class="cl">&lt;span class="n">image_size&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">28&lt;/span> &lt;span class="c1"># Pixel width and height.&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">pixel_depth&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mf">255.0&lt;/span> &lt;span class="c1"># Number of levels per pixel.&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 图片长宽和图片像素深度&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">def&lt;/span> &lt;span class="nf">load_letter&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">folder&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">min_num_images&lt;/span>&lt;span class="p">):&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;&amp;#34;&amp;#34;Load the data for a single letter label.&amp;#34;&amp;#34;&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 处理一个属于一个字母文件夹下面的文件&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">image_files&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">os&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">listdir&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">folder&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 列出该文件夹目录下面的所有文件&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">dataset&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">np&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">ndarray&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">shape&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">len&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">image_files&lt;/span>&lt;span class="p">),&lt;/span> &lt;span class="n">image_size&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">image_size&lt;/span>&lt;span class="p">),&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">dtype&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">np&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">float32&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 创建一个长度为文件个数，宽度和高度为28的&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">print&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">folder&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 打印目录&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">num_images&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">0&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 初始化num_images&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">for&lt;/span> &lt;span class="n">image&lt;/span> &lt;span class="ow">in&lt;/span> &lt;span class="n">image_files&lt;/span>&lt;span class="p">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 对每一个文件处理&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">image_file&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">os&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">path&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">join&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">folder&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">image&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 获取完整文件路径&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">try&lt;/span>&lt;span class="p">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">image_data&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">ndimage&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">imread&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">image_file&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">astype&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="ne">float&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="o">-&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">pixel_depth&lt;/span> &lt;span class="o">/&lt;/span> &lt;span class="mi">2&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="o">/&lt;/span> &lt;span class="n">pixel_depth&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 读入图像，并且归一化处理&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="n">image_data&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">shape&lt;/span> &lt;span class="o">!=&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">image_size&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">image_size&lt;/span>&lt;span class="p">):&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 检查图像的宽高&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">raise&lt;/span> &lt;span class="n">Exception&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s1">&amp;#39;Unexpected image shape: &lt;/span>&lt;span class="si">%s&lt;/span>&lt;span class="s1">&amp;#39;&lt;/span> &lt;span class="o">%&lt;/span> &lt;span class="nb">str&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">image_data&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">shape&lt;/span>&lt;span class="p">))&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">dataset&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">num_images&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="p">:,&lt;/span> &lt;span class="p">:]&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">image_data&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 读入到数据集合中&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">num_images&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">num_images&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="mi">1&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 图片序号加一&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">except&lt;/span> &lt;span class="n">IOError&lt;/span> &lt;span class="n">as&lt;/span> &lt;span class="n">e&lt;/span>&lt;span class="p">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 如果无法读取文件的话，则忽略该文件&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">print&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s1">&amp;#39;Could not read:&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">image_file&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s1">&amp;#39;:&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">e&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s1">&amp;#39;- it&lt;/span>&lt;span class="se">\&amp;#39;&lt;/span>&lt;span class="s1">s ok, skipping.&amp;#39;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">dataset&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">dataset&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="mi">0&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="n">num_images&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="p">:,&lt;/span> &lt;span class="p">:]&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 如果读进来的文件数量少于最小需要文件数量&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="n">num_images&lt;/span> &lt;span class="o">&amp;lt;&lt;/span> &lt;span class="n">min_num_images&lt;/span>&lt;span class="p">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">raise&lt;/span> &lt;span class="n">Exception&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s1">&amp;#39;Many fewer images than expected: &lt;/span>&lt;span class="si">%d&lt;/span>&lt;span class="s1"> &amp;lt; &lt;/span>&lt;span class="si">%d&lt;/span>&lt;span class="s1">&amp;#39;&lt;/span> &lt;span class="o">%&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">(&lt;/span>&lt;span class="n">num_images&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">min_num_images&lt;/span>&lt;span class="p">))&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 显示缺少的文件数量&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">print&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s1">&amp;#39;Full dataset tensor:&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">dataset&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">shape&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 显示文件数量，图片长宽&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">print&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s1">&amp;#39;Mean:&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">np&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">mean&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">dataset&lt;/span>&lt;span class="p">))&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 平均值&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">print&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s1">&amp;#39;Standard deviation:&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">np&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">std&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">dataset&lt;/span>&lt;span class="p">))&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 标准差&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="n">dataset&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">def&lt;/span> &lt;span class="nf">maybe_pickle&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">data_folders&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">min_num_images_per_class&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">force&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">False&lt;/span>&lt;span class="p">):&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">dataset_names&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="p">[]&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">for&lt;/span> &lt;span class="n">folder&lt;/span> &lt;span class="ow">in&lt;/span> &lt;span class="n">data_folders&lt;/span>&lt;span class="p">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 对每一个字母文件夹处理&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">set_filename&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">folder&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="s1">&amp;#39;.pickle&amp;#39;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 设置输出的文件&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">dataset_names&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">append&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">set_filename&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 设置处理过的文件夹&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="n">os&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">path&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">exists&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">set_filename&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="ow">and&lt;/span> &lt;span class="ow">not&lt;/span> &lt;span class="n">force&lt;/span>&lt;span class="p">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1"># You may override by setting force=True.&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 检查是否存在已处理过的文件&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">print&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s1">&amp;#39;&lt;/span>&lt;span class="si">%s&lt;/span>&lt;span class="s1"> already present - Skipping pickling.&amp;#39;&lt;/span> &lt;span class="o">%&lt;/span> &lt;span class="n">set_filename&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">else&lt;/span>&lt;span class="p">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">print&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s1">&amp;#39;Pickling &lt;/span>&lt;span class="si">%s&lt;/span>&lt;span class="s1">.&amp;#39;&lt;/span> &lt;span class="o">%&lt;/span> &lt;span class="n">set_filename&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">dataset&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">load_letter&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">folder&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">min_num_images_per_class&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 归一化处理这个文件夹下面的所有图片&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">try&lt;/span>&lt;span class="p">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">with&lt;/span> &lt;span class="n">open&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">set_filename&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s1">&amp;#39;wb&amp;#39;&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="n">as&lt;/span> &lt;span class="n">f&lt;/span>&lt;span class="p">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">pickle&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">dump&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">dataset&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">f&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">pickle&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">HIGHEST_PROTOCOL&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 持久化数据，将数据保存在硬盘上，而不是一直放在内存中&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">except&lt;/span> &lt;span class="n">Exception&lt;/span> &lt;span class="n">as&lt;/span> &lt;span class="n">e&lt;/span>&lt;span class="p">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">print&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s1">&amp;#39;Unable to save data to&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">set_filename&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s1">&amp;#39;:&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">e&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="n">dataset_names&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">train_datasets&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">maybe_pickle&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">train_folders&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">45000&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">test_datasets&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">maybe_pickle&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">test_folders&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">1800&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="问题2">问题2
 &lt;/h2>&lt;p>显示处理过的图片&lt;/p>
 &lt;ul>
 &lt;li>参考答案&lt;/li>
 &lt;/ul>
-&lt;pre tabindex="0">&lt;code>def plot_samples_2(data_folders, sample_size, title=None):
-fig = plt.figure()
-# 建立空图像
-if title: fig.suptitle(title, fontsize=16, fontweight=&amp;#39;bold&amp;#39;)
-# 加入标题
-for folder in data_folders:
-# 遍历每个字母
-with open(folder, &amp;#39;rb&amp;#39;) as pk_f:
-data = pickle.load(pk_f)
-for index, image in enumerate(data):
-if index &amp;lt; sample_size :
-# 从该字母中随机选取一定数量的图片
-ax = fig.add_subplot(len(data_folders), sample_size, sample_size * data_folders.index(folder) +
-index + 1)
-# 加载子图图片
-ax.imshow(image)
-# 显示子图图片
-ax.set_axis_off()
-# 关闭子图坐标线
-fig.set_size_inches(18.5, 10.5)
-# 设置图片显示的大小
-plt.show()
-plot_samples_2(train_datasets, 20, &amp;#39;Train&amp;#39;)
-plot_samples_2(test_datasets, 20, &amp;#39;Test&amp;#39;)
-&lt;/code>&lt;/pre>&lt;p>&lt;img src="https://nansenli.com/img/rescued/c09ea5ab69e9.png"
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-gdscript3" data-lang="gdscript3">&lt;span class="line">&lt;span class="cl">&lt;span class="k">def&lt;/span> &lt;span class="nf">plot_samples_2&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">data_folders&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">sample_size&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">title&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">None&lt;/span>&lt;span class="p">):&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">fig&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">plt&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">figure&lt;/span>&lt;span class="p">()&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 建立空图像&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="n">title&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="n">fig&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">suptitle&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">title&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">fontsize&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="mi">16&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">fontweight&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s1">&amp;#39;bold&amp;#39;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 加入标题&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">for&lt;/span> &lt;span class="n">folder&lt;/span> &lt;span class="ow">in&lt;/span> &lt;span class="n">data_folders&lt;/span>&lt;span class="p">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 遍历每个字母&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">with&lt;/span> &lt;span class="n">open&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">folder&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s1">&amp;#39;rb&amp;#39;&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="n">as&lt;/span> &lt;span class="n">pk_f&lt;/span>&lt;span class="p">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">data&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">pickle&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">load&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">pk_f&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">for&lt;/span> &lt;span class="n">index&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">image&lt;/span> &lt;span class="ow">in&lt;/span> &lt;span class="n">enumerate&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">data&lt;/span>&lt;span class="p">):&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="n">index&lt;/span> &lt;span class="o">&amp;lt;&lt;/span> &lt;span class="n">sample_size&lt;/span> &lt;span class="p">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 从该字母中随机选取一定数量的图片&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">ax&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">fig&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">add_subplot&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">len&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">data_folders&lt;/span>&lt;span class="p">),&lt;/span> &lt;span class="n">sample_size&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">sample_size&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="n">data_folders&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">index&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">folder&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="o">+&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">index&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 加载子图图片&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">ax&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">imshow&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">image&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 显示子图图片&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">ax&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">set_axis_off&lt;/span>&lt;span class="p">()&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 关闭子图坐标线&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">fig&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">set_size_inches&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mf">18.5&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mf">10.5&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 设置图片显示的大小&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">plt&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">show&lt;/span>&lt;span class="p">()&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">plot_samples_2&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">train_datasets&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">20&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s1">&amp;#39;Train&amp;#39;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">plot_samples_2&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">test_datasets&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">20&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s1">&amp;#39;Test&amp;#39;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;img src="https://nansenli.com/img/rescued/c09ea5ab69e9.png"
 loading="lazy"
 alt="image.png"
 >&lt;/p>
@@ -582,164 +1107,356 @@ alt="image.png"
 &lt;ul>
 &lt;li>参考答案&lt;/li>
 &lt;/ul>
-&lt;pre tabindex="0">&lt;code>file_path = &amp;#39;notMNIST_large/{0}.pickle&amp;#39;
-for ele in &amp;#39;ABCDEFJHIJ&amp;#39;:
-with open(file_path.format(ele), &amp;#39;rb&amp;#39;) as pk_f:
-# 遍历每一个目录
-dat = pickle.load(pk_f)
-# 加载这个目录下面的持久化文件
-print(&amp;#39;number of pictures in {}.pickle = &amp;#39;.format(ele), dat.shape[0])
-# 打印相关信息
-&lt;/code>&lt;/pre>&lt;p>结果表明数目基本一致。
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;span class="lnt">8
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-gdscript3" data-lang="gdscript3">&lt;span class="line">&lt;span class="cl">&lt;span class="n">file_path&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="s1">&amp;#39;notMNIST_large/{0}.pickle&amp;#39;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">for&lt;/span> &lt;span class="n">ele&lt;/span> &lt;span class="ow">in&lt;/span> &lt;span class="s1">&amp;#39;ABCDEFJHIJ&amp;#39;&lt;/span>&lt;span class="p">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">with&lt;/span> &lt;span class="n">open&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">file_path&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">format&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">ele&lt;/span>&lt;span class="p">),&lt;/span> &lt;span class="s1">&amp;#39;rb&amp;#39;&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="n">as&lt;/span> &lt;span class="n">pk_f&lt;/span>&lt;span class="p">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 遍历每一个目录&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">dat&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">pickle&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">load&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">pk_f&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 加载这个目录下面的持久化文件&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">print&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s1">&amp;#39;number of pictures in {}.pickle = &amp;#39;&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">format&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">ele&lt;/span>&lt;span class="p">),&lt;/span> &lt;span class="n">dat&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">shape&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="mi">0&lt;/span>&lt;span class="p">])&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 打印相关信息&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>结果表明数目基本一致。
 &lt;img src="https://nansenli.com/img/rescued/31bcb36f8c25.png"
 loading="lazy"
 alt="问题3效果"
 >&lt;/p>
 &lt;h2 id="代码段数据分割">代码段——数据分割
 &lt;/h2>&lt;p>数据不可能一次性就全部加载到内存中，这里对这些数据进行分割，接下来的这份代码对数据进行了分割&lt;/p>
-&lt;pre tabindex="0">&lt;code>def make_arrays(nb_rows, img_size):
-if nb_rows:
-dataset = np.ndarray((nb_rows, img_size, img_size), dtype=np.float32)
-# 创建一个空集合，数据类型是长rows宽img_size高img_size的矩阵，数据类型是浮点32位
-labels = np.ndarray(nb_rows, dtype=np.int32)
-# 创建一个标签，数据类型是32位整型，长度是rows
-else:
-dataset, labels = None, None
-return dataset, labels
-# 返回创建的数据类型
-def merge_datasets(pickle_files, train_size, valid_size=0):
-num_classes = len(pickle_files)
-# 需要处理的类别数量
-valid_dataset, valid_labels = make_arrays(valid_size, image_size)
-# 建立有效数据集合，长度为有效长度
-train_dataset, train_labels = make_arrays(train_size, image_size)
-# 建立训练数据集合，长度为训练长度
-vsize_per_class = valid_size // num_classes
-tsize_per_class = train_size // num_classes
-# 计算给定训练长度和有效长度下每个类别的平均长度
-start_v, start_t = 0, 0
-# 初始化下标，start_v是有效数据的开始，start_t是训练数据的开始
-end_v, end_t = vsize_per_class, tsize_per_class
-# 初始化下标，end_v是有效数据的结束，end_t是训练数据的结束
-end_l = vsize_per_class + tsize_per_class
-# 初始化下标，end_l是字母集合的结束，等于每个类别有效数据的长度+训练数据的长度
-for label, pickle_file in enumerate(pickle_files):
-# 遍历每一个pickle_file
-try:
-with open(pickle_file, &amp;#39;rb&amp;#39;) as f:
-# 打开这个持久化文件
-letter_set = pickle.load(f)
-# 加载数据集
-# let&amp;#39;s shuffle the letters to have random validation and training set
-np.random.shuffle(letter_set)
-# 打乱数据集的顺序
-if valid_dataset is not None:
-# 如果不是测试集的话，更新测试集，否则 valid_dataset 不更新
-valid_letter = letter_set[:vsize_per_class, :, :]
-# numpy切片 http://brieflyx.me/2015/python-module/numpy-array-split/
-# 从打乱的数据中选择 每类有效数据 数量的数据进行处理，放到 valid_letter 中
-valid_dataset[start_v:end_v, :, :] = valid_letter
-# 把这份数据放到valid_dataset中
-valid_labels[start_v:end_v] = label
-# 标记label 应该是 0~9中的一种
-start_v += vsize_per_class
-end_v += vsize_per_class
-# 更新下标
-# 循环结束时， valid_dataset 应该总长度为 valid_size 的一份数据， valid_labels是对应位置的标签
-train_letter = letter_set[vsize_per_class:end_l, :, :]
-# 除去valid部分的随机其他元素，长度为 end_l - vsize_per_class = tsize_per_class
-train_dataset[start_t:end_t, :, :] = train_letter
-# 循环结束时，train_dataset应该是总长为 train_size 的 一份数据
-#
-train_labels[start_t:end_t] = label
-start_t += tsize_per_class
-end_t += tsize_per_class
-# 更新下标
-except Exception as e:
-print(&amp;#39;Unable to process data from&amp;#39;, pickle_file, &amp;#39;:&amp;#39;, e)
-raise
-return valid_dataset, valid_labels, train_dataset, train_labels
-train_size = 200000
-valid_size = 10000
-test_size = 10000
-valid_dataset, valid_labels, train_dataset, train_labels = merge_datasets(
-train_datasets, train_size, valid_size)
-_, _, test_dataset, test_labels = merge_datasets(test_datasets, test_size)
-print(&amp;#39;Training:&amp;#39;, train_dataset.shape, train_labels.shape)
-print(&amp;#39;Validation:&amp;#39;, valid_dataset.shape, valid_labels.shape)
-print(&amp;#39;Testing:&amp;#39;, test_dataset.shape, test_labels.shape)
-&lt;/code>&lt;/pre>&lt;h2 id="代码段打散数据">代码段——打散数据
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;span class="lnt">30
+&lt;/span>&lt;span class="lnt">31
+&lt;/span>&lt;span class="lnt">32
+&lt;/span>&lt;span class="lnt">33
+&lt;/span>&lt;span class="lnt">34
+&lt;/span>&lt;span class="lnt">35
+&lt;/span>&lt;span class="lnt">36
+&lt;/span>&lt;span class="lnt">37
+&lt;/span>&lt;span class="lnt">38
+&lt;/span>&lt;span class="lnt">39
+&lt;/span>&lt;span class="lnt">40
+&lt;/span>&lt;span class="lnt">41
+&lt;/span>&lt;span class="lnt">42
+&lt;/span>&lt;span class="lnt">43
+&lt;/span>&lt;span class="lnt">44
+&lt;/span>&lt;span class="lnt">45
+&lt;/span>&lt;span class="lnt">46
+&lt;/span>&lt;span class="lnt">47
+&lt;/span>&lt;span class="lnt">48
+&lt;/span>&lt;span class="lnt">49
+&lt;/span>&lt;span class="lnt">50
+&lt;/span>&lt;span class="lnt">51
+&lt;/span>&lt;span class="lnt">52
+&lt;/span>&lt;span class="lnt">53
+&lt;/span>&lt;span class="lnt">54
+&lt;/span>&lt;span class="lnt">55
+&lt;/span>&lt;span class="lnt">56
+&lt;/span>&lt;span class="lnt">57
+&lt;/span>&lt;span class="lnt">58
+&lt;/span>&lt;span class="lnt">59
+&lt;/span>&lt;span class="lnt">60
+&lt;/span>&lt;span class="lnt">61
+&lt;/span>&lt;span class="lnt">62
+&lt;/span>&lt;span class="lnt">63
+&lt;/span>&lt;span class="lnt">64
+&lt;/span>&lt;span class="lnt">65
+&lt;/span>&lt;span class="lnt">66
+&lt;/span>&lt;span class="lnt">67
+&lt;/span>&lt;span class="lnt">68
+&lt;/span>&lt;span class="lnt">69
+&lt;/span>&lt;span class="lnt">70
+&lt;/span>&lt;span class="lnt">71
+&lt;/span>&lt;span class="lnt">72
+&lt;/span>&lt;span class="lnt">73
+&lt;/span>&lt;span class="lnt">74
+&lt;/span>&lt;span class="lnt">75
+&lt;/span>&lt;span class="lnt">76
+&lt;/span>&lt;span class="lnt">77
+&lt;/span>&lt;span class="lnt">78
+&lt;/span>&lt;span class="lnt">79
+&lt;/span>&lt;span class="lnt">80
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-gdscript3" data-lang="gdscript3">&lt;span class="line">&lt;span class="cl">&lt;span class="k">def&lt;/span> &lt;span class="nf">make_arrays&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">nb_rows&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">img_size&lt;/span>&lt;span class="p">):&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="n">nb_rows&lt;/span>&lt;span class="p">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">dataset&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">np&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">ndarray&lt;/span>&lt;span class="p">((&lt;/span>&lt;span class="n">nb_rows&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">img_size&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">img_size&lt;/span>&lt;span class="p">),&lt;/span> &lt;span class="n">dtype&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">np&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">float32&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 创建一个空集合，数据类型是长rows宽img_size高img_size的矩阵，数据类型是浮点32位&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">labels&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">np&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">ndarray&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">nb_rows&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">dtype&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">np&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">int32&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 创建一个标签，数据类型是32位整型，长度是rows&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">else&lt;/span>&lt;span class="p">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">dataset&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">labels&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">None&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">None&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="n">dataset&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">labels&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 返回创建的数据类型&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">def&lt;/span> &lt;span class="nf">merge_datasets&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">pickle_files&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">train_size&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">valid_size&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="mi">0&lt;/span>&lt;span class="p">):&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">num_classes&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">len&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">pickle_files&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 需要处理的类别数量&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">valid_dataset&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">valid_labels&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">make_arrays&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">valid_size&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">image_size&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 建立有效数据集合，长度为有效长度&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">train_dataset&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">train_labels&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">make_arrays&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">train_size&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">image_size&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 建立训练数据集合，长度为训练长度&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">vsize_per_class&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">valid_size&lt;/span> &lt;span class="o">//&lt;/span> &lt;span class="n">num_classes&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">tsize_per_class&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">train_size&lt;/span> &lt;span class="o">//&lt;/span> &lt;span class="n">num_classes&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 计算给定训练长度和有效长度下每个类别的平均长度&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">start_v&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">start_t&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">0&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 初始化下标，start_v是有效数据的开始，start_t是训练数据的开始&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">end_v&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">end_t&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">vsize_per_class&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">tsize_per_class&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 初始化下标，end_v是有效数据的结束，end_t是训练数据的结束&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">end_l&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">vsize_per_class&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="n">tsize_per_class&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 初始化下标，end_l是字母集合的结束，等于每个类别有效数据的长度+训练数据的长度&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">for&lt;/span> &lt;span class="n">label&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">pickle_file&lt;/span> &lt;span class="ow">in&lt;/span> &lt;span class="n">enumerate&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">pickle_files&lt;/span>&lt;span class="p">):&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 遍历每一个pickle_file&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">try&lt;/span>&lt;span class="p">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">with&lt;/span> &lt;span class="n">open&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">pickle_file&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s1">&amp;#39;rb&amp;#39;&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="n">as&lt;/span> &lt;span class="n">f&lt;/span>&lt;span class="p">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 打开这个持久化文件&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">letter_set&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">pickle&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">load&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">f&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 加载数据集&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1"># let&amp;#39;s shuffle the letters to have random validation and training set&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">np&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">random&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">shuffle&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">letter_set&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 打乱数据集的顺序&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="n">valid_dataset&lt;/span> &lt;span class="n">is&lt;/span> &lt;span class="ow">not&lt;/span> &lt;span class="n">None&lt;/span>&lt;span class="p">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 如果不是测试集的话，更新测试集，否则 valid_dataset 不更新&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">valid_letter&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">letter_set&lt;/span>&lt;span class="p">[:&lt;/span>&lt;span class="n">vsize_per_class&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="p">:,&lt;/span> &lt;span class="p">:]&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># numpy切片 http://brieflyx.me/2015/python-module/numpy-array-split/&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 从打乱的数据中选择 每类有效数据 数量的数据进行处理，放到 valid_letter 中&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">valid_dataset&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">start_v&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="n">end_v&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="p">:,&lt;/span> &lt;span class="p">:]&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">valid_letter&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 把这份数据放到valid_dataset中&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">valid_labels&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">start_v&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="n">end_v&lt;/span>&lt;span class="p">]&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">label&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 标记label 应该是 0~9中的一种&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">start_v&lt;/span> &lt;span class="o">+=&lt;/span> &lt;span class="n">vsize_per_class&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">end_v&lt;/span> &lt;span class="o">+=&lt;/span> &lt;span class="n">vsize_per_class&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 更新下标&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 循环结束时， valid_dataset 应该总长度为 valid_size 的一份数据， valid_labels是对应位置的标签&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">train_letter&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">letter_set&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">vsize_per_class&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="n">end_l&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="p">:,&lt;/span> &lt;span class="p">:]&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 除去valid部分的随机其他元素，长度为 end_l - vsize_per_class = tsize_per_class&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">train_dataset&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">start_t&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="n">end_t&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="p">:,&lt;/span> &lt;span class="p">:]&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">train_letter&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 循环结束时，train_dataset应该是总长为 train_size 的 一份数据&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># &lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">train_labels&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">start_t&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="n">end_t&lt;/span>&lt;span class="p">]&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">label&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">start_t&lt;/span> &lt;span class="o">+=&lt;/span> &lt;span class="n">tsize_per_class&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">end_t&lt;/span> &lt;span class="o">+=&lt;/span> &lt;span class="n">tsize_per_class&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 更新下标&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">except&lt;/span> &lt;span class="n">Exception&lt;/span> &lt;span class="n">as&lt;/span> &lt;span class="n">e&lt;/span>&lt;span class="p">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">print&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s1">&amp;#39;Unable to process data from&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">pickle_file&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s1">&amp;#39;:&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">e&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">raise&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="n">valid_dataset&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">valid_labels&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">train_dataset&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">train_labels&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">train_size&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">200000&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">valid_size&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">10000&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">test_size&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">10000&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">valid_dataset&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">valid_labels&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">train_dataset&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">train_labels&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">merge_datasets&lt;/span>&lt;span class="p">(&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">train_datasets&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">train_size&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">valid_size&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">_&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">_&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">test_dataset&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">test_labels&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">merge_datasets&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">test_datasets&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">test_size&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">print&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s1">&amp;#39;Training:&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">train_dataset&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">shape&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">train_labels&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">shape&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">print&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s1">&amp;#39;Validation:&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">valid_dataset&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">shape&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">valid_labels&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">shape&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">print&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s1">&amp;#39;Testing:&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">test_dataset&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">shape&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">test_labels&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">shape&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="代码段打散数据">代码段——打散数据
 &lt;/h2>&lt;p>permutation函数介绍：http://www.jianshu.com/p/f0eb10acaa2d&lt;/p>
-&lt;pre tabindex="0">&lt;code>def randomize(dataset, labels):
-# labels.shape[0] 是 labels 的长度
-permutation = np.random.permutation(labels.shape[0])
-# 随机取出这么多数字的打乱
-print(labels.shape[0])
-shuffled_dataset = dataset[permutation,:,:]
-# 打乱数据
-shuffled_labels = labels[permutation]
-# 打乱标签
-return shuffled_dataset, shuffled_labels
-train_dataset, train_labels = randomize(train_dataset, train_labels)
-test_dataset, test_labels = randomize(test_dataset, test_labels)
-valid_dataset, valid_labels = randomize(valid_dataset, valid_labels)
-&lt;/code>&lt;/pre>&lt;h2 id="问题4">问题4
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">def randomize(dataset, labels):
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"># labels.shape[0] 是 labels 的长度
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> permutation = np.random.permutation(labels.shape[0])
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"># 随机取出这么多数字的打乱
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> print(labels.shape[0])
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> shuffled_dataset = dataset[permutation,:,:]
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"># 打乱数据
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> shuffled_labels = labels[permutation]
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"># 打乱标签
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> return shuffled_dataset, shuffled_labels
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">train_dataset, train_labels = randomize(train_dataset, train_labels)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">test_dataset, test_labels = randomize(test_dataset, test_labels)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">valid_dataset, valid_labels = randomize(valid_dataset, valid_labels)
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="问题4">问题4
 &lt;/h2>&lt;p>检验打散后的数据是否正确&lt;/p>
 &lt;ul>
 &lt;li>参考答案&lt;/li>
 &lt;/ul>
-&lt;pre tabindex="0">&lt;code>import random
-def plot_sample_3(dataset, labels, title):
-fig = plt.figure()
-plt.suptitle(title, fontsize=16, fontweight=&amp;#39;bold&amp;#39;)
-# 设置标题样式
-items = random.sample(range(len(labels)), 200)
-# 打散 labels 长的顺序序列
-for i, item in enumerate(items):
-# 随机取一个
-plt.subplot(10, 20, i + 1)
-# 画子图
-plt.axis(&amp;#39;off&amp;#39;)
-# 关闭坐标轴
-plt.title(chr(ord(&amp;#39;A&amp;#39;) + labels[item]))
-# 加标题
-plt.imshow(dataset[item])
-# 显示对应位置的子图
-fig.set_size_inches(18.5, 10.5)
-plt.show()
-# 显示图片
-plot_sample_3(train_dataset, train_labels, &amp;#39;train dataset suffled&amp;#39;)
-plot_sample_3(valid_dataset, valid_labels, &amp;#39;valid dataset suffled&amp;#39;)
-plot_sample_3(test_dataset, test_labels, &amp;#39;test dataset suffled&amp;#39;)
-&lt;/code>&lt;/pre>&lt;p>&lt;img src="https://nansenli.com/img/rescued/2041fe44668c.png"
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-gdscript3" data-lang="gdscript3">&lt;span class="line">&lt;span class="cl">&lt;span class="n">import&lt;/span> &lt;span class="n">random&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">def&lt;/span> &lt;span class="nf">plot_sample_3&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">dataset&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">labels&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">title&lt;/span>&lt;span class="p">):&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">fig&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">plt&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">figure&lt;/span>&lt;span class="p">()&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">plt&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">suptitle&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">title&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">fontsize&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="mi">16&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">fontweight&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s1">&amp;#39;bold&amp;#39;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 设置标题样式&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">items&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">random&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">sample&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nb">range&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">len&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">labels&lt;/span>&lt;span class="p">)),&lt;/span> &lt;span class="mi">200&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 打散 labels 长的顺序序列&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">for&lt;/span> &lt;span class="n">i&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">item&lt;/span> &lt;span class="ow">in&lt;/span> &lt;span class="n">enumerate&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">items&lt;/span>&lt;span class="p">):&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 随机取一个&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">plt&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">subplot&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">10&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">20&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">i&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 画子图&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">plt&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">axis&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s1">&amp;#39;off&amp;#39;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 关闭坐标轴&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">plt&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">title&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">chr&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">ord&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s1">&amp;#39;A&amp;#39;&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="n">labels&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">item&lt;/span>&lt;span class="p">]))&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 加标题&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">plt&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">imshow&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">dataset&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">item&lt;/span>&lt;span class="p">])&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 显示对应位置的子图&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">fig&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">set_size_inches&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mf">18.5&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mf">10.5&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">plt&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">show&lt;/span>&lt;span class="p">()&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 显示图片&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">plot_sample_3&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">train_dataset&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">train_labels&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s1">&amp;#39;train dataset suffled&amp;#39;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">plot_sample_3&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">valid_dataset&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">valid_labels&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s1">&amp;#39;valid dataset suffled&amp;#39;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">plot_sample_3&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">test_dataset&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">test_labels&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s1">&amp;#39;test dataset suffled&amp;#39;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;img src="https://nansenli.com/img/rescued/2041fe44668c.png"
 loading="lazy"
 alt="问题4"
 >&lt;/p>
 &lt;p>省略类似的两图&lt;/p>
 &lt;h2 id="代码段保存数据">代码段——保存数据
-&lt;/h2>&lt;pre tabindex="0">&lt;code>pickle_file = os.path.join(data_root, &amp;#39;notMNIST.pickle&amp;#39;)
-# 输出文件路径
-try:
-f = open(pickle_file, &amp;#39;wb&amp;#39;)
-# 打开这个文件
-save = {
-&amp;#39;train_dataset&amp;#39;: train_dataset,
-&amp;#39;train_labels&amp;#39;: train_labels,
-&amp;#39;valid_dataset&amp;#39;: valid_dataset,
-&amp;#39;valid_labels&amp;#39;: valid_labels,
-&amp;#39;test_dataset&amp;#39;: test_dataset,
-&amp;#39;test_labels&amp;#39;: test_labels,
-}
-# 写入一个字典 string-ndarray
-pickle.dump(save, f, pickle.HIGHEST_PROTOCOL)
-f.close()
-except Exception as e:
-print(&amp;#39;Unable to save data to&amp;#39;, pickle_file, &amp;#39;:&amp;#39;, e)
-raise
-&lt;/code>&lt;/pre>&lt;h2 id="代码段显示保存数据的大小">代码段——显示保存数据的大小
-&lt;/h2>&lt;pre tabindex="0">&lt;code>statinfo = os.stat(pickle_file)
-print(&amp;#39;Compressed pickle size:&amp;#39;, statinfo.st_size)
-&lt;/code>&lt;/pre>&lt;h2 id="问题5">问题5
+&lt;/h2>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">pickle_file = os.path.join(data_root, &amp;#39;notMNIST.pickle&amp;#39;)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"># 输出文件路径
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">try:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> f = open(pickle_file, &amp;#39;wb&amp;#39;)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"># 打开这个文件
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> save = {
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &amp;#39;train_dataset&amp;#39;: train_dataset,
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &amp;#39;train_labels&amp;#39;: train_labels,
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &amp;#39;valid_dataset&amp;#39;: valid_dataset,
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &amp;#39;valid_labels&amp;#39;: valid_labels,
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &amp;#39;test_dataset&amp;#39;: test_dataset,
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &amp;#39;test_labels&amp;#39;: test_labels,
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> }
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"># 写入一个字典 string-ndarray
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> pickle.dump(save, f, pickle.HIGHEST_PROTOCOL)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> f.close()
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">except Exception as e:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> print(&amp;#39;Unable to save data to&amp;#39;, pickle_file, &amp;#39;:&amp;#39;, e)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> raise
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="代码段显示保存数据的大小">代码段——显示保存数据的大小
+&lt;/h2>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">statinfo = os.stat(pickle_file)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">print(&amp;#39;Compressed pickle size:&amp;#39;, statinfo.st_size)
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="问题5">问题5
 &lt;/h2>&lt;p>题目的Google翻译&lt;/p>
 &lt;p>通过构建，此数据集可能包含大量重叠样本，包括验证和测试集中也包含的训练数据！ 训练和测试之间的重叠可能会使结果偏斜，如果您希望在没有重叠的环境中使用您的模型，但如果您希望在使用训练样本时再次看到训练样本，那么实际上是可以的。 测量培训，验证和测试样本之间的重叠程度。
 可选问题：
@@ -750,37 +1467,89 @@ print(&amp;#39;Compressed pickle size:&amp;#39;, statinfo.st_size)
 &lt;ul>
 &lt;li>仅仅查看重复的图片数量&lt;/li>
 &lt;/ul>
-&lt;pre tabindex="0">&lt;code>import hashlib
-pickle_file = os.path.join(&amp;#39;.&amp;#39;, &amp;#39;notMNIST.pickle&amp;#39;)
-try:
-with open(pickle_file, &amp;#39;rb&amp;#39;) as f:
-data = pickle.load(f)
-except Exception as e:
-print(&amp;#39;Unable to open data from&amp;#39;, pickle_file, &amp;#39;:&amp;#39;, e)
-raise
-# 自从保存数据后，如果kernel挂了，就可以从本地直接读取，不用重新运行之前的代码
-# 如果报错的话，可以在网上搜索报错的异常
-def calcOverlap(sourceSet, targetSet, description):
-sourceSetMd5 = np.array([hashlib.md5(img).hexdigest() for img in sourceSet])
-# 建立一个md5表格
-targetSetMd5 = np.array([hashlib.md5(img).hexdigest() for img in targetSet])
-# 建立一个md5表格
-overlap = np.intersect1d(sourceSetMd5, targetSetMd5, assume_unique=False)
-# 去重
-print(description)
-print(&amp;#34;overlap&amp;#34;,overlap.shape[0], &amp;#34;from&amp;#34;,sourceSetMd5.shape[0],&amp;#34;to&amp;#34;, targetSetMd5.shape[0])
-print(&amp;#34;rate&amp;#34;,overlap.shape[0]*100.0/sourceSetMd5.shape[0],&amp;#34;% and&amp;#34;, overlap.shape[0]*100.0/targetSetMd5.shape[0],&amp;#34;%&amp;#34;)
-# 打印重叠数量
-calcOverlap(data[&amp;#39;train_dataset&amp;#39;], data[&amp;#39;valid_dataset&amp;#39;], &amp;#34;train_dataset &amp;amp; valid_dataset&amp;#34;)
-calcOverlap(data[&amp;#39;train_dataset&amp;#39;], data[&amp;#39;test_dataset&amp;#39;], &amp;#34;train_dataset &amp;amp; test_dataset&amp;#34;)
-calcOverlap(data[&amp;#39;test_dataset&amp;#39;], data[&amp;#39;valid_dataset&amp;#39;], &amp;#34;test_dataset &amp;amp; valid_dataset&amp;#34;)```
-![运行效果](/img/rescued/fc3c3db78e52.png)
-- 去除重复图片资源
-待更新
-## 问题6
-使用逻辑回归训练模型并且进行测试
-- 参考代码
-&lt;/code>&lt;/pre>&lt;p>import random
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;span class="lnt">30
+&lt;/span>&lt;span class="lnt">31
+&lt;/span>&lt;span class="lnt">32
+&lt;/span>&lt;span class="lnt">33
+&lt;/span>&lt;span class="lnt">34
+&lt;/span>&lt;span class="lnt">35
+&lt;/span>&lt;span class="lnt">36
+&lt;/span>&lt;span class="lnt">37
+&lt;/span>&lt;span class="lnt">38
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-gdscript3" data-lang="gdscript3">&lt;span class="line">&lt;span class="cl">&lt;span class="n">import&lt;/span> &lt;span class="n">hashlib&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">pickle_file&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">os&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">path&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">join&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s1">&amp;#39;.&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s1">&amp;#39;notMNIST.pickle&amp;#39;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">try&lt;/span>&lt;span class="p">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">with&lt;/span> &lt;span class="n">open&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">pickle_file&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s1">&amp;#39;rb&amp;#39;&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="n">as&lt;/span> &lt;span class="n">f&lt;/span>&lt;span class="p">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">data&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">pickle&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">load&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">f&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">except&lt;/span> &lt;span class="n">Exception&lt;/span> &lt;span class="n">as&lt;/span> &lt;span class="n">e&lt;/span>&lt;span class="p">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">print&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s1">&amp;#39;Unable to open data from&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">pickle_file&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s1">&amp;#39;:&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">e&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">raise&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 自从保存数据后，如果kernel挂了，就可以从本地直接读取，不用重新运行之前的代码&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 如果报错的话，可以在网上搜索报错的异常&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">def&lt;/span> &lt;span class="nf">calcOverlap&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">sourceSet&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">targetSet&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">description&lt;/span>&lt;span class="p">):&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">sourceSetMd5&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">np&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">array&lt;/span>&lt;span class="p">([&lt;/span>&lt;span class="n">hashlib&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">md5&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">img&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">hexdigest&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="k">for&lt;/span> &lt;span class="n">img&lt;/span> &lt;span class="ow">in&lt;/span> &lt;span class="n">sourceSet&lt;/span>&lt;span class="p">])&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 建立一个md5表格&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">targetSetMd5&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">np&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">array&lt;/span>&lt;span class="p">([&lt;/span>&lt;span class="n">hashlib&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">md5&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">img&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">hexdigest&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="k">for&lt;/span> &lt;span class="n">img&lt;/span> &lt;span class="ow">in&lt;/span> &lt;span class="n">targetSet&lt;/span>&lt;span class="p">])&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 建立一个md5表格&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">overlap&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">np&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">intersect1d&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">sourceSetMd5&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">targetSetMd5&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">assume_unique&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">False&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 去重&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">print&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">description&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">print&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;overlap&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="n">overlap&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">shape&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="mi">0&lt;/span>&lt;span class="p">],&lt;/span> &lt;span class="s2">&amp;#34;from&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="n">sourceSetMd5&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">shape&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="mi">0&lt;/span>&lt;span class="p">],&lt;/span>&lt;span class="s2">&amp;#34;to&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">targetSetMd5&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">shape&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="mi">0&lt;/span>&lt;span class="p">])&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">print&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;rate&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="n">overlap&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">shape&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="mi">0&lt;/span>&lt;span class="p">]&lt;/span>&lt;span class="o">*&lt;/span>&lt;span class="mf">100.0&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">sourceSetMd5&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">shape&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="mi">0&lt;/span>&lt;span class="p">],&lt;/span>&lt;span class="s2">&amp;#34;% and&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">overlap&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">shape&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="mi">0&lt;/span>&lt;span class="p">]&lt;/span>&lt;span class="o">*&lt;/span>&lt;span class="mf">100.0&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">targetSetMd5&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">shape&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="mi">0&lt;/span>&lt;span class="p">],&lt;/span>&lt;span class="s2">&amp;#34;%&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 打印重叠数量&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">calcOverlap&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">data&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="s1">&amp;#39;train_dataset&amp;#39;&lt;/span>&lt;span class="p">],&lt;/span> &lt;span class="n">data&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="s1">&amp;#39;valid_dataset&amp;#39;&lt;/span>&lt;span class="p">],&lt;/span> &lt;span class="s2">&amp;#34;train_dataset &amp;amp; valid_dataset&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">calcOverlap&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">data&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="s1">&amp;#39;train_dataset&amp;#39;&lt;/span>&lt;span class="p">],&lt;/span> &lt;span class="n">data&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="s1">&amp;#39;test_dataset&amp;#39;&lt;/span>&lt;span class="p">],&lt;/span> &lt;span class="s2">&amp;#34;train_dataset &amp;amp; test_dataset&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">calcOverlap&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">data&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="s1">&amp;#39;test_dataset&amp;#39;&lt;/span>&lt;span class="p">],&lt;/span> &lt;span class="n">data&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="s1">&amp;#39;valid_dataset&amp;#39;&lt;/span>&lt;span class="p">],&lt;/span> &lt;span class="s2">&amp;#34;test_dataset &amp;amp; valid_dataset&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="err">```&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">!&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="err">运行效果&lt;/span>&lt;span class="p">](&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">img&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">rescued&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">fc3c3db78e52&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">png&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">-&lt;/span> &lt;span class="err">去除重复图片资源&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">待更新&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">## 问题6&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">使用逻辑回归训练模型并且进行测试&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">-&lt;/span> &lt;span class="err">参考代码&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>import random
 def disp_sample_dataset(dataset, labels,trueLabels, title=None):&lt;/p>
 &lt;h1 id="展示训练的结果">展示训练的结果
 &lt;/h1>&lt;pre>&lt;code>fig = plt.figure()
@@ -837,17 +1606,54 @@ regr = LogisticRegression()&lt;/p>
 disp_sample_dataset(test_dataset, pred_labels, test_labels, 'sample_size=' + str(sample_size))
 &lt;/code>&lt;/pre>
 &lt;p>train_and_predict(data[&amp;rsquo;train_dataset&amp;rsquo;],data[&amp;rsquo;train_labels&amp;rsquo;],data[&amp;rsquo;test_dataset&amp;rsquo;],data[&amp;rsquo;test_labels&amp;rsquo;], 1000)&lt;/p>
-&lt;pre tabindex="0">&lt;code>
-![image.png](/img/rescued/abdb5d761390.png)
-## 模型性能
-小节22~27提到了模型性能的相关知识。我们通常希望模型的性能能够达到100%，显然是不可能的。并且，为了使训练集的准确性提高，模型可能会发生过拟合。这时要遵循两点。
-- 不要将训练数据一次性使用，而是分块使用，每次训练一部分
-- 当模型参数使30个以上的用例由错误变成正确，则这个参数的改变是有效果的。
-![模型性能](/img/rescued/a8e154206ab8.png)
-## 随机梯度下降
-小节29~31讲解了什么是随机梯度下降
-在训练过程中，为了让模型朝着最优的方向走，需要计算该点的导数。1.导数的计算量比较大，我们需要随机选择一部分样本来计算导数，来代替真实的导数。这就是随机梯度下降。2.为了减缓随机选择的随机性，我们使用动量的惯性来减少随机性。3.为了让后期模型能够稳定，我们减少学习的步长。
-课程一结束
-&amp;gt; 作业代码参考
-&amp;gt; http://www.hankcs.com/ml/notmnist.html
-&lt;/code>&lt;/pre></description></item></channel></rss>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">![image.png](/img/rescued/abdb5d761390.png)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">## 模型性能
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">小节22~27提到了模型性能的相关知识。我们通常希望模型的性能能够达到100%，显然是不可能的。并且，为了使训练集的准确性提高，模型可能会发生过拟合。这时要遵循两点。
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">- 不要将训练数据一次性使用，而是分块使用，每次训练一部分
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">- 当模型参数使30个以上的用例由错误变成正确，则这个参数的改变是有效果的。
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">![模型性能](/img/rescued/a8e154206ab8.png)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">## 随机梯度下降
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">小节29~31讲解了什么是随机梯度下降
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">在训练过程中，为了让模型朝着最优的方向走，需要计算该点的导数。1.导数的计算量比较大，我们需要随机选择一部分样本来计算导数，来代替真实的导数。这就是随机梯度下降。2.为了减缓随机选择的随机性，我们使用动量的惯性来减少随机性。3.为了让后期模型能够稳定，我们减少学习的步长。
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">课程一结束
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&amp;gt; 作业代码参考
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&amp;gt; http://www.hankcs.com/ml/notmnist.html
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div></description></item></channel></rss>

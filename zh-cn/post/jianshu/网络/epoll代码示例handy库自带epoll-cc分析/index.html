@@ -1,7 +1,7 @@
-<!doctype html><html lang=zh-cn dir=ltr><head><meta charset=utf-8><meta name=viewport content='width=device-width,initial-scale=1'><meta name=description content="前言 C++网络库有很多。handy是一个C++11风格的网络库，对深入学习C++有很大帮助。 代码分析 下面是来自handy/raw_examples下的epoll.cc文件。是水平触发的一个示例。该http服务器无论接收到什么样的请求，都返回一个静态资源123456。编译：c++ -o epoll epoll.cc，运行： sudo ./epoll。源代码中sendRes的if (con.writeEnabled)这句似乎有些问题，导致发送超大资源时出现问题。我已经做了修改，使之能够正确发送超大文件。 /* * 编译：c++ -o epoll epoll.cc * 运行： ./epoll * 测试：curl -v localhost */ /* 运行效果 使用sudo 运行epoll程序。该程序在本机0.0.0.0的80端口监听，作为一个http服务器运行 每当有连接访问时，返回静态资源httpRes LT是默认模式 */ #include <sys/socket.h> #include <sys/epoll.h> #include <netinet/in.h> #include <arpa/inet.h> #include <fcntl.h> #include <unistd.h> #include <stdio.h> #include <errno.h> #include <string.h> #include <stdlib.h> #include <map> #include <string> #include <signal.h> #include <iostream> using namespace std; bool output_log = true; // 一个宏，用来打印错误并退出 #define exit_if(r, ."><title>epoll代码示例——handy库自带epoll.cc分析</title>
-<link rel=canonical href=https://nansenli.com/zh-cn/post/jianshu/%E7%BD%91%E7%BB%9C/epoll%E4%BB%A3%E7%A0%81%E7%A4%BA%E4%BE%8Bhandy%E5%BA%93%E8%87%AA%E5%B8%A6epoll-cc%E5%88%86%E6%9E%90/><link rel=stylesheet href=/scss/style.min.b9b97e7c3f7f078f7ec4f60195f6139d30ad5972cc05950321ee04a9e98c542f.css><meta property='og:title' content="epoll代码示例——handy库自带epoll.cc分析"><meta property='og:description' content="前言 C++网络库有很多。handy是一个C++11风格的网络库，对深入学习C++有很大帮助。 代码分析 下面是来自handy/raw_examples下的epoll.cc文件。是水平触发的一个示例。该http服务器无论接收到什么样的请求，都返回一个静态资源123456。编译：c++ -o epoll epoll.cc，运行： sudo ./epoll。源代码中sendRes的if (con.writeEnabled)这句似乎有些问题，导致发送超大资源时出现问题。我已经做了修改，使之能够正确发送超大文件。 /* * 编译：c++ -o epoll epoll.cc * 运行： ./epoll * 测试：curl -v localhost */ /* 运行效果 使用sudo 运行epoll程序。该程序在本机0.0.0.0的80端口监听，作为一个http服务器运行 每当有连接访问时，返回静态资源httpRes LT是默认模式 */ #include <sys/socket.h> #include <sys/epoll.h> #include <netinet/in.h> #include <arpa/inet.h> #include <fcntl.h> #include <unistd.h> #include <stdio.h> #include <errno.h> #include <string.h> #include <stdlib.h> #include <map> #include <string> #include <signal.h> #include <iostream> using namespace std; bool output_log = true; // 一个宏，用来打印错误并退出 #define exit_if(r, ."><meta property='og:url' content='https://nansenli.com/zh-cn/post/jianshu/%E7%BD%91%E7%BB%9C/epoll%E4%BB%A3%E7%A0%81%E7%A4%BA%E4%BE%8Bhandy%E5%BA%93%E8%87%AA%E5%B8%A6epoll-cc%E5%88%86%E6%9E%90/'><meta property='og:site_name' content="Nansen Li's Blog
+<!doctype html><html lang=zh-cn dir=ltr><head><meta charset=utf-8><meta name=viewport content='width=device-width,initial-scale=1'><meta name=description content="前言 C++网络库有很多。handy是一个C++11风格的网络库，对深入学习C++有很大帮助。 代码分析 下面是来自handy/raw_examp"><title>epoll代码示例——handy库自带epoll.cc分析</title>
+<link rel=canonical href=https://nansenli.com/zh-cn/post/jianshu/%E7%BD%91%E7%BB%9C/epoll%E4%BB%A3%E7%A0%81%E7%A4%BA%E4%BE%8Bhandy%E5%BA%93%E8%87%AA%E5%B8%A6epoll-cc%E5%88%86%E6%9E%90/><link rel=stylesheet href=/scss/style.min.13a07907ead250546ad0b764b76f2b704035157ccc91726856890c9c2e7e027e.css><meta property='og:title' content="epoll代码示例——handy库自带epoll.cc分析"><meta property='og:description' content="前言 C++网络库有很多。handy是一个C++11风格的网络库，对深入学习C++有很大帮助。 代码分析 下面是来自handy/raw_examp"><meta property='og:url' content='https://nansenli.com/zh-cn/post/jianshu/%E7%BD%91%E7%BB%9C/epoll%E4%BB%A3%E7%A0%81%E7%A4%BA%E4%BE%8Bhandy%E5%BA%93%E8%87%AA%E5%B8%A6epoll-cc%E5%88%86%E6%9E%90/'><meta property='og:site_name' content="Nansen Li's Blog
 李楠森的博客
-"><meta property='og:type' content='article'><meta property='article:section' content='Post'><meta property='article:published_time' content='2018-05-16T07:43:00+00:00'><meta property='article:modified_time' content='2018-05-16T07:43:00+00:00'><meta name=twitter:title content="epoll代码示例——handy库自带epoll.cc分析"><meta name=twitter:description content="前言 C++网络库有很多。handy是一个C++11风格的网络库，对深入学习C++有很大帮助。 代码分析 下面是来自handy/raw_examples下的epoll.cc文件。是水平触发的一个示例。该http服务器无论接收到什么样的请求，都返回一个静态资源123456。编译：c++ -o epoll epoll.cc，运行： sudo ./epoll。源代码中sendRes的if (con.writeEnabled)这句似乎有些问题，导致发送超大资源时出现问题。我已经做了修改，使之能够正确发送超大文件。 /* * 编译：c++ -o epoll epoll.cc * 运行： ./epoll * 测试：curl -v localhost */ /* 运行效果 使用sudo 运行epoll程序。该程序在本机0.0.0.0的80端口监听，作为一个http服务器运行 每当有连接访问时，返回静态资源httpRes LT是默认模式 */ #include <sys/socket.h> #include <sys/epoll.h> #include <netinet/in.h> #include <arpa/inet.h> #include <fcntl.h> #include <unistd.h> #include <stdio.h> #include <errno.h> #include <string.h> #include <stdlib.h> #include <map> #include <string> #include <signal.h> #include <iostream> using namespace std; bool output_log = true; // 一个宏，用来打印错误并退出 #define exit_if(r, ."><link rel="shortcut icon" href=/favicon.ico><script async src="https://www.googletagmanager.com/gtag/js?id=G-WC38C3XE3J"></script><script>var dnt,doNotTrack=!1;if(!1&&(dnt=navigator.doNotTrack||window.doNotTrack||navigator.msDoNotTrack,doNotTrack=dnt=="1"||dnt=="yes"),!doNotTrack){window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag("js",new Date),gtag("config","G-WC38C3XE3J")}</script></head><body class=article-page><script>(function(){const e="StackColorScheme";localStorage.getItem(e)||localStorage.setItem(e,"auto")})()</script><script>(function(){const t="StackColorScheme",e=localStorage.getItem(t),n=window.matchMedia("(prefers-color-scheme: dark)").matches===!0;e=="dark"||e==="auto"&&n?document.documentElement.dataset.scheme="dark":document.documentElement.dataset.scheme="light"})()</script><div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky"><button class="hamburger hamburger--spin" type=button id=toggle-menu aria-label=切换菜单>
+"><meta property='og:type' content='article'><meta property='article:section' content='Post'><meta property='article:published_time' content='2018-05-16T07:43:00+00:00'><meta property='article:modified_time' content='2018-05-16T07:43:00+00:00'><meta name=twitter:title content="epoll代码示例——handy库自带epoll.cc分析"><meta name=twitter:description content="前言 C++网络库有很多。handy是一个C++11风格的网络库，对深入学习C++有很大帮助。 代码分析 下面是来自handy/raw_examp"><link rel="shortcut icon" href=/favicon.ico><script async src="https://www.googletagmanager.com/gtag/js?id=G-WC38C3XE3J"></script><script>var dnt,doNotTrack=!1;if(!1&&(dnt=navigator.doNotTrack||window.doNotTrack||navigator.msDoNotTrack,doNotTrack=dnt=="1"||dnt=="yes"),!doNotTrack){window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag("js",new Date),gtag("config","G-WC38C3XE3J")}</script></head><body class=article-page><script>(function(){const e="StackColorScheme";localStorage.getItem(e)||localStorage.setItem(e,"auto")})()</script><script>(function(){const t="StackColorScheme",e=localStorage.getItem(t),n=window.matchMedia("(prefers-color-scheme: dark)").matches===!0;e=="dark"||e==="auto"&&n?document.documentElement.dataset.scheme="dark":document.documentElement.dataset.scheme="light"})()</script><div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky"><button class="hamburger hamburger--spin" type=button id=toggle-menu aria-label=切换菜单>
 <span class=hamburger-box><span class=hamburger-inner></span></span></button><header><figure class=site-avatar><a href=/zh-cn/><img src=/img/avatar_hu96777ff80939aaa7d938dddcc232fcc6_1414962_300x0_resize_box_3.png width=300 height=300 class=site-logo loading=lazy alt=Avatar>
 </a><span class=emoji>🌈</span></figure><div class=site-meta><h1 class=site-name><a href=/zh-cn>Nansen Li's Blog
 李楠森的博客</a></h1><h2 class=site-description></h2></div></header><ol class=menu-social><li><a href=https://github.com/linanwx target=_blank title=GitHub rel=me><svg class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 19c-4.3 1.4-4.3-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6.0 00-1.3-3.2 4.2 4.2.0 00-.1-3.2s-1.1-.3-3.5 1.3a12.3 12.3.0 00-6.2.0C6.5 2.8 5.4 3.1 5.4 3.1a4.2 4.2.0 00-.1 3.2A4.6 4.6.0 004 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"/></svg></a></li><li><a href=https://www.linkedin.com/in/nansen-li-3bb0a3146/ target=_blank title=LinkedIn rel=me><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-brand-linkedin"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M8 11v5"/><path d="M8 8v.01"/><path d="M12 16v-5"/><path d="M16 16v-3a2 2 0 10-4 0"/><path d="M3 7a4 4 0 014-4h10a4 4 0 014 4v10a4 4 0 01-4 4H7a4 4 0 01-4-4z"/></svg></a></li><li><a href=index.xml target=_blank title=RSS rel=me><svg class="icon icon-tabler icon-tabler-rss" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="5" cy="19" r="1"/><path d="M4 4a16 16 0 0116 16"/><path d="M4 11a9 9 0 019 9"/></svg></a></li></ol><ol class=menu id=main-menu><li><a href=/zh-cn/><svg class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><polyline points="5 12 3 12 12 3 21 12 19 12"/><path d="M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/><path d="M9 21v-6a2 2 0 012-2h2a2 2 0 012 2v6"/></svg>
@@ -10,397 +10,785 @@
 <span>搜索</span></a></li><li class=menu-bottom-section><ol class=menu><li id=i18n-switch><svg class="icon icon-tabler icon-tabler-language" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 5h7"/><path d="M9 3v2c0 4.418-2.239 8-5 8"/><path d="M5 9c-.003 2.144 2.952 3.908 6.7 4"/><path d="M12 20l4-9 4 9"/><path d="M19.1 18h-6.2"/></svg>
 <select name=language title=language onchange="window.location.href=this.selectedOptions[0].value"><option value=https://nansenli.com/>English</option><option value=https://nansenli.com/zh-cn/ selected>中文</option></select></li><li id=dark-mode-toggle><svg class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="8" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
 <svg class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="16" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
-<span>暗色模式</span></li></ol></li></ol></aside><main class="main full-width"><article class=main-article><header class=article-header><div class=article-details><header class=article-category><a href=/zh-cn/categories/%E7%BD%91%E7%BB%9C/>网络</a></header><div class=article-title-wrapper><h2 class=article-title><a href=/zh-cn/post/jianshu/%E7%BD%91%E7%BB%9C/epoll%E4%BB%A3%E7%A0%81%E7%A4%BA%E4%BE%8Bhandy%E5%BA%93%E8%87%AA%E5%B8%A6epoll-cc%E5%88%86%E6%9E%90/>epoll代码示例——handy库自带epoll.cc分析</a></h2></div><footer class=article-time><div><svg class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M11.795 21H5a2 2 0 01-2-2V7a2 2 0 012-2h12a2 2 0 012 2v4"/><circle cx="18" cy="18" r="4"/><path d="M15 3v4"/><path d="M7 3v4"/><path d="M3 11h16"/><path d="M18 16.496V18l1 1"/></svg>
+<span>暗色模式</span></li></ol></li></ol></aside><aside class="sidebar right-sidebar sticky"><section class="widget archives"><div class=widget-icon><svg class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><line x1="5" y1="9" x2="19" y2="9"/><line x1="5" y1="15" x2="19" y2="15"/><line x1="11" y1="4" x2="7" y2="20"/><line x1="17" y1="4" x2="13" y2="20"/></svg></div><h2 class="widget-title section-title">目录</h2><div class=widget--toc><nav id=TableOfContents><ul><li><a href=#前言>前言</a></li><li><a href=#代码分析>代码分析</a></li><li><a href=#运行效果>运行效果</a></li></ul></nav></div></section></aside><main class="main full-width"><article class=main-article><header class=article-header><div class=article-details><header class=article-category><a href=/zh-cn/categories/%E7%BD%91%E7%BB%9C/>网络</a></header><div class=article-title-wrapper><h2 class=article-title><a href=/zh-cn/post/jianshu/%E7%BD%91%E7%BB%9C/epoll%E4%BB%A3%E7%A0%81%E7%A4%BA%E4%BE%8Bhandy%E5%BA%93%E8%87%AA%E5%B8%A6epoll-cc%E5%88%86%E6%9E%90/>epoll代码示例——handy库自带epoll.cc分析</a></h2></div><footer class=article-time><div><svg class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M11.795 21H5a2 2 0 01-2-2V7a2 2 0 012-2h12a2 2 0 012 2v4"/><circle cx="18" cy="18" r="4"/><path d="M15 3v4"/><path d="M7 3v4"/><path d="M3 11h16"/><path d="M18 16.496V18l1 1"/></svg>
 <time class=article-time--published>May 16, 2018</time></div><div><svg class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg>
-<time class=article-time--reading>阅读时长: 6 分钟</time></div></footer><footer class=article-translations><svg class="icon icon-tabler icon-tabler-language" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 5h7"/><path d="M9 3v2c0 4.418-2.239 8-5 8"/><path d="M5 9c-.003 2.144 2.952 3.908 6.7 4"/><path d="M12 20l4-9 4 9"/><path d="M19.1 18h-6.2"/></svg><div><a href=https://nansenli.com/post/jianshu/%E7%BD%91%E7%BB%9C/epoll%E4%BB%A3%E7%A0%81%E7%A4%BA%E4%BE%8Bhandy%E5%BA%93%E8%87%AA%E5%B8%A6epoll-cc%E5%88%86%E6%9E%90/ class=link>English</a></div></footer></div></header><section class=article-content><h2 id=前言>前言</h2><p>C++网络库有很多。handy是一个C++11风格的网络库，对深入学习C++有很大帮助。</p><h2 id=代码分析>代码分析</h2><p>下面是来自handy/raw_examples下的epoll.cc文件。是水平触发的一个示例。该http服务器无论接收到什么样的请求，都返回一个静态资源123456。编译：c++ -o epoll epoll.cc，运行： sudo ./epoll。源代码中sendRes的if (con.writeEnabled)这句似乎有些问题，导致发送超大资源时出现问题。我已经做了修改，使之能够正确发送超大文件。</p><pre tabindex=0><code>/*
- * 编译：c++ -o epoll epoll.cc
- * 运行： ./epoll
- * 测试：curl -v localhost
- */
-
-
-/* 
-    运行效果
-    使用sudo 运行epoll程序。该程序在本机0.0.0.0的80端口监听，作为一个http服务器运行
-    每当有连接访问时，返回静态资源httpRes
-    LT是默认模式
-
- */
-
-#include &lt;sys/socket.h&gt;
-#include &lt;sys/epoll.h&gt;
-#include &lt;netinet/in.h&gt;
-#include &lt;arpa/inet.h&gt;
-#include &lt;fcntl.h&gt;
-#include &lt;unistd.h&gt;
-#include &lt;stdio.h&gt;
-#include &lt;errno.h&gt;
-#include &lt;string.h&gt;
-#include &lt;stdlib.h&gt;
-#include &lt;map&gt;
-#include &lt;string&gt;
-#include &lt;signal.h&gt;
-#include &lt;iostream&gt;
-using namespace std;
-
-
-bool output_log = true;
-// 一个宏，用来打印错误并退出
-#define exit_if(r, ...) if(r) {printf(__VA_ARGS__); printf(&#34;%s:%d error no: %d error msg %s\n&#34;, __FILE__, __LINE__, errno, strerror(errno)); exit(1);}
-// 这个函数用于将指定的fd设置为非阻塞状态
-void setNonBlock(int fd) {
-    // 首先我们取出原来文件描述符的flags
-    int flags = fcntl(fd, F_GETFL, 0);
-    exit_if(flags&lt;0, &#34;fcntl failed&#34;);
-    // 然后加上O_NONBLOCK，再设置回去
-    int r = fcntl(fd, F_SETFL, flags | O_NONBLOCK);
-    exit_if(r&lt;0, &#34;fcntl failed&#34;);
-}
-// 对epoll_ctl二次包装，将events 和 fd放入ev中。
-// 并且设置events 设置为可读可写时触发
-void updateEvents(int efd, int fd, int events, int op) {
-    struct epoll_event ev = {0};
-    ev.events = events;
-    ev.data.fd = fd;
-    printf(&#34;%s fd %d events read %d write %d\n&#34;,
-           op==EPOLL_CTL_MOD?&#34;mod&#34;:&#34;add&#34;, fd, ev.events &amp; EPOLLIN, ev.events &amp; EPOLLOUT);
-    int r = epoll_ctl(efd, op, fd, &amp;ev);
-    exit_if(r, &#34;epoll_ctl failed&#34;);
-}
-// 尝试在fd上做accept操作。如果成功，将其加入到epoll fd的监听列表中。epoll的events设置为当数据有写入的时候触发。
-void handleAccept(int efd, int fd) {
-    struct sockaddr_in raddr;
-    socklen_t rsz = sizeof(raddr);
-    int cfd = accept(fd,(struct sockaddr *)&amp;raddr,&amp;rsz);
-    exit_if(cfd&lt;0, &#34;accept failed&#34;);
-    sockaddr_in peer, local;
-    socklen_t alen = sizeof(peer);
-    int r = getpeername(cfd, (sockaddr*)&amp;peer, &amp;alen);
-    exit_if(r&lt;0, &#34;getpeername failed&#34;);
-    printf(&#34;accept a connection from %s\n&#34;, inet_ntoa(raddr.sin_addr));
-    setNonBlock(cfd);
-    updateEvents(efd, cfd, EPOLLIN, EPOLL_CTL_ADD);
-}
-// 表示一个连接。成员有连接已读取的数据、已写入的数据
-// string用来保存二进制内容没有问题吗，如果遇到\0会如何？
-// 没有问题https://www.zhihu.com/question/33104941
-struct Con {
-    string readed;
-    size_t written;
-    bool writeEnabled;
-    Con(): written(0), writeEnabled(false) {}
-};
-// 用来映射fd与con的数据结构
-map&lt;int, Con&gt; cons;
-
-string httpRes;
-// 发送资源
-void sendRes(int efd, int fd) {
-    // 首先取得连接信息
-    Con&amp; con = cons[fd];
-    // 没有接受到数据就要求写入
-    // 说明其可能上一次继续发送的数据发送完了
-    // 其对应的文件描述符在cons中已经删除
-    // 然后触发了epoll信号
-    // 此时关闭其上一次发送的标志
-    // 然后关闭其缓冲区发送触发epoll的标志
-    // 只保留其有数据可读时触发
-    // 为什么不在写入完数据时就将这步做了呢？
-    // if (!con.readed.length()) {
-    //     if (con.writeEnabled) {
-    //         updateEvents(efd, fd, EPOLLIN, EPOLL_CTL_MOD);
-    //         con.writeEnabled = false;
-    //     }
-    //     return;
-    // }
-    // 计算还需要写入的数据长度
-    size_t left = httpRes.length() - con.written;
-    int wd = 0;
-    // 连续写入数据，直到内核缓冲区无法写入数据为止
-    while((wd=::write(fd, httpRes.data()+con.written, left))&gt;0) {
-        con.written += wd;
-        left -= wd;
-        if(output_log) printf(&#34;write %d bytes left: %lu\n&#34;, wd, left);
-    };
-    // 如果没有数据可以写入，则删除这个连接。但是不断开连接，即将连接信息置空
-    if (left == 0) {
-//        close(fd); // 测试中使用了keepalive，因此不关闭连接。连接会在read事件中关闭
-        if (con.writeEnabled) {
-            updateEvents(efd, fd, EPOLLIN, EPOLL_CTL_MOD);
-            con.writeEnabled = false;
-        }
-        cons.erase(fd);
-        return;
-    }
-    // 如果内核缓冲区满了，没办法写入了
-    if (wd &lt; 0 &amp;&amp;  (errno == EAGAIN || errno == EWOULDBLOCK)) {
-        // 将其标记上可继续写
-        if (!con.writeEnabled) {
-            // 等待其可继续写，或可读
-            // 避免重复进行系统调用，使用con.writeEnabled标记位
-            printf(&#34;update it to EPOLLIN|EPOLLOUT\n&#34;);
-            updateEvents(efd, fd, EPOLLIN|EPOLLOUT, EPOLL_CTL_MOD);
-            con.writeEnabled = true;
-        }
-        return;
-    }
-    // 如果是其他情况，比如在没有写完数据时直接返回0，或者是返回了其他错误
-    // 则说明出错了
-    if (wd&lt;=0) {
-        printf(&#34;write error for %d: %d %s\n&#34;, fd, errno, strerror(errno));
-        close(fd);
-        cons.erase(fd);
-    }
-}
-// 当loop once处理读取数据时，调用该函数
-void handleRead(int efd, int fd) {
-    char buf[4096];
-    int n = 0;
-    // 每次读取4k字节，循环读出当前内核中已存在的数据（有可能分包导致信息不完整）
-    while ((n=::read(fd, buf, sizeof buf)) &gt; 0) {
-        if(output_log) printf(&#34;read %d bytes\n&#34;, n);
-        // 这里通过一个map来获取之前fd对应的连接信息。
-        // 当fd对应的下标不存在的时候，则会调用con的默认构造函数Con(): written(0), writeEnabled(false) {}
-        string&amp; readed = cons[fd].readed;
-        // 调用string类的append方法将数据加入到连接信息中
-        // 注意为了保证二进制安全需要传入参数n
-        readed.append(buf, n);
-        std::cout  &lt;&lt; &#34;now info is&#34; &lt;&lt; std::endl &lt;&lt; &#34;---&#34; &lt;&lt;  readed &lt;&lt; endl &lt;&lt; &#34;---&#34; &lt;&lt;  std::endl;
-        // 判断一个http请求发送完毕。
-        // 不判断http请求的内容，一律发送静态资源
-        if (readed.length()&gt;4) {
-            if (readed.substr(readed.length()-2, 2) == &#34;\n\n&#34; || readed.substr(readed.length()-4, 4) == &#34;\r\n\r\n&#34;) {
-                //当读取到一个完整的http请求，测试发送响应
-                // TCP连接建立起来之后，客户端就开始传输首部，然后以\r\n\r\n来标志首部的结束和实体的开始（当然是请求里包含实体才会有实体的开始），
-                // 接下来就是实体的传输，当实体传输完之后，客户端就开始接收数据，服务器就知道，这次请求就已经结束了，
-                // 那么实体就是\r\n\r\n到停止接收的那么一段数据。对应的，客户端接收响应的时候也是这样。
-                // 没有实体，则\r\n\r\n就是http的结束
-                // 开始写入数据。注意有可能使缓冲区写满，若写满了则在之后继续写入
-                sendRes(efd, fd);
-            }
-        }
-    }
-    // read无法读取的话，就会返回-1。此时errno（errno是属于线程的，是线程安全的）是EAGAIN代表没读完。EWOULDBLOCK和EAGAIN是一样的。
-    // 那就返回，然后等待下次再读取
-    if (n&lt;0 &amp;&amp; (errno == EAGAIN || errno == EWOULDBLOCK)){
-        printf(&#34;nothing to read from %d, return. \n&#34;, fd);
-        return;
-    }
-    //实际应用中，n&lt;0应当检查各类错误，如EINTR
-    if (n &lt; 0) {
-        printf(&#34;read %d error: %d %s\n&#34;, fd, errno, strerror(errno));
-    }
-    // 执行到这里，n是0，表示对端关闭连接。这时我们也关闭连接
-    printf(&#34;%d close the connection\n&#34;, fd);
-    close(fd);
-    cons.erase(fd);
-}
-// 当loop once缓冲区可写的时候，简单的写入我们准备好的静态资源
-void handleWrite(int efd, int fd) {
-    sendRes(efd, fd);
-}
-// 对一个epoll句柄进行循环中的一次操作
-// 其中l是LISTEN的fd
-void loop_once(int efd, int lfd, int waitms) {
-    // 最多让内核拷贝20个事件出来
-    const int kMaxEvents = 20;
-    struct epoll_event activeEvs[100];
-    int n = epoll_wait(efd, activeEvs, kMaxEvents, waitms);
-    // n是返回了多少个事件
-    if(output_log) printf(&#34;epoll_wait return %d\n&#34;, n);
-    for (int i = 0; i &lt; n; i ++) {
-        int fd = activeEvs[i].data.fd;
-        int events = activeEvs[i].events;
-        // EPOLLIN 事件或者是 EPOLLERR事件。EPOLLERR也代表管道写入结束。
-        // 参见： http://man7.org/linux/man-pages/man2/epoll_ctl.2.html
-        if (events &amp; (EPOLLIN | EPOLLERR)) {
-            // EPOLLIN事件则只有当对端有数据写入时才会触发，所以触发一次后需要不断读取所有数据直到读完EAGAIN为止。否则剩下的数据只有在下次对端有写入时才能一起取出来了。
-            // 当对方关闭连接，则是EPOLLERR事件
-            if (fd == lfd) {
-                printf(&#34;this is accept\n&#34;);
-                handleAccept(efd, fd); 
-            } else {
-                printf(&#34;this can read\n&#34;);
-                handleRead(efd, fd);
-            }
-        } else if (events &amp; EPOLLOUT) {
-            // 这里处理文件描述符如果可以写入的事件
-            // EPOLLOUT事件只有在连接时触发一次，表示可写
-            // 之后表示缓冲区的数据已经送出，可以继续写入
-            // 详见https://www.zhihu.com/question/22840801
-            if(output_log) printf(&#34;handling epollout\n&#34;);
-            handleWrite(efd, fd);
-        } else {
-            exit_if(1, &#34;unknown event&#34;);
-        }
-    }
-}
-
-int main(int argc, const char* argv[]) {
-    if (argc &gt; 1) { output_log = false; }
-    /* 
-小知识
-signal（参数1，参数2）；
-参数1：我们要进行处理的信号。系统的信号我们可以再终端键入 kill -l查看(共64个)。其实这些信号时系统定义的宏。
-参数2：我们处理的方式（是系统默认还是忽略还是捕获）。SIG_IGN: 如果func参数被设置为SIG_IGN，该信号将被忽略。
-     */
-    ::signal(SIGPIPE, SIG_IGN);
-    // 设置http返回的内容
-    httpRes = &#34;HTTP/1.1 200 OK\r\nConnection: Keep-Alive\r\nContent-Type: text/html; charset=UTF-8\r\nContent-Length: 19048576\r\n\r\n123456&#34;;
-    // 将剩下的内容填充成0。最后content的长度是大约1024*1024
-    for(int i=0;i&lt;19048570;i++) {
-        httpRes+=&#39;\0&#39;;
-    }
-    // 设置端口为80端口
-    short port = 80;
-    // 创建一个epoll句柄
-    int epollfd = epoll_create(1);
-    exit_if(epollfd &lt; 0, &#34;epoll_create failed&#34;);
-    // 创建一个socket套接字
-    int listenfd = socket(AF_INET, SOCK_STREAM, 0);
-    exit_if(listenfd &lt; 0, &#34;socket failed&#34;);
-    struct sockaddr_in addr;
-    memset(&amp;addr, 0, sizeof addr);
-    addr.sin_family = AF_INET;
-    addr.sin_port = htons(port);
-    addr.sin_addr.s_addr = INADDR_ANY;
-    // 先绑定socket到端口上
-    int r = ::bind(listenfd,(struct sockaddr *)&amp;addr, sizeof(struct sockaddr));
-    // 这一步如果没有超级用户的权限，就会报错。linux对于非root权限用户不能使用1024以下的端口
-    exit_if(r, &#34;bind to 0.0.0.0:%d failed %d %s&#34;, port, errno, strerror(errno));
-    /* 
-    #include&lt;sys/socket.h&gt;
-int listen(int sockfd, int backlog)
-返回：0──成功， -1──失败
-参数sockfd
-被listen函数作用的套接字，sockfd之前由socket函数返回。在被socket函数返回的套接字fd之时，它是一个主动连接的套接字，
-也就是此时系统假设用户会对这个套接字调用connect函数，期待它主动与其它进程连接，然后在服务器编程中，用户希望这个套接字可以接受外来的连接请求，
-也就是被动等待用户来连接。由于系统默认时认为一个套接字是主动连接的，所以需要通过某种方式来告诉系统，用户进程通过系统调用listen来完成这件事。
-参数backlog
-这个参数涉及到一些网络的细节。在进程正理一个一个连接请求的时候，可能还存在其它的连接请求。
-因为TCP连接是一个过程，所以可能存在一种半连接的状态，有时由于同时尝试连接的用户过多，使得服务器进程无法快速地完成连接请求。
-如果这个情况出现了，服务器进程希望内核如何处理呢？
-内核会在自己的进程空间里维护一个队列以跟踪这些完成的连接但服务器进程还没有接手处理或正在进行的连接，这样的一个队列内核不可能让其任意大，
-所以必须有一个大小的上限。这个backlog告诉内核使用这个数值作为上限。
-毫无疑问，服务器进程不能随便指定一个数值，内核有一个许可的范围。这个范围是实现相关的。很难有某种统一，一般这个值会小30以内。
-内核用于跟踪这些完成连接但是用户代码还没有通过accept调用的队列长度这里设置为了20。在队列长度小于20时，内核会立即完成连接的建立。
-但是如果队列长度大于20，在用户代码调用accept之前该连接都不会建立，对方则处于阻塞状态。
-     */
-    r = listen(listenfd, 20);
-    exit_if(r, &#34;listen failed %d %s&#34;, errno, strerror(errno));
-    printf(&#34;fd %d listening at %d\n&#34;, listenfd, port);
-    // 接下来设置文件描述符为阻塞。
-    // 为什么要设置为非阻塞？https://www.zhihu.com/question/23614342
-    setNonBlock(listenfd);
-    // 将其设置为可读取时触发，添加到epoll文件描述符池中
-    updateEvents(epollfd, listenfd, EPOLLIN, EPOLL_CTL_ADD);
-    for (;;) { //实际应用应当注册信号处理函数，退出时清理资源
-        loop_once(epollfd, listenfd, 10000);
-    }
-    return 0;
-}
-</code></pre><h2 id=运行效果>运行效果</h2><p><img src=/img/rescued/7d2d193858a6.png loading=lazy alt=image.png></p><pre tabindex=0><code>sudo ./epoll
-fd 4 listening at 80
-add fd 4 events read 1 write 0
-epoll_wait return 1
-this is accept
-accept a connection from 127.0.0.1
-add fd 5 events read 1 write 0
-epoll_wait return 1
-this can read
-read 412 bytes
-now info is
----GET / HTTP/1.1
-Host: 127.0.0.1
-Connection: keep-alive
-User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36
-Upgrade-Insecure-Requests: 1
-Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8
-Accept-Encoding: gzip, deflate, br
-Accept-Language: zh-CN,zh;q=0.9,und;q=0.8,zh-TW;q=0.7,en;q=0.6,pl;q=0.5
-
-
----
-write 4081834 bytes left: 14966851
-update it to EPOLLIN|EPOLLOUT
-mod fd 5 events read 1 write 4
-nothing to read from 5, return.
-epoll_wait return 1
-handling epollout
-write 2226422 bytes left: 12740429
-epoll_wait return 1
-handling epollout
-write 2095456 bytes left: 10644973
-epoll_wait return 1
-handling epollout
-write 1964490 bytes left: 8680483
-epoll_wait return 1
-handling epollout
-write 1506109 bytes left: 7174374
-epoll_wait return 1
-handling epollout
-write 1833524 bytes left: 5340850
-epoll_wait return 1
-handling epollout
-write 1637075 bytes left: 3703775
-write 130966 bytes left: 3572809
-epoll_wait return 1
-handling epollout
-write 1571592 bytes left: 2001217
-epoll_wait return 1
-handling epollout
-write 1440626 bytes left: 560591
-epoll_wait return 1
-handling epollout
-write 560591 bytes left: 0
-mod fd 5 events read 1 write 0
-epoll_wait return 1
-this can read
-read 375 bytes
-now info is
----GET /favicon.ico HTTP/1.1
-Host: 127.0.0.1
-Connection: keep-alive
-User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36
-Accept: image/webp,image/apng,image/*,*/*;q=0.8
-Referer: http://127.0.0.1/
-Accept-Encoding: gzip, deflate, br
-Accept-Language: zh-CN,zh;q=0.9,und;q=0.8,zh-TW;q=0.7,en;q=0.6,pl;q=0.5
-
-
----
-write 10477280 bytes left: 8571405
-update it to EPOLLIN|EPOLLOUT
-mod fd 5 events read 1 write 4
-nothing to read from 5, return.
-epoll_wait return 1
-handling epollout
-write 1440626 bytes left: 7130779
-epoll_wait return 1
-handling epollout
-write 1768041 bytes left: 5362738
-epoll_wait return 1
-handling epollout
-write 1571592 bytes left: 3791146
-epoll_wait return 1
-handling epollout
-write 1637075 bytes left: 2154071
-epoll_wait return 1
-handling epollout
-write 1702558 bytes left: 451513
-epoll_wait return 1
-handling epollout
-write 451513 bytes left: 0
-mod fd 5 events read 1 write 0
-epoll_wait return 0
-epoll_wait return 0
-epoll_wait return 0
-</code></pre><p>这里我发送的资源改大了，改成如下的数值：</p><pre tabindex=0><code>    httpRes = &#34;HTTP/1.1 200 OK\r\nConnection: Keep-Alive\r\nContent-Type: text/html; charset=UTF-8\r\nContent-Length: 19048576\r\n\r\n123456&#34;;
-    // 将剩下的内容填充成0。最后content的长度是大约1024*1024
-    for(int i=0;i&lt;19048570;i++) {
-        httpRes+=&#39;\0&#39;;
-    }
-</code></pre><p>可以看到分了多次传输。最终终端页面上显示123456，后面全都是\0，不会显示。
+<time class=article-time--reading>阅读时长: 10 分钟</time></div></footer><footer class=article-translations><svg class="icon icon-tabler icon-tabler-language" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 5h7"/><path d="M9 3v2c0 4.418-2.239 8-5 8"/><path d="M5 9c-.003 2.144 2.952 3.908 6.7 4"/><path d="M12 20l4-9 4 9"/><path d="M19.1 18h-6.2"/></svg><div><a href=https://nansenli.com/post/jianshu/%E7%BD%91%E7%BB%9C/epoll%E4%BB%A3%E7%A0%81%E7%A4%BA%E4%BE%8Bhandy%E5%BA%93%E8%87%AA%E5%B8%A6epoll-cc%E5%88%86%E6%9E%90/ class=link>English</a></div></footer></div></header><section class=article-content><h2 id=前言>前言</h2><p>C++网络库有很多。handy是一个C++11风格的网络库，对深入学习C++有很大帮助。</p><h2 id=代码分析>代码分析</h2><p>下面是来自handy/raw_examples下的epoll.cc文件。是水平触发的一个示例。该http服务器无论接收到什么样的请求，都返回一个静态资源123456。编译：c++ -o epoll epoll.cc，运行： sudo ./epoll。源代码中sendRes的if (con.writeEnabled)这句似乎有些问题，导致发送超大资源时出现问题。我已经做了修改，使之能够正确发送超大文件。</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>  1
+</span><span class=lnt>  2
+</span><span class=lnt>  3
+</span><span class=lnt>  4
+</span><span class=lnt>  5
+</span><span class=lnt>  6
+</span><span class=lnt>  7
+</span><span class=lnt>  8
+</span><span class=lnt>  9
+</span><span class=lnt> 10
+</span><span class=lnt> 11
+</span><span class=lnt> 12
+</span><span class=lnt> 13
+</span><span class=lnt> 14
+</span><span class=lnt> 15
+</span><span class=lnt> 16
+</span><span class=lnt> 17
+</span><span class=lnt> 18
+</span><span class=lnt> 19
+</span><span class=lnt> 20
+</span><span class=lnt> 21
+</span><span class=lnt> 22
+</span><span class=lnt> 23
+</span><span class=lnt> 24
+</span><span class=lnt> 25
+</span><span class=lnt> 26
+</span><span class=lnt> 27
+</span><span class=lnt> 28
+</span><span class=lnt> 29
+</span><span class=lnt> 30
+</span><span class=lnt> 31
+</span><span class=lnt> 32
+</span><span class=lnt> 33
+</span><span class=lnt> 34
+</span><span class=lnt> 35
+</span><span class=lnt> 36
+</span><span class=lnt> 37
+</span><span class=lnt> 38
+</span><span class=lnt> 39
+</span><span class=lnt> 40
+</span><span class=lnt> 41
+</span><span class=lnt> 42
+</span><span class=lnt> 43
+</span><span class=lnt> 44
+</span><span class=lnt> 45
+</span><span class=lnt> 46
+</span><span class=lnt> 47
+</span><span class=lnt> 48
+</span><span class=lnt> 49
+</span><span class=lnt> 50
+</span><span class=lnt> 51
+</span><span class=lnt> 52
+</span><span class=lnt> 53
+</span><span class=lnt> 54
+</span><span class=lnt> 55
+</span><span class=lnt> 56
+</span><span class=lnt> 57
+</span><span class=lnt> 58
+</span><span class=lnt> 59
+</span><span class=lnt> 60
+</span><span class=lnt> 61
+</span><span class=lnt> 62
+</span><span class=lnt> 63
+</span><span class=lnt> 64
+</span><span class=lnt> 65
+</span><span class=lnt> 66
+</span><span class=lnt> 67
+</span><span class=lnt> 68
+</span><span class=lnt> 69
+</span><span class=lnt> 70
+</span><span class=lnt> 71
+</span><span class=lnt> 72
+</span><span class=lnt> 73
+</span><span class=lnt> 74
+</span><span class=lnt> 75
+</span><span class=lnt> 76
+</span><span class=lnt> 77
+</span><span class=lnt> 78
+</span><span class=lnt> 79
+</span><span class=lnt> 80
+</span><span class=lnt> 81
+</span><span class=lnt> 82
+</span><span class=lnt> 83
+</span><span class=lnt> 84
+</span><span class=lnt> 85
+</span><span class=lnt> 86
+</span><span class=lnt> 87
+</span><span class=lnt> 88
+</span><span class=lnt> 89
+</span><span class=lnt> 90
+</span><span class=lnt> 91
+</span><span class=lnt> 92
+</span><span class=lnt> 93
+</span><span class=lnt> 94
+</span><span class=lnt> 95
+</span><span class=lnt> 96
+</span><span class=lnt> 97
+</span><span class=lnt> 98
+</span><span class=lnt> 99
+</span><span class=lnt>100
+</span><span class=lnt>101
+</span><span class=lnt>102
+</span><span class=lnt>103
+</span><span class=lnt>104
+</span><span class=lnt>105
+</span><span class=lnt>106
+</span><span class=lnt>107
+</span><span class=lnt>108
+</span><span class=lnt>109
+</span><span class=lnt>110
+</span><span class=lnt>111
+</span><span class=lnt>112
+</span><span class=lnt>113
+</span><span class=lnt>114
+</span><span class=lnt>115
+</span><span class=lnt>116
+</span><span class=lnt>117
+</span><span class=lnt>118
+</span><span class=lnt>119
+</span><span class=lnt>120
+</span><span class=lnt>121
+</span><span class=lnt>122
+</span><span class=lnt>123
+</span><span class=lnt>124
+</span><span class=lnt>125
+</span><span class=lnt>126
+</span><span class=lnt>127
+</span><span class=lnt>128
+</span><span class=lnt>129
+</span><span class=lnt>130
+</span><span class=lnt>131
+</span><span class=lnt>132
+</span><span class=lnt>133
+</span><span class=lnt>134
+</span><span class=lnt>135
+</span><span class=lnt>136
+</span><span class=lnt>137
+</span><span class=lnt>138
+</span><span class=lnt>139
+</span><span class=lnt>140
+</span><span class=lnt>141
+</span><span class=lnt>142
+</span><span class=lnt>143
+</span><span class=lnt>144
+</span><span class=lnt>145
+</span><span class=lnt>146
+</span><span class=lnt>147
+</span><span class=lnt>148
+</span><span class=lnt>149
+</span><span class=lnt>150
+</span><span class=lnt>151
+</span><span class=lnt>152
+</span><span class=lnt>153
+</span><span class=lnt>154
+</span><span class=lnt>155
+</span><span class=lnt>156
+</span><span class=lnt>157
+</span><span class=lnt>158
+</span><span class=lnt>159
+</span><span class=lnt>160
+</span><span class=lnt>161
+</span><span class=lnt>162
+</span><span class=lnt>163
+</span><span class=lnt>164
+</span><span class=lnt>165
+</span><span class=lnt>166
+</span><span class=lnt>167
+</span><span class=lnt>168
+</span><span class=lnt>169
+</span><span class=lnt>170
+</span><span class=lnt>171
+</span><span class=lnt>172
+</span><span class=lnt>173
+</span><span class=lnt>174
+</span><span class=lnt>175
+</span><span class=lnt>176
+</span><span class=lnt>177
+</span><span class=lnt>178
+</span><span class=lnt>179
+</span><span class=lnt>180
+</span><span class=lnt>181
+</span><span class=lnt>182
+</span><span class=lnt>183
+</span><span class=lnt>184
+</span><span class=lnt>185
+</span><span class=lnt>186
+</span><span class=lnt>187
+</span><span class=lnt>188
+</span><span class=lnt>189
+</span><span class=lnt>190
+</span><span class=lnt>191
+</span><span class=lnt>192
+</span><span class=lnt>193
+</span><span class=lnt>194
+</span><span class=lnt>195
+</span><span class=lnt>196
+</span><span class=lnt>197
+</span><span class=lnt>198
+</span><span class=lnt>199
+</span><span class=lnt>200
+</span><span class=lnt>201
+</span><span class=lnt>202
+</span><span class=lnt>203
+</span><span class=lnt>204
+</span><span class=lnt>205
+</span><span class=lnt>206
+</span><span class=lnt>207
+</span><span class=lnt>208
+</span><span class=lnt>209
+</span><span class=lnt>210
+</span><span class=lnt>211
+</span><span class=lnt>212
+</span><span class=lnt>213
+</span><span class=lnt>214
+</span><span class=lnt>215
+</span><span class=lnt>216
+</span><span class=lnt>217
+</span><span class=lnt>218
+</span><span class=lnt>219
+</span><span class=lnt>220
+</span><span class=lnt>221
+</span><span class=lnt>222
+</span><span class=lnt>223
+</span><span class=lnt>224
+</span><span class=lnt>225
+</span><span class=lnt>226
+</span><span class=lnt>227
+</span><span class=lnt>228
+</span><span class=lnt>229
+</span><span class=lnt>230
+</span><span class=lnt>231
+</span><span class=lnt>232
+</span><span class=lnt>233
+</span><span class=lnt>234
+</span><span class=lnt>235
+</span><span class=lnt>236
+</span><span class=lnt>237
+</span><span class=lnt>238
+</span><span class=lnt>239
+</span><span class=lnt>240
+</span><span class=lnt>241
+</span><span class=lnt>242
+</span><span class=lnt>243
+</span><span class=lnt>244
+</span><span class=lnt>245
+</span><span class=lnt>246
+</span><span class=lnt>247
+</span><span class=lnt>248
+</span><span class=lnt>249
+</span><span class=lnt>250
+</span><span class=lnt>251
+</span><span class=lnt>252
+</span><span class=lnt>253
+</span><span class=lnt>254
+</span><span class=lnt>255
+</span><span class=lnt>256
+</span><span class=lnt>257
+</span><span class=lnt>258
+</span><span class=lnt>259
+</span><span class=lnt>260
+</span><span class=lnt>261
+</span><span class=lnt>262
+</span><span class=lnt>263
+</span><span class=lnt>264
+</span><span class=lnt>265
+</span><span class=lnt>266
+</span><span class=lnt>267
+</span><span class=lnt>268
+</span><span class=lnt>269
+</span><span class=lnt>270
+</span><span class=lnt>271
+</span><span class=lnt>272
+</span><span class=lnt>273
+</span><span class=lnt>274
+</span><span class=lnt>275
+</span><span class=lnt>276
+</span><span class=lnt>277
+</span><span class=lnt>278
+</span><span class=lnt>279
+</span><span class=lnt>280
+</span><span class=lnt>281
+</span><span class=lnt>282
+</span><span class=lnt>283
+</span><span class=lnt>284
+</span><span class=lnt>285
+</span><span class=lnt>286
+</span><span class=lnt>287
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-c++ data-lang=c++><span class=line><span class=cl><span class=cm>/*
+</span></span></span><span class=line><span class=cl><span class=cm> * 编译：c++ -o epoll epoll.cc
+</span></span></span><span class=line><span class=cl><span class=cm> * 运行： ./epoll
+</span></span></span><span class=line><span class=cl><span class=cm> * 测试：curl -v localhost
+</span></span></span><span class=line><span class=cl><span class=cm> */</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=cm>/* 
+</span></span></span><span class=line><span class=cl><span class=cm>    运行效果
+</span></span></span><span class=line><span class=cl><span class=cm>    使用sudo 运行epoll程序。该程序在本机0.0.0.0的80端口监听，作为一个http服务器运行
+</span></span></span><span class=line><span class=cl><span class=cm>    每当有连接访问时，返回静态资源httpRes
+</span></span></span><span class=line><span class=cl><span class=cm>    LT是默认模式
+</span></span></span><span class=line><span class=cl><span class=cm>
+</span></span></span><span class=line><span class=cl><span class=cm> */</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&lt;sys/socket.h&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&lt;sys/epoll.h&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&lt;netinet/in.h&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&lt;arpa/inet.h&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&lt;fcntl.h&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&lt;unistd.h&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&lt;stdio.h&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&lt;errno.h&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&lt;string.h&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&lt;stdlib.h&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&lt;map&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&lt;string&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&lt;signal.h&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&lt;iostream&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp></span><span class=k>using</span> <span class=k>namespace</span> <span class=n>std</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kt>bool</span> <span class=n>output_log</span> <span class=o>=</span> <span class=nb>true</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=c1>// 一个宏，用来打印错误并退出
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=cp>#define exit_if(r, ...) if(r) {printf(__VA_ARGS__); printf(&#34;%s:%d error no: %d error msg %s\n&#34;, __FILE__, __LINE__, errno, strerror(errno)); exit(1);}
+</span></span></span><span class=line><span class=cl><span class=cp></span><span class=c1>// 这个函数用于将指定的fd设置为非阻塞状态
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=kt>void</span> <span class=nf>setNonBlock</span><span class=p>(</span><span class=kt>int</span> <span class=n>fd</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=c1>// 首先我们取出原来文件描述符的flags
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=kt>int</span> <span class=n>flags</span> <span class=o>=</span> <span class=n>fcntl</span><span class=p>(</span><span class=n>fd</span><span class=p>,</span> <span class=n>F_GETFL</span><span class=p>,</span> <span class=mi>0</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=n>exit_if</span><span class=p>(</span><span class=n>flags</span><span class=o>&lt;</span><span class=mi>0</span><span class=p>,</span> <span class=s>&#34;fcntl failed&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=c1>// 然后加上O_NONBLOCK，再设置回去
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=kt>int</span> <span class=n>r</span> <span class=o>=</span> <span class=n>fcntl</span><span class=p>(</span><span class=n>fd</span><span class=p>,</span> <span class=n>F_SETFL</span><span class=p>,</span> <span class=n>flags</span> <span class=o>|</span> <span class=n>O_NONBLOCK</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=n>exit_if</span><span class=p>(</span><span class=n>r</span><span class=o>&lt;</span><span class=mi>0</span><span class=p>,</span> <span class=s>&#34;fcntl failed&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=c1>// 对epoll_ctl二次包装，将events 和 fd放入ev中。
+</span></span></span><span class=line><span class=cl><span class=c1>// 并且设置events 设置为可读可写时触发
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=kt>void</span> <span class=nf>updateEvents</span><span class=p>(</span><span class=kt>int</span> <span class=n>efd</span><span class=p>,</span> <span class=kt>int</span> <span class=n>fd</span><span class=p>,</span> <span class=kt>int</span> <span class=n>events</span><span class=p>,</span> <span class=kt>int</span> <span class=n>op</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>struct</span> <span class=nc>epoll_event</span> <span class=n>ev</span> <span class=o>=</span> <span class=p>{</span><span class=mi>0</span><span class=p>};</span>
+</span></span><span class=line><span class=cl>    <span class=n>ev</span><span class=p>.</span><span class=n>events</span> <span class=o>=</span> <span class=n>events</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=n>ev</span><span class=p>.</span><span class=n>data</span><span class=p>.</span><span class=n>fd</span> <span class=o>=</span> <span class=n>fd</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=n>printf</span><span class=p>(</span><span class=s>&#34;%s fd %d events read %d write %d</span><span class=se>\n</span><span class=s>&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>           <span class=n>op</span><span class=o>==</span><span class=n>EPOLL_CTL_MOD</span><span class=o>?</span><span class=s>&#34;mod&#34;</span><span class=o>:</span><span class=s>&#34;add&#34;</span><span class=p>,</span> <span class=n>fd</span><span class=p>,</span> <span class=n>ev</span><span class=p>.</span><span class=n>events</span> <span class=o>&amp;</span> <span class=n>EPOLLIN</span><span class=p>,</span> <span class=n>ev</span><span class=p>.</span><span class=n>events</span> <span class=o>&amp;</span> <span class=n>EPOLLOUT</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=kt>int</span> <span class=n>r</span> <span class=o>=</span> <span class=n>epoll_ctl</span><span class=p>(</span><span class=n>efd</span><span class=p>,</span> <span class=n>op</span><span class=p>,</span> <span class=n>fd</span><span class=p>,</span> <span class=o>&amp;</span><span class=n>ev</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=n>exit_if</span><span class=p>(</span><span class=n>r</span><span class=p>,</span> <span class=s>&#34;epoll_ctl failed&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=c1>// 尝试在fd上做accept操作。如果成功，将其加入到epoll fd的监听列表中。epoll的events设置为当数据有写入的时候触发。
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=kt>void</span> <span class=nf>handleAccept</span><span class=p>(</span><span class=kt>int</span> <span class=n>efd</span><span class=p>,</span> <span class=kt>int</span> <span class=n>fd</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>struct</span> <span class=nc>sockaddr_in</span> <span class=n>raddr</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=n>socklen_t</span> <span class=n>rsz</span> <span class=o>=</span> <span class=k>sizeof</span><span class=p>(</span><span class=n>raddr</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=kt>int</span> <span class=n>cfd</span> <span class=o>=</span> <span class=n>accept</span><span class=p>(</span><span class=n>fd</span><span class=p>,(</span><span class=k>struct</span> <span class=nc>sockaddr</span> <span class=o>*</span><span class=p>)</span><span class=o>&amp;</span><span class=n>raddr</span><span class=p>,</span><span class=o>&amp;</span><span class=n>rsz</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=n>exit_if</span><span class=p>(</span><span class=n>cfd</span><span class=o>&lt;</span><span class=mi>0</span><span class=p>,</span> <span class=s>&#34;accept failed&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=n>sockaddr_in</span> <span class=n>peer</span><span class=p>,</span> <span class=n>local</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=n>socklen_t</span> <span class=n>alen</span> <span class=o>=</span> <span class=k>sizeof</span><span class=p>(</span><span class=n>peer</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=kt>int</span> <span class=n>r</span> <span class=o>=</span> <span class=n>getpeername</span><span class=p>(</span><span class=n>cfd</span><span class=p>,</span> <span class=p>(</span><span class=n>sockaddr</span><span class=o>*</span><span class=p>)</span><span class=o>&amp;</span><span class=n>peer</span><span class=p>,</span> <span class=o>&amp;</span><span class=n>alen</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=n>exit_if</span><span class=p>(</span><span class=n>r</span><span class=o>&lt;</span><span class=mi>0</span><span class=p>,</span> <span class=s>&#34;getpeername failed&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=n>printf</span><span class=p>(</span><span class=s>&#34;accept a connection from %s</span><span class=se>\n</span><span class=s>&#34;</span><span class=p>,</span> <span class=n>inet_ntoa</span><span class=p>(</span><span class=n>raddr</span><span class=p>.</span><span class=n>sin_addr</span><span class=p>));</span>
+</span></span><span class=line><span class=cl>    <span class=n>setNonBlock</span><span class=p>(</span><span class=n>cfd</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=n>updateEvents</span><span class=p>(</span><span class=n>efd</span><span class=p>,</span> <span class=n>cfd</span><span class=p>,</span> <span class=n>EPOLLIN</span><span class=p>,</span> <span class=n>EPOLL_CTL_ADD</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=c1>// 表示一个连接。成员有连接已读取的数据、已写入的数据
+</span></span></span><span class=line><span class=cl><span class=c1>// string用来保存二进制内容没有问题吗，如果遇到\0会如何？
+</span></span></span><span class=line><span class=cl><span class=c1>// 没有问题https://www.zhihu.com/question/33104941
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=k>struct</span> <span class=nc>Con</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=n>string</span> <span class=n>readed</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=n>size_t</span> <span class=n>written</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=kt>bool</span> <span class=n>writeEnabled</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=n>Con</span><span class=p>()</span><span class=o>:</span> <span class=n>written</span><span class=p>(</span><span class=mi>0</span><span class=p>),</span> <span class=n>writeEnabled</span><span class=p>(</span><span class=nb>false</span><span class=p>)</span> <span class=p>{}</span>
+</span></span><span class=line><span class=cl><span class=p>};</span>
+</span></span><span class=line><span class=cl><span class=c1>// 用来映射fd与con的数据结构
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=n>map</span><span class=o>&lt;</span><span class=kt>int</span><span class=p>,</span> <span class=n>Con</span><span class=o>&gt;</span> <span class=n>cons</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>string</span> <span class=n>httpRes</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=c1>// 发送资源
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=kt>void</span> <span class=nf>sendRes</span><span class=p>(</span><span class=kt>int</span> <span class=n>efd</span><span class=p>,</span> <span class=kt>int</span> <span class=n>fd</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=c1>// 首先取得连接信息
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=n>Con</span><span class=o>&amp;</span> <span class=n>con</span> <span class=o>=</span> <span class=n>cons</span><span class=p>[</span><span class=n>fd</span><span class=p>];</span>
+</span></span><span class=line><span class=cl>    <span class=c1>// 没有接受到数据就要求写入
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=c1>// 说明其可能上一次继续发送的数据发送完了
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=c1>// 其对应的文件描述符在cons中已经删除
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=c1>// 然后触发了epoll信号
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=c1>// 此时关闭其上一次发送的标志
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=c1>// 然后关闭其缓冲区发送触发epoll的标志
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=c1>// 只保留其有数据可读时触发
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=c1>// 为什么不在写入完数据时就将这步做了呢？
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=c1>// if (!con.readed.length()) {
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=c1>//     if (con.writeEnabled) {
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=c1>//         updateEvents(efd, fd, EPOLLIN, EPOLL_CTL_MOD);
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=c1>//         con.writeEnabled = false;
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=c1>//     }
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=c1>//     return;
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=c1>// }
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=c1>// 计算还需要写入的数据长度
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=n>size_t</span> <span class=n>left</span> <span class=o>=</span> <span class=n>httpRes</span><span class=p>.</span><span class=n>length</span><span class=p>()</span> <span class=o>-</span> <span class=n>con</span><span class=p>.</span><span class=n>written</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=kt>int</span> <span class=n>wd</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=c1>// 连续写入数据，直到内核缓冲区无法写入数据为止
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=k>while</span><span class=p>((</span><span class=n>wd</span><span class=o>=::</span><span class=n>write</span><span class=p>(</span><span class=n>fd</span><span class=p>,</span> <span class=n>httpRes</span><span class=p>.</span><span class=n>data</span><span class=p>()</span><span class=o>+</span><span class=n>con</span><span class=p>.</span><span class=n>written</span><span class=p>,</span> <span class=n>left</span><span class=p>))</span><span class=o>&gt;</span><span class=mi>0</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=n>con</span><span class=p>.</span><span class=n>written</span> <span class=o>+=</span> <span class=n>wd</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=n>left</span> <span class=o>-=</span> <span class=n>wd</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span><span class=p>(</span><span class=n>output_log</span><span class=p>)</span> <span class=n>printf</span><span class=p>(</span><span class=s>&#34;write %d bytes left: %lu</span><span class=se>\n</span><span class=s>&#34;</span><span class=p>,</span> <span class=n>wd</span><span class=p>,</span> <span class=n>left</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=p>};</span>
+</span></span><span class=line><span class=cl>    <span class=c1>// 如果没有数据可以写入，则删除这个连接。但是不断开连接，即将连接信息置空
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=k>if</span> <span class=p>(</span><span class=n>left</span> <span class=o>==</span> <span class=mi>0</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl><span class=c1>//        close(fd); // 测试中使用了keepalive，因此不关闭连接。连接会在read事件中关闭
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=k>if</span> <span class=p>(</span><span class=n>con</span><span class=p>.</span><span class=n>writeEnabled</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=n>updateEvents</span><span class=p>(</span><span class=n>efd</span><span class=p>,</span> <span class=n>fd</span><span class=p>,</span> <span class=n>EPOLLIN</span><span class=p>,</span> <span class=n>EPOLL_CTL_MOD</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>            <span class=n>con</span><span class=p>.</span><span class=n>writeEnabled</span> <span class=o>=</span> <span class=nb>false</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>        <span class=n>cons</span><span class=p>.</span><span class=n>erase</span><span class=p>(</span><span class=n>fd</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=c1>// 如果内核缓冲区满了，没办法写入了
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=k>if</span> <span class=p>(</span><span class=n>wd</span> <span class=o>&lt;</span> <span class=mi>0</span> <span class=o>&amp;&amp;</span>  <span class=p>(</span><span class=n>errno</span> <span class=o>==</span> <span class=n>EAGAIN</span> <span class=o>||</span> <span class=n>errno</span> <span class=o>==</span> <span class=n>EWOULDBLOCK</span><span class=p>))</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=c1>// 将其标记上可继续写
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=k>if</span> <span class=p>(</span><span class=o>!</span><span class=n>con</span><span class=p>.</span><span class=n>writeEnabled</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=c1>// 等待其可继续写，或可读
+</span></span></span><span class=line><span class=cl><span class=c1></span>            <span class=c1>// 避免重复进行系统调用，使用con.writeEnabled标记位
+</span></span></span><span class=line><span class=cl><span class=c1></span>            <span class=n>printf</span><span class=p>(</span><span class=s>&#34;update it to EPOLLIN|EPOLLOUT</span><span class=se>\n</span><span class=s>&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>            <span class=n>updateEvents</span><span class=p>(</span><span class=n>efd</span><span class=p>,</span> <span class=n>fd</span><span class=p>,</span> <span class=n>EPOLLIN</span><span class=o>|</span><span class=n>EPOLLOUT</span><span class=p>,</span> <span class=n>EPOLL_CTL_MOD</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>            <span class=n>con</span><span class=p>.</span><span class=n>writeEnabled</span> <span class=o>=</span> <span class=nb>true</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=c1>// 如果是其他情况，比如在没有写完数据时直接返回0，或者是返回了其他错误
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=c1>// 则说明出错了
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=k>if</span> <span class=p>(</span><span class=n>wd</span><span class=o>&lt;=</span><span class=mi>0</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=n>printf</span><span class=p>(</span><span class=s>&#34;write error for %d: %d %s</span><span class=se>\n</span><span class=s>&#34;</span><span class=p>,</span> <span class=n>fd</span><span class=p>,</span> <span class=n>errno</span><span class=p>,</span> <span class=n>strerror</span><span class=p>(</span><span class=n>errno</span><span class=p>));</span>
+</span></span><span class=line><span class=cl>        <span class=n>close</span><span class=p>(</span><span class=n>fd</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=n>cons</span><span class=p>.</span><span class=n>erase</span><span class=p>(</span><span class=n>fd</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=c1>// 当loop once处理读取数据时，调用该函数
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=kt>void</span> <span class=nf>handleRead</span><span class=p>(</span><span class=kt>int</span> <span class=n>efd</span><span class=p>,</span> <span class=kt>int</span> <span class=n>fd</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=kt>char</span> <span class=n>buf</span><span class=p>[</span><span class=mi>4096</span><span class=p>];</span>
+</span></span><span class=line><span class=cl>    <span class=kt>int</span> <span class=n>n</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=c1>// 每次读取4k字节，循环读出当前内核中已存在的数据（有可能分包导致信息不完整）
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=k>while</span> <span class=p>((</span><span class=n>n</span><span class=o>=::</span><span class=n>read</span><span class=p>(</span><span class=n>fd</span><span class=p>,</span> <span class=n>buf</span><span class=p>,</span> <span class=k>sizeof</span> <span class=n>buf</span><span class=p>))</span> <span class=o>&gt;</span> <span class=mi>0</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span><span class=p>(</span><span class=n>output_log</span><span class=p>)</span> <span class=n>printf</span><span class=p>(</span><span class=s>&#34;read %d bytes</span><span class=se>\n</span><span class=s>&#34;</span><span class=p>,</span> <span class=n>n</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=c1>// 这里通过一个map来获取之前fd对应的连接信息。
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=c1>// 当fd对应的下标不存在的时候，则会调用con的默认构造函数Con(): written(0), writeEnabled(false) {}
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=n>string</span><span class=o>&amp;</span> <span class=n>readed</span> <span class=o>=</span> <span class=n>cons</span><span class=p>[</span><span class=n>fd</span><span class=p>].</span><span class=n>readed</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=c1>// 调用string类的append方法将数据加入到连接信息中
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=c1>// 注意为了保证二进制安全需要传入参数n
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=n>readed</span><span class=p>.</span><span class=n>append</span><span class=p>(</span><span class=n>buf</span><span class=p>,</span> <span class=n>n</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=n>std</span><span class=o>::</span><span class=n>cout</span>  <span class=o>&lt;&lt;</span> <span class=s>&#34;now info is&#34;</span> <span class=o>&lt;&lt;</span> <span class=n>std</span><span class=o>::</span><span class=n>endl</span> <span class=o>&lt;&lt;</span> <span class=s>&#34;---&#34;</span> <span class=o>&lt;&lt;</span>  <span class=n>readed</span> <span class=o>&lt;&lt;</span> <span class=n>endl</span> <span class=o>&lt;&lt;</span> <span class=s>&#34;---&#34;</span> <span class=o>&lt;&lt;</span>  <span class=n>std</span><span class=o>::</span><span class=n>endl</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=c1>// 判断一个http请求发送完毕。
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=c1>// 不判断http请求的内容，一律发送静态资源
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=k>if</span> <span class=p>(</span><span class=n>readed</span><span class=p>.</span><span class=n>length</span><span class=p>()</span><span class=o>&gt;</span><span class=mi>4</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=k>if</span> <span class=p>(</span><span class=n>readed</span><span class=p>.</span><span class=n>substr</span><span class=p>(</span><span class=n>readed</span><span class=p>.</span><span class=n>length</span><span class=p>()</span><span class=o>-</span><span class=mi>2</span><span class=p>,</span> <span class=mi>2</span><span class=p>)</span> <span class=o>==</span> <span class=s>&#34;</span><span class=se>\n\n</span><span class=s>&#34;</span> <span class=o>||</span> <span class=n>readed</span><span class=p>.</span><span class=n>substr</span><span class=p>(</span><span class=n>readed</span><span class=p>.</span><span class=n>length</span><span class=p>()</span><span class=o>-</span><span class=mi>4</span><span class=p>,</span> <span class=mi>4</span><span class=p>)</span> <span class=o>==</span> <span class=s>&#34;</span><span class=se>\r\n\r\n</span><span class=s>&#34;</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>                <span class=c1>//当读取到一个完整的http请求，测试发送响应
+</span></span></span><span class=line><span class=cl><span class=c1></span>                <span class=c1>// TCP连接建立起来之后，客户端就开始传输首部，然后以\r\n\r\n来标志首部的结束和实体的开始（当然是请求里包含实体才会有实体的开始），
+</span></span></span><span class=line><span class=cl><span class=c1></span>                <span class=c1>// 接下来就是实体的传输，当实体传输完之后，客户端就开始接收数据，服务器就知道，这次请求就已经结束了，
+</span></span></span><span class=line><span class=cl><span class=c1></span>                <span class=c1>// 那么实体就是\r\n\r\n到停止接收的那么一段数据。对应的，客户端接收响应的时候也是这样。
+</span></span></span><span class=line><span class=cl><span class=c1></span>                <span class=c1>// 没有实体，则\r\n\r\n就是http的结束
+</span></span></span><span class=line><span class=cl><span class=c1></span>                <span class=c1>// 开始写入数据。注意有可能使缓冲区写满，若写满了则在之后继续写入
+</span></span></span><span class=line><span class=cl><span class=c1></span>                <span class=n>sendRes</span><span class=p>(</span><span class=n>efd</span><span class=p>,</span> <span class=n>fd</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>            <span class=p>}</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=c1>// read无法读取的话，就会返回-1。此时errno（errno是属于线程的，是线程安全的）是EAGAIN代表没读完。EWOULDBLOCK和EAGAIN是一样的。
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=c1>// 那就返回，然后等待下次再读取
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=k>if</span> <span class=p>(</span><span class=n>n</span><span class=o>&lt;</span><span class=mi>0</span> <span class=o>&amp;&amp;</span> <span class=p>(</span><span class=n>errno</span> <span class=o>==</span> <span class=n>EAGAIN</span> <span class=o>||</span> <span class=n>errno</span> <span class=o>==</span> <span class=n>EWOULDBLOCK</span><span class=p>)){</span>
+</span></span><span class=line><span class=cl>        <span class=n>printf</span><span class=p>(</span><span class=s>&#34;nothing to read from %d, return. </span><span class=se>\n</span><span class=s>&#34;</span><span class=p>,</span> <span class=n>fd</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=c1>//实际应用中，n&lt;0应当检查各类错误，如EINTR
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=k>if</span> <span class=p>(</span><span class=n>n</span> <span class=o>&lt;</span> <span class=mi>0</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=n>printf</span><span class=p>(</span><span class=s>&#34;read %d error: %d %s</span><span class=se>\n</span><span class=s>&#34;</span><span class=p>,</span> <span class=n>fd</span><span class=p>,</span> <span class=n>errno</span><span class=p>,</span> <span class=n>strerror</span><span class=p>(</span><span class=n>errno</span><span class=p>));</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=c1>// 执行到这里，n是0，表示对端关闭连接。这时我们也关闭连接
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=n>printf</span><span class=p>(</span><span class=s>&#34;%d close the connection</span><span class=se>\n</span><span class=s>&#34;</span><span class=p>,</span> <span class=n>fd</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=n>close</span><span class=p>(</span><span class=n>fd</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=n>cons</span><span class=p>.</span><span class=n>erase</span><span class=p>(</span><span class=n>fd</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=c1>// 当loop once缓冲区可写的时候，简单的写入我们准备好的静态资源
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=kt>void</span> <span class=nf>handleWrite</span><span class=p>(</span><span class=kt>int</span> <span class=n>efd</span><span class=p>,</span> <span class=kt>int</span> <span class=n>fd</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=n>sendRes</span><span class=p>(</span><span class=n>efd</span><span class=p>,</span> <span class=n>fd</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=c1>// 对一个epoll句柄进行循环中的一次操作
+</span></span></span><span class=line><span class=cl><span class=c1>// 其中l是LISTEN的fd
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=kt>void</span> <span class=nf>loop_once</span><span class=p>(</span><span class=kt>int</span> <span class=n>efd</span><span class=p>,</span> <span class=kt>int</span> <span class=n>lfd</span><span class=p>,</span> <span class=kt>int</span> <span class=n>waitms</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=c1>// 最多让内核拷贝20个事件出来
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=k>const</span> <span class=kt>int</span> <span class=n>kMaxEvents</span> <span class=o>=</span> <span class=mi>20</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=k>struct</span> <span class=nc>epoll_event</span> <span class=n>activeEvs</span><span class=p>[</span><span class=mi>100</span><span class=p>];</span>
+</span></span><span class=line><span class=cl>    <span class=kt>int</span> <span class=n>n</span> <span class=o>=</span> <span class=n>epoll_wait</span><span class=p>(</span><span class=n>efd</span><span class=p>,</span> <span class=n>activeEvs</span><span class=p>,</span> <span class=n>kMaxEvents</span><span class=p>,</span> <span class=n>waitms</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=c1>// n是返回了多少个事件
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=k>if</span><span class=p>(</span><span class=n>output_log</span><span class=p>)</span> <span class=n>printf</span><span class=p>(</span><span class=s>&#34;epoll_wait return %d</span><span class=se>\n</span><span class=s>&#34;</span><span class=p>,</span> <span class=n>n</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=k>for</span> <span class=p>(</span><span class=kt>int</span> <span class=n>i</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span> <span class=n>i</span> <span class=o>&lt;</span> <span class=n>n</span><span class=p>;</span> <span class=n>i</span> <span class=o>++</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=kt>int</span> <span class=n>fd</span> <span class=o>=</span> <span class=n>activeEvs</span><span class=p>[</span><span class=n>i</span><span class=p>].</span><span class=n>data</span><span class=p>.</span><span class=n>fd</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=kt>int</span> <span class=n>events</span> <span class=o>=</span> <span class=n>activeEvs</span><span class=p>[</span><span class=n>i</span><span class=p>].</span><span class=n>events</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=c1>// EPOLLIN 事件或者是 EPOLLERR事件。EPOLLERR也代表管道写入结束。
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=c1>// 参见： http://man7.org/linux/man-pages/man2/epoll_ctl.2.html
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=k>if</span> <span class=p>(</span><span class=n>events</span> <span class=o>&amp;</span> <span class=p>(</span><span class=n>EPOLLIN</span> <span class=o>|</span> <span class=n>EPOLLERR</span><span class=p>))</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=c1>// EPOLLIN事件则只有当对端有数据写入时才会触发，所以触发一次后需要不断读取所有数据直到读完EAGAIN为止。否则剩下的数据只有在下次对端有写入时才能一起取出来了。
+</span></span></span><span class=line><span class=cl><span class=c1></span>            <span class=c1>// 当对方关闭连接，则是EPOLLERR事件
+</span></span></span><span class=line><span class=cl><span class=c1></span>            <span class=k>if</span> <span class=p>(</span><span class=n>fd</span> <span class=o>==</span> <span class=n>lfd</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>                <span class=n>printf</span><span class=p>(</span><span class=s>&#34;this is accept</span><span class=se>\n</span><span class=s>&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>                <span class=n>handleAccept</span><span class=p>(</span><span class=n>efd</span><span class=p>,</span> <span class=n>fd</span><span class=p>);</span> 
+</span></span><span class=line><span class=cl>            <span class=p>}</span> <span class=k>else</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>                <span class=n>printf</span><span class=p>(</span><span class=s>&#34;this can read</span><span class=se>\n</span><span class=s>&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>                <span class=n>handleRead</span><span class=p>(</span><span class=n>efd</span><span class=p>,</span> <span class=n>fd</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>            <span class=p>}</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span> <span class=k>else</span> <span class=k>if</span> <span class=p>(</span><span class=n>events</span> <span class=o>&amp;</span> <span class=n>EPOLLOUT</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=c1>// 这里处理文件描述符如果可以写入的事件
+</span></span></span><span class=line><span class=cl><span class=c1></span>            <span class=c1>// EPOLLOUT事件只有在连接时触发一次，表示可写
+</span></span></span><span class=line><span class=cl><span class=c1></span>            <span class=c1>// 之后表示缓冲区的数据已经送出，可以继续写入
+</span></span></span><span class=line><span class=cl><span class=c1></span>            <span class=c1>// 详见https://www.zhihu.com/question/22840801
+</span></span></span><span class=line><span class=cl><span class=c1></span>            <span class=k>if</span><span class=p>(</span><span class=n>output_log</span><span class=p>)</span> <span class=n>printf</span><span class=p>(</span><span class=s>&#34;handling epollout</span><span class=se>\n</span><span class=s>&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>            <span class=n>handleWrite</span><span class=p>(</span><span class=n>efd</span><span class=p>,</span> <span class=n>fd</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span> <span class=k>else</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=n>exit_if</span><span class=p>(</span><span class=mi>1</span><span class=p>,</span> <span class=s>&#34;unknown event&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kt>int</span> <span class=nf>main</span><span class=p>(</span><span class=kt>int</span> <span class=n>argc</span><span class=p>,</span> <span class=k>const</span> <span class=kt>char</span><span class=o>*</span> <span class=n>argv</span><span class=p>[])</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=p>(</span><span class=n>argc</span> <span class=o>&gt;</span> <span class=mi>1</span><span class=p>)</span> <span class=p>{</span> <span class=n>output_log</span> <span class=o>=</span> <span class=nb>false</span><span class=p>;</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=cm>/* 
+</span></span></span><span class=line><span class=cl><span class=cm>小知识
+</span></span></span><span class=line><span class=cl><span class=cm>signal（参数1，参数2）；
+</span></span></span><span class=line><span class=cl><span class=cm>参数1：我们要进行处理的信号。系统的信号我们可以再终端键入 kill -l查看(共64个)。其实这些信号时系统定义的宏。
+</span></span></span><span class=line><span class=cl><span class=cm>参数2：我们处理的方式（是系统默认还是忽略还是捕获）。SIG_IGN: 如果func参数被设置为SIG_IGN，该信号将被忽略。
+</span></span></span><span class=line><span class=cl><span class=cm>     */</span>
+</span></span><span class=line><span class=cl>    <span class=o>::</span><span class=n>signal</span><span class=p>(</span><span class=n>SIGPIPE</span><span class=p>,</span> <span class=n>SIG_IGN</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=c1>// 设置http返回的内容
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=n>httpRes</span> <span class=o>=</span> <span class=s>&#34;HTTP/1.1 200 OK</span><span class=se>\r\n</span><span class=s>Connection: Keep-Alive</span><span class=se>\r\n</span><span class=s>Content-Type: text/html; charset=UTF-8</span><span class=se>\r\n</span><span class=s>Content-Length: 19048576</span><span class=se>\r\n\r\n</span><span class=s>123456&#34;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=c1>// 将剩下的内容填充成0。最后content的长度是大约1024*1024
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=k>for</span><span class=p>(</span><span class=kt>int</span> <span class=n>i</span><span class=o>=</span><span class=mi>0</span><span class=p>;</span><span class=n>i</span><span class=o>&lt;</span><span class=mi>19048570</span><span class=p>;</span><span class=n>i</span><span class=o>++</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=n>httpRes</span><span class=o>+=</span><span class=sc>&#39;\0&#39;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=c1>// 设置端口为80端口
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=kt>short</span> <span class=n>port</span> <span class=o>=</span> <span class=mi>80</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=c1>// 创建一个epoll句柄
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=kt>int</span> <span class=n>epollfd</span> <span class=o>=</span> <span class=n>epoll_create</span><span class=p>(</span><span class=mi>1</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=n>exit_if</span><span class=p>(</span><span class=n>epollfd</span> <span class=o>&lt;</span> <span class=mi>0</span><span class=p>,</span> <span class=s>&#34;epoll_create failed&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=c1>// 创建一个socket套接字
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=kt>int</span> <span class=n>listenfd</span> <span class=o>=</span> <span class=n>socket</span><span class=p>(</span><span class=n>AF_INET</span><span class=p>,</span> <span class=n>SOCK_STREAM</span><span class=p>,</span> <span class=mi>0</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=n>exit_if</span><span class=p>(</span><span class=n>listenfd</span> <span class=o>&lt;</span> <span class=mi>0</span><span class=p>,</span> <span class=s>&#34;socket failed&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=k>struct</span> <span class=nc>sockaddr_in</span> <span class=n>addr</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=n>memset</span><span class=p>(</span><span class=o>&amp;</span><span class=n>addr</span><span class=p>,</span> <span class=mi>0</span><span class=p>,</span> <span class=k>sizeof</span> <span class=n>addr</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=n>addr</span><span class=p>.</span><span class=n>sin_family</span> <span class=o>=</span> <span class=n>AF_INET</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=n>addr</span><span class=p>.</span><span class=n>sin_port</span> <span class=o>=</span> <span class=n>htons</span><span class=p>(</span><span class=n>port</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=n>addr</span><span class=p>.</span><span class=n>sin_addr</span><span class=p>.</span><span class=n>s_addr</span> <span class=o>=</span> <span class=n>INADDR_ANY</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=c1>// 先绑定socket到端口上
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=kt>int</span> <span class=n>r</span> <span class=o>=</span> <span class=o>::</span><span class=n>bind</span><span class=p>(</span><span class=n>listenfd</span><span class=p>,(</span><span class=k>struct</span> <span class=nc>sockaddr</span> <span class=o>*</span><span class=p>)</span><span class=o>&amp;</span><span class=n>addr</span><span class=p>,</span> <span class=k>sizeof</span><span class=p>(</span><span class=k>struct</span> <span class=nc>sockaddr</span><span class=p>));</span>
+</span></span><span class=line><span class=cl>    <span class=c1>// 这一步如果没有超级用户的权限，就会报错。linux对于非root权限用户不能使用1024以下的端口
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=n>exit_if</span><span class=p>(</span><span class=n>r</span><span class=p>,</span> <span class=s>&#34;bind to 0.0.0.0:%d failed %d %s&#34;</span><span class=p>,</span> <span class=n>port</span><span class=p>,</span> <span class=n>errno</span><span class=p>,</span> <span class=n>strerror</span><span class=p>(</span><span class=n>errno</span><span class=p>));</span>
+</span></span><span class=line><span class=cl>    <span class=cm>/* 
+</span></span></span><span class=line><span class=cl><span class=cm>    #include&lt;sys/socket.h&gt;
+</span></span></span><span class=line><span class=cl><span class=cm>int listen(int sockfd, int backlog)
+</span></span></span><span class=line><span class=cl><span class=cm>返回：0──成功， -1──失败
+</span></span></span><span class=line><span class=cl><span class=cm>参数sockfd
+</span></span></span><span class=line><span class=cl><span class=cm>被listen函数作用的套接字，sockfd之前由socket函数返回。在被socket函数返回的套接字fd之时，它是一个主动连接的套接字，
+</span></span></span><span class=line><span class=cl><span class=cm>也就是此时系统假设用户会对这个套接字调用connect函数，期待它主动与其它进程连接，然后在服务器编程中，用户希望这个套接字可以接受外来的连接请求，
+</span></span></span><span class=line><span class=cl><span class=cm>也就是被动等待用户来连接。由于系统默认时认为一个套接字是主动连接的，所以需要通过某种方式来告诉系统，用户进程通过系统调用listen来完成这件事。
+</span></span></span><span class=line><span class=cl><span class=cm>参数backlog
+</span></span></span><span class=line><span class=cl><span class=cm>这个参数涉及到一些网络的细节。在进程正理一个一个连接请求的时候，可能还存在其它的连接请求。
+</span></span></span><span class=line><span class=cl><span class=cm>因为TCP连接是一个过程，所以可能存在一种半连接的状态，有时由于同时尝试连接的用户过多，使得服务器进程无法快速地完成连接请求。
+</span></span></span><span class=line><span class=cl><span class=cm>如果这个情况出现了，服务器进程希望内核如何处理呢？
+</span></span></span><span class=line><span class=cl><span class=cm>内核会在自己的进程空间里维护一个队列以跟踪这些完成的连接但服务器进程还没有接手处理或正在进行的连接，这样的一个队列内核不可能让其任意大，
+</span></span></span><span class=line><span class=cl><span class=cm>所以必须有一个大小的上限。这个backlog告诉内核使用这个数值作为上限。
+</span></span></span><span class=line><span class=cl><span class=cm>毫无疑问，服务器进程不能随便指定一个数值，内核有一个许可的范围。这个范围是实现相关的。很难有某种统一，一般这个值会小30以内。
+</span></span></span><span class=line><span class=cl><span class=cm>内核用于跟踪这些完成连接但是用户代码还没有通过accept调用的队列长度这里设置为了20。在队列长度小于20时，内核会立即完成连接的建立。
+</span></span></span><span class=line><span class=cl><span class=cm>但是如果队列长度大于20，在用户代码调用accept之前该连接都不会建立，对方则处于阻塞状态。
+</span></span></span><span class=line><span class=cl><span class=cm>     */</span>
+</span></span><span class=line><span class=cl>    <span class=n>r</span> <span class=o>=</span> <span class=n>listen</span><span class=p>(</span><span class=n>listenfd</span><span class=p>,</span> <span class=mi>20</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=n>exit_if</span><span class=p>(</span><span class=n>r</span><span class=p>,</span> <span class=s>&#34;listen failed %d %s&#34;</span><span class=p>,</span> <span class=n>errno</span><span class=p>,</span> <span class=n>strerror</span><span class=p>(</span><span class=n>errno</span><span class=p>));</span>
+</span></span><span class=line><span class=cl>    <span class=n>printf</span><span class=p>(</span><span class=s>&#34;fd %d listening at %d</span><span class=se>\n</span><span class=s>&#34;</span><span class=p>,</span> <span class=n>listenfd</span><span class=p>,</span> <span class=n>port</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=c1>// 接下来设置文件描述符为阻塞。
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=c1>// 为什么要设置为非阻塞？https://www.zhihu.com/question/23614342
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=n>setNonBlock</span><span class=p>(</span><span class=n>listenfd</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=c1>// 将其设置为可读取时触发，添加到epoll文件描述符池中
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=n>updateEvents</span><span class=p>(</span><span class=n>epollfd</span><span class=p>,</span> <span class=n>listenfd</span><span class=p>,</span> <span class=n>EPOLLIN</span><span class=p>,</span> <span class=n>EPOLL_CTL_ADD</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=k>for</span> <span class=p>(;;)</span> <span class=p>{</span> <span class=c1>//实际应用应当注册信号处理函数，退出时清理资源
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=n>loop_once</span><span class=p>(</span><span class=n>epollfd</span><span class=p>,</span> <span class=n>listenfd</span><span class=p>,</span> <span class=mi>10000</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=mi>0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><h2 id=运行效果>运行效果</h2><p><img src=/img/rescued/7d2d193858a6.png loading=lazy alt=image.png></p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span><span class=lnt>45
+</span><span class=lnt>46
+</span><span class=lnt>47
+</span><span class=lnt>48
+</span><span class=lnt>49
+</span><span class=lnt>50
+</span><span class=lnt>51
+</span><span class=lnt>52
+</span><span class=lnt>53
+</span><span class=lnt>54
+</span><span class=lnt>55
+</span><span class=lnt>56
+</span><span class=lnt>57
+</span><span class=lnt>58
+</span><span class=lnt>59
+</span><span class=lnt>60
+</span><span class=lnt>61
+</span><span class=lnt>62
+</span><span class=lnt>63
+</span><span class=lnt>64
+</span><span class=lnt>65
+</span><span class=lnt>66
+</span><span class=lnt>67
+</span><span class=lnt>68
+</span><span class=lnt>69
+</span><span class=lnt>70
+</span><span class=lnt>71
+</span><span class=lnt>72
+</span><span class=lnt>73
+</span><span class=lnt>74
+</span><span class=lnt>75
+</span><span class=lnt>76
+</span><span class=lnt>77
+</span><span class=lnt>78
+</span><span class=lnt>79
+</span><span class=lnt>80
+</span><span class=lnt>81
+</span><span class=lnt>82
+</span><span class=lnt>83
+</span><span class=lnt>84
+</span><span class=lnt>85
+</span><span class=lnt>86
+</span><span class=lnt>87
+</span><span class=lnt>88
+</span><span class=lnt>89
+</span><span class=lnt>90
+</span><span class=lnt>91
+</span><span class=lnt>92
+</span><span class=lnt>93
+</span><span class=lnt>94
+</span><span class=lnt>95
+</span><span class=lnt>96
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>sudo ./epoll
+</span></span><span class=line><span class=cl>fd 4 listening at 80
+</span></span><span class=line><span class=cl>add fd 4 events read 1 write 0
+</span></span><span class=line><span class=cl>epoll_wait return 1
+</span></span><span class=line><span class=cl>this is accept
+</span></span><span class=line><span class=cl>accept a connection from 127.0.0.1
+</span></span><span class=line><span class=cl>add fd 5 events read 1 write 0
+</span></span><span class=line><span class=cl>epoll_wait return 1
+</span></span><span class=line><span class=cl>this can read
+</span></span><span class=line><span class=cl>read 412 bytes
+</span></span><span class=line><span class=cl>now info is
+</span></span><span class=line><span class=cl>---GET / HTTP/1.1
+</span></span><span class=line><span class=cl>Host: 127.0.0.1
+</span></span><span class=line><span class=cl>Connection: keep-alive
+</span></span><span class=line><span class=cl>User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36
+</span></span><span class=line><span class=cl>Upgrade-Insecure-Requests: 1
+</span></span><span class=line><span class=cl>Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8
+</span></span><span class=line><span class=cl>Accept-Encoding: gzip, deflate, br
+</span></span><span class=line><span class=cl>Accept-Language: zh-CN,zh;q=0.9,und;q=0.8,zh-TW;q=0.7,en;q=0.6,pl;q=0.5
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>---
+</span></span><span class=line><span class=cl>write 4081834 bytes left: 14966851
+</span></span><span class=line><span class=cl>update it to EPOLLIN|EPOLLOUT
+</span></span><span class=line><span class=cl>mod fd 5 events read 1 write 4
+</span></span><span class=line><span class=cl>nothing to read from 5, return.
+</span></span><span class=line><span class=cl>epoll_wait return 1
+</span></span><span class=line><span class=cl>handling epollout
+</span></span><span class=line><span class=cl>write 2226422 bytes left: 12740429
+</span></span><span class=line><span class=cl>epoll_wait return 1
+</span></span><span class=line><span class=cl>handling epollout
+</span></span><span class=line><span class=cl>write 2095456 bytes left: 10644973
+</span></span><span class=line><span class=cl>epoll_wait return 1
+</span></span><span class=line><span class=cl>handling epollout
+</span></span><span class=line><span class=cl>write 1964490 bytes left: 8680483
+</span></span><span class=line><span class=cl>epoll_wait return 1
+</span></span><span class=line><span class=cl>handling epollout
+</span></span><span class=line><span class=cl>write 1506109 bytes left: 7174374
+</span></span><span class=line><span class=cl>epoll_wait return 1
+</span></span><span class=line><span class=cl>handling epollout
+</span></span><span class=line><span class=cl>write 1833524 bytes left: 5340850
+</span></span><span class=line><span class=cl>epoll_wait return 1
+</span></span><span class=line><span class=cl>handling epollout
+</span></span><span class=line><span class=cl>write 1637075 bytes left: 3703775
+</span></span><span class=line><span class=cl>write 130966 bytes left: 3572809
+</span></span><span class=line><span class=cl>epoll_wait return 1
+</span></span><span class=line><span class=cl>handling epollout
+</span></span><span class=line><span class=cl>write 1571592 bytes left: 2001217
+</span></span><span class=line><span class=cl>epoll_wait return 1
+</span></span><span class=line><span class=cl>handling epollout
+</span></span><span class=line><span class=cl>write 1440626 bytes left: 560591
+</span></span><span class=line><span class=cl>epoll_wait return 1
+</span></span><span class=line><span class=cl>handling epollout
+</span></span><span class=line><span class=cl>write 560591 bytes left: 0
+</span></span><span class=line><span class=cl>mod fd 5 events read 1 write 0
+</span></span><span class=line><span class=cl>epoll_wait return 1
+</span></span><span class=line><span class=cl>this can read
+</span></span><span class=line><span class=cl>read 375 bytes
+</span></span><span class=line><span class=cl>now info is
+</span></span><span class=line><span class=cl>---GET /favicon.ico HTTP/1.1
+</span></span><span class=line><span class=cl>Host: 127.0.0.1
+</span></span><span class=line><span class=cl>Connection: keep-alive
+</span></span><span class=line><span class=cl>User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36
+</span></span><span class=line><span class=cl>Accept: image/webp,image/apng,image/*,*/*;q=0.8
+</span></span><span class=line><span class=cl>Referer: http://127.0.0.1/
+</span></span><span class=line><span class=cl>Accept-Encoding: gzip, deflate, br
+</span></span><span class=line><span class=cl>Accept-Language: zh-CN,zh;q=0.9,und;q=0.8,zh-TW;q=0.7,en;q=0.6,pl;q=0.5
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>---
+</span></span><span class=line><span class=cl>write 10477280 bytes left: 8571405
+</span></span><span class=line><span class=cl>update it to EPOLLIN|EPOLLOUT
+</span></span><span class=line><span class=cl>mod fd 5 events read 1 write 4
+</span></span><span class=line><span class=cl>nothing to read from 5, return.
+</span></span><span class=line><span class=cl>epoll_wait return 1
+</span></span><span class=line><span class=cl>handling epollout
+</span></span><span class=line><span class=cl>write 1440626 bytes left: 7130779
+</span></span><span class=line><span class=cl>epoll_wait return 1
+</span></span><span class=line><span class=cl>handling epollout
+</span></span><span class=line><span class=cl>write 1768041 bytes left: 5362738
+</span></span><span class=line><span class=cl>epoll_wait return 1
+</span></span><span class=line><span class=cl>handling epollout
+</span></span><span class=line><span class=cl>write 1571592 bytes left: 3791146
+</span></span><span class=line><span class=cl>epoll_wait return 1
+</span></span><span class=line><span class=cl>handling epollout
+</span></span><span class=line><span class=cl>write 1637075 bytes left: 2154071
+</span></span><span class=line><span class=cl>epoll_wait return 1
+</span></span><span class=line><span class=cl>handling epollout
+</span></span><span class=line><span class=cl>write 1702558 bytes left: 451513
+</span></span><span class=line><span class=cl>epoll_wait return 1
+</span></span><span class=line><span class=cl>handling epollout
+</span></span><span class=line><span class=cl>write 451513 bytes left: 0
+</span></span><span class=line><span class=cl>mod fd 5 events read 1 write 0
+</span></span><span class=line><span class=cl>epoll_wait return 0
+</span></span><span class=line><span class=cl>epoll_wait return 0
+</span></span><span class=line><span class=cl>epoll_wait return 0
+</span></span></code></pre></td></tr></table></div></div><p>这里我发送的资源改大了，改成如下的数值：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>    httpRes = &#34;HTTP/1.1 200 OK\r\nConnection: Keep-Alive\r\nContent-Type: text/html; charset=UTF-8\r\nContent-Length: 19048576\r\n\r\n123456&#34;;
+</span></span><span class=line><span class=cl>    // 将剩下的内容填充成0。最后content的长度是大约1024*1024
+</span></span><span class=line><span class=cl>    for(int i=0;i&lt;19048570;i++) {
+</span></span><span class=line><span class=cl>        httpRes+=&#39;\0&#39;;
+</span></span><span class=line><span class=cl>    }
+</span></span></code></pre></td></tr></table></div></div><p>可以看到分了多次传输。最终终端页面上显示123456，后面全都是\0，不会显示。
 可以看到浏览器请求了两次，一次请求根目录，一次请求页面的图标favicon.ico</p></section><footer class=article-footer></footer></article><div class=disqus-container><div id=disqus_thread></div><script>window.disqus_config=function(){},function(){if(["localhost","127.0.0.1"].indexOf(window.location.hostname)!=-1){document.getElementById("disqus_thread").innerHTML="Disqus comments not available by default when the website is previewed locally.";return}var t=document,e=t.createElement("script");e.async=!0,e.src="//nansenli.disqus.com/embed.js",e.setAttribute("data-timestamp",+new Date),(t.head||t.body).appendChild(e)}()</script><noscript>Please enable JavaScript to view the <a href=https://disqus.com/?ref_noscript>comments powered by Disqus.</a></noscript><a href=https://disqus.com class=dsq-brlink>comments powered by <span class=logo-disqus>Disqus</span></a></div><style>.disqus-container{background-color:var(--card-background);border-radius:var(--card-border-radius);box-shadow:var(--shadow-l1);padding:var(--card-padding)}</style><script>window.addEventListener("onColorSchemeChange",e=>{typeof DISQUS=="object"&&DISQUS.reset({reload:!0})})</script><footer class=site-footer><section class=copyright>&copy;
 2026 Nansen Li 🌈 （李楠森）</section><section class=powerby>使用 <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a> 构建<br>主题 <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.31.0>Stack</a></b> 由 <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a> 设计</section></footer><div class=pswp tabindex=-1 role=dialog aria-hidden=true><div class=pswp__bg></div><div class=pswp__scroll-wrap><div class=pswp__container><div class=pswp__item></div><div class=pswp__item></div><div class=pswp__item></div></div><div class="pswp__ui pswp__ui--hidden"><div class=pswp__top-bar><div class=pswp__counter></div><button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
 <button class="pswp__button pswp__button--share" title=Share></button>

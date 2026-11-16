@@ -188,14 +188,27 @@ A开发者将提交的数据提交后，服务器发生了变化，B开发者需
 &lt;h2 id="书写-proto-文件">书写 .proto 文件
 &lt;/h2>&lt;p>nano lm.helloworld.proto&lt;/p>
 &lt;p>然后输入&lt;/p>
-&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-protobuf" data-lang="protobuf">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">package&lt;/span> lm; &lt;span style="color:#960050;background-color:#1e0010">
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010">&lt;/span>&lt;span style="color:#66d9ef">message&lt;/span> &lt;span style="color:#a6e22e">helloworld&lt;/span> &lt;span style="color:#960050;background-color:#1e0010">
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010">&lt;/span>{ &lt;span style="color:#960050;background-color:#1e0010">
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010">&lt;/span> &lt;span style="color:#66d9ef">required&lt;/span> &lt;span style="color:#66d9ef">int32&lt;/span> id &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">1&lt;/span>; &lt;span style="color:#75715e">// ID
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#66d9ef">required&lt;/span> &lt;span style="color:#66d9ef">string&lt;/span> str &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">2&lt;/span>; &lt;span style="color:#75715e">// str
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#66d9ef">optional&lt;/span> &lt;span style="color:#66d9ef">int32&lt;/span> opt &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">3&lt;/span>; &lt;span style="color:#75715e">//optional field
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>}&lt;span style="color:#960050;background-color:#1e0010">
-&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>在上例中，package 名字叫做 lm，定义了一个消息 helloworld，该消息有三个成员，类型为 int32 的 id，另一个为类型为 string 的成员 str。opt 是一个可选的成员，即消息中可以不包含该成员。&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-protobuf" data-lang="protobuf">&lt;span class="line">&lt;span class="cl">&lt;span class="kn">package&lt;/span> &lt;span class="nn">lm&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">&lt;/span>&lt;span class="kd">message&lt;/span> &lt;span class="nc">helloworld&lt;/span> &lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">&lt;/span>&lt;span class="p">{&lt;/span> &lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">&lt;/span> &lt;span class="k">required&lt;/span> &lt;span class="kt">int32&lt;/span> &lt;span class="n">id&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="c1">// ID
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="k">required&lt;/span> &lt;span class="kt">string&lt;/span> &lt;span class="n">str&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">2&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="c1">// str
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="k">optional&lt;/span> &lt;span class="kt">int32&lt;/span> &lt;span class="n">opt&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">3&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="c1">//optional field
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="p">}&lt;/span>&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>在上例中，package 名字叫做 lm，定义了一个消息 helloworld，该消息有三个成员，类型为 int32 的 id，另一个为类型为 string 的成员 str。opt 是一个可选的成员，即消息中可以不包含该成员。&lt;/p>
 &lt;h2 id="编译proto文件">编译proto文件
 &lt;/h2></description></item><item><title>2018-05-11 随笔</title><link>https://nansenli.com/zh-cn/post/jianshu/%E9%9A%8F%E7%AC%94/2018-05-11-%E9%9A%8F%E7%AC%94/</link><pubDate>Fri, 11 May 2018 09:50:00 +0000</pubDate><guid>https://nansenli.com/zh-cn/post/jianshu/%E9%9A%8F%E7%AC%94/2018-05-11-%E9%9A%8F%E7%AC%94/</guid><description>&lt;p>开始准备写ss助手的服务器端。有很多问题。&lt;/p>
 &lt;ul>
@@ -233,60 +246,136 @@ A开发者将提交的数据提交后，服务器发生了变化，B开发者需
 &lt;li>打印在纸上的题目，考察：new [] 对象。static 成员。子类构造函数具体调用了啥。拷贝构造函数与赋值函数的区别。等号在拷贝构造函数出现的时机。什么时候需要赋值函数。深拷贝与浅拷贝。虚函数的调用时机。&lt;/li>
 &lt;/ul>
 &lt;p>下面是其中一道题目，请写出运行结果&lt;/p>
-&lt;pre tabindex="0">&lt;code>#include &amp;lt;iostream&amp;gt;
-using namespace std;
-struct A{
-A(){
-local_var++;
-}
-virtual void func(){
-cout &amp;lt;&amp;lt; &amp;#34;A&amp;#34; &amp;lt;&amp;lt; endl;
-}
-static int local_var;
-};
-int A::local_var = 0;
-struct B : A{
-B(){
-local_var+=2;
-}
-virtual void func(){
-cout &amp;lt;&amp;lt; &amp;#34;B&amp;#34; &amp;lt;&amp;lt; endl;
-}
-};
-int main(){
-A* a1 = new B[3];
-cout &amp;lt;&amp;lt; a1[0].local_var &amp;lt;&amp;lt; endl;
-a1-&amp;gt;func();
-A a2 = a1[0];
-cout &amp;lt;&amp;lt; a2.local_var &amp;lt;&amp;lt; endl;
-a2.func();
-A a3;
-a3 = a1[0];
-cout &amp;lt;&amp;lt; a3.local_var &amp;lt;&amp;lt; endl;
-a3.func();
-}
-&lt;/code>&lt;/pre>&lt;p>以下代码会出现什么问题。&lt;/p>
-&lt;pre tabindex="0">&lt;code>#include &amp;lt;iostream&amp;gt;
-using namespace std;
-struct A{
-virtual void func1(){
-cout &amp;lt;&amp;lt; a &amp;lt;&amp;lt; endl;
-}
-void func2(){
-cout &amp;lt;&amp;lt; a &amp;lt;&amp;lt; endl;
-}
-void func3(){
-cout &amp;lt;&amp;lt; &amp;#34;a&amp;#34; &amp;lt;&amp;lt; endl;
-}
-int a;
-};
-int main(){
-A * a = (A*)malloc(sizeof(A));
-a-&amp;gt;func1();
-a-&amp;gt;func2();
-a-&amp;gt;func3();
-}
-&lt;/code>&lt;/pre>&lt;ul>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;span class="lnt">30
+&lt;/span>&lt;span class="lnt">31
+&lt;/span>&lt;span class="lnt">32
+&lt;/span>&lt;span class="lnt">33
+&lt;/span>&lt;span class="lnt">34
+&lt;/span>&lt;span class="lnt">35
+&lt;/span>&lt;span class="lnt">36
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-c++" data-lang="c++">&lt;span class="line">&lt;span class="cl">&lt;span class="cp">#include&lt;/span> &lt;span class="cpf">&amp;lt;iostream&amp;gt;&lt;/span>&lt;span class="cp">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp">&lt;/span>&lt;span class="k">using&lt;/span> &lt;span class="k">namespace&lt;/span> &lt;span class="n">std&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">struct&lt;/span> &lt;span class="nc">A&lt;/span>&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">A&lt;/span>&lt;span class="p">(){&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">local_var&lt;/span>&lt;span class="o">++&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">virtual&lt;/span> &lt;span class="kt">void&lt;/span> &lt;span class="nf">func&lt;/span>&lt;span class="p">(){&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">cout&lt;/span> &lt;span class="o">&amp;lt;&amp;lt;&lt;/span> &lt;span class="s">&amp;#34;A&amp;#34;&lt;/span> &lt;span class="o">&amp;lt;&amp;lt;&lt;/span> &lt;span class="n">endl&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">static&lt;/span> &lt;span class="kt">int&lt;/span> &lt;span class="n">local_var&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">};&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kt">int&lt;/span> &lt;span class="n">A&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">local_var&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">struct&lt;/span> &lt;span class="nc">B&lt;/span> &lt;span class="o">:&lt;/span> &lt;span class="n">A&lt;/span>&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">B&lt;/span>&lt;span class="p">(){&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">local_var&lt;/span>&lt;span class="o">+=&lt;/span>&lt;span class="mi">2&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">virtual&lt;/span> &lt;span class="kt">void&lt;/span> &lt;span class="nf">func&lt;/span>&lt;span class="p">(){&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">cout&lt;/span> &lt;span class="o">&amp;lt;&amp;lt;&lt;/span> &lt;span class="s">&amp;#34;B&amp;#34;&lt;/span> &lt;span class="o">&amp;lt;&amp;lt;&lt;/span> &lt;span class="n">endl&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">};&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kt">int&lt;/span> &lt;span class="nf">main&lt;/span>&lt;span class="p">(){&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">A&lt;/span>&lt;span class="o">*&lt;/span> &lt;span class="n">a1&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="k">new&lt;/span> &lt;span class="n">B&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="mi">3&lt;/span>&lt;span class="p">];&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">cout&lt;/span> &lt;span class="o">&amp;lt;&amp;lt;&lt;/span> &lt;span class="n">a1&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="mi">0&lt;/span>&lt;span class="p">].&lt;/span>&lt;span class="n">local_var&lt;/span> &lt;span class="o">&amp;lt;&amp;lt;&lt;/span> &lt;span class="n">endl&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">a1&lt;/span>&lt;span class="o">-&amp;gt;&lt;/span>&lt;span class="n">func&lt;/span>&lt;span class="p">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">A&lt;/span> &lt;span class="n">a2&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">a1&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="mi">0&lt;/span>&lt;span class="p">];&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">cout&lt;/span> &lt;span class="o">&amp;lt;&amp;lt;&lt;/span> &lt;span class="n">a2&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">local_var&lt;/span> &lt;span class="o">&amp;lt;&amp;lt;&lt;/span> &lt;span class="n">endl&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">a2&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">func&lt;/span>&lt;span class="p">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">A&lt;/span> &lt;span class="n">a3&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">a3&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">a1&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="mi">0&lt;/span>&lt;span class="p">];&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">cout&lt;/span> &lt;span class="o">&amp;lt;&amp;lt;&lt;/span> &lt;span class="n">a3&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">local_var&lt;/span> &lt;span class="o">&amp;lt;&amp;lt;&lt;/span> &lt;span class="n">endl&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">a3&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">func&lt;/span>&lt;span class="p">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>以下代码会出现什么问题。&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-c++" data-lang="c++">&lt;span class="line">&lt;span class="cl">&lt;span class="cp">#include&lt;/span> &lt;span class="cpf">&amp;lt;iostream&amp;gt;&lt;/span>&lt;span class="cp">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp">&lt;/span>&lt;span class="k">using&lt;/span> &lt;span class="k">namespace&lt;/span> &lt;span class="n">std&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">struct&lt;/span> &lt;span class="nc">A&lt;/span>&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">virtual&lt;/span> &lt;span class="kt">void&lt;/span> &lt;span class="nf">func1&lt;/span>&lt;span class="p">(){&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">cout&lt;/span> &lt;span class="o">&amp;lt;&amp;lt;&lt;/span> &lt;span class="n">a&lt;/span> &lt;span class="o">&amp;lt;&amp;lt;&lt;/span> &lt;span class="n">endl&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">void&lt;/span> &lt;span class="nf">func2&lt;/span>&lt;span class="p">(){&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">cout&lt;/span> &lt;span class="o">&amp;lt;&amp;lt;&lt;/span> &lt;span class="n">a&lt;/span> &lt;span class="o">&amp;lt;&amp;lt;&lt;/span> &lt;span class="n">endl&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">void&lt;/span> &lt;span class="nf">func3&lt;/span>&lt;span class="p">(){&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">cout&lt;/span> &lt;span class="o">&amp;lt;&amp;lt;&lt;/span> &lt;span class="s">&amp;#34;a&amp;#34;&lt;/span> &lt;span class="o">&amp;lt;&amp;lt;&lt;/span> &lt;span class="n">endl&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">int&lt;/span> &lt;span class="n">a&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">};&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kt">int&lt;/span> &lt;span class="nf">main&lt;/span>&lt;span class="p">(){&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">A&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="n">a&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">A&lt;/span>&lt;span class="o">*&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="n">malloc&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="k">sizeof&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">A&lt;/span>&lt;span class="p">));&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">a&lt;/span>&lt;span class="o">-&amp;gt;&lt;/span>&lt;span class="n">func1&lt;/span>&lt;span class="p">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">a&lt;/span>&lt;span class="o">-&amp;gt;&lt;/span>&lt;span class="n">func2&lt;/span>&lt;span class="p">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">a&lt;/span>&lt;span class="o">-&amp;gt;&lt;/span>&lt;span class="n">func3&lt;/span>&lt;span class="p">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;ul>
 &lt;li>笔试过程中（之前牛客笔试。面试官居然打印了我的笔试所有答案和结果，包括选择题和算法题，提交了多少次，失败了多少次）一道题的思路。考察虚指针的初始化时机。&lt;/li>
 &lt;li>随机出一道纸上的题目。给定前序遍历ABC后序遍历CBA，求中序遍历是什么，画出来两种情况。&lt;/li>
 &lt;li>笔试过程中（之前牛客笔试），第一道算法题的思路&lt;/li>
@@ -633,54 +722,127 @@ RAII全称为Resource Acquisition Is Initialization
 &lt;h2 id="shared_ptr">shared_ptr
 &lt;/h2>&lt;p>shared_ptr允许多个指针指向同一个对象，unique_ptr则独占所指的对象。&lt;/p>
 &lt;p>例子&lt;/p>
-&lt;pre tabindex="0">&lt;code>#include &amp;lt;memory&amp;gt;
-#include &amp;lt;thread&amp;gt;
-class A
-{
-char * str;
-public:
-A(){
-str = new char[20];
-printf(&amp;#34;构造\n&amp;#34;);
-}
-~A()
-{
-printf(&amp;#34;析构\n&amp;#34;);
-delete [] str;
-}
-};
-std::shared_ptr&amp;lt;A&amp;gt; xixi;
-void test()
-{
-std::shared_ptr&amp;lt;A&amp;gt; shared_a = std::make_shared&amp;lt;A&amp;gt;();
-xixi = shared_a;
-printf(&amp;#34;%d\n&amp;#34;, xixi.use_count());
-}
-int main()
-{
-test();
-std::this_thread::sleep_for(std::chrono::seconds(1));
-}
-&lt;/code>&lt;/pre>&lt;p>上面这个例子中，xixi是全局智能指针，会在程序结束时才会释放自己所指向的对象，如果去掉了xixi=shared_a，则在main函数延迟之前就会看到析构。&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;span class="lnt">30
+&lt;/span>&lt;span class="lnt">31
+&lt;/span>&lt;span class="lnt">32
+&lt;/span>&lt;span class="lnt">33
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-c++" data-lang="c++">&lt;span class="line">&lt;span class="cl">&lt;span class="cp">#include&lt;/span> &lt;span class="cpf">&amp;lt;memory&amp;gt;&lt;/span>&lt;span class="cp">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp">#include&lt;/span> &lt;span class="cpf">&amp;lt;thread&amp;gt;&lt;/span>&lt;span class="cp">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp">&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">class&lt;/span> &lt;span class="nc">A&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">char&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="n">str&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">public&lt;/span>&lt;span class="o">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">A&lt;/span>&lt;span class="p">(){&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">str&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="k">new&lt;/span> &lt;span class="kt">char&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="mi">20&lt;/span>&lt;span class="p">];&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">printf&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;构造&lt;/span>&lt;span class="se">\n&lt;/span>&lt;span class="s">&amp;#34;&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">~&lt;/span>&lt;span class="n">A&lt;/span>&lt;span class="p">()&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">printf&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;析构&lt;/span>&lt;span class="se">\n&lt;/span>&lt;span class="s">&amp;#34;&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">delete&lt;/span> &lt;span class="p">[]&lt;/span> &lt;span class="n">str&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">};&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">shared_ptr&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">A&lt;/span>&lt;span class="o">&amp;gt;&lt;/span> &lt;span class="n">xixi&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kt">void&lt;/span> &lt;span class="nf">test&lt;/span>&lt;span class="p">()&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">shared_ptr&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">A&lt;/span>&lt;span class="o">&amp;gt;&lt;/span> &lt;span class="n">shared_a&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">make_shared&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">A&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="p">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">xixi&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">shared_a&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">printf&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;%d&lt;/span>&lt;span class="se">\n&lt;/span>&lt;span class="s">&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">xixi&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">use_count&lt;/span>&lt;span class="p">());&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kt">int&lt;/span> &lt;span class="nf">main&lt;/span>&lt;span class="p">()&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">test&lt;/span>&lt;span class="p">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">this_thread&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">sleep_for&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">chrono&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">seconds&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="p">));&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>上面这个例子中，xixi是全局智能指针，会在程序结束时才会释放自己所指向的对象，如果去掉了xixi=shared_a，则在main函数延迟之前就会看到析构。&lt;/p>
 &lt;h2 id="unique_ptr">unique_ptr
 &lt;/h2>&lt;p>unique_ptr独占对象，只能在不同的unique_ptr中移动（std::move）。没有make_unique语句。只能在构造函数中传入对象的指针来构造unique_ptr。&lt;/p>
 &lt;p>unique_ptr使用场景
 1、为动态申请的资源提供异常安全保证
 我们先来看看下面这一段代码：&lt;/p>
-&lt;pre tabindex="0">&lt;code>void Func()
-{
-int *p = new int(5);
-// ...（可能会抛出异常）
-delete p;
-}
-&lt;/code>&lt;/pre>&lt;p>这是我们传统的写法：当我们动态申请内存后，有可能我们接下来的代码由于抛出异常或者提前退出（if语句）而没有执行delete操作。&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;span class="lnt">8
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">void Func()
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">{
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> int *p = new int(5);
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> // ...（可能会抛出异常）
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> delete p;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>这是我们传统的写法：当我们动态申请内存后，有可能我们接下来的代码由于抛出异常或者提前退出（if语句）而没有执行delete操作。&lt;/p>
 &lt;p>解决的方法是使用unique_ptr来管理动态内存，只要unique_ptr指针创建成功，其析构函数都会被调用。确保动态资源被释放。&lt;/p>
-&lt;pre tabindex="0">&lt;code>void Func()
-{
-unique_ptr&amp;lt;int&amp;gt; p(new int(5));
-// ...（可能会抛出异常）
-}
-&lt;/code>&lt;/pre>&lt;h2 id="week_ptr">week_ptr
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">void Func()
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">{
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> unique_ptr&amp;lt;int&amp;gt; p(new int(5));
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> // ...（可能会抛出异常）
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="week_ptr">week_ptr
 &lt;/h2>&lt;p>week_ptr也是一种强大的指针，名字起的比较弱。week_ptr不控制对象的生命周期，用于在不持有对象时使用。week_ptr可以在对象存在时提升为shared_ptr。&lt;/p></description></item><item><title>关于CSDN移动端被电信劫持红包广告的现象与感想</title><link>https://nansenli.com/zh-cn/post/jianshu/%E9%9A%8F%E7%AC%94/%E5%85%B3%E4%BA%8Ecsdn%E7%A7%BB%E5%8A%A8%E7%AB%AF%E8%A2%AB%E7%94%B5%E4%BF%A1%E5%8A%AB%E6%8C%81%E7%BA%A2%E5%8C%85%E5%B9%BF%E5%91%8A%E7%9A%84%E7%8E%B0%E8%B1%A1%E4%B8%8E%E6%84%9F%E6%83%B3/</link><pubDate>Sun, 31 Dec 2017 06:24:00 +0000</pubDate><guid>https://nansenli.com/zh-cn/post/jianshu/%E9%9A%8F%E7%AC%94/%E5%85%B3%E4%BA%8Ecsdn%E7%A7%BB%E5%8A%A8%E7%AB%AF%E8%A2%AB%E7%94%B5%E4%BF%A1%E5%8A%AB%E6%8C%81%E7%BA%A2%E5%8C%85%E5%B9%BF%E5%91%8A%E7%9A%84%E7%8E%B0%E8%B1%A1%E4%B8%8E%E6%84%9F%E6%83%B3/</guid><description>&lt;h2 id="前言">前言
 &lt;/h2>&lt;p>最近疑似被电信劫持，遂将分析记录下来&lt;/p>
 &lt;h2 id="现象">现象
@@ -755,11 +917,21 @@ loading="lazy"
 alt="脚本"
 >&lt;/p>
 &lt;p>在properties中插入以下内容，这部分是小怪物的物理属性&lt;/p>
-&lt;pre tabindex="0">&lt;code> jumpHeight:0,
-jumpDuration:0,
-maxMoveSpeed:0,
-accel:0,
-&lt;/code>&lt;/pre>&lt;p>选中小怪物图片，在属性框中找到添加组件，把player脚本添加到player图片上，并且设置好相关参数。&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl"> jumpHeight:0,
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> jumpDuration:0,
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> maxMoveSpeed:0,
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> accel:0,
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>选中小怪物图片，在属性框中找到添加组件，把player脚本添加到player图片上，并且设置好相关参数。&lt;/p>
 &lt;p>&lt;img src="https://nansenli.com/img/rescued/83e4e58a11e8.png"
 loading="lazy"
 alt="参数设置"
@@ -767,186 +939,435 @@ alt="参数设置"
 &lt;h2 id="完善脚本">完善脚本
 &lt;/h2>&lt;p>我们在脚本中继续加入其他功能。首先是跳跃的动作。&lt;/p>
 &lt;p>在properties下面加入这一段&lt;/p>
-&lt;pre tabindex="0">&lt;code> setJumpAction: function(){
-var jumpUp = cc.moveBy(this.jumpDuration, cc.p(0,this.jumpHeight)).easing(cc.easeQuadraticActionOut());
-var jumpDown = cc.moveBy(this.jumpDuration, cc.p(0,-this.jumpHeight)).easing(cc.easeQuadraticActionIn());
-return cc.repeatForever(cc.sequence(jumpUp, jumpDown));
-},
-&lt;/code>&lt;/pre>&lt;p>moveBy是官方的API，在官方API中查询一下该API的使用，第一个参数是移动的距离，第二个参数是移动的位置。很显然是向上移动了一段距离。后面的easing是生成缓动运动，生成的对象是easeQuadraticActionIn和Out，这两个是二次曲线。原来的教程中是三次曲线，这个和真实世界中的物理运动差的太多了。&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-gdscript3" data-lang="gdscript3">&lt;span class="line">&lt;span class="cl"> &lt;span class="n">setJumpAction&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="n">function&lt;/span>&lt;span class="p">(){&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">var&lt;/span> &lt;span class="n">jumpUp&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">cc&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">moveBy&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">this&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">jumpDuration&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">cc&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">p&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">0&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="n">this&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">jumpHeight&lt;/span>&lt;span class="p">))&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">easing&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">cc&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">easeQuadraticActionOut&lt;/span>&lt;span class="p">());&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">var&lt;/span> &lt;span class="n">jumpDown&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">cc&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">moveBy&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">this&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">jumpDuration&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">cc&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">p&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">0&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">this&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">jumpHeight&lt;/span>&lt;span class="p">))&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">easing&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">cc&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">easeQuadraticActionIn&lt;/span>&lt;span class="p">());&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="n">cc&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">repeatForever&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">cc&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">sequence&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">jumpUp&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">jumpDown&lt;/span>&lt;span class="p">));&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">},&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>moveBy是官方的API，在官方API中查询一下该API的使用，第一个参数是移动的距离，第二个参数是移动的位置。很显然是向上移动了一段距离。后面的easing是生成缓动运动，生成的对象是easeQuadraticActionIn和Out，这两个是二次曲线。原来的教程中是三次曲线，这个和真实世界中的物理运动差的太多了。&lt;/p>
 &lt;p>在onload方法中加入下面这段代码，启动动画。&lt;/p>
-&lt;pre tabindex="0">&lt;code> onLoad: function () {
-this.jumpAction = this.setJumpAction();
-this.node.runAction(this.jumpAction);
-},
-&lt;/code>&lt;/pre>&lt;p>现在点击播放按钮刻可以查看初始的效果。&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl"> onLoad: function () {
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> this.jumpAction = this.setJumpAction();
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> this.node.runAction(this.jumpAction);
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> },
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>现在点击播放按钮刻可以查看初始的效果。&lt;/p>
 &lt;h2 id="控制角色">控制角色
 &lt;/h2>&lt;p>为主角加上移动的控制。
 在setJumpAction下面继续添加方法。&lt;/p>
-&lt;pre tabindex="0">&lt;code> setInputControl: function(){
-var self = this;
-cc.eventManager.addListener({
-event: cc.EventListener.KEYBOARD,
-onKeyPressed: function(keyCode, event){
-switch(keyCode){
-case cc.KEY.a:
-self.accLeft = true;
-self.accRight = false;
-break;
-case cc.KEY.d:
-self.accRight = true;
-self.accLeft = false;
-}
-},
-onKeyReleased: function(keyCode, event){
-switch(keyCode){
-case cc.KEY.a:
-self.accLeft = false;
-break;
-case cc.KEY.d:
-self.accRight = false;
-break;
-}
-}
-}, self.node)
-},
-&lt;/code>&lt;/pre>&lt;p>更新onload和update代码&lt;/p>
-&lt;pre tabindex="0">&lt;code> onLoad: function () {
-this.jumpAction = this.setJumpAction();
-this.node.runAction(this.jumpAction);
-this.accLeft = false;
-this.accRight = false;
-this.xSpeed = 0;
-this.setInputControl();
-},
-update: function(dt){
-if(this.accLeft){
-this.xSpeed -= this.accel * dt;
-}
-else if(this.accRight){
-this.xSpeed += this.accel * dt;
-}
-if(this.xSpeed &amp;gt;0){
-this.xSpeed -= this.accel/2 * dt;
-}
-else if( this.xSpeed &amp;lt;0){
-this.xSpeed += this.accel/2 * dt;
-}
-if(Math.abs(this.xSpeed) &amp;gt; this.maxMoveSpeed){
-this.xSpeed = this.maxMoveSpeed * this.xSpeed / Math.abs(this.xSpeed);
-}
-this.node.x += this.xSpeed * dt;
-},
-&lt;/code>&lt;/pre>&lt;p>第一个代码添加了个监听器，按键变动的时候改变accLeft和accRight的值。启动时打开监听，然后，在每一帧需要更新的时候，计算怪物的位置。&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-gdscript3" data-lang="gdscript3">&lt;span class="line">&lt;span class="cl"> &lt;span class="n">setInputControl&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="n">function&lt;/span>&lt;span class="p">(){&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">var&lt;/span> &lt;span class="bp">self&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">this&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">cc&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">eventManager&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">addListener&lt;/span>&lt;span class="p">({&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">event&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="n">cc&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">EventListener&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">KEYBOARD&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">onKeyPressed&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="n">function&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">keyCode&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">event&lt;/span>&lt;span class="p">){&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">switch&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">keyCode&lt;/span>&lt;span class="p">){&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">case&lt;/span> &lt;span class="n">cc&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">KEY&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">a&lt;/span>&lt;span class="p">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="bp">self&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">accLeft&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="bp">true&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="bp">self&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">accRight&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="bp">false&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">break&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">case&lt;/span> &lt;span class="n">cc&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">KEY&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">d&lt;/span>&lt;span class="p">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="bp">self&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">accRight&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="bp">true&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="bp">self&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">accLeft&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="bp">false&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">},&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">onKeyReleased&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="n">function&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">keyCode&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">event&lt;/span>&lt;span class="p">){&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">switch&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">keyCode&lt;/span>&lt;span class="p">){&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">case&lt;/span> &lt;span class="n">cc&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">KEY&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">a&lt;/span>&lt;span class="p">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="bp">self&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">accLeft&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="bp">false&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">break&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">case&lt;/span> &lt;span class="n">cc&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">KEY&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">d&lt;/span>&lt;span class="p">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="bp">self&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">accRight&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="bp">false&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">break&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">},&lt;/span> &lt;span class="bp">self&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">node&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">},&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>更新onload和update代码&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;span class="lnt">30
+&lt;/span>&lt;span class="lnt">31
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl"> onLoad: function () {
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> this.jumpAction = this.setJumpAction();
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> this.node.runAction(this.jumpAction);
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> this.accLeft = false;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> this.accRight = false;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> this.xSpeed = 0;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> this.setInputControl();
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> },
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> update: function(dt){
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> if(this.accLeft){
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> this.xSpeed -= this.accel * dt;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> }
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> else if(this.accRight){
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> this.xSpeed += this.accel * dt;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> }
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> if(this.xSpeed &amp;gt;0){
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> this.xSpeed -= this.accel/2 * dt;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> }
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> else if( this.xSpeed &amp;lt;0){
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> this.xSpeed += this.accel/2 * dt;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> }
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> if(Math.abs(this.xSpeed) &amp;gt; this.maxMoveSpeed){
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> this.xSpeed = this.maxMoveSpeed * this.xSpeed / Math.abs(this.xSpeed);
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> }
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> this.node.x += this.xSpeed * dt;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> },
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>第一个代码添加了个监听器，按键变动的时候改变accLeft和accRight的值。启动时打开监听，然后，在每一帧需要更新的时候，计算怪物的位置。&lt;/p>
 &lt;h2 id="增加五角星">增加五角星
 &lt;/h2>&lt;p>添加Game脚本到assets/scripts文件夹下，双击打开脚本，加入以下代码&lt;/p>
-&lt;pre tabindex="0">&lt;code>cc.Class({
-extends: cc.Component,
-properties: {
-// 这个属性引用了星星预制资源
-starPrefab: {
-default: null,
-type: cc.Prefab
-},
-// 星星产生后消失时间的随机范围
-maxStarDuration: 0,
-minStarDuration: 0,
-// 地面节点，用于确定星星生成的高度
-ground: {
-default: null,
-type: cc.Node
-},
-// player 节点，用于获取主角弹跳的高度，和控制主角行动开关
-player: {
-default: null,
-type: cc.Node
-},
-scoreDisplay: {
-default: null,
-type: cc.Label
-}
-},
-onLoad: function () {
-// 获取地平面的 y 轴坐标
-this.groundY = this.ground.y + this.ground.height/2;
-// 生成一个新的星星
-this.spawnNewStar();
-this.score = 0;
-},
-gainScore: function () {
-this.score += 1;
-// 更新 scoreDisplay Label 的文字
-this.scoreDisplay.string = &amp;#39;Score: &amp;#39; + this.score.toString();
-},
-spawnNewStar: function() {
-// 使用给定的模板在场景中生成一个新节点
-var newStar = cc.instantiate(this.starPrefab);
-// 将新增的节点添加到 Canvas 节点下面
-this.node.addChild(newStar);
-// 为星星设置一个随机位置
-newStar.setPosition(this.getNewStarPosition());
-newStar.getComponent(&amp;#39;star&amp;#39;).game = this;
-},
-getNewStarPosition: function () {
-var randX = 0;
-// 根据地平面位置和主角跳跃高度，随机得到一个星星的 y 坐标
-var randY = this.groundY + cc.random0To1() * this.player.getComponent(&amp;#39;Player&amp;#39;).jumpHeight + 50;
-// 根据屏幕宽度，随机得到一个星星 x 坐标
-var maxX = this.node.width/2;
-randX = cc.randomMinus1To1() * maxX;
-// 返回星星坐标
-return cc.p(randX, randY);
-},
-// called every frame, uncomment this function to activate update callback
-// update: function (dt) {
-// },
-});
-&lt;/code>&lt;/pre>&lt;p>从 资源管理器 中拖拽 assets/textures/star 资源到场景中，添加名叫 Star 的JavaScript脚本到assets/scripts/中，并关联脚本。
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;span class="lnt">30
+&lt;/span>&lt;span class="lnt">31
+&lt;/span>&lt;span class="lnt">32
+&lt;/span>&lt;span class="lnt">33
+&lt;/span>&lt;span class="lnt">34
+&lt;/span>&lt;span class="lnt">35
+&lt;/span>&lt;span class="lnt">36
+&lt;/span>&lt;span class="lnt">37
+&lt;/span>&lt;span class="lnt">38
+&lt;/span>&lt;span class="lnt">39
+&lt;/span>&lt;span class="lnt">40
+&lt;/span>&lt;span class="lnt">41
+&lt;/span>&lt;span class="lnt">42
+&lt;/span>&lt;span class="lnt">43
+&lt;/span>&lt;span class="lnt">44
+&lt;/span>&lt;span class="lnt">45
+&lt;/span>&lt;span class="lnt">46
+&lt;/span>&lt;span class="lnt">47
+&lt;/span>&lt;span class="lnt">48
+&lt;/span>&lt;span class="lnt">49
+&lt;/span>&lt;span class="lnt">50
+&lt;/span>&lt;span class="lnt">51
+&lt;/span>&lt;span class="lnt">52
+&lt;/span>&lt;span class="lnt">53
+&lt;/span>&lt;span class="lnt">54
+&lt;/span>&lt;span class="lnt">55
+&lt;/span>&lt;span class="lnt">56
+&lt;/span>&lt;span class="lnt">57
+&lt;/span>&lt;span class="lnt">58
+&lt;/span>&lt;span class="lnt">59
+&lt;/span>&lt;span class="lnt">60
+&lt;/span>&lt;span class="lnt">61
+&lt;/span>&lt;span class="lnt">62
+&lt;/span>&lt;span class="lnt">63
+&lt;/span>&lt;span class="lnt">64
+&lt;/span>&lt;span class="lnt">65
+&lt;/span>&lt;span class="lnt">66
+&lt;/span>&lt;span class="lnt">67
+&lt;/span>&lt;span class="lnt">68
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-gdscript3" data-lang="gdscript3">&lt;span class="line">&lt;span class="cl">&lt;span class="n">cc&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">Class&lt;/span>&lt;span class="p">({&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">extends&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="n">cc&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">Component&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">properties&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">//&lt;/span> &lt;span class="err">这个属性引用了星星预制资源&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">starPrefab&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">default&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="n">null&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">type&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="n">cc&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">Prefab&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">},&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">//&lt;/span> &lt;span class="err">星星产生后消失时间的随机范围&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">maxStarDuration&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">minStarDuration&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">//&lt;/span> &lt;span class="err">地面节点，用于确定星星生成的高度&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">ground&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">default&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="n">null&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">type&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="n">cc&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">Node&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">},&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">//&lt;/span> &lt;span class="n">player&lt;/span> &lt;span class="err">节点，用于获取主角弹跳的高度，和控制主角行动开关&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">player&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">default&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="n">null&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">type&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="n">cc&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">Node&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">},&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">scoreDisplay&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">default&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="n">null&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">type&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="n">cc&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">Label&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">},&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">onLoad&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="n">function&lt;/span> &lt;span class="p">()&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">//&lt;/span> &lt;span class="err">获取地平面的&lt;/span> &lt;span class="n">y&lt;/span> &lt;span class="err">轴坐标&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">this&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">groundY&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">this&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">ground&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">y&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="n">this&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">ground&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">height&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="mi">2&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">//&lt;/span> &lt;span class="err">生成一个新的星星&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">this&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">spawnNewStar&lt;/span>&lt;span class="p">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">this&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">score&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">},&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">gainScore&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="n">function&lt;/span> &lt;span class="p">()&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">this&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">score&lt;/span> &lt;span class="o">+=&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">//&lt;/span> &lt;span class="err">更新&lt;/span> &lt;span class="n">scoreDisplay&lt;/span> &lt;span class="ne">Label&lt;/span> &lt;span class="err">的文字&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">this&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">scoreDisplay&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">string&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="s1">&amp;#39;Score: &amp;#39;&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="n">this&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">score&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">toString&lt;/span>&lt;span class="p">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">},&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">spawnNewStar&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="n">function&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">//&lt;/span> &lt;span class="err">使用给定的模板在场景中生成一个新节点&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">var&lt;/span> &lt;span class="n">newStar&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">cc&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">instantiate&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">this&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">starPrefab&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">//&lt;/span> &lt;span class="err">将新增的节点添加到&lt;/span> &lt;span class="n">Canvas&lt;/span> &lt;span class="err">节点下面&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">this&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">node&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">addChild&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">newStar&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">//&lt;/span> &lt;span class="err">为星星设置一个随机位置&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">newStar&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">setPosition&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">this&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">getNewStarPosition&lt;/span>&lt;span class="p">());&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">newStar&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">getComponent&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s1">&amp;#39;star&amp;#39;&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">game&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">this&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">},&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">getNewStarPosition&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="n">function&lt;/span> &lt;span class="p">()&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">var&lt;/span> &lt;span class="n">randX&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">//&lt;/span> &lt;span class="err">根据地平面位置和主角跳跃高度，随机得到一个星星的&lt;/span> &lt;span class="n">y&lt;/span> &lt;span class="err">坐标&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">var&lt;/span> &lt;span class="n">randY&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">this&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">groundY&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="n">cc&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">random0To1&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="n">this&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">player&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">getComponent&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s1">&amp;#39;Player&amp;#39;&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">jumpHeight&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="mi">50&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">//&lt;/span> &lt;span class="err">根据屏幕宽度，随机得到一个星星&lt;/span> &lt;span class="n">x&lt;/span> &lt;span class="err">坐标&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">var&lt;/span> &lt;span class="n">maxX&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">this&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">node&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">width&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="mi">2&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">randX&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">cc&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">randomMinus1To1&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="n">maxX&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">//&lt;/span> &lt;span class="err">返回星星坐标&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="n">cc&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">p&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">randX&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">randY&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">},&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">//&lt;/span> &lt;span class="n">called&lt;/span> &lt;span class="n">every&lt;/span> &lt;span class="n">frame&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">uncomment&lt;/span> &lt;span class="n">this&lt;/span> &lt;span class="n">function&lt;/span> &lt;span class="n">to&lt;/span> &lt;span class="n">activate&lt;/span> &lt;span class="n">update&lt;/span> &lt;span class="n">callback&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">//&lt;/span> &lt;span class="n">update&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="n">function&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">dt&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">//&lt;/span> &lt;span class="p">},&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">});&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>从 资源管理器 中拖拽 assets/textures/star 资源到场景中，添加名叫 Star 的JavaScript脚本到assets/scripts/中，并关联脚本。
 打开star脚本，添加如下代码&lt;/p>
-&lt;pre tabindex="0">&lt;code>cc.Class({
-extends: cc.Component,
-properties: {
-// foo: {
-// default: null, // The default value will be used only when the component attaching
-// to a node for the first time
-// url: cc.Texture2D, // optional, default is typeof default
-// serializable: true, // optional, default is true
-// visible: true, // optional, default is true
-// displayName: &amp;#39;Foo&amp;#39;, // optional
-// readonly: false, // optional, default is false
-// },
-// ...
-pickRadius:0,
-},
-// use this for initialization
-onLoad: function () {
-},
-getPlayerDistance: function () {
-// 根据 player 节点位置判断距离
-var playerPos = this.game.player.getPosition();
-// 根据两点位置计算两点之间距离
-var dist = cc.pDistance(this.node.position, playerPos);
-return dist;
-},
-onPicked: function() {
-// 当星星被收集时，调用 Game 脚本中的接口，生成一个新的星星
-this.game.spawnNewStar();
-this.game.gainScore();
-// 然后销毁当前星星节
-this.node.destroy();
-},
-update: function (dt) {
-// 每帧判断和主角之间的距离是否小于收集距离
-if (this.getPlayerDistance() &amp;lt; this.pickRadius) {
-// 调用收集行为
-this.onPicked();
-return;
-}
-},
-// called every frame, uncomment this function to activate update callback
-// update: function (dt) {
-// },
-});
-&lt;/code>&lt;/pre>&lt;p>现在在star的属性中设置pickRadius为60。
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;span class="lnt">30
+&lt;/span>&lt;span class="lnt">31
+&lt;/span>&lt;span class="lnt">32
+&lt;/span>&lt;span class="lnt">33
+&lt;/span>&lt;span class="lnt">34
+&lt;/span>&lt;span class="lnt">35
+&lt;/span>&lt;span class="lnt">36
+&lt;/span>&lt;span class="lnt">37
+&lt;/span>&lt;span class="lnt">38
+&lt;/span>&lt;span class="lnt">39
+&lt;/span>&lt;span class="lnt">40
+&lt;/span>&lt;span class="lnt">41
+&lt;/span>&lt;span class="lnt">42
+&lt;/span>&lt;span class="lnt">43
+&lt;/span>&lt;span class="lnt">44
+&lt;/span>&lt;span class="lnt">45
+&lt;/span>&lt;span class="lnt">46
+&lt;/span>&lt;span class="lnt">47
+&lt;/span>&lt;span class="lnt">48
+&lt;/span>&lt;span class="lnt">49
+&lt;/span>&lt;span class="lnt">50
+&lt;/span>&lt;span class="lnt">51
+&lt;/span>&lt;span class="lnt">52
+&lt;/span>&lt;span class="lnt">53
+&lt;/span>&lt;span class="lnt">54
+&lt;/span>&lt;span class="lnt">55
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-gdscript3" data-lang="gdscript3">&lt;span class="line">&lt;span class="cl">&lt;span class="n">cc&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">Class&lt;/span>&lt;span class="p">({&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">extends&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="n">cc&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">Component&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">properties&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">//&lt;/span> &lt;span class="n">foo&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">//&lt;/span> &lt;span class="n">default&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="n">null&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="o">//&lt;/span> &lt;span class="n">The&lt;/span> &lt;span class="n">default&lt;/span> &lt;span class="n">value&lt;/span> &lt;span class="n">will&lt;/span> &lt;span class="n">be&lt;/span> &lt;span class="n">used&lt;/span> &lt;span class="n">only&lt;/span> &lt;span class="n">when&lt;/span> &lt;span class="n">the&lt;/span> &lt;span class="n">component&lt;/span> &lt;span class="n">attaching&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">//&lt;/span> &lt;span class="n">to&lt;/span> &lt;span class="n">a&lt;/span> &lt;span class="n">node&lt;/span> &lt;span class="k">for&lt;/span> &lt;span class="n">the&lt;/span> &lt;span class="n">first&lt;/span> &lt;span class="n">time&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">//&lt;/span> &lt;span class="n">url&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="n">cc&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">Texture2D&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="o">//&lt;/span> &lt;span class="n">optional&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">default&lt;/span> &lt;span class="n">is&lt;/span> &lt;span class="nb">typeof&lt;/span> &lt;span class="n">default&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">//&lt;/span> &lt;span class="n">serializable&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="bp">true&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="o">//&lt;/span> &lt;span class="n">optional&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">default&lt;/span> &lt;span class="n">is&lt;/span> &lt;span class="bp">true&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">//&lt;/span> &lt;span class="n">visible&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="bp">true&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="o">//&lt;/span> &lt;span class="n">optional&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">default&lt;/span> &lt;span class="n">is&lt;/span> &lt;span class="bp">true&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">//&lt;/span> &lt;span class="n">displayName&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s1">&amp;#39;Foo&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="o">//&lt;/span> &lt;span class="n">optional&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">//&lt;/span> &lt;span class="n">readonly&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="bp">false&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="o">//&lt;/span> &lt;span class="n">optional&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">default&lt;/span> &lt;span class="n">is&lt;/span> &lt;span class="bp">false&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">//&lt;/span> &lt;span class="p">},&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">//&lt;/span> &lt;span class="o">...&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">pickRadius&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="mi">0&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">},&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">//&lt;/span> &lt;span class="n">use&lt;/span> &lt;span class="n">this&lt;/span> &lt;span class="k">for&lt;/span> &lt;span class="n">initialization&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">onLoad&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="n">function&lt;/span> &lt;span class="p">()&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">},&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">getPlayerDistance&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="n">function&lt;/span> &lt;span class="p">()&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">//&lt;/span> &lt;span class="err">根据&lt;/span> &lt;span class="n">player&lt;/span> &lt;span class="err">节点位置判断距离&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">var&lt;/span> &lt;span class="n">playerPos&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">this&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">game&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">player&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">getPosition&lt;/span>&lt;span class="p">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">//&lt;/span> &lt;span class="err">根据两点位置计算两点之间距离&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">var&lt;/span> &lt;span class="n">dist&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">cc&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">pDistance&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">this&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">node&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">position&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">playerPos&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="n">dist&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">},&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">onPicked&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="n">function&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">//&lt;/span> &lt;span class="err">当星星被收集时，调用&lt;/span> &lt;span class="n">Game&lt;/span> &lt;span class="err">脚本中的接口，生成一个新的星星&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">this&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">game&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">spawnNewStar&lt;/span>&lt;span class="p">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">this&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">game&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">gainScore&lt;/span>&lt;span class="p">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">//&lt;/span> &lt;span class="err">然后销毁当前星星节&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">this&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">node&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">destroy&lt;/span>&lt;span class="p">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">},&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">update&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="n">function&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">dt&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">//&lt;/span> &lt;span class="err">每帧判断和主角之间的距离是否小于收集距离&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">this&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">getPlayerDistance&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="o">&amp;lt;&lt;/span> &lt;span class="n">this&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">pickRadius&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">//&lt;/span> &lt;span class="err">调用收集行为&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">this&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">onPicked&lt;/span>&lt;span class="p">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">},&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">//&lt;/span> &lt;span class="n">called&lt;/span> &lt;span class="n">every&lt;/span> &lt;span class="n">frame&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">uncomment&lt;/span> &lt;span class="n">this&lt;/span> &lt;span class="n">function&lt;/span> &lt;span class="n">to&lt;/span> &lt;span class="n">activate&lt;/span> &lt;span class="n">update&lt;/span> &lt;span class="n">callback&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">//&lt;/span> &lt;span class="n">update&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="n">function&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">dt&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">//&lt;/span> &lt;span class="p">},&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">});&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>现在在star的属性中设置pickRadius为60。
 从层级管理器中将star节点拖拽到资源管理器中的assets文件夹下，就生成了名叫star的 Prefab 资源。
 从场景中删除star节点。
 选中Canvas节点后，拖拽脚本到 属性检查器，从资源管理器中拖拽star Prefab 资源到Game组件的Star Prefab属性中，从层级编辑器中拖拽ground和Player 节点到组件中相同名字的属性上。&lt;/p>

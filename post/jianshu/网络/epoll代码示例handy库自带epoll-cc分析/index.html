@@ -1,5 +1,5 @@
 <!doctype html><html lang=en dir=ltr><head><meta charset=utf-8><meta name=viewport content='width=device-width,initial-scale=1'><meta name=description content="Introduction There are many C++ network libraries. Handy is a network library with C++11 style that is very helpful for in-depth learning of C++. Code Analysis Below is the epoll.cc file from handy/raw_examples. It&rsquo;s an example of level triggering. This HTTP server returns a static resource &ldquo;123456&rdquo; regardless of what kind of request it receives. Compilation: c++ -o epoll epoll.cc, execution: sudo ./epoll. The if (con.writeEnabled) statement in sendRes of the source code seems to have some issues, causing problems when sending large resources."><title>Epoll Code Example - Analysis of Handy Library's Built-in epoll.cc</title>
-<link rel=canonical href=https://nansenli.com/post/jianshu/%E7%BD%91%E7%BB%9C/epoll%E4%BB%A3%E7%A0%81%E7%A4%BA%E4%BE%8Bhandy%E5%BA%93%E8%87%AA%E5%B8%A6epoll-cc%E5%88%86%E6%9E%90/><link rel=stylesheet href=/scss/style.min.b9b97e7c3f7f078f7ec4f60195f6139d30ad5972cc05950321ee04a9e98c542f.css><meta property='og:title' content="Epoll Code Example - Analysis of Handy Library's Built-in epoll.cc"><meta property='og:description' content="Introduction There are many C++ network libraries. Handy is a network library with C++11 style that is very helpful for in-depth learning of C++. Code Analysis Below is the epoll.cc file from handy/raw_examples. It&rsquo;s an example of level triggering. This HTTP server returns a static resource &ldquo;123456&rdquo; regardless of what kind of request it receives. Compilation: c++ -o epoll epoll.cc, execution: sudo ./epoll. The if (con.writeEnabled) statement in sendRes of the source code seems to have some issues, causing problems when sending large resources."><meta property='og:url' content='https://nansenli.com/post/jianshu/%E7%BD%91%E7%BB%9C/epoll%E4%BB%A3%E7%A0%81%E7%A4%BA%E4%BE%8Bhandy%E5%BA%93%E8%87%AA%E5%B8%A6epoll-cc%E5%88%86%E6%9E%90/'><meta property='og:site_name' content="Nansen Li's Blog
+<link rel=canonical href=https://nansenli.com/post/jianshu/%E7%BD%91%E7%BB%9C/epoll%E4%BB%A3%E7%A0%81%E7%A4%BA%E4%BE%8Bhandy%E5%BA%93%E8%87%AA%E5%B8%A6epoll-cc%E5%88%86%E6%9E%90/><link rel=stylesheet href=/scss/style.min.13a07907ead250546ad0b764b76f2b704035157ccc91726856890c9c2e7e027e.css><meta property='og:title' content="Epoll Code Example - Analysis of Handy Library's Built-in epoll.cc"><meta property='og:description' content="Introduction There are many C++ network libraries. Handy is a network library with C++11 style that is very helpful for in-depth learning of C++. Code Analysis Below is the epoll.cc file from handy/raw_examples. It&rsquo;s an example of level triggering. This HTTP server returns a static resource &ldquo;123456&rdquo; regardless of what kind of request it receives. Compilation: c++ -o epoll epoll.cc, execution: sudo ./epoll. The if (con.writeEnabled) statement in sendRes of the source code seems to have some issues, causing problems when sending large resources."><meta property='og:url' content='https://nansenli.com/post/jianshu/%E7%BD%91%E7%BB%9C/epoll%E4%BB%A3%E7%A0%81%E7%A4%BA%E4%BE%8Bhandy%E5%BA%93%E8%87%AA%E5%B8%A6epoll-cc%E5%88%86%E6%9E%90/'><meta property='og:site_name' content="Nansen Li's Blog
 李楠森的博客
 "><meta property='og:type' content='article'><meta property='article:section' content='Post'><meta property='article:published_time' content='2018-05-16T07:43:00+00:00'><meta property='article:modified_time' content='2018-05-16T07:43:00+00:00'><meta name=twitter:title content="Epoll Code Example - Analysis of Handy Library's Built-in epoll.cc"><meta name=twitter:description content="Introduction There are many C++ network libraries. Handy is a network library with C++11 style that is very helpful for in-depth learning of C++. Code Analysis Below is the epoll.cc file from handy/raw_examples. It&rsquo;s an example of level triggering. This HTTP server returns a static resource &ldquo;123456&rdquo; regardless of what kind of request it receives. Compilation: c++ -o epoll epoll.cc, execution: sudo ./epoll. The if (con.writeEnabled) statement in sendRes of the source code seems to have some issues, causing problems when sending large resources."><link rel="shortcut icon" href=/favicon.ico><script async src="https://www.googletagmanager.com/gtag/js?id=G-WC38C3XE3J"></script><script>var dnt,doNotTrack=!1;if(!1&&(dnt=navigator.doNotTrack||window.doNotTrack||navigator.msDoNotTrack,doNotTrack=dnt=="1"||dnt=="yes"),!doNotTrack){window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag("js",new Date),gtag("config","G-WC38C3XE3J")}</script></head><body class=article-page><script>(function(){const e="StackColorScheme";localStorage.getItem(e)||localStorage.setItem(e,"auto")})()</script><script>(function(){const t="StackColorScheme",e=localStorage.getItem(t),n=window.matchMedia("(prefers-color-scheme: dark)").matches===!0;e=="dark"||e==="auto"&&n?document.documentElement.dataset.scheme="dark":document.documentElement.dataset.scheme="light"})()</script><div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky"><button class="hamburger hamburger--spin" type=button id=toggle-menu aria-label="Toggle Menu">
 <span class=hamburger-box><span class=hamburger-inner></span></span></button><header><figure class=site-avatar><a href=/><img src=/img/avatar_hu96777ff80939aaa7d938dddcc232fcc6_1414962_300x0_resize_box_3.png width=300 height=300 class=site-logo loading=lazy alt=Avatar>
@@ -10,397 +10,785 @@
 <span>Search</span></a></li><li class=menu-bottom-section><ol class=menu><li id=i18n-switch><svg class="icon icon-tabler icon-tabler-language" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 5h7"/><path d="M9 3v2c0 4.418-2.239 8-5 8"/><path d="M5 9c-.003 2.144 2.952 3.908 6.7 4"/><path d="M12 20l4-9 4 9"/><path d="M19.1 18h-6.2"/></svg>
 <select name=language title=language onchange="window.location.href=this.selectedOptions[0].value"><option value=https://nansenli.com/ selected>English</option><option value=https://nansenli.com/zh-cn/>中文</option></select></li><li id=dark-mode-toggle><svg class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="8" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
 <svg class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="16" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
-<span>Dark Mode</span></li></ol></li></ol></aside><main class="main full-width"><article class=main-article><header class=article-header><div class=article-details><header class=article-category><a href=/categories/networking/>Networking</a></header><div class=article-title-wrapper><h2 class=article-title><a href=/post/jianshu/%E7%BD%91%E7%BB%9C/epoll%E4%BB%A3%E7%A0%81%E7%A4%BA%E4%BE%8Bhandy%E5%BA%93%E8%87%AA%E5%B8%A6epoll-cc%E5%88%86%E6%9E%90/>Epoll Code Example - Analysis of Handy Library's Built-in epoll.cc</a></h2></div><footer class=article-time><div><svg class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M11.795 21H5a2 2 0 01-2-2V7a2 2 0 012-2h12a2 2 0 012 2v4"/><circle cx="18" cy="18" r="4"/><path d="M15 3v4"/><path d="M7 3v4"/><path d="M3 11h16"/><path d="M18 16.496V18l1 1"/></svg>
+<span>Dark Mode</span></li></ol></li></ol></aside><aside class="sidebar right-sidebar sticky"><section class="widget archives"><div class=widget-icon><svg class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><line x1="5" y1="9" x2="19" y2="9"/><line x1="5" y1="15" x2="19" y2="15"/><line x1="11" y1="4" x2="7" y2="20"/><line x1="17" y1="4" x2="13" y2="20"/></svg></div><h2 class="widget-title section-title">Table of contents</h2><div class=widget--toc><nav id=TableOfContents><ul><li><a href=#introduction>Introduction</a></li><li><a href=#code-analysis>Code Analysis</a></li><li><a href=#running-effect>Running Effect</a></li></ul></nav></div></section></aside><main class="main full-width"><article class=main-article><header class=article-header><div class=article-details><header class=article-category><a href=/categories/networking/>Networking</a></header><div class=article-title-wrapper><h2 class=article-title><a href=/post/jianshu/%E7%BD%91%E7%BB%9C/epoll%E4%BB%A3%E7%A0%81%E7%A4%BA%E4%BE%8Bhandy%E5%BA%93%E8%87%AA%E5%B8%A6epoll-cc%E5%88%86%E6%9E%90/>Epoll Code Example - Analysis of Handy Library's Built-in epoll.cc</a></h2></div><footer class=article-time><div><svg class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M11.795 21H5a2 2 0 01-2-2V7a2 2 0 012-2h12a2 2 0 012 2v4"/><circle cx="18" cy="18" r="4"/><path d="M15 3v4"/><path d="M7 3v4"/><path d="M3 11h16"/><path d="M18 16.496V18l1 1"/></svg>
 <time class=article-time--published>May 16, 2018</time></div><div><svg class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg>
-<time class=article-time--reading>13 minute read</time></div></footer><footer class=article-translations><svg class="icon icon-tabler icon-tabler-language" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 5h7"/><path d="M9 3v2c0 4.418-2.239 8-5 8"/><path d="M5 9c-.003 2.144 2.952 3.908 6.7 4"/><path d="M12 20l4-9 4 9"/><path d="M19.1 18h-6.2"/></svg><div><a href=https://nansenli.com/zh-cn/post/jianshu/%E7%BD%91%E7%BB%9C/epoll%E4%BB%A3%E7%A0%81%E7%A4%BA%E4%BE%8Bhandy%E5%BA%93%E8%87%AA%E5%B8%A6epoll-cc%E5%88%86%E6%9E%90/ class=link>中文</a></div></footer></div></header><section class=article-content><h2 id=introduction>Introduction</h2><p>There are many C++ network libraries. Handy is a network library with C++11 style that is very helpful for in-depth learning of C++.</p><h2 id=code-analysis>Code Analysis</h2><p>Below is the epoll.cc file from handy/raw_examples. It&rsquo;s an example of level triggering. This HTTP server returns a static resource &ldquo;123456&rdquo; regardless of what kind of request it receives. Compilation: c++ -o epoll epoll.cc, execution: sudo ./epoll. The if (con.writeEnabled) statement in sendRes of the source code seems to have some issues, causing problems when sending large resources. I have modified it to correctly send large files.</p><pre tabindex=0><code>/*
- * Compilation: c++ -o epoll epoll.cc
- * Execution: ./epoll
- * Testing: curl -v localhost
- */
-
-
-/* 
-    Running Effect
-    Run the epoll program with sudo. This program listens on port 80 at 0.0.0.0 on the local machine, running as an HTTP server
-    Whenever a connection accesses, it returns the static resource httpRes
-    LT is the default mode
-
- */
-
-#include &lt;sys/socket.h&gt;
-#include &lt;sys/epoll.h&gt;
-#include &lt;netinet/in.h&gt;
-#include &lt;arpa/inet.h&gt;
-#include &lt;fcntl.h&gt;
-#include &lt;unistd.h&gt;
-#include &lt;stdio.h&gt;
-#include &lt;errno.h&gt;
-#include &lt;string.h&gt;
-#include &lt;stdlib.h&gt;
-#include &lt;map&gt;
-#include &lt;string&gt;
-#include &lt;signal.h&gt;
-#include &lt;iostream&gt;
-using namespace std;
-
-
-bool output_log = true;
-// A macro for printing errors and exiting
-#define exit_if(r, ...) if(r) {printf(__VA_ARGS__); printf(&#34;%s:%d error no: %d error msg %s\n&#34;, __FILE__, __LINE__, errno, strerror(errno)); exit(1);}
-// This function is used to set the specified fd to non-blocking status
-void setNonBlock(int fd) {
-    // First, we get the original flags of the file descriptor
-    int flags = fcntl(fd, F_GETFL, 0);
-    exit_if(flags&lt;0, &#34;fcntl failed&#34;);
-    // Then add O_NONBLOCK and set it back
-    int r = fcntl(fd, F_SETFL, flags | O_NONBLOCK);
-    exit_if(r&lt;0, &#34;fcntl failed&#34;);
-}
-// A wrapper for epoll_ctl, putting events and fd into ev.
-// And setting events to trigger when readable and writable
-void updateEvents(int efd, int fd, int events, int op) {
-    struct epoll_event ev = {0};
-    ev.events = events;
-    ev.data.fd = fd;
-    printf(&#34;%s fd %d events read %d write %d\n&#34;,
-           op==EPOLL_CTL_MOD?&#34;mod&#34;:&#34;add&#34;, fd, ev.events &amp; EPOLLIN, ev.events &amp; EPOLLOUT);
-    int r = epoll_ctl(efd, op, fd, &amp;ev);
-    exit_if(r, &#34;epoll_ctl failed&#34;);
-}
-// Try to perform accept operation on fd. If successful, add it to the monitoring list of epoll fd. Set epoll events to trigger when data is written.
-void handleAccept(int efd, int fd) {
-    struct sockaddr_in raddr;
-    socklen_t rsz = sizeof(raddr);
-    int cfd = accept(fd,(struct sockaddr *)&amp;raddr,&amp;rsz);
-    exit_if(cfd&lt;0, &#34;accept failed&#34;);
-    sockaddr_in peer, local;
-    socklen_t alen = sizeof(peer);
-    int r = getpeername(cfd, (sockaddr*)&amp;peer, &amp;alen);
-    exit_if(r&lt;0, &#34;getpeername failed&#34;);
-    printf(&#34;accept a connection from %s\n&#34;, inet_ntoa(raddr.sin_addr));
-    setNonBlock(cfd);
-    updateEvents(efd, cfd, EPOLLIN, EPOLL_CTL_ADD);
-}
-// Represents a connection. Members include data read from the connection, data written
-// Is it okay to use string to store binary content, what happens if \0 is encountered?
-// No problem, see https://www.zhihu.com/question/33104941
-struct Con {
-    string readed;
-    size_t written;
-    bool writeEnabled;
-    Con(): written(0), writeEnabled(false) {}
-};
-// Data structure used to map fd to con
-map&lt;int, Con&gt; cons;
-
-string httpRes;
-// Send resources
-void sendRes(int efd, int fd) {
-    // First get the connection information
-    Con&amp; con = cons[fd];
-    // Request to write when no data is received
-    // This means that data sent last time might have been sent completely
-    // Its corresponding file descriptor has been deleted in cons
-    // Then the epoll signal was triggered
-    // At this time, close its last send flag
-    // Then close the buffer send trigger epoll flag
-    // Only keep it triggered when there is data to read
-    // Why not do this step when all data is written?
-    // if (!con.readed.length()) {
-    //     if (con.writeEnabled) {
-    //         updateEvents(efd, fd, EPOLLIN, EPOLL_CTL_MOD);
-    //         con.writeEnabled = false;
-    //     }
-    //     return;
-    // }
-    // Calculate the length of data that still needs to be written
-    size_t left = httpRes.length() - con.written;
-    int wd = 0;
-    // Continuously write data until the kernel buffer can&#39;t accept any more
-    while((wd=::write(fd, httpRes.data()+con.written, left))&gt;0) {
-        con.written += wd;
-        left -= wd;
-        if(output_log) printf(&#34;write %d bytes left: %lu\n&#34;, wd, left);
-    };
-    // If there is no data to write, delete this connection. But don&#39;t disconnect, just empty the connection information
-    if (left == 0) {
-//        close(fd); // Keepalive is used in testing, so don&#39;t close the connection. The connection will be closed in the read event
-        if (con.writeEnabled) {
-            updateEvents(efd, fd, EPOLLIN, EPOLL_CTL_MOD);
-            con.writeEnabled = false;
-        }
-        cons.erase(fd);
-        return;
-    }
-    // If the kernel buffer is full, can&#39;t write anymore
-    if (wd &lt; 0 &amp;&amp;  (errno == EAGAIN || errno == EWOULDBLOCK)) {
-        // Mark it as can continue writing
-        if (!con.writeEnabled) {
-            // Wait for it to be able to continue writing, or be readable
-            // Avoid repeated system calls, use con.writeEnabled flag
-            printf(&#34;update it to EPOLLIN|EPOLLOUT\n&#34;);
-            updateEvents(efd, fd, EPOLLIN|EPOLLOUT, EPOLL_CTL_MOD);
-            con.writeEnabled = true;
-        }
-        return;
-    }
-    // If it&#39;s other situations, such as returning 0 without completing data writing, or returning other errors
-    // It means an error occurred
-    if (wd&lt;=0) {
-        printf(&#34;write error for %d: %d %s\n&#34;, fd, errno, strerror(errno));
-        close(fd);
-        cons.erase(fd);
-    }
-}
-// When loop_once processes read data, call this function
-void handleRead(int efd, int fd) {
-    char buf[4096];
-    int n = 0;
-    // Read 4k bytes each time, loop to read out all the data already in the kernel (information may be incomplete due to packet splitting)
-    while ((n=::read(fd, buf, sizeof buf)) &gt; 0) {
-        if(output_log) printf(&#34;read %d bytes\n&#34;, n);
-        // Here, use a map to get the connection information corresponding to the previous fd.
-        // When the index corresponding to fd does not exist, it will call the default constructor of con: Con(): written(0), writeEnabled(false) {}
-        string&amp; readed = cons[fd].readed;
-        // Call the append method of the string class to add data to the connection information
-        // Note that parameter n needs to be passed to ensure binary safety
-        readed.append(buf, n);
-        std::cout  &lt;&lt; &#34;now info is&#34; &lt;&lt; std::endl &lt;&lt; &#34;---&#34; &lt;&lt;  readed &lt;&lt; endl &lt;&lt; &#34;---&#34; &lt;&lt;  std::endl;
-        // Determine when an HTTP request is complete.
-        // Don&#39;t judge the content of the HTTP request, just send static resources
-        if (readed.length()&gt;4) {
-            if (readed.substr(readed.length()-2, 2) == &#34;\n\n&#34; || readed.substr(readed.length()-4, 4) == &#34;\r\n\r\n&#34;) {
-                // When a complete HTTP request is read, test sending a response
-                // After the TCP connection is established, the client starts transmitting the header, then uses \r\n\r\n to mark the end of the header and the beginning of the entity (of course, there will be the beginning of the entity only if the request contains an entity),
-                // Then the entity is transmitted, when the entity is transmitted, the client starts receiving data, the server knows, this request has ended,
-                // Then the entity is that segment of data from \r\n\r\n to stopping reception. Correspondingly, the client receives the response in the same way.
-                // If there is no entity, then \r\n\r\n is the end of http
-                // Start writing data. Note that it may fill the buffer, if it&#39;s full, continue writing later
-                sendRes(efd, fd);
-            }
-        }
-    }
-    // If read cannot read, it will return -1. At this time, errno (errno belongs to the thread, it is thread-safe) is EAGAIN, which means it&#39;s not all read. EWOULDBLOCK and EAGAIN are the same.
-    // Then return, and wait for the next read
-    if (n&lt;0 &amp;&amp; (errno == EAGAIN || errno == EWOULDBLOCK)){
-        printf(&#34;nothing to read from %d, return. \n&#34;, fd);
-        return;
-    }
-    // In actual applications, n&lt;0 should check various errors, such as EINTR
-    if (n &lt; 0) {
-        printf(&#34;read %d error: %d %s\n&#34;, fd, errno, strerror(errno));
-    }
-    // Executing here, n is 0, indicating that the peer has closed the connection. At this time, we also close the connection
-    printf(&#34;%d close the connection\n&#34;, fd);
-    close(fd);
-    cons.erase(fd);
-}
-// When the buffer can be written in loop_once, simply write our prepared static resources
-void handleWrite(int efd, int fd) {
-    sendRes(efd, fd);
-}
-// Perform one operation in a loop on an epoll handle
-// Where l is the LISTEN fd
-void loop_once(int efd, int lfd, int waitms) {
-    // At most copy 20 events out from the kernel
-    const int kMaxEvents = 20;
-    struct epoll_event activeEvs[100];
-    int n = epoll_wait(efd, activeEvs, kMaxEvents, waitms);
-    // n is how many events were returned
-    if(output_log) printf(&#34;epoll_wait return %d\n&#34;, n);
-    for (int i = 0; i &lt; n; i ++) {
-        int fd = activeEvs[i].data.fd;
-        int events = activeEvs[i].events;
-        // EPOLLIN event or EPOLLERR event. EPOLLERR also means the pipe write ended.
-        // See: http://man7.org/linux/man-pages/man2/epoll_ctl.2.html
-        if (events &amp; (EPOLLIN | EPOLLERR)) {
-            // The EPOLLIN event is only triggered when the peer has data written, so after triggering once, you need to keep reading all the data until you finish reading EAGAIN. Otherwise, the remaining data will only be taken out together the next time the peer writes.
-            // When the other party closes the connection, it is an EPOLLERR event
-            if (fd == lfd) {
-                printf(&#34;this is accept\n&#34;);
-                handleAccept(efd, fd); 
-            } else {
-                printf(&#34;this can read\n&#34;);
-                handleRead(efd, fd);
-            }
-        } else if (events &amp; EPOLLOUT) {
-            // This handles events if the file descriptor can be written
-            // The EPOLLOUT event is only triggered once during connection, indicating it can be written
-            // Afterwards, it indicates that the data in the buffer has been sent out and can continue to be written
-            // See https://www.zhihu.com/question/22840801
-            if(output_log) printf(&#34;handling epollout\n&#34;);
-            handleWrite(efd, fd);
-        } else {
-            exit_if(1, &#34;unknown event&#34;);
-        }
-    }
-}
-
-int main(int argc, const char* argv[]) {
-    if (argc &gt; 1) { output_log = false; }
-    /* 
-Small Knowledge
-signal (parameter 1, parameter 2);
-Parameter 1: The signal we want to process. We can view the system signals (64 in total) by typing kill -l in the terminal. In fact, these signals are macros defined by the system.
-Parameter 2: The way we handle it (system default, ignore, or capture). SIG_IGN: If the func parameter is set to SIG_IGN, the signal will be ignored.
-     */
-    ::signal(SIGPIPE, SIG_IGN);
-    // Set the content of the HTTP response
-    httpRes = &#34;HTTP/1.1 200 OK\r\nConnection: Keep-Alive\r\nContent-Type: text/html; charset=UTF-8\r\nContent-Length: 19048576\r\n\r\n123456&#34;;
-    // Fill the rest of the content with 0. The final length of content is about 1024*1024
-    for(int i=0;i&lt;19048570;i++) {
-        httpRes+=&#39;\0&#39;;
-    }
-    // Set the port to 80
-    short port = 80;
-    // Create an epoll handle
-    int epollfd = epoll_create(1);
-    exit_if(epollfd &lt; 0, &#34;epoll_create failed&#34;);
-    // Create a socket
-    int listenfd = socket(AF_INET, SOCK_STREAM, 0);
-    exit_if(listenfd &lt; 0, &#34;socket failed&#34;);
-    struct sockaddr_in addr;
-    memset(&amp;addr, 0, sizeof addr);
-    addr.sin_family = AF_INET;
-    addr.sin_port = htons(port);
-    addr.sin_addr.s_addr = INADDR_ANY;
-    // First bind the socket to the port
-    int r = ::bind(listenfd,(struct sockaddr *)&amp;addr, sizeof(struct sockaddr));
-    // This step will report an error if you don&#39;t have superuser permissions. Linux doesn&#39;t allow non-root users to use ports below 1024
-    exit_if(r, &#34;bind to 0.0.0.0:%d failed %d %s&#34;, port, errno, strerror(errno));
-    /* 
-    #include&lt;sys/socket.h&gt;
-int listen(int sockfd, int backlog)
-Return: 0──success, -1──failure
-Parameter sockfd
-The socket that the listen function acts on, sockfd was previously returned by the socket function. At the time when the socket function returns the socket fd, it is an active connection socket,
-which means the system assumes the user will call the connect function on this socket, expecting it to actively connect with other processes, then in server programming, the user wants this socket to accept external connection requests,
-that is, passively wait for users to connect. Since the system assumes by default that a socket is actively connected, it needs to be told in some way, and the user process completes this by making the system call listen.
-Parameter backlog
-This parameter involves some network details. While a process is handling one connection request, there may be other connection requests.
-Because TCP connection is a process, there may be a half-connected state, and sometimes due to too many users trying to connect simultaneously, the server process cannot quickly complete the connection request.
-If this situation occurs, how does the server process want the kernel to handle it?
-The kernel will maintain a queue in its own process space to track these completed connections that the server process has not yet handled or is processing. Such a queue cannot be arbitrarily large in the kernel,
-so there must be an upper limit to its size. This backlog tells the kernel to use this value as the upper limit.
-Without a doubt, the server process cannot arbitrarily specify a value, the kernel has a permissible range. This range is implementation-related. It&#39;s hard to have some standardization, usually this value will be less than 30.
-The length of the queue used by the kernel to track these completed connections but not yet accepted by user code is set to 20 here. When the queue length is less than 20, the kernel will immediately complete the connection establishment.
-But if the queue length is greater than 20, the connection will not be established before the user code calls accept, and the other party will be in a blocked state.
-     */
-    r = listen(listenfd, 20);
-    exit_if(r, &#34;listen failed %d %s&#34;, errno, strerror(errno));
-    printf(&#34;fd %d listening at %d\n&#34;, listenfd, port);
-    // Next, set the file descriptor to non-blocking.
-    // Why set it to non-blocking? https://www.zhihu.com/question/23614342
-    setNonBlock(listenfd);
-    // Set it to trigger when readable, add to the epoll file descriptor pool
-    updateEvents(epollfd, listenfd, EPOLLIN, EPOLL_CTL_ADD);
-    for (;;) { // Actual applications should register signal handling functions and clean up resources when exiting
-        loop_once(epollfd, listenfd, 10000);
-    }
-    return 0;
-}
-</code></pre><h2 id=running-effect>Running Effect</h2><p><img src=/img/rescued/7d2d193858a6.png loading=lazy alt=image.png></p><pre tabindex=0><code>sudo ./epoll
-fd 4 listening at 80
-add fd 4 events read 1 write 0
-epoll_wait return 1
-this is accept
-accept a connection from 127.0.0.1
-add fd 5 events read 1 write 0
-epoll_wait return 1
-this can read
-read 412 bytes
-now info is
----GET / HTTP/1.1
-Host: 127.0.0.1
-Connection: keep-alive
-User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36
-Upgrade-Insecure-Requests: 1
-Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8
-Accept-Encoding: gzip, deflate, br
-Accept-Language: zh-CN,zh;q=0.9,und;q=0.8,zh-TW;q=0.7,en;q=0.6,pl;q=0.5
-
-
----
-write 4081834 bytes left: 14966851
-update it to EPOLLIN|EPOLLOUT
-mod fd 5 events read 1 write 4
-nothing to read from 5, return.
-epoll_wait return 1
-handling epollout
-write 2226422 bytes left: 12740429
-epoll_wait return 1
-handling epollout
-write 2095456 bytes left: 10644973
-epoll_wait return 1
-handling epollout
-write 1964490 bytes left: 8680483
-epoll_wait return 1
-handling epollout
-write 1506109 bytes left: 7174374
-epoll_wait return 1
-handling epollout
-write 1833524 bytes left: 5340850
-epoll_wait return 1
-handling epollout
-write 1637075 bytes left: 3703775
-write 130966 bytes left: 3572809
-epoll_wait return 1
-handling epollout
-write 1571592 bytes left: 2001217
-epoll_wait return 1
-handling epollout
-write 1440626 bytes left: 560591
-epoll_wait return 1
-handling epollout
-write 560591 bytes left: 0
-mod fd 5 events read 1 write 0
-epoll_wait return 1
-this can read
-read 375 bytes
-now info is
----GET /favicon.ico HTTP/1.1
-Host: 127.0.0.1
-Connection: keep-alive
-User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36
-Accept: image/webp,image/apng,image/*,*/*;q=0.8
-Referer: http://127.0.0.1/
-Accept-Encoding: gzip, deflate, br
-Accept-Language: zh-CN,zh;q=0.9,und;q=0.8,zh-TW;q=0.7,en;q=0.6,pl;q=0.5
-
-
----
-write 10477280 bytes left: 8571405
-update it to EPOLLIN|EPOLLOUT
-mod fd 5 events read 1 write 4
-nothing to read from 5, return.
-epoll_wait return 1
-handling epollout
-write 1440626 bytes left: 7130779
-epoll_wait return 1
-handling epollout
-write 1768041 bytes left: 5362738
-epoll_wait return 1
-handling epollout
-write 1571592 bytes left: 3791146
-epoll_wait return 1
-handling epollout
-write 1637075 bytes left: 2154071
-epoll_wait return 1
-handling epollout
-write 1702558 bytes left: 451513
-epoll_wait return 1
-handling epollout
-write 451513 bytes left: 0
-mod fd 5 events read 1 write 0
-epoll_wait return 0
-epoll_wait return 0
-epoll_wait return 0
-</code></pre><p>Here I increased the size of the resource, changing it to the following value:</p><pre tabindex=0><code>    httpRes = &#34;HTTP/1.1 200 OK\r\nConnection: Keep-Alive\r\nContent-Type: text/html; charset=UTF-8\r\nContent-Length: 19048576\r\n\r\n123456&#34;;
-    // Fill the rest of the content with 0. The final length of content is about 1024*1024
-    for(int i=0;i&lt;19048570;i++) {
-        httpRes+=&#39;\0&#39;;
-    }
-</code></pre><p>You can see it was transmitted in multiple parts. Finally, the terminal page displays 123456, with \0 after it, which won&rsquo;t be displayed.
+<time class=article-time--reading>15 minute read</time></div></footer><footer class=article-translations><svg class="icon icon-tabler icon-tabler-language" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 5h7"/><path d="M9 3v2c0 4.418-2.239 8-5 8"/><path d="M5 9c-.003 2.144 2.952 3.908 6.7 4"/><path d="M12 20l4-9 4 9"/><path d="M19.1 18h-6.2"/></svg><div><a href=https://nansenli.com/zh-cn/post/jianshu/%E7%BD%91%E7%BB%9C/epoll%E4%BB%A3%E7%A0%81%E7%A4%BA%E4%BE%8Bhandy%E5%BA%93%E8%87%AA%E5%B8%A6epoll-cc%E5%88%86%E6%9E%90/ class=link>中文</a></div></footer></div></header><section class=article-content><h2 id=introduction>Introduction</h2><p>There are many C++ network libraries. Handy is a network library with C++11 style that is very helpful for in-depth learning of C++.</p><h2 id=code-analysis>Code Analysis</h2><p>Below is the epoll.cc file from handy/raw_examples. It&rsquo;s an example of level triggering. This HTTP server returns a static resource &ldquo;123456&rdquo; regardless of what kind of request it receives. Compilation: c++ -o epoll epoll.cc, execution: sudo ./epoll. The if (con.writeEnabled) statement in sendRes of the source code seems to have some issues, causing problems when sending large resources. I have modified it to correctly send large files.</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>  1
+</span><span class=lnt>  2
+</span><span class=lnt>  3
+</span><span class=lnt>  4
+</span><span class=lnt>  5
+</span><span class=lnt>  6
+</span><span class=lnt>  7
+</span><span class=lnt>  8
+</span><span class=lnt>  9
+</span><span class=lnt> 10
+</span><span class=lnt> 11
+</span><span class=lnt> 12
+</span><span class=lnt> 13
+</span><span class=lnt> 14
+</span><span class=lnt> 15
+</span><span class=lnt> 16
+</span><span class=lnt> 17
+</span><span class=lnt> 18
+</span><span class=lnt> 19
+</span><span class=lnt> 20
+</span><span class=lnt> 21
+</span><span class=lnt> 22
+</span><span class=lnt> 23
+</span><span class=lnt> 24
+</span><span class=lnt> 25
+</span><span class=lnt> 26
+</span><span class=lnt> 27
+</span><span class=lnt> 28
+</span><span class=lnt> 29
+</span><span class=lnt> 30
+</span><span class=lnt> 31
+</span><span class=lnt> 32
+</span><span class=lnt> 33
+</span><span class=lnt> 34
+</span><span class=lnt> 35
+</span><span class=lnt> 36
+</span><span class=lnt> 37
+</span><span class=lnt> 38
+</span><span class=lnt> 39
+</span><span class=lnt> 40
+</span><span class=lnt> 41
+</span><span class=lnt> 42
+</span><span class=lnt> 43
+</span><span class=lnt> 44
+</span><span class=lnt> 45
+</span><span class=lnt> 46
+</span><span class=lnt> 47
+</span><span class=lnt> 48
+</span><span class=lnt> 49
+</span><span class=lnt> 50
+</span><span class=lnt> 51
+</span><span class=lnt> 52
+</span><span class=lnt> 53
+</span><span class=lnt> 54
+</span><span class=lnt> 55
+</span><span class=lnt> 56
+</span><span class=lnt> 57
+</span><span class=lnt> 58
+</span><span class=lnt> 59
+</span><span class=lnt> 60
+</span><span class=lnt> 61
+</span><span class=lnt> 62
+</span><span class=lnt> 63
+</span><span class=lnt> 64
+</span><span class=lnt> 65
+</span><span class=lnt> 66
+</span><span class=lnt> 67
+</span><span class=lnt> 68
+</span><span class=lnt> 69
+</span><span class=lnt> 70
+</span><span class=lnt> 71
+</span><span class=lnt> 72
+</span><span class=lnt> 73
+</span><span class=lnt> 74
+</span><span class=lnt> 75
+</span><span class=lnt> 76
+</span><span class=lnt> 77
+</span><span class=lnt> 78
+</span><span class=lnt> 79
+</span><span class=lnt> 80
+</span><span class=lnt> 81
+</span><span class=lnt> 82
+</span><span class=lnt> 83
+</span><span class=lnt> 84
+</span><span class=lnt> 85
+</span><span class=lnt> 86
+</span><span class=lnt> 87
+</span><span class=lnt> 88
+</span><span class=lnt> 89
+</span><span class=lnt> 90
+</span><span class=lnt> 91
+</span><span class=lnt> 92
+</span><span class=lnt> 93
+</span><span class=lnt> 94
+</span><span class=lnt> 95
+</span><span class=lnt> 96
+</span><span class=lnt> 97
+</span><span class=lnt> 98
+</span><span class=lnt> 99
+</span><span class=lnt>100
+</span><span class=lnt>101
+</span><span class=lnt>102
+</span><span class=lnt>103
+</span><span class=lnt>104
+</span><span class=lnt>105
+</span><span class=lnt>106
+</span><span class=lnt>107
+</span><span class=lnt>108
+</span><span class=lnt>109
+</span><span class=lnt>110
+</span><span class=lnt>111
+</span><span class=lnt>112
+</span><span class=lnt>113
+</span><span class=lnt>114
+</span><span class=lnt>115
+</span><span class=lnt>116
+</span><span class=lnt>117
+</span><span class=lnt>118
+</span><span class=lnt>119
+</span><span class=lnt>120
+</span><span class=lnt>121
+</span><span class=lnt>122
+</span><span class=lnt>123
+</span><span class=lnt>124
+</span><span class=lnt>125
+</span><span class=lnt>126
+</span><span class=lnt>127
+</span><span class=lnt>128
+</span><span class=lnt>129
+</span><span class=lnt>130
+</span><span class=lnt>131
+</span><span class=lnt>132
+</span><span class=lnt>133
+</span><span class=lnt>134
+</span><span class=lnt>135
+</span><span class=lnt>136
+</span><span class=lnt>137
+</span><span class=lnt>138
+</span><span class=lnt>139
+</span><span class=lnt>140
+</span><span class=lnt>141
+</span><span class=lnt>142
+</span><span class=lnt>143
+</span><span class=lnt>144
+</span><span class=lnt>145
+</span><span class=lnt>146
+</span><span class=lnt>147
+</span><span class=lnt>148
+</span><span class=lnt>149
+</span><span class=lnt>150
+</span><span class=lnt>151
+</span><span class=lnt>152
+</span><span class=lnt>153
+</span><span class=lnt>154
+</span><span class=lnt>155
+</span><span class=lnt>156
+</span><span class=lnt>157
+</span><span class=lnt>158
+</span><span class=lnt>159
+</span><span class=lnt>160
+</span><span class=lnt>161
+</span><span class=lnt>162
+</span><span class=lnt>163
+</span><span class=lnt>164
+</span><span class=lnt>165
+</span><span class=lnt>166
+</span><span class=lnt>167
+</span><span class=lnt>168
+</span><span class=lnt>169
+</span><span class=lnt>170
+</span><span class=lnt>171
+</span><span class=lnt>172
+</span><span class=lnt>173
+</span><span class=lnt>174
+</span><span class=lnt>175
+</span><span class=lnt>176
+</span><span class=lnt>177
+</span><span class=lnt>178
+</span><span class=lnt>179
+</span><span class=lnt>180
+</span><span class=lnt>181
+</span><span class=lnt>182
+</span><span class=lnt>183
+</span><span class=lnt>184
+</span><span class=lnt>185
+</span><span class=lnt>186
+</span><span class=lnt>187
+</span><span class=lnt>188
+</span><span class=lnt>189
+</span><span class=lnt>190
+</span><span class=lnt>191
+</span><span class=lnt>192
+</span><span class=lnt>193
+</span><span class=lnt>194
+</span><span class=lnt>195
+</span><span class=lnt>196
+</span><span class=lnt>197
+</span><span class=lnt>198
+</span><span class=lnt>199
+</span><span class=lnt>200
+</span><span class=lnt>201
+</span><span class=lnt>202
+</span><span class=lnt>203
+</span><span class=lnt>204
+</span><span class=lnt>205
+</span><span class=lnt>206
+</span><span class=lnt>207
+</span><span class=lnt>208
+</span><span class=lnt>209
+</span><span class=lnt>210
+</span><span class=lnt>211
+</span><span class=lnt>212
+</span><span class=lnt>213
+</span><span class=lnt>214
+</span><span class=lnt>215
+</span><span class=lnt>216
+</span><span class=lnt>217
+</span><span class=lnt>218
+</span><span class=lnt>219
+</span><span class=lnt>220
+</span><span class=lnt>221
+</span><span class=lnt>222
+</span><span class=lnt>223
+</span><span class=lnt>224
+</span><span class=lnt>225
+</span><span class=lnt>226
+</span><span class=lnt>227
+</span><span class=lnt>228
+</span><span class=lnt>229
+</span><span class=lnt>230
+</span><span class=lnt>231
+</span><span class=lnt>232
+</span><span class=lnt>233
+</span><span class=lnt>234
+</span><span class=lnt>235
+</span><span class=lnt>236
+</span><span class=lnt>237
+</span><span class=lnt>238
+</span><span class=lnt>239
+</span><span class=lnt>240
+</span><span class=lnt>241
+</span><span class=lnt>242
+</span><span class=lnt>243
+</span><span class=lnt>244
+</span><span class=lnt>245
+</span><span class=lnt>246
+</span><span class=lnt>247
+</span><span class=lnt>248
+</span><span class=lnt>249
+</span><span class=lnt>250
+</span><span class=lnt>251
+</span><span class=lnt>252
+</span><span class=lnt>253
+</span><span class=lnt>254
+</span><span class=lnt>255
+</span><span class=lnt>256
+</span><span class=lnt>257
+</span><span class=lnt>258
+</span><span class=lnt>259
+</span><span class=lnt>260
+</span><span class=lnt>261
+</span><span class=lnt>262
+</span><span class=lnt>263
+</span><span class=lnt>264
+</span><span class=lnt>265
+</span><span class=lnt>266
+</span><span class=lnt>267
+</span><span class=lnt>268
+</span><span class=lnt>269
+</span><span class=lnt>270
+</span><span class=lnt>271
+</span><span class=lnt>272
+</span><span class=lnt>273
+</span><span class=lnt>274
+</span><span class=lnt>275
+</span><span class=lnt>276
+</span><span class=lnt>277
+</span><span class=lnt>278
+</span><span class=lnt>279
+</span><span class=lnt>280
+</span><span class=lnt>281
+</span><span class=lnt>282
+</span><span class=lnt>283
+</span><span class=lnt>284
+</span><span class=lnt>285
+</span><span class=lnt>286
+</span><span class=lnt>287
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-gdscript3 data-lang=gdscript3><span class=line><span class=cl><span class=o>/*</span>
+</span></span><span class=line><span class=cl> <span class=o>*</span> <span class=n>Compilation</span><span class=p>:</span> <span class=n>c</span><span class=o>++</span> <span class=o>-</span><span class=n>o</span> <span class=n>epoll</span> <span class=n>epoll</span><span class=o>.</span><span class=n>cc</span>
+</span></span><span class=line><span class=cl> <span class=o>*</span> <span class=n>Execution</span><span class=p>:</span> <span class=o>./</span><span class=n>epoll</span>
+</span></span><span class=line><span class=cl> <span class=o>*</span> <span class=n>Testing</span><span class=p>:</span> <span class=n>curl</span> <span class=o>-</span><span class=n>v</span> <span class=n>localhost</span>
+</span></span><span class=line><span class=cl> <span class=o>*/</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=o>/*</span> 
+</span></span><span class=line><span class=cl>    <span class=n>Running</span> <span class=n>Effect</span>
+</span></span><span class=line><span class=cl>    <span class=n>Run</span> <span class=n>the</span> <span class=n>epoll</span> <span class=n>program</span> <span class=n>with</span> <span class=n>sudo</span><span class=o>.</span> <span class=n>This</span> <span class=n>program</span> <span class=n>listens</span> <span class=n>on</span> <span class=n>port</span> <span class=mi>80</span> <span class=n>at</span> <span class=mf>0.0</span><span class=o>.</span><span class=mf>0.0</span> <span class=n>on</span> <span class=n>the</span> <span class=n>local</span> <span class=n>machine</span><span class=p>,</span> <span class=n>running</span> <span class=n>as</span> <span class=n>an</span> <span class=n>HTTP</span> <span class=n>server</span>
+</span></span><span class=line><span class=cl>    <span class=n>Whenever</span> <span class=n>a</span> <span class=n>connection</span> <span class=n>accesses</span><span class=p>,</span> <span class=n>it</span> <span class=n>returns</span> <span class=n>the</span> <span class=k>static</span> <span class=n>resource</span> <span class=n>httpRes</span>
+</span></span><span class=line><span class=cl>    <span class=n>LT</span> <span class=n>is</span> <span class=n>the</span> <span class=n>default</span> <span class=n>mode</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl> <span class=o>*/</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>#include &lt;sys/socket.h&gt;</span>
+</span></span><span class=line><span class=cl><span class=c1>#include &lt;sys/epoll.h&gt;</span>
+</span></span><span class=line><span class=cl><span class=c1>#include &lt;netinet/in.h&gt;</span>
+</span></span><span class=line><span class=cl><span class=c1>#include &lt;arpa/inet.h&gt;</span>
+</span></span><span class=line><span class=cl><span class=c1>#include &lt;fcntl.h&gt;</span>
+</span></span><span class=line><span class=cl><span class=c1>#include &lt;unistd.h&gt;</span>
+</span></span><span class=line><span class=cl><span class=c1>#include &lt;stdio.h&gt;</span>
+</span></span><span class=line><span class=cl><span class=c1>#include &lt;errno.h&gt;</span>
+</span></span><span class=line><span class=cl><span class=c1>#include &lt;string.h&gt;</span>
+</span></span><span class=line><span class=cl><span class=c1>#include &lt;stdlib.h&gt;</span>
+</span></span><span class=line><span class=cl><span class=c1>#include &lt;map&gt;</span>
+</span></span><span class=line><span class=cl><span class=c1>#include &lt;string&gt;</span>
+</span></span><span class=line><span class=cl><span class=c1>#include &lt;signal.h&gt;</span>
+</span></span><span class=line><span class=cl><span class=c1>#include &lt;iostream&gt;</span>
+</span></span><span class=line><span class=cl><span class=n>using</span> <span class=n>namespace</span> <span class=n>std</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=ne>bool</span> <span class=n>output_log</span> <span class=o>=</span> <span class=bp>true</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=o>//</span> <span class=n>A</span> <span class=n>macro</span> <span class=k>for</span> <span class=n>printing</span> <span class=n>errors</span> <span class=ow>and</span> <span class=n>exiting</span>
+</span></span><span class=line><span class=cl><span class=c1>#define exit_if(r, ...) if(r) {printf(__VA_ARGS__); printf(&#34;%s:%d error no: %d error msg %s\n&#34;, __FILE__, __LINE__, errno, strerror(errno)); exit(1);}</span>
+</span></span><span class=line><span class=cl><span class=o>//</span> <span class=n>This</span> <span class=n>function</span> <span class=n>is</span> <span class=n>used</span> <span class=n>to</span> <span class=n>set</span> <span class=n>the</span> <span class=n>specified</span> <span class=n>fd</span> <span class=n>to</span> <span class=n>non</span><span class=o>-</span><span class=n>blocking</span> <span class=n>status</span>
+</span></span><span class=line><span class=cl><span class=n>void</span> <span class=n>setNonBlock</span><span class=p>(</span><span class=ne>int</span> <span class=n>fd</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=o>//</span> <span class=n>First</span><span class=p>,</span> <span class=n>we</span> <span class=n>get</span> <span class=n>the</span> <span class=n>original</span> <span class=n>flags</span> <span class=n>of</span> <span class=n>the</span> <span class=n>file</span> <span class=n>descriptor</span>
+</span></span><span class=line><span class=cl>    <span class=ne>int</span> <span class=n>flags</span> <span class=o>=</span> <span class=n>fcntl</span><span class=p>(</span><span class=n>fd</span><span class=p>,</span> <span class=n>F_GETFL</span><span class=p>,</span> <span class=mi>0</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=n>exit_if</span><span class=p>(</span><span class=n>flags</span><span class=o>&lt;</span><span class=mi>0</span><span class=p>,</span> <span class=s2>&#34;fcntl failed&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=o>//</span> <span class=n>Then</span> <span class=n>add</span> <span class=n>O_NONBLOCK</span> <span class=ow>and</span> <span class=n>set</span> <span class=n>it</span> <span class=n>back</span>
+</span></span><span class=line><span class=cl>    <span class=ne>int</span> <span class=n>r</span> <span class=o>=</span> <span class=n>fcntl</span><span class=p>(</span><span class=n>fd</span><span class=p>,</span> <span class=n>F_SETFL</span><span class=p>,</span> <span class=n>flags</span> <span class=o>|</span> <span class=n>O_NONBLOCK</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=n>exit_if</span><span class=p>(</span><span class=n>r</span><span class=o>&lt;</span><span class=mi>0</span><span class=p>,</span> <span class=s2>&#34;fcntl failed&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=o>//</span> <span class=n>A</span> <span class=n>wrapper</span> <span class=k>for</span> <span class=n>epoll_ctl</span><span class=p>,</span> <span class=n>putting</span> <span class=n>events</span> <span class=ow>and</span> <span class=n>fd</span> <span class=n>into</span> <span class=n>ev</span><span class=o>.</span>
+</span></span><span class=line><span class=cl><span class=o>//</span> <span class=n>And</span> <span class=n>setting</span> <span class=n>events</span> <span class=n>to</span> <span class=n>trigger</span> <span class=n>when</span> <span class=n>readable</span> <span class=ow>and</span> <span class=n>writable</span>
+</span></span><span class=line><span class=cl><span class=n>void</span> <span class=n>updateEvents</span><span class=p>(</span><span class=ne>int</span> <span class=n>efd</span><span class=p>,</span> <span class=ne>int</span> <span class=n>fd</span><span class=p>,</span> <span class=ne>int</span> <span class=n>events</span><span class=p>,</span> <span class=ne>int</span> <span class=n>op</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=n>struct</span> <span class=n>epoll_event</span> <span class=n>ev</span> <span class=o>=</span> <span class=p>{</span><span class=mi>0</span><span class=p>};</span>
+</span></span><span class=line><span class=cl>    <span class=n>ev</span><span class=o>.</span><span class=n>events</span> <span class=o>=</span> <span class=n>events</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=n>ev</span><span class=o>.</span><span class=n>data</span><span class=o>.</span><span class=n>fd</span> <span class=o>=</span> <span class=n>fd</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=n>printf</span><span class=p>(</span><span class=s2>&#34;</span><span class=si>%s</span><span class=s2> fd </span><span class=si>%d</span><span class=s2> events read </span><span class=si>%d</span><span class=s2> write </span><span class=si>%d</span><span class=se>\n</span><span class=s2>&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>           <span class=n>op</span><span class=o>==</span><span class=n>EPOLL_CTL_MOD</span><span class=err>?</span><span class=s2>&#34;mod&#34;</span><span class=p>:</span><span class=s2>&#34;add&#34;</span><span class=p>,</span> <span class=n>fd</span><span class=p>,</span> <span class=n>ev</span><span class=o>.</span><span class=n>events</span> <span class=o>&amp;</span> <span class=n>EPOLLIN</span><span class=p>,</span> <span class=n>ev</span><span class=o>.</span><span class=n>events</span> <span class=o>&amp;</span> <span class=n>EPOLLOUT</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=ne>int</span> <span class=n>r</span> <span class=o>=</span> <span class=n>epoll_ctl</span><span class=p>(</span><span class=n>efd</span><span class=p>,</span> <span class=n>op</span><span class=p>,</span> <span class=n>fd</span><span class=p>,</span> <span class=o>&amp;</span><span class=n>ev</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=n>exit_if</span><span class=p>(</span><span class=n>r</span><span class=p>,</span> <span class=s2>&#34;epoll_ctl failed&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=o>//</span> <span class=n>Try</span> <span class=n>to</span> <span class=n>perform</span> <span class=n>accept</span> <span class=n>operation</span> <span class=n>on</span> <span class=n>fd</span><span class=o>.</span> <span class=n>If</span> <span class=n>successful</span><span class=p>,</span> <span class=n>add</span> <span class=n>it</span> <span class=n>to</span> <span class=n>the</span> <span class=n>monitoring</span> <span class=n>list</span> <span class=n>of</span> <span class=n>epoll</span> <span class=n>fd</span><span class=o>.</span> <span class=n>Set</span> <span class=n>epoll</span> <span class=n>events</span> <span class=n>to</span> <span class=n>trigger</span> <span class=n>when</span> <span class=n>data</span> <span class=n>is</span> <span class=n>written</span><span class=o>.</span>
+</span></span><span class=line><span class=cl><span class=n>void</span> <span class=n>handleAccept</span><span class=p>(</span><span class=ne>int</span> <span class=n>efd</span><span class=p>,</span> <span class=ne>int</span> <span class=n>fd</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=n>struct</span> <span class=n>sockaddr_in</span> <span class=n>raddr</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=n>socklen_t</span> <span class=n>rsz</span> <span class=o>=</span> <span class=n>sizeof</span><span class=p>(</span><span class=n>raddr</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=ne>int</span> <span class=n>cfd</span> <span class=o>=</span> <span class=n>accept</span><span class=p>(</span><span class=n>fd</span><span class=p>,(</span><span class=n>struct</span> <span class=n>sockaddr</span> <span class=o>*</span><span class=p>)</span><span class=o>&amp;</span><span class=n>raddr</span><span class=p>,</span><span class=o>&amp;</span><span class=n>rsz</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=n>exit_if</span><span class=p>(</span><span class=n>cfd</span><span class=o>&lt;</span><span class=mi>0</span><span class=p>,</span> <span class=s2>&#34;accept failed&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=n>sockaddr_in</span> <span class=n>peer</span><span class=p>,</span> <span class=n>local</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=n>socklen_t</span> <span class=n>alen</span> <span class=o>=</span> <span class=n>sizeof</span><span class=p>(</span><span class=n>peer</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=ne>int</span> <span class=n>r</span> <span class=o>=</span> <span class=n>getpeername</span><span class=p>(</span><span class=n>cfd</span><span class=p>,</span> <span class=p>(</span><span class=n>sockaddr</span><span class=o>*</span><span class=p>)</span><span class=o>&amp;</span><span class=n>peer</span><span class=p>,</span> <span class=o>&amp;</span><span class=n>alen</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=n>exit_if</span><span class=p>(</span><span class=n>r</span><span class=o>&lt;</span><span class=mi>0</span><span class=p>,</span> <span class=s2>&#34;getpeername failed&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=n>printf</span><span class=p>(</span><span class=s2>&#34;accept a connection from </span><span class=si>%s</span><span class=se>\n</span><span class=s2>&#34;</span><span class=p>,</span> <span class=n>inet_ntoa</span><span class=p>(</span><span class=n>raddr</span><span class=o>.</span><span class=n>sin_addr</span><span class=p>));</span>
+</span></span><span class=line><span class=cl>    <span class=n>setNonBlock</span><span class=p>(</span><span class=n>cfd</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=n>updateEvents</span><span class=p>(</span><span class=n>efd</span><span class=p>,</span> <span class=n>cfd</span><span class=p>,</span> <span class=n>EPOLLIN</span><span class=p>,</span> <span class=n>EPOLL_CTL_ADD</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=o>//</span> <span class=n>Represents</span> <span class=n>a</span> <span class=n>connection</span><span class=o>.</span> <span class=n>Members</span> <span class=n>include</span> <span class=n>data</span> <span class=n>read</span> <span class=n>from</span> <span class=n>the</span> <span class=n>connection</span><span class=p>,</span> <span class=n>data</span> <span class=n>written</span>
+</span></span><span class=line><span class=cl><span class=o>//</span> <span class=n>Is</span> <span class=n>it</span> <span class=n>okay</span> <span class=n>to</span> <span class=n>use</span> <span class=n>string</span> <span class=n>to</span> <span class=n>store</span> <span class=n>binary</span> <span class=n>content</span><span class=p>,</span> <span class=n>what</span> <span class=n>happens</span> <span class=k>if</span> \<span class=mi>0</span> <span class=n>is</span> <span class=n>encountered</span><span class=err>?</span>
+</span></span><span class=line><span class=cl><span class=o>//</span> <span class=n>No</span> <span class=n>problem</span><span class=p>,</span> <span class=n>see</span> <span class=n>https</span><span class=p>:</span><span class=o>//</span><span class=n>www</span><span class=o>.</span><span class=n>zhihu</span><span class=o>.</span><span class=n>com</span><span class=o>/</span><span class=n>question</span><span class=o>/</span><span class=mi>33104941</span>
+</span></span><span class=line><span class=cl><span class=n>struct</span> <span class=n>Con</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=n>string</span> <span class=n>readed</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=n>size_t</span> <span class=n>written</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=ne>bool</span> <span class=n>writeEnabled</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=n>Con</span><span class=p>():</span> <span class=n>written</span><span class=p>(</span><span class=mi>0</span><span class=p>),</span> <span class=n>writeEnabled</span><span class=p>(</span><span class=bp>false</span><span class=p>)</span> <span class=p>{}</span>
+</span></span><span class=line><span class=cl><span class=p>};</span>
+</span></span><span class=line><span class=cl><span class=o>//</span> <span class=n>Data</span> <span class=n>structure</span> <span class=n>used</span> <span class=n>to</span> <span class=n>map</span> <span class=n>fd</span> <span class=n>to</span> <span class=n>con</span>
+</span></span><span class=line><span class=cl><span class=n>map</span><span class=o>&lt;</span><span class=ne>int</span><span class=p>,</span> <span class=n>Con</span><span class=o>&gt;</span> <span class=n>cons</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>string</span> <span class=n>httpRes</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=o>//</span> <span class=n>Send</span> <span class=n>resources</span>
+</span></span><span class=line><span class=cl><span class=n>void</span> <span class=n>sendRes</span><span class=p>(</span><span class=ne>int</span> <span class=n>efd</span><span class=p>,</span> <span class=ne>int</span> <span class=n>fd</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=o>//</span> <span class=n>First</span> <span class=n>get</span> <span class=n>the</span> <span class=n>connection</span> <span class=n>information</span>
+</span></span><span class=line><span class=cl>    <span class=n>Con</span><span class=o>&amp;</span> <span class=n>con</span> <span class=o>=</span> <span class=n>cons</span><span class=p>[</span><span class=n>fd</span><span class=p>];</span>
+</span></span><span class=line><span class=cl>    <span class=o>//</span> <span class=n>Request</span> <span class=n>to</span> <span class=n>write</span> <span class=n>when</span> <span class=n>no</span> <span class=n>data</span> <span class=n>is</span> <span class=n>received</span>
+</span></span><span class=line><span class=cl>    <span class=o>//</span> <span class=n>This</span> <span class=n>means</span> <span class=n>that</span> <span class=n>data</span> <span class=n>sent</span> <span class=n>last</span> <span class=n>time</span> <span class=n>might</span> <span class=n>have</span> <span class=n>been</span> <span class=n>sent</span> <span class=n>completely</span>
+</span></span><span class=line><span class=cl>    <span class=o>//</span> <span class=n>Its</span> <span class=n>corresponding</span> <span class=n>file</span> <span class=n>descriptor</span> <span class=n>has</span> <span class=n>been</span> <span class=n>deleted</span> <span class=ow>in</span> <span class=n>cons</span>
+</span></span><span class=line><span class=cl>    <span class=o>//</span> <span class=n>Then</span> <span class=n>the</span> <span class=n>epoll</span> <span class=k>signal</span> <span class=n>was</span> <span class=n>triggered</span>
+</span></span><span class=line><span class=cl>    <span class=o>//</span> <span class=n>At</span> <span class=n>this</span> <span class=n>time</span><span class=p>,</span> <span class=n>close</span> <span class=n>its</span> <span class=n>last</span> <span class=n>send</span> <span class=n>flag</span>
+</span></span><span class=line><span class=cl>    <span class=o>//</span> <span class=n>Then</span> <span class=n>close</span> <span class=n>the</span> <span class=n>buffer</span> <span class=n>send</span> <span class=n>trigger</span> <span class=n>epoll</span> <span class=n>flag</span>
+</span></span><span class=line><span class=cl>    <span class=o>//</span> <span class=n>Only</span> <span class=n>keep</span> <span class=n>it</span> <span class=n>triggered</span> <span class=n>when</span> <span class=n>there</span> <span class=n>is</span> <span class=n>data</span> <span class=n>to</span> <span class=n>read</span>
+</span></span><span class=line><span class=cl>    <span class=o>//</span> <span class=n>Why</span> <span class=ow>not</span> <span class=k>do</span> <span class=n>this</span> <span class=n>step</span> <span class=n>when</span> <span class=n>all</span> <span class=n>data</span> <span class=n>is</span> <span class=n>written</span><span class=err>?</span>
+</span></span><span class=line><span class=cl>    <span class=o>//</span> <span class=k>if</span> <span class=p>(</span><span class=o>!</span><span class=n>con</span><span class=o>.</span><span class=n>readed</span><span class=o>.</span><span class=n>length</span><span class=p>())</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=o>//</span>     <span class=k>if</span> <span class=p>(</span><span class=n>con</span><span class=o>.</span><span class=n>writeEnabled</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=o>//</span>         <span class=n>updateEvents</span><span class=p>(</span><span class=n>efd</span><span class=p>,</span> <span class=n>fd</span><span class=p>,</span> <span class=n>EPOLLIN</span><span class=p>,</span> <span class=n>EPOLL_CTL_MOD</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=o>//</span>         <span class=n>con</span><span class=o>.</span><span class=n>writeEnabled</span> <span class=o>=</span> <span class=bp>false</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=o>//</span>     <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=o>//</span>     <span class=k>return</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=o>//</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=o>//</span> <span class=n>Calculate</span> <span class=n>the</span> <span class=n>length</span> <span class=n>of</span> <span class=n>data</span> <span class=n>that</span> <span class=n>still</span> <span class=n>needs</span> <span class=n>to</span> <span class=n>be</span> <span class=n>written</span>
+</span></span><span class=line><span class=cl>    <span class=n>size_t</span> <span class=n>left</span> <span class=o>=</span> <span class=n>httpRes</span><span class=o>.</span><span class=n>length</span><span class=p>()</span> <span class=o>-</span> <span class=n>con</span><span class=o>.</span><span class=n>written</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=ne>int</span> <span class=n>wd</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=o>//</span> <span class=n>Continuously</span> <span class=n>write</span> <span class=n>data</span> <span class=n>until</span> <span class=n>the</span> <span class=n>kernel</span> <span class=n>buffer</span> <span class=n>can</span><span class=s1>&#39;t accept any more</span>
+</span></span><span class=line><span class=cl>    <span class=k>while</span><span class=p>((</span><span class=n>wd</span><span class=o>=</span><span class=p>::</span><span class=n>write</span><span class=p>(</span><span class=n>fd</span><span class=p>,</span> <span class=n>httpRes</span><span class=o>.</span><span class=n>data</span><span class=p>()</span><span class=o>+</span><span class=n>con</span><span class=o>.</span><span class=n>written</span><span class=p>,</span> <span class=n>left</span><span class=p>))</span><span class=o>&gt;</span><span class=mi>0</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=n>con</span><span class=o>.</span><span class=n>written</span> <span class=o>+=</span> <span class=n>wd</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=n>left</span> <span class=o>-=</span> <span class=n>wd</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span><span class=p>(</span><span class=n>output_log</span><span class=p>)</span> <span class=n>printf</span><span class=p>(</span><span class=s2>&#34;write </span><span class=si>%d</span><span class=s2> bytes left: </span><span class=si>%lu</span><span class=se>\n</span><span class=s2>&#34;</span><span class=p>,</span> <span class=n>wd</span><span class=p>,</span> <span class=n>left</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=p>};</span>
+</span></span><span class=line><span class=cl>    <span class=o>//</span> <span class=n>If</span> <span class=n>there</span> <span class=n>is</span> <span class=n>no</span> <span class=n>data</span> <span class=n>to</span> <span class=n>write</span><span class=p>,</span> <span class=n>delete</span> <span class=n>this</span> <span class=n>connection</span><span class=o>.</span> <span class=n>But</span> <span class=n>don</span><span class=s1>&#39;t disconnect, just empty the connection information</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=p>(</span><span class=n>left</span> <span class=o>==</span> <span class=mi>0</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl><span class=o>//</span>        <span class=n>close</span><span class=p>(</span><span class=n>fd</span><span class=p>);</span> <span class=o>//</span> <span class=n>Keepalive</span> <span class=n>is</span> <span class=n>used</span> <span class=ow>in</span> <span class=n>testing</span><span class=p>,</span> <span class=n>so</span> <span class=n>don</span><span class=s1>&#39;t close the connection. The connection will be closed in the read event</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=p>(</span><span class=n>con</span><span class=o>.</span><span class=n>writeEnabled</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=n>updateEvents</span><span class=p>(</span><span class=n>efd</span><span class=p>,</span> <span class=n>fd</span><span class=p>,</span> <span class=n>EPOLLIN</span><span class=p>,</span> <span class=n>EPOLL_CTL_MOD</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>            <span class=n>con</span><span class=o>.</span><span class=n>writeEnabled</span> <span class=o>=</span> <span class=bp>false</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>        <span class=n>cons</span><span class=o>.</span><span class=n>erase</span><span class=p>(</span><span class=n>fd</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=o>//</span> <span class=n>If</span> <span class=n>the</span> <span class=n>kernel</span> <span class=n>buffer</span> <span class=n>is</span> <span class=n>full</span><span class=p>,</span> <span class=n>can</span><span class=s1>&#39;t write anymore</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=p>(</span><span class=n>wd</span> <span class=o>&lt;</span> <span class=mi>0</span> <span class=o>&amp;&amp;</span>  <span class=p>(</span><span class=n>errno</span> <span class=o>==</span> <span class=n>EAGAIN</span> <span class=o>||</span> <span class=n>errno</span> <span class=o>==</span> <span class=n>EWOULDBLOCK</span><span class=p>))</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=o>//</span> <span class=n>Mark</span> <span class=n>it</span> <span class=n>as</span> <span class=n>can</span> <span class=k>continue</span> <span class=n>writing</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=p>(</span><span class=o>!</span><span class=n>con</span><span class=o>.</span><span class=n>writeEnabled</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=o>//</span> <span class=n>Wait</span> <span class=k>for</span> <span class=n>it</span> <span class=n>to</span> <span class=n>be</span> <span class=n>able</span> <span class=n>to</span> <span class=k>continue</span> <span class=n>writing</span><span class=p>,</span> <span class=ow>or</span> <span class=n>be</span> <span class=n>readable</span>
+</span></span><span class=line><span class=cl>            <span class=o>//</span> <span class=n>Avoid</span> <span class=n>repeated</span> <span class=n>system</span> <span class=n>calls</span><span class=p>,</span> <span class=n>use</span> <span class=n>con</span><span class=o>.</span><span class=n>writeEnabled</span> <span class=n>flag</span>
+</span></span><span class=line><span class=cl>            <span class=n>printf</span><span class=p>(</span><span class=s2>&#34;update it to EPOLLIN|EPOLLOUT</span><span class=se>\n</span><span class=s2>&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>            <span class=n>updateEvents</span><span class=p>(</span><span class=n>efd</span><span class=p>,</span> <span class=n>fd</span><span class=p>,</span> <span class=n>EPOLLIN</span><span class=o>|</span><span class=n>EPOLLOUT</span><span class=p>,</span> <span class=n>EPOLL_CTL_MOD</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>            <span class=n>con</span><span class=o>.</span><span class=n>writeEnabled</span> <span class=o>=</span> <span class=bp>true</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=o>//</span> <span class=n>If</span> <span class=n>it</span><span class=s1>&#39;s other situations, such as returning 0 without completing data writing, or returning other errors</span>
+</span></span><span class=line><span class=cl>    <span class=o>//</span> <span class=n>It</span> <span class=n>means</span> <span class=n>an</span> <span class=n>error</span> <span class=n>occurred</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=p>(</span><span class=n>wd</span><span class=o>&lt;=</span><span class=mi>0</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=n>printf</span><span class=p>(</span><span class=s2>&#34;write error for </span><span class=si>%d</span><span class=s2>: </span><span class=si>%d</span><span class=s2> </span><span class=si>%s</span><span class=se>\n</span><span class=s2>&#34;</span><span class=p>,</span> <span class=n>fd</span><span class=p>,</span> <span class=n>errno</span><span class=p>,</span> <span class=n>strerror</span><span class=p>(</span><span class=n>errno</span><span class=p>));</span>
+</span></span><span class=line><span class=cl>        <span class=n>close</span><span class=p>(</span><span class=n>fd</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=n>cons</span><span class=o>.</span><span class=n>erase</span><span class=p>(</span><span class=n>fd</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=o>//</span> <span class=n>When</span> <span class=n>loop_once</span> <span class=n>processes</span> <span class=n>read</span> <span class=n>data</span><span class=p>,</span> <span class=n>call</span> <span class=n>this</span> <span class=n>function</span>
+</span></span><span class=line><span class=cl><span class=n>void</span> <span class=n>handleRead</span><span class=p>(</span><span class=ne>int</span> <span class=n>efd</span><span class=p>,</span> <span class=ne>int</span> <span class=n>fd</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=n>char</span> <span class=n>buf</span><span class=p>[</span><span class=mi>4096</span><span class=p>];</span>
+</span></span><span class=line><span class=cl>    <span class=ne>int</span> <span class=n>n</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=o>//</span> <span class=n>Read</span> <span class=mi>4</span><span class=n>k</span> <span class=n>bytes</span> <span class=n>each</span> <span class=n>time</span><span class=p>,</span> <span class=n>loop</span> <span class=n>to</span> <span class=n>read</span> <span class=n>out</span> <span class=n>all</span> <span class=n>the</span> <span class=n>data</span> <span class=n>already</span> <span class=ow>in</span> <span class=n>the</span> <span class=n>kernel</span> <span class=p>(</span><span class=n>information</span> <span class=n>may</span> <span class=n>be</span> <span class=n>incomplete</span> <span class=n>due</span> <span class=n>to</span> <span class=n>packet</span> <span class=n>splitting</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=k>while</span> <span class=p>((</span><span class=n>n</span><span class=o>=</span><span class=p>::</span><span class=n>read</span><span class=p>(</span><span class=n>fd</span><span class=p>,</span> <span class=n>buf</span><span class=p>,</span> <span class=n>sizeof</span> <span class=n>buf</span><span class=p>))</span> <span class=o>&gt;</span> <span class=mi>0</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span><span class=p>(</span><span class=n>output_log</span><span class=p>)</span> <span class=n>printf</span><span class=p>(</span><span class=s2>&#34;read </span><span class=si>%d</span><span class=s2> bytes</span><span class=se>\n</span><span class=s2>&#34;</span><span class=p>,</span> <span class=n>n</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=o>//</span> <span class=n>Here</span><span class=p>,</span> <span class=n>use</span> <span class=n>a</span> <span class=n>map</span> <span class=n>to</span> <span class=n>get</span> <span class=n>the</span> <span class=n>connection</span> <span class=n>information</span> <span class=n>corresponding</span> <span class=n>to</span> <span class=n>the</span> <span class=n>previous</span> <span class=n>fd</span><span class=o>.</span>
+</span></span><span class=line><span class=cl>        <span class=o>//</span> <span class=n>When</span> <span class=n>the</span> <span class=n>index</span> <span class=n>corresponding</span> <span class=n>to</span> <span class=n>fd</span> <span class=n>does</span> <span class=ow>not</span> <span class=n>exist</span><span class=p>,</span> <span class=n>it</span> <span class=n>will</span> <span class=n>call</span> <span class=n>the</span> <span class=n>default</span> <span class=n>constructor</span> <span class=n>of</span> <span class=n>con</span><span class=p>:</span> <span class=n>Con</span><span class=p>():</span> <span class=n>written</span><span class=p>(</span><span class=mi>0</span><span class=p>),</span> <span class=n>writeEnabled</span><span class=p>(</span><span class=bp>false</span><span class=p>)</span> <span class=p>{}</span>
+</span></span><span class=line><span class=cl>        <span class=n>string</span><span class=o>&amp;</span> <span class=n>readed</span> <span class=o>=</span> <span class=n>cons</span><span class=p>[</span><span class=n>fd</span><span class=p>]</span><span class=o>.</span><span class=n>readed</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=o>//</span> <span class=n>Call</span> <span class=n>the</span> <span class=n>append</span> <span class=n>method</span> <span class=n>of</span> <span class=n>the</span> <span class=n>string</span> <span class=k>class</span> <span class=n>to</span> <span class=n>add</span> <span class=n>data</span> <span class=n>to</span> <span class=n>the</span> <span class=n>connection</span> <span class=n>information</span>
+</span></span><span class=line><span class=cl>        <span class=o>//</span> <span class=n>Note</span> <span class=n>that</span> <span class=n>parameter</span> <span class=n>n</span> <span class=n>needs</span> <span class=n>to</span> <span class=n>be</span> <span class=n>passed</span> <span class=n>to</span> <span class=n>ensure</span> <span class=n>binary</span> <span class=n>safety</span>
+</span></span><span class=line><span class=cl>        <span class=n>readed</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=n>buf</span><span class=p>,</span> <span class=n>n</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=n>std</span><span class=p>::</span><span class=n>cout</span>  <span class=o>&lt;&lt;</span> <span class=s2>&#34;now info is&#34;</span> <span class=o>&lt;&lt;</span> <span class=n>std</span><span class=p>::</span><span class=n>endl</span> <span class=o>&lt;&lt;</span> <span class=s2>&#34;---&#34;</span> <span class=o>&lt;&lt;</span>  <span class=n>readed</span> <span class=o>&lt;&lt;</span> <span class=n>endl</span> <span class=o>&lt;&lt;</span> <span class=s2>&#34;---&#34;</span> <span class=o>&lt;&lt;</span>  <span class=n>std</span><span class=p>::</span><span class=n>endl</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=o>//</span> <span class=n>Determine</span> <span class=n>when</span> <span class=n>an</span> <span class=n>HTTP</span> <span class=n>request</span> <span class=n>is</span> <span class=n>complete</span><span class=o>.</span>
+</span></span><span class=line><span class=cl>        <span class=o>//</span> <span class=n>Don</span><span class=s1>&#39;t judge the content of the HTTP request, just send static resources</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=p>(</span><span class=n>readed</span><span class=o>.</span><span class=n>length</span><span class=p>()</span><span class=o>&gt;</span><span class=mi>4</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=k>if</span> <span class=p>(</span><span class=n>readed</span><span class=o>.</span><span class=n>substr</span><span class=p>(</span><span class=n>readed</span><span class=o>.</span><span class=n>length</span><span class=p>()</span><span class=o>-</span><span class=mi>2</span><span class=p>,</span> <span class=mi>2</span><span class=p>)</span> <span class=o>==</span> <span class=s2>&#34;</span><span class=se>\n\n</span><span class=s2>&#34;</span> <span class=o>||</span> <span class=n>readed</span><span class=o>.</span><span class=n>substr</span><span class=p>(</span><span class=n>readed</span><span class=o>.</span><span class=n>length</span><span class=p>()</span><span class=o>-</span><span class=mi>4</span><span class=p>,</span> <span class=mi>4</span><span class=p>)</span> <span class=o>==</span> <span class=s2>&#34;</span><span class=se>\r\n\r\n</span><span class=s2>&#34;</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>                <span class=o>//</span> <span class=n>When</span> <span class=n>a</span> <span class=n>complete</span> <span class=n>HTTP</span> <span class=n>request</span> <span class=n>is</span> <span class=n>read</span><span class=p>,</span> <span class=n>test</span> <span class=n>sending</span> <span class=n>a</span> <span class=n>response</span>
+</span></span><span class=line><span class=cl>                <span class=o>//</span> <span class=n>After</span> <span class=n>the</span> <span class=n>TCP</span> <span class=n>connection</span> <span class=n>is</span> <span class=n>established</span><span class=p>,</span> <span class=n>the</span> <span class=n>client</span> <span class=n>starts</span> <span class=n>transmitting</span> <span class=n>the</span> <span class=n>header</span><span class=p>,</span> <span class=n>then</span> <span class=n>uses</span> \<span class=n>r</span>\<span class=n>n</span>\<span class=n>r</span>\<span class=n>n</span> <span class=n>to</span> <span class=n>mark</span> <span class=n>the</span> <span class=n>end</span> <span class=n>of</span> <span class=n>the</span> <span class=n>header</span> <span class=ow>and</span> <span class=n>the</span> <span class=n>beginning</span> <span class=n>of</span> <span class=n>the</span> <span class=n>entity</span> <span class=p>(</span><span class=n>of</span> <span class=n>course</span><span class=p>,</span> <span class=n>there</span> <span class=n>will</span> <span class=n>be</span> <span class=n>the</span> <span class=n>beginning</span> <span class=n>of</span> <span class=n>the</span> <span class=n>entity</span> <span class=n>only</span> <span class=k>if</span> <span class=n>the</span> <span class=n>request</span> <span class=n>contains</span> <span class=n>an</span> <span class=n>entity</span><span class=p>),</span>
+</span></span><span class=line><span class=cl>                <span class=o>//</span> <span class=n>Then</span> <span class=n>the</span> <span class=n>entity</span> <span class=n>is</span> <span class=n>transmitted</span><span class=p>,</span> <span class=n>when</span> <span class=n>the</span> <span class=n>entity</span> <span class=n>is</span> <span class=n>transmitted</span><span class=p>,</span> <span class=n>the</span> <span class=n>client</span> <span class=n>starts</span> <span class=n>receiving</span> <span class=n>data</span><span class=p>,</span> <span class=n>the</span> <span class=n>server</span> <span class=n>knows</span><span class=p>,</span> <span class=n>this</span> <span class=n>request</span> <span class=n>has</span> <span class=n>ended</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=o>//</span> <span class=n>Then</span> <span class=n>the</span> <span class=n>entity</span> <span class=n>is</span> <span class=n>that</span> <span class=n>segment</span> <span class=n>of</span> <span class=n>data</span> <span class=n>from</span> \<span class=n>r</span>\<span class=n>n</span>\<span class=n>r</span>\<span class=n>n</span> <span class=n>to</span> <span class=n>stopping</span> <span class=n>reception</span><span class=o>.</span> <span class=n>Correspondingly</span><span class=p>,</span> <span class=n>the</span> <span class=n>client</span> <span class=n>receives</span> <span class=n>the</span> <span class=n>response</span> <span class=ow>in</span> <span class=n>the</span> <span class=n>same</span> <span class=n>way</span><span class=o>.</span>
+</span></span><span class=line><span class=cl>                <span class=o>//</span> <span class=n>If</span> <span class=n>there</span> <span class=n>is</span> <span class=n>no</span> <span class=n>entity</span><span class=p>,</span> <span class=n>then</span> \<span class=n>r</span>\<span class=n>n</span>\<span class=n>r</span>\<span class=n>n</span> <span class=n>is</span> <span class=n>the</span> <span class=n>end</span> <span class=n>of</span> <span class=n>http</span>
+</span></span><span class=line><span class=cl>                <span class=o>//</span> <span class=n>Start</span> <span class=n>writing</span> <span class=n>data</span><span class=o>.</span> <span class=n>Note</span> <span class=n>that</span> <span class=n>it</span> <span class=n>may</span> <span class=n>fill</span> <span class=n>the</span> <span class=n>buffer</span><span class=p>,</span> <span class=k>if</span> <span class=n>it</span><span class=s1>&#39;s full, continue writing later</span>
+</span></span><span class=line><span class=cl>                <span class=n>sendRes</span><span class=p>(</span><span class=n>efd</span><span class=p>,</span> <span class=n>fd</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>            <span class=p>}</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=o>//</span> <span class=n>If</span> <span class=n>read</span> <span class=n>cannot</span> <span class=n>read</span><span class=p>,</span> <span class=n>it</span> <span class=n>will</span> <span class=k>return</span> <span class=o>-</span><span class=mf>1.</span> <span class=n>At</span> <span class=n>this</span> <span class=n>time</span><span class=p>,</span> <span class=n>errno</span> <span class=p>(</span><span class=n>errno</span> <span class=n>belongs</span> <span class=n>to</span> <span class=n>the</span> <span class=n>thread</span><span class=p>,</span> <span class=n>it</span> <span class=n>is</span> <span class=n>thread</span><span class=o>-</span><span class=n>safe</span><span class=p>)</span> <span class=n>is</span> <span class=n>EAGAIN</span><span class=p>,</span> <span class=n>which</span> <span class=n>means</span> <span class=n>it</span><span class=s1>&#39;s not all read. EWOULDBLOCK and EAGAIN are the same.</span>
+</span></span><span class=line><span class=cl>    <span class=o>//</span> <span class=n>Then</span> <span class=k>return</span><span class=p>,</span> <span class=ow>and</span> <span class=n>wait</span> <span class=k>for</span> <span class=n>the</span> <span class=n>next</span> <span class=n>read</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=p>(</span><span class=n>n</span><span class=o>&lt;</span><span class=mi>0</span> <span class=o>&amp;&amp;</span> <span class=p>(</span><span class=n>errno</span> <span class=o>==</span> <span class=n>EAGAIN</span> <span class=o>||</span> <span class=n>errno</span> <span class=o>==</span> <span class=n>EWOULDBLOCK</span><span class=p>)){</span>
+</span></span><span class=line><span class=cl>        <span class=n>printf</span><span class=p>(</span><span class=s2>&#34;nothing to read from </span><span class=si>%d</span><span class=s2>, return. </span><span class=se>\n</span><span class=s2>&#34;</span><span class=p>,</span> <span class=n>fd</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=o>//</span> <span class=n>In</span> <span class=n>actual</span> <span class=n>applications</span><span class=p>,</span> <span class=n>n</span><span class=o>&lt;</span><span class=mi>0</span> <span class=n>should</span> <span class=n>check</span> <span class=n>various</span> <span class=n>errors</span><span class=p>,</span> <span class=n>such</span> <span class=n>as</span> <span class=n>EINTR</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=p>(</span><span class=n>n</span> <span class=o>&lt;</span> <span class=mi>0</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=n>printf</span><span class=p>(</span><span class=s2>&#34;read </span><span class=si>%d</span><span class=s2> error: </span><span class=si>%d</span><span class=s2> </span><span class=si>%s</span><span class=se>\n</span><span class=s2>&#34;</span><span class=p>,</span> <span class=n>fd</span><span class=p>,</span> <span class=n>errno</span><span class=p>,</span> <span class=n>strerror</span><span class=p>(</span><span class=n>errno</span><span class=p>));</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=o>//</span> <span class=n>Executing</span> <span class=n>here</span><span class=p>,</span> <span class=n>n</span> <span class=n>is</span> <span class=mi>0</span><span class=p>,</span> <span class=n>indicating</span> <span class=n>that</span> <span class=n>the</span> <span class=n>peer</span> <span class=n>has</span> <span class=n>closed</span> <span class=n>the</span> <span class=n>connection</span><span class=o>.</span> <span class=n>At</span> <span class=n>this</span> <span class=n>time</span><span class=p>,</span> <span class=n>we</span> <span class=n>also</span> <span class=n>close</span> <span class=n>the</span> <span class=n>connection</span>
+</span></span><span class=line><span class=cl>    <span class=n>printf</span><span class=p>(</span><span class=s2>&#34;</span><span class=si>%d</span><span class=s2> close the connection</span><span class=se>\n</span><span class=s2>&#34;</span><span class=p>,</span> <span class=n>fd</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=n>close</span><span class=p>(</span><span class=n>fd</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=n>cons</span><span class=o>.</span><span class=n>erase</span><span class=p>(</span><span class=n>fd</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=o>//</span> <span class=n>When</span> <span class=n>the</span> <span class=n>buffer</span> <span class=n>can</span> <span class=n>be</span> <span class=n>written</span> <span class=ow>in</span> <span class=n>loop_once</span><span class=p>,</span> <span class=n>simply</span> <span class=n>write</span> <span class=n>our</span> <span class=n>prepared</span> <span class=k>static</span> <span class=n>resources</span>
+</span></span><span class=line><span class=cl><span class=n>void</span> <span class=n>handleWrite</span><span class=p>(</span><span class=ne>int</span> <span class=n>efd</span><span class=p>,</span> <span class=ne>int</span> <span class=n>fd</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=n>sendRes</span><span class=p>(</span><span class=n>efd</span><span class=p>,</span> <span class=n>fd</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=o>//</span> <span class=n>Perform</span> <span class=n>one</span> <span class=n>operation</span> <span class=ow>in</span> <span class=n>a</span> <span class=n>loop</span> <span class=n>on</span> <span class=n>an</span> <span class=n>epoll</span> <span class=n>handle</span>
+</span></span><span class=line><span class=cl><span class=o>//</span> <span class=n>Where</span> <span class=n>l</span> <span class=n>is</span> <span class=n>the</span> <span class=n>LISTEN</span> <span class=n>fd</span>
+</span></span><span class=line><span class=cl><span class=n>void</span> <span class=n>loop_once</span><span class=p>(</span><span class=ne>int</span> <span class=n>efd</span><span class=p>,</span> <span class=ne>int</span> <span class=n>lfd</span><span class=p>,</span> <span class=ne>int</span> <span class=n>waitms</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=o>//</span> <span class=n>At</span> <span class=n>most</span> <span class=n>copy</span> <span class=mi>20</span> <span class=n>events</span> <span class=n>out</span> <span class=n>from</span> <span class=n>the</span> <span class=n>kernel</span>
+</span></span><span class=line><span class=cl>    <span class=k>const</span> <span class=ne>int</span> <span class=n>kMaxEvents</span> <span class=o>=</span> <span class=mi>20</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=n>struct</span> <span class=n>epoll_event</span> <span class=n>activeEvs</span><span class=p>[</span><span class=mi>100</span><span class=p>];</span>
+</span></span><span class=line><span class=cl>    <span class=ne>int</span> <span class=n>n</span> <span class=o>=</span> <span class=n>epoll_wait</span><span class=p>(</span><span class=n>efd</span><span class=p>,</span> <span class=n>activeEvs</span><span class=p>,</span> <span class=n>kMaxEvents</span><span class=p>,</span> <span class=n>waitms</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=o>//</span> <span class=n>n</span> <span class=n>is</span> <span class=n>how</span> <span class=n>many</span> <span class=n>events</span> <span class=n>were</span> <span class=n>returned</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span><span class=p>(</span><span class=n>output_log</span><span class=p>)</span> <span class=n>printf</span><span class=p>(</span><span class=s2>&#34;epoll_wait return </span><span class=si>%d</span><span class=se>\n</span><span class=s2>&#34;</span><span class=p>,</span> <span class=n>n</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=k>for</span> <span class=p>(</span><span class=ne>int</span> <span class=n>i</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span> <span class=n>i</span> <span class=o>&lt;</span> <span class=n>n</span><span class=p>;</span> <span class=n>i</span> <span class=o>++</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=ne>int</span> <span class=n>fd</span> <span class=o>=</span> <span class=n>activeEvs</span><span class=p>[</span><span class=n>i</span><span class=p>]</span><span class=o>.</span><span class=n>data</span><span class=o>.</span><span class=n>fd</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=ne>int</span> <span class=n>events</span> <span class=o>=</span> <span class=n>activeEvs</span><span class=p>[</span><span class=n>i</span><span class=p>]</span><span class=o>.</span><span class=n>events</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=o>//</span> <span class=n>EPOLLIN</span> <span class=n>event</span> <span class=ow>or</span> <span class=n>EPOLLERR</span> <span class=n>event</span><span class=o>.</span> <span class=n>EPOLLERR</span> <span class=n>also</span> <span class=n>means</span> <span class=n>the</span> <span class=n>pipe</span> <span class=n>write</span> <span class=n>ended</span><span class=o>.</span>
+</span></span><span class=line><span class=cl>        <span class=o>//</span> <span class=n>See</span><span class=p>:</span> <span class=n>http</span><span class=p>:</span><span class=o>//</span><span class=n>man7</span><span class=o>.</span><span class=n>org</span><span class=o>/</span><span class=n>linux</span><span class=o>/</span><span class=n>man</span><span class=o>-</span><span class=n>pages</span><span class=o>/</span><span class=n>man2</span><span class=o>/</span><span class=n>epoll_ctl</span><span class=o>.</span><span class=mf>2.</span><span class=n>html</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=p>(</span><span class=n>events</span> <span class=o>&amp;</span> <span class=p>(</span><span class=n>EPOLLIN</span> <span class=o>|</span> <span class=n>EPOLLERR</span><span class=p>))</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=o>//</span> <span class=n>The</span> <span class=n>EPOLLIN</span> <span class=n>event</span> <span class=n>is</span> <span class=n>only</span> <span class=n>triggered</span> <span class=n>when</span> <span class=n>the</span> <span class=n>peer</span> <span class=n>has</span> <span class=n>data</span> <span class=n>written</span><span class=p>,</span> <span class=n>so</span> <span class=n>after</span> <span class=n>triggering</span> <span class=n>once</span><span class=p>,</span> <span class=n>you</span> <span class=n>need</span> <span class=n>to</span> <span class=n>keep</span> <span class=n>reading</span> <span class=n>all</span> <span class=n>the</span> <span class=n>data</span> <span class=n>until</span> <span class=n>you</span> <span class=n>finish</span> <span class=n>reading</span> <span class=n>EAGAIN</span><span class=o>.</span> <span class=n>Otherwise</span><span class=p>,</span> <span class=n>the</span> <span class=n>remaining</span> <span class=n>data</span> <span class=n>will</span> <span class=n>only</span> <span class=n>be</span> <span class=n>taken</span> <span class=n>out</span> <span class=n>together</span> <span class=n>the</span> <span class=n>next</span> <span class=n>time</span> <span class=n>the</span> <span class=n>peer</span> <span class=n>writes</span><span class=o>.</span>
+</span></span><span class=line><span class=cl>            <span class=o>//</span> <span class=n>When</span> <span class=n>the</span> <span class=n>other</span> <span class=n>party</span> <span class=n>closes</span> <span class=n>the</span> <span class=n>connection</span><span class=p>,</span> <span class=n>it</span> <span class=n>is</span> <span class=n>an</span> <span class=n>EPOLLERR</span> <span class=n>event</span>
+</span></span><span class=line><span class=cl>            <span class=k>if</span> <span class=p>(</span><span class=n>fd</span> <span class=o>==</span> <span class=n>lfd</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>                <span class=n>printf</span><span class=p>(</span><span class=s2>&#34;this is accept</span><span class=se>\n</span><span class=s2>&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>                <span class=n>handleAccept</span><span class=p>(</span><span class=n>efd</span><span class=p>,</span> <span class=n>fd</span><span class=p>);</span> 
+</span></span><span class=line><span class=cl>            <span class=p>}</span> <span class=k>else</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>                <span class=n>printf</span><span class=p>(</span><span class=s2>&#34;this can read</span><span class=se>\n</span><span class=s2>&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>                <span class=n>handleRead</span><span class=p>(</span><span class=n>efd</span><span class=p>,</span> <span class=n>fd</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>            <span class=p>}</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span> <span class=k>else</span> <span class=k>if</span> <span class=p>(</span><span class=n>events</span> <span class=o>&amp;</span> <span class=n>EPOLLOUT</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=o>//</span> <span class=n>This</span> <span class=n>handles</span> <span class=n>events</span> <span class=k>if</span> <span class=n>the</span> <span class=n>file</span> <span class=n>descriptor</span> <span class=n>can</span> <span class=n>be</span> <span class=n>written</span>
+</span></span><span class=line><span class=cl>            <span class=o>//</span> <span class=n>The</span> <span class=n>EPOLLOUT</span> <span class=n>event</span> <span class=n>is</span> <span class=n>only</span> <span class=n>triggered</span> <span class=n>once</span> <span class=n>during</span> <span class=n>connection</span><span class=p>,</span> <span class=n>indicating</span> <span class=n>it</span> <span class=n>can</span> <span class=n>be</span> <span class=n>written</span>
+</span></span><span class=line><span class=cl>            <span class=o>//</span> <span class=n>Afterwards</span><span class=p>,</span> <span class=n>it</span> <span class=n>indicates</span> <span class=n>that</span> <span class=n>the</span> <span class=n>data</span> <span class=ow>in</span> <span class=n>the</span> <span class=n>buffer</span> <span class=n>has</span> <span class=n>been</span> <span class=n>sent</span> <span class=n>out</span> <span class=ow>and</span> <span class=n>can</span> <span class=k>continue</span> <span class=n>to</span> <span class=n>be</span> <span class=n>written</span>
+</span></span><span class=line><span class=cl>            <span class=o>//</span> <span class=n>See</span> <span class=n>https</span><span class=p>:</span><span class=o>//</span><span class=n>www</span><span class=o>.</span><span class=n>zhihu</span><span class=o>.</span><span class=n>com</span><span class=o>/</span><span class=n>question</span><span class=o>/</span><span class=mi>22840801</span>
+</span></span><span class=line><span class=cl>            <span class=k>if</span><span class=p>(</span><span class=n>output_log</span><span class=p>)</span> <span class=n>printf</span><span class=p>(</span><span class=s2>&#34;handling epollout</span><span class=se>\n</span><span class=s2>&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>            <span class=n>handleWrite</span><span class=p>(</span><span class=n>efd</span><span class=p>,</span> <span class=n>fd</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span> <span class=k>else</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=n>exit_if</span><span class=p>(</span><span class=mi>1</span><span class=p>,</span> <span class=s2>&#34;unknown event&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=ne>int</span> <span class=n>main</span><span class=p>(</span><span class=ne>int</span> <span class=n>argc</span><span class=p>,</span> <span class=k>const</span> <span class=n>char</span><span class=o>*</span> <span class=n>argv</span><span class=p>[])</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=p>(</span><span class=n>argc</span> <span class=o>&gt;</span> <span class=mi>1</span><span class=p>)</span> <span class=p>{</span> <span class=n>output_log</span> <span class=o>=</span> <span class=bp>false</span><span class=p>;</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=o>/*</span> 
+</span></span><span class=line><span class=cl><span class=n>Small</span> <span class=n>Knowledge</span>
+</span></span><span class=line><span class=cl><span class=k>signal</span> <span class=p>(</span><span class=n>parameter</span> <span class=mi>1</span><span class=p>,</span> <span class=n>parameter</span> <span class=mi>2</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=n>Parameter</span> <span class=mi>1</span><span class=p>:</span> <span class=n>The</span> <span class=k>signal</span> <span class=n>we</span> <span class=n>want</span> <span class=n>to</span> <span class=n>process</span><span class=o>.</span> <span class=n>We</span> <span class=n>can</span> <span class=n>view</span> <span class=n>the</span> <span class=n>system</span> <span class=n>signals</span> <span class=p>(</span><span class=mi>64</span> <span class=ow>in</span> <span class=n>total</span><span class=p>)</span> <span class=n>by</span> <span class=n>typing</span> <span class=n>kill</span> <span class=o>-</span><span class=n>l</span> <span class=ow>in</span> <span class=n>the</span> <span class=n>terminal</span><span class=o>.</span> <span class=n>In</span> <span class=n>fact</span><span class=p>,</span> <span class=n>these</span> <span class=n>signals</span> <span class=n>are</span> <span class=n>macros</span> <span class=n>defined</span> <span class=n>by</span> <span class=n>the</span> <span class=n>system</span><span class=o>.</span>
+</span></span><span class=line><span class=cl><span class=n>Parameter</span> <span class=mi>2</span><span class=p>:</span> <span class=n>The</span> <span class=n>way</span> <span class=n>we</span> <span class=n>handle</span> <span class=n>it</span> <span class=p>(</span><span class=n>system</span> <span class=n>default</span><span class=p>,</span> <span class=n>ignore</span><span class=p>,</span> <span class=ow>or</span> <span class=n>capture</span><span class=p>)</span><span class=o>.</span> <span class=n>SIG_IGN</span><span class=p>:</span> <span class=n>If</span> <span class=n>the</span> <span class=k>func</span> <span class=n>parameter</span> <span class=n>is</span> <span class=n>set</span> <span class=n>to</span> <span class=n>SIG_IGN</span><span class=p>,</span> <span class=n>the</span> <span class=k>signal</span> <span class=n>will</span> <span class=n>be</span> <span class=n>ignored</span><span class=o>.</span>
+</span></span><span class=line><span class=cl>     <span class=o>*/</span>
+</span></span><span class=line><span class=cl>    <span class=p>::</span><span class=k>signal</span><span class=p>(</span><span class=n>SIGPIPE</span><span class=p>,</span> <span class=n>SIG_IGN</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=o>//</span> <span class=n>Set</span> <span class=n>the</span> <span class=n>content</span> <span class=n>of</span> <span class=n>the</span> <span class=n>HTTP</span> <span class=n>response</span>
+</span></span><span class=line><span class=cl>    <span class=n>httpRes</span> <span class=o>=</span> <span class=s2>&#34;HTTP/1.1 200 OK</span><span class=se>\r\n</span><span class=s2>Connection: Keep-Alive</span><span class=se>\r\n</span><span class=s2>Content-Type: text/html; charset=UTF-8</span><span class=se>\r\n</span><span class=s2>Content-Length: 19048576</span><span class=se>\r\n\r\n</span><span class=s2>123456&#34;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=o>//</span> <span class=n>Fill</span> <span class=n>the</span> <span class=n>rest</span> <span class=n>of</span> <span class=n>the</span> <span class=n>content</span> <span class=n>with</span> <span class=mf>0.</span> <span class=n>The</span> <span class=n>final</span> <span class=n>length</span> <span class=n>of</span> <span class=n>content</span> <span class=n>is</span> <span class=n>about</span> <span class=mi>1024</span><span class=o>*</span><span class=mi>1024</span>
+</span></span><span class=line><span class=cl>    <span class=k>for</span><span class=p>(</span><span class=ne>int</span> <span class=n>i</span><span class=o>=</span><span class=mi>0</span><span class=p>;</span><span class=n>i</span><span class=o>&lt;</span><span class=mi>19048570</span><span class=p>;</span><span class=n>i</span><span class=o>++</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=n>httpRes</span><span class=o>+=</span><span class=s1>&#39;</span><span class=se>\0</span><span class=s1>&#39;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=o>//</span> <span class=n>Set</span> <span class=n>the</span> <span class=n>port</span> <span class=n>to</span> <span class=mi>80</span>
+</span></span><span class=line><span class=cl>    <span class=n>short</span> <span class=n>port</span> <span class=o>=</span> <span class=mi>80</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=o>//</span> <span class=n>Create</span> <span class=n>an</span> <span class=n>epoll</span> <span class=n>handle</span>
+</span></span><span class=line><span class=cl>    <span class=ne>int</span> <span class=n>epollfd</span> <span class=o>=</span> <span class=n>epoll_create</span><span class=p>(</span><span class=mi>1</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=n>exit_if</span><span class=p>(</span><span class=n>epollfd</span> <span class=o>&lt;</span> <span class=mi>0</span><span class=p>,</span> <span class=s2>&#34;epoll_create failed&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=o>//</span> <span class=n>Create</span> <span class=n>a</span> <span class=n>socket</span>
+</span></span><span class=line><span class=cl>    <span class=ne>int</span> <span class=n>listenfd</span> <span class=o>=</span> <span class=n>socket</span><span class=p>(</span><span class=n>AF_INET</span><span class=p>,</span> <span class=n>SOCK_STREAM</span><span class=p>,</span> <span class=mi>0</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=n>exit_if</span><span class=p>(</span><span class=n>listenfd</span> <span class=o>&lt;</span> <span class=mi>0</span><span class=p>,</span> <span class=s2>&#34;socket failed&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=n>struct</span> <span class=n>sockaddr_in</span> <span class=n>addr</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=n>memset</span><span class=p>(</span><span class=o>&amp;</span><span class=n>addr</span><span class=p>,</span> <span class=mi>0</span><span class=p>,</span> <span class=n>sizeof</span> <span class=n>addr</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=n>addr</span><span class=o>.</span><span class=n>sin_family</span> <span class=o>=</span> <span class=n>AF_INET</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=n>addr</span><span class=o>.</span><span class=n>sin_port</span> <span class=o>=</span> <span class=n>htons</span><span class=p>(</span><span class=n>port</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=n>addr</span><span class=o>.</span><span class=n>sin_addr</span><span class=o>.</span><span class=n>s_addr</span> <span class=o>=</span> <span class=n>INADDR_ANY</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=o>//</span> <span class=n>First</span> <span class=n>bind</span> <span class=n>the</span> <span class=n>socket</span> <span class=n>to</span> <span class=n>the</span> <span class=n>port</span>
+</span></span><span class=line><span class=cl>    <span class=ne>int</span> <span class=n>r</span> <span class=o>=</span> <span class=p>::</span><span class=n>bind</span><span class=p>(</span><span class=n>listenfd</span><span class=p>,(</span><span class=n>struct</span> <span class=n>sockaddr</span> <span class=o>*</span><span class=p>)</span><span class=o>&amp;</span><span class=n>addr</span><span class=p>,</span> <span class=n>sizeof</span><span class=p>(</span><span class=n>struct</span> <span class=n>sockaddr</span><span class=p>));</span>
+</span></span><span class=line><span class=cl>    <span class=o>//</span> <span class=n>This</span> <span class=n>step</span> <span class=n>will</span> <span class=n>report</span> <span class=n>an</span> <span class=n>error</span> <span class=k>if</span> <span class=n>you</span> <span class=n>don</span><span class=s1>&#39;t have superuser permissions. Linux doesn&#39;</span><span class=n>t</span> <span class=n>allow</span> <span class=n>non</span><span class=o>-</span><span class=n>root</span> <span class=n>users</span> <span class=n>to</span> <span class=n>use</span> <span class=n>ports</span> <span class=n>below</span> <span class=mi>1024</span>
+</span></span><span class=line><span class=cl>    <span class=n>exit_if</span><span class=p>(</span><span class=n>r</span><span class=p>,</span> <span class=s2>&#34;bind to 0.0.0.0:</span><span class=si>%d</span><span class=s2> failed </span><span class=si>%d</span><span class=s2> </span><span class=si>%s</span><span class=s2>&#34;</span><span class=p>,</span> <span class=n>port</span><span class=p>,</span> <span class=n>errno</span><span class=p>,</span> <span class=n>strerror</span><span class=p>(</span><span class=n>errno</span><span class=p>));</span>
+</span></span><span class=line><span class=cl>    <span class=o>/*</span> 
+</span></span><span class=line><span class=cl>    <span class=c1>#include&lt;sys/socket.h&gt;</span>
+</span></span><span class=line><span class=cl><span class=ne>int</span> <span class=n>listen</span><span class=p>(</span><span class=ne>int</span> <span class=n>sockfd</span><span class=p>,</span> <span class=ne>int</span> <span class=n>backlog</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>Return</span><span class=p>:</span> <span class=mi>0</span><span class=err>──</span><span class=n>success</span><span class=p>,</span> <span class=o>-</span><span class=mi>1</span><span class=err>──</span><span class=n>failure</span>
+</span></span><span class=line><span class=cl><span class=n>Parameter</span> <span class=n>sockfd</span>
+</span></span><span class=line><span class=cl><span class=n>The</span> <span class=n>socket</span> <span class=n>that</span> <span class=n>the</span> <span class=n>listen</span> <span class=n>function</span> <span class=n>acts</span> <span class=n>on</span><span class=p>,</span> <span class=n>sockfd</span> <span class=n>was</span> <span class=n>previously</span> <span class=n>returned</span> <span class=n>by</span> <span class=n>the</span> <span class=n>socket</span> <span class=n>function</span><span class=o>.</span> <span class=n>At</span> <span class=n>the</span> <span class=n>time</span> <span class=n>when</span> <span class=n>the</span> <span class=n>socket</span> <span class=n>function</span> <span class=n>returns</span> <span class=n>the</span> <span class=n>socket</span> <span class=n>fd</span><span class=p>,</span> <span class=n>it</span> <span class=n>is</span> <span class=n>an</span> <span class=n>active</span> <span class=n>connection</span> <span class=n>socket</span><span class=p>,</span>
+</span></span><span class=line><span class=cl><span class=n>which</span> <span class=n>means</span> <span class=n>the</span> <span class=n>system</span> <span class=n>assumes</span> <span class=n>the</span> <span class=n>user</span> <span class=n>will</span> <span class=n>call</span> <span class=n>the</span> <span class=n>connect</span> <span class=n>function</span> <span class=n>on</span> <span class=n>this</span> <span class=n>socket</span><span class=p>,</span> <span class=n>expecting</span> <span class=n>it</span> <span class=n>to</span> <span class=n>actively</span> <span class=n>connect</span> <span class=n>with</span> <span class=n>other</span> <span class=n>processes</span><span class=p>,</span> <span class=n>then</span> <span class=ow>in</span> <span class=n>server</span> <span class=n>programming</span><span class=p>,</span> <span class=n>the</span> <span class=n>user</span> <span class=n>wants</span> <span class=n>this</span> <span class=n>socket</span> <span class=n>to</span> <span class=n>accept</span> <span class=n>external</span> <span class=n>connection</span> <span class=n>requests</span><span class=p>,</span>
+</span></span><span class=line><span class=cl><span class=n>that</span> <span class=n>is</span><span class=p>,</span> <span class=n>passively</span> <span class=n>wait</span> <span class=k>for</span> <span class=n>users</span> <span class=n>to</span> <span class=n>connect</span><span class=o>.</span> <span class=n>Since</span> <span class=n>the</span> <span class=n>system</span> <span class=n>assumes</span> <span class=n>by</span> <span class=n>default</span> <span class=n>that</span> <span class=n>a</span> <span class=n>socket</span> <span class=n>is</span> <span class=n>actively</span> <span class=n>connected</span><span class=p>,</span> <span class=n>it</span> <span class=n>needs</span> <span class=n>to</span> <span class=n>be</span> <span class=n>told</span> <span class=ow>in</span> <span class=n>some</span> <span class=n>way</span><span class=p>,</span> <span class=ow>and</span> <span class=n>the</span> <span class=n>user</span> <span class=n>process</span> <span class=n>completes</span> <span class=n>this</span> <span class=n>by</span> <span class=n>making</span> <span class=n>the</span> <span class=n>system</span> <span class=n>call</span> <span class=n>listen</span><span class=o>.</span>
+</span></span><span class=line><span class=cl><span class=n>Parameter</span> <span class=n>backlog</span>
+</span></span><span class=line><span class=cl><span class=n>This</span> <span class=n>parameter</span> <span class=n>involves</span> <span class=n>some</span> <span class=n>network</span> <span class=n>details</span><span class=o>.</span> <span class=n>While</span> <span class=n>a</span> <span class=n>process</span> <span class=n>is</span> <span class=n>handling</span> <span class=n>one</span> <span class=n>connection</span> <span class=n>request</span><span class=p>,</span> <span class=n>there</span> <span class=n>may</span> <span class=n>be</span> <span class=n>other</span> <span class=n>connection</span> <span class=n>requests</span><span class=o>.</span>
+</span></span><span class=line><span class=cl><span class=n>Because</span> <span class=n>TCP</span> <span class=n>connection</span> <span class=n>is</span> <span class=n>a</span> <span class=n>process</span><span class=p>,</span> <span class=n>there</span> <span class=n>may</span> <span class=n>be</span> <span class=n>a</span> <span class=n>half</span><span class=o>-</span><span class=n>connected</span> <span class=n>state</span><span class=p>,</span> <span class=ow>and</span> <span class=n>sometimes</span> <span class=n>due</span> <span class=n>to</span> <span class=n>too</span> <span class=n>many</span> <span class=n>users</span> <span class=n>trying</span> <span class=n>to</span> <span class=n>connect</span> <span class=n>simultaneously</span><span class=p>,</span> <span class=n>the</span> <span class=n>server</span> <span class=n>process</span> <span class=n>cannot</span> <span class=n>quickly</span> <span class=n>complete</span> <span class=n>the</span> <span class=n>connection</span> <span class=n>request</span><span class=o>.</span>
+</span></span><span class=line><span class=cl><span class=n>If</span> <span class=n>this</span> <span class=n>situation</span> <span class=n>occurs</span><span class=p>,</span> <span class=n>how</span> <span class=n>does</span> <span class=n>the</span> <span class=n>server</span> <span class=n>process</span> <span class=n>want</span> <span class=n>the</span> <span class=n>kernel</span> <span class=n>to</span> <span class=n>handle</span> <span class=n>it</span><span class=err>?</span>
+</span></span><span class=line><span class=cl><span class=n>The</span> <span class=n>kernel</span> <span class=n>will</span> <span class=n>maintain</span> <span class=n>a</span> <span class=n>queue</span> <span class=ow>in</span> <span class=n>its</span> <span class=n>own</span> <span class=n>process</span> <span class=n>space</span> <span class=n>to</span> <span class=n>track</span> <span class=n>these</span> <span class=n>completed</span> <span class=n>connections</span> <span class=n>that</span> <span class=n>the</span> <span class=n>server</span> <span class=n>process</span> <span class=n>has</span> <span class=ow>not</span> <span class=n>yet</span> <span class=n>handled</span> <span class=ow>or</span> <span class=n>is</span> <span class=n>processing</span><span class=o>.</span> <span class=n>Such</span> <span class=n>a</span> <span class=n>queue</span> <span class=n>cannot</span> <span class=n>be</span> <span class=n>arbitrarily</span> <span class=n>large</span> <span class=ow>in</span> <span class=n>the</span> <span class=n>kernel</span><span class=p>,</span>
+</span></span><span class=line><span class=cl><span class=n>so</span> <span class=n>there</span> <span class=n>must</span> <span class=n>be</span> <span class=n>an</span> <span class=n>upper</span> <span class=n>limit</span> <span class=n>to</span> <span class=n>its</span> <span class=n>size</span><span class=o>.</span> <span class=n>This</span> <span class=n>backlog</span> <span class=n>tells</span> <span class=n>the</span> <span class=n>kernel</span> <span class=n>to</span> <span class=n>use</span> <span class=n>this</span> <span class=n>value</span> <span class=n>as</span> <span class=n>the</span> <span class=n>upper</span> <span class=n>limit</span><span class=o>.</span>
+</span></span><span class=line><span class=cl><span class=n>Without</span> <span class=n>a</span> <span class=n>doubt</span><span class=p>,</span> <span class=n>the</span> <span class=n>server</span> <span class=n>process</span> <span class=n>cannot</span> <span class=n>arbitrarily</span> <span class=n>specify</span> <span class=n>a</span> <span class=n>value</span><span class=p>,</span> <span class=n>the</span> <span class=n>kernel</span> <span class=n>has</span> <span class=n>a</span> <span class=n>permissible</span> <span class=nb>range</span><span class=o>.</span> <span class=n>This</span> <span class=nb>range</span> <span class=n>is</span> <span class=n>implementation</span><span class=o>-</span><span class=n>related</span><span class=o>.</span> <span class=n>It</span><span class=s1>&#39;s hard to have some standardization, usually this value will be less than 30.</span>
+</span></span><span class=line><span class=cl><span class=n>The</span> <span class=n>length</span> <span class=n>of</span> <span class=n>the</span> <span class=n>queue</span> <span class=n>used</span> <span class=n>by</span> <span class=n>the</span> <span class=n>kernel</span> <span class=n>to</span> <span class=n>track</span> <span class=n>these</span> <span class=n>completed</span> <span class=n>connections</span> <span class=n>but</span> <span class=ow>not</span> <span class=n>yet</span> <span class=n>accepted</span> <span class=n>by</span> <span class=n>user</span> <span class=n>code</span> <span class=n>is</span> <span class=n>set</span> <span class=n>to</span> <span class=mi>20</span> <span class=n>here</span><span class=o>.</span> <span class=n>When</span> <span class=n>the</span> <span class=n>queue</span> <span class=n>length</span> <span class=n>is</span> <span class=n>less</span> <span class=n>than</span> <span class=mi>20</span><span class=p>,</span> <span class=n>the</span> <span class=n>kernel</span> <span class=n>will</span> <span class=n>immediately</span> <span class=n>complete</span> <span class=n>the</span> <span class=n>connection</span> <span class=n>establishment</span><span class=o>.</span>
+</span></span><span class=line><span class=cl><span class=n>But</span> <span class=k>if</span> <span class=n>the</span> <span class=n>queue</span> <span class=n>length</span> <span class=n>is</span> <span class=n>greater</span> <span class=n>than</span> <span class=mi>20</span><span class=p>,</span> <span class=n>the</span> <span class=n>connection</span> <span class=n>will</span> <span class=ow>not</span> <span class=n>be</span> <span class=n>established</span> <span class=n>before</span> <span class=n>the</span> <span class=n>user</span> <span class=n>code</span> <span class=n>calls</span> <span class=n>accept</span><span class=p>,</span> <span class=ow>and</span> <span class=n>the</span> <span class=n>other</span> <span class=n>party</span> <span class=n>will</span> <span class=n>be</span> <span class=ow>in</span> <span class=n>a</span> <span class=n>blocked</span> <span class=n>state</span><span class=o>.</span>
+</span></span><span class=line><span class=cl>     <span class=o>*/</span>
+</span></span><span class=line><span class=cl>    <span class=n>r</span> <span class=o>=</span> <span class=n>listen</span><span class=p>(</span><span class=n>listenfd</span><span class=p>,</span> <span class=mi>20</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=n>exit_if</span><span class=p>(</span><span class=n>r</span><span class=p>,</span> <span class=s2>&#34;listen failed </span><span class=si>%d</span><span class=s2> </span><span class=si>%s</span><span class=s2>&#34;</span><span class=p>,</span> <span class=n>errno</span><span class=p>,</span> <span class=n>strerror</span><span class=p>(</span><span class=n>errno</span><span class=p>));</span>
+</span></span><span class=line><span class=cl>    <span class=n>printf</span><span class=p>(</span><span class=s2>&#34;fd </span><span class=si>%d</span><span class=s2> listening at </span><span class=si>%d</span><span class=se>\n</span><span class=s2>&#34;</span><span class=p>,</span> <span class=n>listenfd</span><span class=p>,</span> <span class=n>port</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=o>//</span> <span class=n>Next</span><span class=p>,</span> <span class=n>set</span> <span class=n>the</span> <span class=n>file</span> <span class=n>descriptor</span> <span class=n>to</span> <span class=n>non</span><span class=o>-</span><span class=n>blocking</span><span class=o>.</span>
+</span></span><span class=line><span class=cl>    <span class=o>//</span> <span class=n>Why</span> <span class=n>set</span> <span class=n>it</span> <span class=n>to</span> <span class=n>non</span><span class=o>-</span><span class=n>blocking</span><span class=err>?</span> <span class=n>https</span><span class=p>:</span><span class=o>//</span><span class=n>www</span><span class=o>.</span><span class=n>zhihu</span><span class=o>.</span><span class=n>com</span><span class=o>/</span><span class=n>question</span><span class=o>/</span><span class=mi>23614342</span>
+</span></span><span class=line><span class=cl>    <span class=n>setNonBlock</span><span class=p>(</span><span class=n>listenfd</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=o>//</span> <span class=n>Set</span> <span class=n>it</span> <span class=n>to</span> <span class=n>trigger</span> <span class=n>when</span> <span class=n>readable</span><span class=p>,</span> <span class=n>add</span> <span class=n>to</span> <span class=n>the</span> <span class=n>epoll</span> <span class=n>file</span> <span class=n>descriptor</span> <span class=n>pool</span>
+</span></span><span class=line><span class=cl>    <span class=n>updateEvents</span><span class=p>(</span><span class=n>epollfd</span><span class=p>,</span> <span class=n>listenfd</span><span class=p>,</span> <span class=n>EPOLLIN</span><span class=p>,</span> <span class=n>EPOLL_CTL_ADD</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=k>for</span> <span class=p>(;;)</span> <span class=p>{</span> <span class=o>//</span> <span class=n>Actual</span> <span class=n>applications</span> <span class=n>should</span> <span class=n>register</span> <span class=k>signal</span> <span class=n>handling</span> <span class=n>functions</span> <span class=ow>and</span> <span class=n>clean</span> <span class=n>up</span> <span class=n>resources</span> <span class=n>when</span> <span class=n>exiting</span>
+</span></span><span class=line><span class=cl>        <span class=n>loop_once</span><span class=p>(</span><span class=n>epollfd</span><span class=p>,</span> <span class=n>listenfd</span><span class=p>,</span> <span class=mi>10000</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=mi>0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><h2 id=running-effect>Running Effect</h2><p><img src=/img/rescued/7d2d193858a6.png loading=lazy alt=image.png></p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span><span class=lnt>45
+</span><span class=lnt>46
+</span><span class=lnt>47
+</span><span class=lnt>48
+</span><span class=lnt>49
+</span><span class=lnt>50
+</span><span class=lnt>51
+</span><span class=lnt>52
+</span><span class=lnt>53
+</span><span class=lnt>54
+</span><span class=lnt>55
+</span><span class=lnt>56
+</span><span class=lnt>57
+</span><span class=lnt>58
+</span><span class=lnt>59
+</span><span class=lnt>60
+</span><span class=lnt>61
+</span><span class=lnt>62
+</span><span class=lnt>63
+</span><span class=lnt>64
+</span><span class=lnt>65
+</span><span class=lnt>66
+</span><span class=lnt>67
+</span><span class=lnt>68
+</span><span class=lnt>69
+</span><span class=lnt>70
+</span><span class=lnt>71
+</span><span class=lnt>72
+</span><span class=lnt>73
+</span><span class=lnt>74
+</span><span class=lnt>75
+</span><span class=lnt>76
+</span><span class=lnt>77
+</span><span class=lnt>78
+</span><span class=lnt>79
+</span><span class=lnt>80
+</span><span class=lnt>81
+</span><span class=lnt>82
+</span><span class=lnt>83
+</span><span class=lnt>84
+</span><span class=lnt>85
+</span><span class=lnt>86
+</span><span class=lnt>87
+</span><span class=lnt>88
+</span><span class=lnt>89
+</span><span class=lnt>90
+</span><span class=lnt>91
+</span><span class=lnt>92
+</span><span class=lnt>93
+</span><span class=lnt>94
+</span><span class=lnt>95
+</span><span class=lnt>96
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>sudo ./epoll
+</span></span><span class=line><span class=cl>fd 4 listening at 80
+</span></span><span class=line><span class=cl>add fd 4 events read 1 write 0
+</span></span><span class=line><span class=cl>epoll_wait return 1
+</span></span><span class=line><span class=cl>this is accept
+</span></span><span class=line><span class=cl>accept a connection from 127.0.0.1
+</span></span><span class=line><span class=cl>add fd 5 events read 1 write 0
+</span></span><span class=line><span class=cl>epoll_wait return 1
+</span></span><span class=line><span class=cl>this can read
+</span></span><span class=line><span class=cl>read 412 bytes
+</span></span><span class=line><span class=cl>now info is
+</span></span><span class=line><span class=cl>---GET / HTTP/1.1
+</span></span><span class=line><span class=cl>Host: 127.0.0.1
+</span></span><span class=line><span class=cl>Connection: keep-alive
+</span></span><span class=line><span class=cl>User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36
+</span></span><span class=line><span class=cl>Upgrade-Insecure-Requests: 1
+</span></span><span class=line><span class=cl>Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8
+</span></span><span class=line><span class=cl>Accept-Encoding: gzip, deflate, br
+</span></span><span class=line><span class=cl>Accept-Language: zh-CN,zh;q=0.9,und;q=0.8,zh-TW;q=0.7,en;q=0.6,pl;q=0.5
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>---
+</span></span><span class=line><span class=cl>write 4081834 bytes left: 14966851
+</span></span><span class=line><span class=cl>update it to EPOLLIN|EPOLLOUT
+</span></span><span class=line><span class=cl>mod fd 5 events read 1 write 4
+</span></span><span class=line><span class=cl>nothing to read from 5, return.
+</span></span><span class=line><span class=cl>epoll_wait return 1
+</span></span><span class=line><span class=cl>handling epollout
+</span></span><span class=line><span class=cl>write 2226422 bytes left: 12740429
+</span></span><span class=line><span class=cl>epoll_wait return 1
+</span></span><span class=line><span class=cl>handling epollout
+</span></span><span class=line><span class=cl>write 2095456 bytes left: 10644973
+</span></span><span class=line><span class=cl>epoll_wait return 1
+</span></span><span class=line><span class=cl>handling epollout
+</span></span><span class=line><span class=cl>write 1964490 bytes left: 8680483
+</span></span><span class=line><span class=cl>epoll_wait return 1
+</span></span><span class=line><span class=cl>handling epollout
+</span></span><span class=line><span class=cl>write 1506109 bytes left: 7174374
+</span></span><span class=line><span class=cl>epoll_wait return 1
+</span></span><span class=line><span class=cl>handling epollout
+</span></span><span class=line><span class=cl>write 1833524 bytes left: 5340850
+</span></span><span class=line><span class=cl>epoll_wait return 1
+</span></span><span class=line><span class=cl>handling epollout
+</span></span><span class=line><span class=cl>write 1637075 bytes left: 3703775
+</span></span><span class=line><span class=cl>write 130966 bytes left: 3572809
+</span></span><span class=line><span class=cl>epoll_wait return 1
+</span></span><span class=line><span class=cl>handling epollout
+</span></span><span class=line><span class=cl>write 1571592 bytes left: 2001217
+</span></span><span class=line><span class=cl>epoll_wait return 1
+</span></span><span class=line><span class=cl>handling epollout
+</span></span><span class=line><span class=cl>write 1440626 bytes left: 560591
+</span></span><span class=line><span class=cl>epoll_wait return 1
+</span></span><span class=line><span class=cl>handling epollout
+</span></span><span class=line><span class=cl>write 560591 bytes left: 0
+</span></span><span class=line><span class=cl>mod fd 5 events read 1 write 0
+</span></span><span class=line><span class=cl>epoll_wait return 1
+</span></span><span class=line><span class=cl>this can read
+</span></span><span class=line><span class=cl>read 375 bytes
+</span></span><span class=line><span class=cl>now info is
+</span></span><span class=line><span class=cl>---GET /favicon.ico HTTP/1.1
+</span></span><span class=line><span class=cl>Host: 127.0.0.1
+</span></span><span class=line><span class=cl>Connection: keep-alive
+</span></span><span class=line><span class=cl>User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36
+</span></span><span class=line><span class=cl>Accept: image/webp,image/apng,image/*,*/*;q=0.8
+</span></span><span class=line><span class=cl>Referer: http://127.0.0.1/
+</span></span><span class=line><span class=cl>Accept-Encoding: gzip, deflate, br
+</span></span><span class=line><span class=cl>Accept-Language: zh-CN,zh;q=0.9,und;q=0.8,zh-TW;q=0.7,en;q=0.6,pl;q=0.5
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>---
+</span></span><span class=line><span class=cl>write 10477280 bytes left: 8571405
+</span></span><span class=line><span class=cl>update it to EPOLLIN|EPOLLOUT
+</span></span><span class=line><span class=cl>mod fd 5 events read 1 write 4
+</span></span><span class=line><span class=cl>nothing to read from 5, return.
+</span></span><span class=line><span class=cl>epoll_wait return 1
+</span></span><span class=line><span class=cl>handling epollout
+</span></span><span class=line><span class=cl>write 1440626 bytes left: 7130779
+</span></span><span class=line><span class=cl>epoll_wait return 1
+</span></span><span class=line><span class=cl>handling epollout
+</span></span><span class=line><span class=cl>write 1768041 bytes left: 5362738
+</span></span><span class=line><span class=cl>epoll_wait return 1
+</span></span><span class=line><span class=cl>handling epollout
+</span></span><span class=line><span class=cl>write 1571592 bytes left: 3791146
+</span></span><span class=line><span class=cl>epoll_wait return 1
+</span></span><span class=line><span class=cl>handling epollout
+</span></span><span class=line><span class=cl>write 1637075 bytes left: 2154071
+</span></span><span class=line><span class=cl>epoll_wait return 1
+</span></span><span class=line><span class=cl>handling epollout
+</span></span><span class=line><span class=cl>write 1702558 bytes left: 451513
+</span></span><span class=line><span class=cl>epoll_wait return 1
+</span></span><span class=line><span class=cl>handling epollout
+</span></span><span class=line><span class=cl>write 451513 bytes left: 0
+</span></span><span class=line><span class=cl>mod fd 5 events read 1 write 0
+</span></span><span class=line><span class=cl>epoll_wait return 0
+</span></span><span class=line><span class=cl>epoll_wait return 0
+</span></span><span class=line><span class=cl>epoll_wait return 0
+</span></span></code></pre></td></tr></table></div></div><p>Here I increased the size of the resource, changing it to the following value:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>    httpRes = &#34;HTTP/1.1 200 OK\r\nConnection: Keep-Alive\r\nContent-Type: text/html; charset=UTF-8\r\nContent-Length: 19048576\r\n\r\n123456&#34;;
+</span></span><span class=line><span class=cl>    // Fill the rest of the content with 0. The final length of content is about 1024*1024
+</span></span><span class=line><span class=cl>    for(int i=0;i&lt;19048570;i++) {
+</span></span><span class=line><span class=cl>        httpRes+=&#39;\0&#39;;
+</span></span><span class=line><span class=cl>    }
+</span></span></code></pre></td></tr></table></div></div><p>You can see it was transmitted in multiple parts. Finally, the terminal page displays 123456, with \0 after it, which won&rsquo;t be displayed.
 You can see that the browser made two requests, one for the root directory and one for the page icon favicon.ico
 &lt;/rewritten_file></p></section><footer class=article-footer></footer></article><div class=disqus-container><div id=disqus_thread></div><script>window.disqus_config=function(){},function(){if(["localhost","127.0.0.1"].indexOf(window.location.hostname)!=-1){document.getElementById("disqus_thread").innerHTML="Disqus comments not available by default when the website is previewed locally.";return}var t=document,e=t.createElement("script");e.async=!0,e.src="//nansenli.disqus.com/embed.js",e.setAttribute("data-timestamp",+new Date),(t.head||t.body).appendChild(e)}()</script><noscript>Please enable JavaScript to view the <a href=https://disqus.com/?ref_noscript>comments powered by Disqus.</a></noscript><a href=https://disqus.com class=dsq-brlink>comments powered by <span class=logo-disqus>Disqus</span></a></div><style>.disqus-container{background-color:var(--card-background);border-radius:var(--card-border-radius);box-shadow:var(--shadow-l1);padding:var(--card-padding)}</style><script>window.addEventListener("onColorSchemeChange",e=>{typeof DISQUS=="object"&&DISQUS.reset({reload:!0})})</script><footer class=site-footer><section class=copyright>&copy;
 2026 Nansen Li 🌈 （李楠森）</section><section class=powerby>Built with <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a><br>Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.31.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a></section></footer><div class=pswp tabindex=-1 role=dialog aria-hidden=true><div class=pswp__bg></div><div class=pswp__scroll-wrap><div class=pswp__container><div class=pswp__item></div><div class=pswp__item></div><div class=pswp__item></div></div><div class="pswp__ui pswp__ui--hidden"><div class=pswp__top-bar><div class=pswp__counter></div><button class="pswp__button pswp__button--close" title="Close (Esc)"></button>

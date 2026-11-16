@@ -2,250 +2,518 @@
 李楠森的博客</title><link>https://nansenli.com/categories/c++/</link><description>Recent content in C++ on Nansen Li's Blog
 李楠森的博客</description><generator>Hugo -- gohugo.io</generator><language>en</language><copyright>Nansen Li 🌈 （李楠森）</copyright><lastBuildDate>Fri, 02 Nov 2018 06:49:00 +0000</lastBuildDate><atom:link href="https://nansenli.com/categories/c++/index.xml" rel="self" type="application/rss+xml"/><item><title>Using OpenSSL AES Encryption Algorithm API</title><link>https://nansenli.com/post/jianshu/c++/openssl-aes-%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95-api%E4%BD%BF%E7%94%A8/</link><pubDate>Fri, 02 Nov 2018 06:49:00 +0000</pubDate><guid>https://nansenli.com/post/jianshu/c++/openssl-aes-%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95-api%E4%BD%BF%E7%94%A8/</guid><description>&lt;h2 id="example-using-aes-128-cbc-encryption-algorithm">Example: Using AES-128-CBC Encryption Algorithm
 &lt;/h2>&lt;p>This example uses pkcs5_encode padding method, which is also compatible with pkcs7_encode&lt;/p>
-&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-c++" data-lang="c++">&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#include&lt;/span> &lt;span style="color:#75715e">&amp;lt;stdio.h&amp;gt;&lt;/span>&lt;span style="color:#75715e">
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#include&lt;/span> &lt;span style="color:#75715e">&amp;lt;stdlib.h&amp;gt;&lt;/span>&lt;span style="color:#75715e">
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#include&lt;/span> &lt;span style="color:#75715e">&amp;lt;string.h&amp;gt;&lt;/span>&lt;span style="color:#75715e">
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#include&lt;/span> &lt;span style="color:#75715e">&amp;lt;openssl/aes.h&amp;gt;&lt;/span>&lt;span style="color:#75715e">
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#include&lt;/span> &lt;span style="color:#75715e">&amp;lt;openssl/rand.h&amp;gt;&lt;/span>&lt;span style="color:#75715e">
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">// a simple hex-print routine. could be modified to print 16 bytes-per-line
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>&lt;span style="color:#66d9ef">static&lt;/span> &lt;span style="color:#66d9ef">void&lt;/span> &lt;span style="color:#a6e22e">hex_print&lt;/span>(&lt;span style="color:#66d9ef">const&lt;/span> &lt;span style="color:#66d9ef">void&lt;/span>&lt;span style="color:#f92672">*&lt;/span> pv, size_t len)
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>{
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">const&lt;/span> &lt;span style="color:#66d9ef">unsigned&lt;/span> &lt;span style="color:#66d9ef">char&lt;/span> &lt;span style="color:#f92672">*&lt;/span> p &lt;span style="color:#f92672">=&lt;/span> (&lt;span style="color:#66d9ef">const&lt;/span> &lt;span style="color:#66d9ef">unsigned&lt;/span> &lt;span style="color:#66d9ef">char&lt;/span>&lt;span style="color:#f92672">*&lt;/span>)pv;
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">if&lt;/span> (NULL &lt;span style="color:#f92672">==&lt;/span> pv)
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> printf(&lt;span style="color:#e6db74">&amp;#34;NULL&amp;#34;&lt;/span>);
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">else&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> size_t i &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>;
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">for&lt;/span> (; i&lt;span style="color:#f92672">&amp;lt;&lt;/span>len;&lt;span style="color:#f92672">++&lt;/span>i)
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> printf(&lt;span style="color:#e6db74">&amp;#34;%02X &amp;#34;&lt;/span>, &lt;span style="color:#f92672">*&lt;/span>p&lt;span style="color:#f92672">++&lt;/span>);
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> printf(&lt;span style="color:#e6db74">&amp;#34;&lt;/span>&lt;span style="color:#ae81ff">\n&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>);
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">void&lt;/span> &lt;span style="color:#a6e22e">pkcs7_encode&lt;/span>(&lt;span style="color:#66d9ef">uint8_t&lt;/span> &lt;span style="color:#f92672">*&lt;/span>in, &lt;span style="color:#66d9ef">uint8_t&lt;/span> &lt;span style="color:#f92672">*&lt;/span>out, &lt;span style="color:#66d9ef">int&lt;/span> inlen, &lt;span style="color:#66d9ef">int&lt;/span> &lt;span style="color:#f92672">*&lt;/span>outlen, &lt;span style="color:#66d9ef">const&lt;/span> &lt;span style="color:#66d9ef">int&lt;/span> enc)
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>{
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// uint8_t padchr[16] = {0x10, 0x0f, 0x0e, 0x0d, 0x0c, 0x0b, 0x0a, 0x09, 0x08, 0x07, 0x06, 0x05, 0x04, 0x03, 0x02, 0x01};
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#66d9ef">if&lt;/span>(inlen &lt;span style="color:#f92672">&amp;lt;=&lt;/span>&lt;span style="color:#ae81ff">0&lt;/span>) &lt;span style="color:#66d9ef">return&lt;/span>;
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// Add padding
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#66d9ef">if&lt;/span> (enc &lt;span style="color:#f92672">==&lt;/span> AES_ENCRYPT) {
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">*&lt;/span>outlen &lt;span style="color:#f92672">=&lt;/span> inlen &lt;span style="color:#f92672">+&lt;/span> &lt;span style="color:#ae81ff">16&lt;/span> &lt;span style="color:#f92672">-&lt;/span> inlen &lt;span style="color:#f92672">%&lt;/span> &lt;span style="color:#ae81ff">16&lt;/span>;
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">for&lt;/span> (&lt;span style="color:#66d9ef">int&lt;/span> i &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>; i &lt;span style="color:#f92672">&amp;lt;&lt;/span> &lt;span style="color:#f92672">*&lt;/span>outlen; i&lt;span style="color:#f92672">++&lt;/span>)
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">if&lt;/span> (i &lt;span style="color:#f92672">&amp;lt;&lt;/span> inlen)
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> out[i] &lt;span style="color:#f92672">=&lt;/span> in[i];
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">else&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> out[i] &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">16&lt;/span> &lt;span style="color:#f92672">-&lt;/span> inlen &lt;span style="color:#f92672">%&lt;/span> &lt;span style="color:#ae81ff">16&lt;/span>;
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// Remove padding
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#66d9ef">else&lt;/span> &lt;span style="color:#66d9ef">if&lt;/span> (enc &lt;span style="color:#f92672">==&lt;/span> AES_DECRYPT) {
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">*&lt;/span>outlen &lt;span style="color:#f92672">=&lt;/span> inlen &lt;span style="color:#f92672">-&lt;/span> (in[inlen&lt;span style="color:#f92672">-&lt;/span>&lt;span style="color:#ae81ff">1&lt;/span>]);
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">for&lt;/span> (&lt;span style="color:#66d9ef">int&lt;/span> i&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#ae81ff">0&lt;/span>; i&lt;span style="color:#f92672">&amp;lt;&lt;/span> &lt;span style="color:#f92672">*&lt;/span>outlen; i&lt;span style="color:#f92672">++&lt;/span>) {
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> out[i] &lt;span style="color:#f92672">=&lt;/span> in[i];
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">int&lt;/span> &lt;span style="color:#a6e22e">main&lt;/span>(&lt;span style="color:#66d9ef">int&lt;/span> argc, &lt;span style="color:#66d9ef">char&lt;/span> &lt;span style="color:#f92672">**&lt;/span>argv)
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>{
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">int&lt;/span> keylength;
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> printf(&lt;span style="color:#e6db74">&amp;#34;Give a key length [only 128 or 192 or 256!]:&lt;/span>&lt;span style="color:#ae81ff">\n&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>);
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> scanf(&lt;span style="color:#e6db74">&amp;#34;%d&amp;#34;&lt;/span>, &lt;span style="color:#f92672">&amp;amp;&lt;/span>keylength);
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">/* generate a key with a given length */&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">unsigned&lt;/span> &lt;span style="color:#66d9ef">char&lt;/span> aes_key[&lt;span style="color:#ae81ff">16&lt;/span>] &lt;span style="color:#f92672">=&lt;/span> {&lt;span style="color:#ae81ff">0x00&lt;/span>,&lt;span style="color:#ae81ff">0x01&lt;/span>,&lt;span style="color:#ae81ff">0x02&lt;/span>,&lt;span style="color:#ae81ff">0x03&lt;/span>,&lt;span style="color:#ae81ff">0x04&lt;/span>,&lt;span style="color:#ae81ff">0x05&lt;/span>,&lt;span style="color:#ae81ff">0x06&lt;/span>,&lt;span style="color:#ae81ff">0x07&lt;/span>,&lt;span style="color:#ae81ff">0x08&lt;/span>,&lt;span style="color:#ae81ff">0x09&lt;/span>,&lt;span style="color:#ae81ff">0x0a&lt;/span>,&lt;span style="color:#ae81ff">0x0b&lt;/span>,&lt;span style="color:#ae81ff">0x0c&lt;/span>,&lt;span style="color:#ae81ff">0x0d&lt;/span>,&lt;span style="color:#ae81ff">0x0e&lt;/span>,&lt;span style="color:#ae81ff">0x0f&lt;/span>};
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> size_t inputslength &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>;
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> printf(&lt;span style="color:#e6db74">&amp;#34;Give an input&amp;#39;s length:&lt;/span>&lt;span style="color:#ae81ff">\n&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>);
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> scanf(&lt;span style="color:#e6db74">&amp;#34;%lu&amp;#34;&lt;/span>, &lt;span style="color:#f92672">&amp;amp;&lt;/span>inputslength);
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">/* generate input with a given length */&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">unsigned&lt;/span> &lt;span style="color:#66d9ef">char&lt;/span> &lt;span style="color:#f92672">*&lt;/span> aes_input &lt;span style="color:#f92672">=&lt;/span> malloc(inputslength);
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">unsigned&lt;/span> &lt;span style="color:#66d9ef">char&lt;/span> &lt;span style="color:#f92672">*&lt;/span> aes_out &lt;span style="color:#f92672">=&lt;/span> malloc(inputslength);
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> memset(aes_input, &lt;span style="color:#e6db74">&amp;#39;X&amp;#39;&lt;/span>, inputslength);
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">/* init vector */&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">unsigned&lt;/span> &lt;span style="color:#66d9ef">char&lt;/span> iv_enc[AES_BLOCK_SIZE] &lt;span style="color:#f92672">=&lt;/span> {&lt;span style="color:#ae81ff">0&lt;/span>}, iv_dec[AES_BLOCK_SIZE]&lt;span style="color:#f92672">=&lt;/span>{&lt;span style="color:#ae81ff">0&lt;/span>};
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">const&lt;/span> size_t encslength &lt;span style="color:#f92672">=&lt;/span> ((inputslength &lt;span style="color:#f92672">+&lt;/span> AES_BLOCK_SIZE) &lt;span style="color:#f92672">/&lt;/span> AES_BLOCK_SIZE) &lt;span style="color:#f92672">*&lt;/span> AES_BLOCK_SIZE;
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">unsigned&lt;/span> &lt;span style="color:#66d9ef">char&lt;/span> &lt;span style="color:#f92672">*&lt;/span> enc_in &lt;span style="color:#f92672">=&lt;/span> malloc(encslength);
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> pkcs7_encode(aes_input, enc_in, inputslength, &lt;span style="color:#f92672">&amp;amp;&lt;/span>encslength, AES_ENCRYPT);
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">unsigned&lt;/span> &lt;span style="color:#66d9ef">char&lt;/span> &lt;span style="color:#f92672">*&lt;/span> enc_out &lt;span style="color:#f92672">=&lt;/span> malloc(encslength);
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> AES_KEY enc_key;
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> AES_set_encrypt_key(aes_key, keylength, &lt;span style="color:#f92672">&amp;amp;&lt;/span>enc_key);
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> AES_cbc_encrypt(enc_in, enc_out, encslength, &lt;span style="color:#f92672">&amp;amp;&lt;/span>enc_key, iv_enc, AES_ENCRYPT);
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> printf(&lt;span style="color:#e6db74">&amp;#34;original:&lt;/span>&lt;span style="color:#ae81ff">\t&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>);
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> hex_print(aes_input, inputslength);
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> printf(&lt;span style="color:#e6db74">&amp;#34;padding:&lt;/span>&lt;span style="color:#ae81ff">\t&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>);
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> hex_print(enc_in, encslength);
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> printf(&lt;span style="color:#e6db74">&amp;#34;encrypt:&lt;/span>&lt;span style="color:#ae81ff">\t&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>);
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> hex_print(enc_out, encslength);
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">unsigned&lt;/span> &lt;span style="color:#66d9ef">char&lt;/span> &lt;span style="color:#f92672">*&lt;/span> dec_out &lt;span style="color:#f92672">=&lt;/span> malloc(encslength);
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> AES_KEY dec_key;
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> AES_set_decrypt_key(aes_key, keylength, &lt;span style="color:#f92672">&amp;amp;&lt;/span>dec_key);
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> AES_cbc_encrypt(enc_out, dec_out, encslength, &lt;span style="color:#f92672">&amp;amp;&lt;/span>dec_key, iv_dec, AES_DECRYPT);
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> pkcs7_encode(dec_out, aes_out, encslength, &lt;span style="color:#f92672">&amp;amp;&lt;/span>inputslength, AES_DECRYPT);
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> printf(&lt;span style="color:#e6db74">&amp;#34;decrypt:&lt;/span>&lt;span style="color:#ae81ff">\t&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>);
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> hex_print(dec_out, encslength);
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> printf(&lt;span style="color:#e6db74">&amp;#34;depadding:&lt;/span>&lt;span style="color:#ae81ff">\t&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>);
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> hex_print(aes_out, inputslength);
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">int8_t&lt;/span> buff[&lt;span style="color:#ae81ff">100&lt;/span>];
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">long&lt;/span> bufflen;
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>;
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div></description></item><item><title>Learning GDB from Scratch</title><link>https://nansenli.com/post/jianshu/c++/gdb-%E4%BB%8E%E9%9B%B6%E5%AD%A6%E4%B9%A0/</link><pubDate>Wed, 25 Apr 2018 16:45:00 +0000</pubDate><guid>https://nansenli.com/post/jianshu/c++/gdb-%E4%BB%8E%E9%9B%B6%E5%AD%A6%E4%B9%A0/</guid><description>&lt;p>Let&amp;rsquo;s start with an example.&lt;/p>
-&lt;pre tabindex="0">&lt;code>#include &amp;lt;stdio.h&amp;gt;
-void my_itoa(int n,char s[])
-{
-int i,j,sign;
-if((sign=n)&amp;lt;0) // record sign
-n=-n; // make n positive
-i=0;
-do{
-s[i++]=n%10+&amp;#39;0&amp;#39;; // get the next digit
-}while((n/=10)&amp;gt;0); // loop through division
-if(sign&amp;lt;0)
-s[i++]=&amp;#39;-&amp;#39;;
-s[i]=&amp;#39;\0&amp;#39;;
-for(j=i-1;j&amp;gt;=0;j--) // the generated numbers are in reverse order, so output them in reverse
-printf(&amp;#34;%c&amp;#34;,s[j]);
-}
-void main()
-{
-int n;
-char str[100];
-my_itoa(-123,str);
-printf(&amp;#34;\n&amp;#34;);
-printf(&amp;#34;%d\n&amp;#34;,my_atoi(&amp;#34;123&amp;#34;));
-system(&amp;#34;pause&amp;#34;);
-}
-&lt;/code>&lt;/pre>&lt;p>Save the above file to test.cpp, then compile and run it.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt"> 10
+&lt;/span>&lt;span class="lnt"> 11
+&lt;/span>&lt;span class="lnt"> 12
+&lt;/span>&lt;span class="lnt"> 13
+&lt;/span>&lt;span class="lnt"> 14
+&lt;/span>&lt;span class="lnt"> 15
+&lt;/span>&lt;span class="lnt"> 16
+&lt;/span>&lt;span class="lnt"> 17
+&lt;/span>&lt;span class="lnt"> 18
+&lt;/span>&lt;span class="lnt"> 19
+&lt;/span>&lt;span class="lnt"> 20
+&lt;/span>&lt;span class="lnt"> 21
+&lt;/span>&lt;span class="lnt"> 22
+&lt;/span>&lt;span class="lnt"> 23
+&lt;/span>&lt;span class="lnt"> 24
+&lt;/span>&lt;span class="lnt"> 25
+&lt;/span>&lt;span class="lnt"> 26
+&lt;/span>&lt;span class="lnt"> 27
+&lt;/span>&lt;span class="lnt"> 28
+&lt;/span>&lt;span class="lnt"> 29
+&lt;/span>&lt;span class="lnt"> 30
+&lt;/span>&lt;span class="lnt"> 31
+&lt;/span>&lt;span class="lnt"> 32
+&lt;/span>&lt;span class="lnt"> 33
+&lt;/span>&lt;span class="lnt"> 34
+&lt;/span>&lt;span class="lnt"> 35
+&lt;/span>&lt;span class="lnt"> 36
+&lt;/span>&lt;span class="lnt"> 37
+&lt;/span>&lt;span class="lnt"> 38
+&lt;/span>&lt;span class="lnt"> 39
+&lt;/span>&lt;span class="lnt"> 40
+&lt;/span>&lt;span class="lnt"> 41
+&lt;/span>&lt;span class="lnt"> 42
+&lt;/span>&lt;span class="lnt"> 43
+&lt;/span>&lt;span class="lnt"> 44
+&lt;/span>&lt;span class="lnt"> 45
+&lt;/span>&lt;span class="lnt"> 46
+&lt;/span>&lt;span class="lnt"> 47
+&lt;/span>&lt;span class="lnt"> 48
+&lt;/span>&lt;span class="lnt"> 49
+&lt;/span>&lt;span class="lnt"> 50
+&lt;/span>&lt;span class="lnt"> 51
+&lt;/span>&lt;span class="lnt"> 52
+&lt;/span>&lt;span class="lnt"> 53
+&lt;/span>&lt;span class="lnt"> 54
+&lt;/span>&lt;span class="lnt"> 55
+&lt;/span>&lt;span class="lnt"> 56
+&lt;/span>&lt;span class="lnt"> 57
+&lt;/span>&lt;span class="lnt"> 58
+&lt;/span>&lt;span class="lnt"> 59
+&lt;/span>&lt;span class="lnt"> 60
+&lt;/span>&lt;span class="lnt"> 61
+&lt;/span>&lt;span class="lnt"> 62
+&lt;/span>&lt;span class="lnt"> 63
+&lt;/span>&lt;span class="lnt"> 64
+&lt;/span>&lt;span class="lnt"> 65
+&lt;/span>&lt;span class="lnt"> 66
+&lt;/span>&lt;span class="lnt"> 67
+&lt;/span>&lt;span class="lnt"> 68
+&lt;/span>&lt;span class="lnt"> 69
+&lt;/span>&lt;span class="lnt"> 70
+&lt;/span>&lt;span class="lnt"> 71
+&lt;/span>&lt;span class="lnt"> 72
+&lt;/span>&lt;span class="lnt"> 73
+&lt;/span>&lt;span class="lnt"> 74
+&lt;/span>&lt;span class="lnt"> 75
+&lt;/span>&lt;span class="lnt"> 76
+&lt;/span>&lt;span class="lnt"> 77
+&lt;/span>&lt;span class="lnt"> 78
+&lt;/span>&lt;span class="lnt"> 79
+&lt;/span>&lt;span class="lnt"> 80
+&lt;/span>&lt;span class="lnt"> 81
+&lt;/span>&lt;span class="lnt"> 82
+&lt;/span>&lt;span class="lnt"> 83
+&lt;/span>&lt;span class="lnt"> 84
+&lt;/span>&lt;span class="lnt"> 85
+&lt;/span>&lt;span class="lnt"> 86
+&lt;/span>&lt;span class="lnt"> 87
+&lt;/span>&lt;span class="lnt"> 88
+&lt;/span>&lt;span class="lnt"> 89
+&lt;/span>&lt;span class="lnt"> 90
+&lt;/span>&lt;span class="lnt"> 91
+&lt;/span>&lt;span class="lnt"> 92
+&lt;/span>&lt;span class="lnt"> 93
+&lt;/span>&lt;span class="lnt"> 94
+&lt;/span>&lt;span class="lnt"> 95
+&lt;/span>&lt;span class="lnt"> 96
+&lt;/span>&lt;span class="lnt"> 97
+&lt;/span>&lt;span class="lnt"> 98
+&lt;/span>&lt;span class="lnt"> 99
+&lt;/span>&lt;span class="lnt">100
+&lt;/span>&lt;span class="lnt">101
+&lt;/span>&lt;span class="lnt">102
+&lt;/span>&lt;span class="lnt">103
+&lt;/span>&lt;span class="lnt">104
+&lt;/span>&lt;span class="lnt">105
+&lt;/span>&lt;span class="lnt">106
+&lt;/span>&lt;span class="lnt">107
+&lt;/span>&lt;span class="lnt">108
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-c++" data-lang="c++">&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp">#include&lt;/span> &lt;span class="cpf">&amp;lt;stdio.h&amp;gt;&lt;/span>&lt;span class="cp">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp">#include&lt;/span> &lt;span class="cpf">&amp;lt;stdlib.h&amp;gt;&lt;/span>&lt;span class="cp">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp">#include&lt;/span> &lt;span class="cpf">&amp;lt;string.h&amp;gt;&lt;/span>&lt;span class="cp">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp">#include&lt;/span> &lt;span class="cpf">&amp;lt;openssl/aes.h&amp;gt;&lt;/span>&lt;span class="cp">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp">#include&lt;/span> &lt;span class="cpf">&amp;lt;openssl/rand.h&amp;gt;&lt;/span>&lt;span class="cp">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp">&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// a simple hex-print routine. could be modified to print 16 bytes-per-line
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="k">static&lt;/span> &lt;span class="kt">void&lt;/span> &lt;span class="nf">hex_print&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="k">const&lt;/span> &lt;span class="kt">void&lt;/span>&lt;span class="o">*&lt;/span> &lt;span class="n">pv&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">size_t&lt;/span> &lt;span class="n">len&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">const&lt;/span> &lt;span class="kt">unsigned&lt;/span> &lt;span class="kt">char&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="n">p&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="k">const&lt;/span> &lt;span class="kt">unsigned&lt;/span> &lt;span class="kt">char&lt;/span>&lt;span class="o">*&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="n">pv&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nb">NULL&lt;/span> &lt;span class="o">==&lt;/span> &lt;span class="n">pv&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">printf&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;NULL&amp;#34;&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">else&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">size_t&lt;/span> &lt;span class="n">i&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">for&lt;/span> &lt;span class="p">(;&lt;/span> &lt;span class="n">i&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">len&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="o">++&lt;/span>&lt;span class="n">i&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">printf&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;%02X &amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="n">p&lt;/span>&lt;span class="o">++&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">printf&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;&lt;/span>&lt;span class="se">\n&lt;/span>&lt;span class="s">&amp;#34;&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kt">void&lt;/span> &lt;span class="nf">pkcs7_encode&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="kt">uint8_t&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="n">in&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="kt">uint8_t&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="n">out&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="kt">int&lt;/span> &lt;span class="n">inlen&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="kt">int&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="n">outlen&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="k">const&lt;/span> &lt;span class="kt">int&lt;/span> &lt;span class="n">enc&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// uint8_t padchr[16] = {0x10, 0x0f, 0x0e, 0x0d, 0x0c, 0x0b, 0x0a, 0x09, 0x08, 0x07, 0x06, 0x05, 0x04, 0x03, 0x02, 0x01};
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="k">if&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">inlen&lt;/span> &lt;span class="o">&amp;lt;=&lt;/span>&lt;span class="mi">0&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="k">return&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// Add padding
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="k">if&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">enc&lt;/span> &lt;span class="o">==&lt;/span> &lt;span class="n">AES_ENCRYPT&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">*&lt;/span>&lt;span class="n">outlen&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">inlen&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="mi">16&lt;/span> &lt;span class="o">-&lt;/span> &lt;span class="n">inlen&lt;/span> &lt;span class="o">%&lt;/span> &lt;span class="mi">16&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">for&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="kt">int&lt;/span> &lt;span class="n">i&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="n">i&lt;/span> &lt;span class="o">&amp;lt;&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="n">outlen&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="n">i&lt;/span>&lt;span class="o">++&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">i&lt;/span> &lt;span class="o">&amp;lt;&lt;/span> &lt;span class="n">inlen&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">out&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">i&lt;/span>&lt;span class="p">]&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">in&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">i&lt;/span>&lt;span class="p">];&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">else&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">out&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">i&lt;/span>&lt;span class="p">]&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">16&lt;/span> &lt;span class="o">-&lt;/span> &lt;span class="n">inlen&lt;/span> &lt;span class="o">%&lt;/span> &lt;span class="mi">16&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// Remove padding
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="k">else&lt;/span> &lt;span class="k">if&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">enc&lt;/span> &lt;span class="o">==&lt;/span> &lt;span class="n">AES_DECRYPT&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">*&lt;/span>&lt;span class="n">outlen&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">inlen&lt;/span> &lt;span class="o">-&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">in&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">inlen&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="p">]);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">for&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="kt">int&lt;/span> &lt;span class="n">i&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="mi">0&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="n">i&lt;/span>&lt;span class="o">&amp;lt;&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="n">outlen&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="n">i&lt;/span>&lt;span class="o">++&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">out&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">i&lt;/span>&lt;span class="p">]&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">in&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">i&lt;/span>&lt;span class="p">];&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kt">int&lt;/span> &lt;span class="nf">main&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="kt">int&lt;/span> &lt;span class="n">argc&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="kt">char&lt;/span> &lt;span class="o">**&lt;/span>&lt;span class="n">argv&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">int&lt;/span> &lt;span class="n">keylength&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">printf&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;Give a key length [only 128 or 192 or 256!]:&lt;/span>&lt;span class="se">\n&lt;/span>&lt;span class="s">&amp;#34;&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">scanf&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;%d&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="o">&amp;amp;&lt;/span>&lt;span class="n">keylength&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="cm">/* generate a key with a given length */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">unsigned&lt;/span> &lt;span class="kt">char&lt;/span> &lt;span class="n">aes_key&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="mi">16&lt;/span>&lt;span class="p">]&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="mh">0x00&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="mh">0x01&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="mh">0x02&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="mh">0x03&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="mh">0x04&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="mh">0x05&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="mh">0x06&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="mh">0x07&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="mh">0x08&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="mh">0x09&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="mh">0x0a&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="mh">0x0b&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="mh">0x0c&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="mh">0x0d&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="mh">0x0e&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="mh">0x0f&lt;/span>&lt;span class="p">};&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">size_t&lt;/span> &lt;span class="n">inputslength&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">printf&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;Give an input&amp;#39;s length:&lt;/span>&lt;span class="se">\n&lt;/span>&lt;span class="s">&amp;#34;&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">scanf&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;%lu&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="o">&amp;amp;&lt;/span>&lt;span class="n">inputslength&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="cm">/* generate input with a given length */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">unsigned&lt;/span> &lt;span class="kt">char&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="n">aes_input&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">malloc&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">inputslength&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">unsigned&lt;/span> &lt;span class="kt">char&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="n">aes_out&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">malloc&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">inputslength&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">memset&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">aes_input&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="sc">&amp;#39;X&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">inputslength&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="cm">/* init vector */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">unsigned&lt;/span> &lt;span class="kt">char&lt;/span> &lt;span class="n">iv_enc&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">AES_BLOCK_SIZE&lt;/span>&lt;span class="p">]&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="mi">0&lt;/span>&lt;span class="p">},&lt;/span> &lt;span class="n">iv_dec&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">AES_BLOCK_SIZE&lt;/span>&lt;span class="p">]&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="p">{&lt;/span>&lt;span class="mi">0&lt;/span>&lt;span class="p">};&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">const&lt;/span> &lt;span class="n">size_t&lt;/span> &lt;span class="n">encslength&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="p">((&lt;/span>&lt;span class="n">inputslength&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="n">AES_BLOCK_SIZE&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="o">/&lt;/span> &lt;span class="n">AES_BLOCK_SIZE&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="n">AES_BLOCK_SIZE&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">unsigned&lt;/span> &lt;span class="kt">char&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="n">enc_in&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">malloc&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">encslength&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">pkcs7_encode&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">aes_input&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">enc_in&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">inputslength&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="o">&amp;amp;&lt;/span>&lt;span class="n">encslength&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">AES_ENCRYPT&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">unsigned&lt;/span> &lt;span class="kt">char&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="n">enc_out&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">malloc&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">encslength&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">AES_KEY&lt;/span> &lt;span class="n">enc_key&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">AES_set_encrypt_key&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">aes_key&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">keylength&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="o">&amp;amp;&lt;/span>&lt;span class="n">enc_key&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">AES_cbc_encrypt&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">enc_in&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">enc_out&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">encslength&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="o">&amp;amp;&lt;/span>&lt;span class="n">enc_key&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">iv_enc&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">AES_ENCRYPT&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">printf&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;original:&lt;/span>&lt;span class="se">\t&lt;/span>&lt;span class="s">&amp;#34;&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">hex_print&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">aes_input&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">inputslength&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">printf&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;padding:&lt;/span>&lt;span class="se">\t&lt;/span>&lt;span class="s">&amp;#34;&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">hex_print&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">enc_in&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">encslength&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">printf&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;encrypt:&lt;/span>&lt;span class="se">\t&lt;/span>&lt;span class="s">&amp;#34;&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">hex_print&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">enc_out&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">encslength&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">unsigned&lt;/span> &lt;span class="kt">char&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="n">dec_out&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">malloc&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">encslength&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">AES_KEY&lt;/span> &lt;span class="n">dec_key&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">AES_set_decrypt_key&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">aes_key&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">keylength&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="o">&amp;amp;&lt;/span>&lt;span class="n">dec_key&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">AES_cbc_encrypt&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">enc_out&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">dec_out&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">encslength&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="o">&amp;amp;&lt;/span>&lt;span class="n">dec_key&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">iv_dec&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">AES_DECRYPT&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">pkcs7_encode&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">dec_out&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">aes_out&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">encslength&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="o">&amp;amp;&lt;/span>&lt;span class="n">inputslength&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">AES_DECRYPT&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">printf&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;decrypt:&lt;/span>&lt;span class="se">\t&lt;/span>&lt;span class="s">&amp;#34;&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">hex_print&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">dec_out&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">encslength&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">printf&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;depadding:&lt;/span>&lt;span class="se">\t&lt;/span>&lt;span class="s">&amp;#34;&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">hex_print&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">aes_out&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">inputslength&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">int8_t&lt;/span> &lt;span class="n">buff&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="mi">100&lt;/span>&lt;span class="p">];&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">long&lt;/span> &lt;span class="n">bufflen&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div></description></item><item><title>Learning GDB from Scratch</title><link>https://nansenli.com/post/jianshu/c++/gdb-%E4%BB%8E%E9%9B%B6%E5%AD%A6%E4%B9%A0/</link><pubDate>Wed, 25 Apr 2018 16:45:00 +0000</pubDate><guid>https://nansenli.com/post/jianshu/c++/gdb-%E4%BB%8E%E9%9B%B6%E5%AD%A6%E4%B9%A0/</guid><description>&lt;p>Let&amp;rsquo;s start with an example.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-c" data-lang="c">&lt;span class="line">&lt;span class="cl">&lt;span class="cp">#include&lt;/span> &lt;span class="cpf">&amp;lt;stdio.h&amp;gt;&lt;/span>&lt;span class="cp">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp">&lt;/span>&lt;span class="kt">void&lt;/span> &lt;span class="nf">my_itoa&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="kt">int&lt;/span> &lt;span class="n">n&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="kt">char&lt;/span> &lt;span class="n">s&lt;/span>&lt;span class="p">[])&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">int&lt;/span> &lt;span class="n">i&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="n">j&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="n">sign&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span>&lt;span class="p">((&lt;/span>&lt;span class="n">sign&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">n&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="mi">0&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="c1">// record sign
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="n">n&lt;/span>&lt;span class="o">=-&lt;/span>&lt;span class="n">n&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="c1">// make n positive
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="n">i&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="mi">0&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">do&lt;/span>&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">s&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">i&lt;/span>&lt;span class="o">++&lt;/span>&lt;span class="p">]&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">n&lt;/span>&lt;span class="o">%&lt;/span>&lt;span class="mi">10&lt;/span>&lt;span class="o">+&lt;/span>&lt;span class="sc">&amp;#39;0&amp;#39;&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="c1">// get the next digit
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="p">}&lt;/span>&lt;span class="k">while&lt;/span>&lt;span class="p">((&lt;/span>&lt;span class="n">n&lt;/span>&lt;span class="o">/=&lt;/span>&lt;span class="mi">10&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="mi">0&lt;/span>&lt;span class="p">);&lt;/span> &lt;span class="c1">// loop through division
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">sign&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="mi">0&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">s&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">i&lt;/span>&lt;span class="o">++&lt;/span>&lt;span class="p">]&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="sc">&amp;#39;-&amp;#39;&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">s&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">i&lt;/span>&lt;span class="p">]&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="sc">&amp;#39;\0&amp;#39;&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">for&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">j&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">i&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="n">j&lt;/span>&lt;span class="o">&amp;gt;=&lt;/span>&lt;span class="mi">0&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="n">j&lt;/span>&lt;span class="o">--&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="c1">// the generated numbers are in reverse order, so output them in reverse
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="nf">printf&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;%c&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="n">s&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">j&lt;/span>&lt;span class="p">]);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kt">void&lt;/span> &lt;span class="nf">main&lt;/span>&lt;span class="p">()&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">int&lt;/span> &lt;span class="n">n&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">char&lt;/span> &lt;span class="n">str&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="mi">100&lt;/span>&lt;span class="p">];&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nf">my_itoa&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="mi">123&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="n">str&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nf">printf&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;&lt;/span>&lt;span class="se">\n&lt;/span>&lt;span class="s">&amp;#34;&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nf">printf&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;%d&lt;/span>&lt;span class="se">\n&lt;/span>&lt;span class="s">&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="nf">my_atoi&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;123&amp;#34;&lt;/span>&lt;span class="p">));&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nf">system&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;pause&amp;#34;&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>Save the above file to test.cpp, then compile and run it.&lt;/p>
 &lt;p>&lt;img src="https://nansenli.com/img/rescued/3132a6a25dab.gif"
 loading="lazy"
 alt="Peek 2018-04-16 17-25.gif"
 >&lt;/p>
 &lt;p>Now let&amp;rsquo;s debug it and see how to debug specifically. Debug the code following the method below.&lt;/p>
-&lt;pre tabindex="0">&lt;code>linan@linan-PC:~$ gdb test
-GNU gdb (Debian 7.12-6) 7.12.0.20161007-git
-Copyright (C) 2016 Free Software Foundation, Inc.
-License GPLv3+: GNU GPL version 3 or later &amp;lt;http://gnu.org/licenses/gpl.html&amp;gt;
-This is free software: you are free to change and redistribute it.
-There is NO WARRANTY, to the extent permitted by law. Type &amp;#34;show copying&amp;#34;
-and &amp;#34;show warranty&amp;#34; for details.
-This GDB was configured as &amp;#34;x86_64-linux-gnu&amp;#34;.
-Type &amp;#34;show configuration&amp;#34; for configuration details.
-For bug reporting instructions, please see:
-&amp;lt;http://www.gnu.org/software/gdb/bugs/&amp;gt;.
-Find the GDB manual and other documentation resources online at:
-&amp;lt;http://www.gnu.org/software/gdb/documentation/&amp;gt;.
-For help, type &amp;#34;help&amp;#34;.
-Type &amp;#34;apropos word&amp;#34; to search for commands related to &amp;#34;word&amp;#34;...
-Reading symbols from test...done.
-(gdb) l
-2
-3 int func(int n)
-4 {
-5 int sum=0,i;
-6 for(i=0; i&amp;lt;n; i++)
-7 {
-8 sum+=i;
-9 }
-10 return sum;
-11 }
-(gdb)
-12
-13 main()
-14 {
-15 int i;
-16 long result = 0;
-17 for(i=1; i&amp;lt;=100; i++)
-18 {
-19 result += i;
-20 }
-21
-(gdb)
-22 printf(&amp;#34;result[1-100] = %d \n&amp;#34;, result );
-23 printf(&amp;#34;result[1-250] = %d \n&amp;#34;, func(250) );
-24 }
-(gdb)
-Line number 25 out of range; test.cpp has 24 lines.
-(gdb) break 15
-Breakpoint 1 at 0x706: file test.cpp, line 15.
-(gdb) break func
-Breakpoint 2 at 0x6d7: file test.cpp, line 5.
-(gdb) info break
-Num Type Disp Enb Address What
-1 breakpoint keep y 0x0000000000000706 in main() at test.cpp:15
-2 breakpoint keep y 0x00000000000006d7 in func(int) at test.cpp:5
-(gdb) run
-Starting program: /home/linan/test
-Breakpoint 1, main () at test.cpp:16
-16 long result = 0;
-(gdb) next
-17 for(i=1; i&amp;lt;=100; i++)
-(gdb) next
-19 result += i;
-(gdb) next
-17 for(i=1; i&amp;lt;=100; i++)
-(gdb) continue
-Continuing.
-result[1-100] = 5050
-Breakpoint 2, func (n=250) at test.cpp:5
-5 int sum=0,i;
-(gdb) p sum
-$1 = 32767
-(gdb) n
-6 for(i=0; i&amp;lt;n; i++)
-(gdb) p sum
-$2 = 0
-(gdb) p i
-$3 = -134225552
-(gdb) print i
-$4 = -134225552
-(gdb) n
-8 sum+=i;
-(gdb) print i
-$5 = 0
-(gdb) bt
-#0 func (n=250) at test.cpp:8
-#1 0x000055555555474c in main () at test.cpp:23
-(gdb) help bt
-Print backtrace of all stack frames, or innermost COUNT frames.
-With a negative argument, print outermost -COUNT frames.
-Use of the &amp;#39;full&amp;#39; qualifier also prints the values of the local variables.
-Use of the &amp;#39;no-filters&amp;#39; qualifier prohibits frame filters from executing
-on this backtrace.
-(gdb) bt
-#0 func (n=250) at test.cpp:8
-#1 0x000055555555474c in main () at test.cpp:23
-(gdb) finish
-Run till exit from #0 func (n=250) at test.cpp:8
-0x000055555555474c in main () at test.cpp:23
-23 printf(&amp;#34;result[1-250] = %d \n&amp;#34;, func(250) );
-Value returned is $6 = 31125
-(gdb) c
-Continuing.
-result[1-250] = 31125
-[Inferior 1 (process 11480) exited normally]
-(gdb)
-&lt;/code>&lt;/pre>&lt;p>&lt;img src="https://nansenli.com/img/rescued/32228d4f4a18.gif"
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt"> 10
+&lt;/span>&lt;span class="lnt"> 11
+&lt;/span>&lt;span class="lnt"> 12
+&lt;/span>&lt;span class="lnt"> 13
+&lt;/span>&lt;span class="lnt"> 14
+&lt;/span>&lt;span class="lnt"> 15
+&lt;/span>&lt;span class="lnt"> 16
+&lt;/span>&lt;span class="lnt"> 17
+&lt;/span>&lt;span class="lnt"> 18
+&lt;/span>&lt;span class="lnt"> 19
+&lt;/span>&lt;span class="lnt"> 20
+&lt;/span>&lt;span class="lnt"> 21
+&lt;/span>&lt;span class="lnt"> 22
+&lt;/span>&lt;span class="lnt"> 23
+&lt;/span>&lt;span class="lnt"> 24
+&lt;/span>&lt;span class="lnt"> 25
+&lt;/span>&lt;span class="lnt"> 26
+&lt;/span>&lt;span class="lnt"> 27
+&lt;/span>&lt;span class="lnt"> 28
+&lt;/span>&lt;span class="lnt"> 29
+&lt;/span>&lt;span class="lnt"> 30
+&lt;/span>&lt;span class="lnt"> 31
+&lt;/span>&lt;span class="lnt"> 32
+&lt;/span>&lt;span class="lnt"> 33
+&lt;/span>&lt;span class="lnt"> 34
+&lt;/span>&lt;span class="lnt"> 35
+&lt;/span>&lt;span class="lnt"> 36
+&lt;/span>&lt;span class="lnt"> 37
+&lt;/span>&lt;span class="lnt"> 38
+&lt;/span>&lt;span class="lnt"> 39
+&lt;/span>&lt;span class="lnt"> 40
+&lt;/span>&lt;span class="lnt"> 41
+&lt;/span>&lt;span class="lnt"> 42
+&lt;/span>&lt;span class="lnt"> 43
+&lt;/span>&lt;span class="lnt"> 44
+&lt;/span>&lt;span class="lnt"> 45
+&lt;/span>&lt;span class="lnt"> 46
+&lt;/span>&lt;span class="lnt"> 47
+&lt;/span>&lt;span class="lnt"> 48
+&lt;/span>&lt;span class="lnt"> 49
+&lt;/span>&lt;span class="lnt"> 50
+&lt;/span>&lt;span class="lnt"> 51
+&lt;/span>&lt;span class="lnt"> 52
+&lt;/span>&lt;span class="lnt"> 53
+&lt;/span>&lt;span class="lnt"> 54
+&lt;/span>&lt;span class="lnt"> 55
+&lt;/span>&lt;span class="lnt"> 56
+&lt;/span>&lt;span class="lnt"> 57
+&lt;/span>&lt;span class="lnt"> 58
+&lt;/span>&lt;span class="lnt"> 59
+&lt;/span>&lt;span class="lnt"> 60
+&lt;/span>&lt;span class="lnt"> 61
+&lt;/span>&lt;span class="lnt"> 62
+&lt;/span>&lt;span class="lnt"> 63
+&lt;/span>&lt;span class="lnt"> 64
+&lt;/span>&lt;span class="lnt"> 65
+&lt;/span>&lt;span class="lnt"> 66
+&lt;/span>&lt;span class="lnt"> 67
+&lt;/span>&lt;span class="lnt"> 68
+&lt;/span>&lt;span class="lnt"> 69
+&lt;/span>&lt;span class="lnt"> 70
+&lt;/span>&lt;span class="lnt"> 71
+&lt;/span>&lt;span class="lnt"> 72
+&lt;/span>&lt;span class="lnt"> 73
+&lt;/span>&lt;span class="lnt"> 74
+&lt;/span>&lt;span class="lnt"> 75
+&lt;/span>&lt;span class="lnt"> 76
+&lt;/span>&lt;span class="lnt"> 77
+&lt;/span>&lt;span class="lnt"> 78
+&lt;/span>&lt;span class="lnt"> 79
+&lt;/span>&lt;span class="lnt"> 80
+&lt;/span>&lt;span class="lnt"> 81
+&lt;/span>&lt;span class="lnt"> 82
+&lt;/span>&lt;span class="lnt"> 83
+&lt;/span>&lt;span class="lnt"> 84
+&lt;/span>&lt;span class="lnt"> 85
+&lt;/span>&lt;span class="lnt"> 86
+&lt;/span>&lt;span class="lnt"> 87
+&lt;/span>&lt;span class="lnt"> 88
+&lt;/span>&lt;span class="lnt"> 89
+&lt;/span>&lt;span class="lnt"> 90
+&lt;/span>&lt;span class="lnt"> 91
+&lt;/span>&lt;span class="lnt"> 92
+&lt;/span>&lt;span class="lnt"> 93
+&lt;/span>&lt;span class="lnt"> 94
+&lt;/span>&lt;span class="lnt"> 95
+&lt;/span>&lt;span class="lnt"> 96
+&lt;/span>&lt;span class="lnt"> 97
+&lt;/span>&lt;span class="lnt"> 98
+&lt;/span>&lt;span class="lnt"> 99
+&lt;/span>&lt;span class="lnt">100
+&lt;/span>&lt;span class="lnt">101
+&lt;/span>&lt;span class="lnt">102
+&lt;/span>&lt;span class="lnt">103
+&lt;/span>&lt;span class="lnt">104
+&lt;/span>&lt;span class="lnt">105
+&lt;/span>&lt;span class="lnt">106
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-gdscript3" data-lang="gdscript3">&lt;span class="line">&lt;span class="cl">&lt;span class="n">linan&lt;/span>&lt;span class="err">@&lt;/span>&lt;span class="n">linan&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">PC&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="o">~$&lt;/span> &lt;span class="n">gdb&lt;/span> &lt;span class="n">test&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">GNU&lt;/span> &lt;span class="n">gdb&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">Debian&lt;/span> &lt;span class="mf">7.12&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="mi">6&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="mf">7.12&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="mf">0.20161007&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">git&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">Copyright&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">C&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="mi">2016&lt;/span> &lt;span class="n">Free&lt;/span> &lt;span class="n">Software&lt;/span> &lt;span class="n">Foundation&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">Inc&lt;/span>&lt;span class="o">.&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">License&lt;/span> &lt;span class="n">GPLv3&lt;/span>&lt;span class="o">+&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="n">GNU&lt;/span> &lt;span class="n">GPL&lt;/span> &lt;span class="n">version&lt;/span> &lt;span class="mi">3&lt;/span> &lt;span class="ow">or&lt;/span> &lt;span class="n">later&lt;/span> &lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">http&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="o">//&lt;/span>&lt;span class="n">gnu&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">org&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">licenses&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">gpl&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">html&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">This&lt;/span> &lt;span class="n">is&lt;/span> &lt;span class="n">free&lt;/span> &lt;span class="n">software&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="n">you&lt;/span> &lt;span class="n">are&lt;/span> &lt;span class="n">free&lt;/span> &lt;span class="n">to&lt;/span> &lt;span class="n">change&lt;/span> &lt;span class="ow">and&lt;/span> &lt;span class="n">redistribute&lt;/span> &lt;span class="n">it&lt;/span>&lt;span class="o">.&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">There&lt;/span> &lt;span class="n">is&lt;/span> &lt;span class="n">NO&lt;/span> &lt;span class="n">WARRANTY&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">to&lt;/span> &lt;span class="n">the&lt;/span> &lt;span class="n">extent&lt;/span> &lt;span class="n">permitted&lt;/span> &lt;span class="n">by&lt;/span> &lt;span class="n">law&lt;/span>&lt;span class="o">.&lt;/span> &lt;span class="n">Type&lt;/span> &lt;span class="s2">&amp;#34;show copying&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="ow">and&lt;/span> &lt;span class="s2">&amp;#34;show warranty&amp;#34;&lt;/span> &lt;span class="k">for&lt;/span> &lt;span class="n">details&lt;/span>&lt;span class="o">.&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">This&lt;/span> &lt;span class="n">GDB&lt;/span> &lt;span class="n">was&lt;/span> &lt;span class="n">configured&lt;/span> &lt;span class="n">as&lt;/span> &lt;span class="s2">&amp;#34;x86_64-linux-gnu&amp;#34;&lt;/span>&lt;span class="o">.&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">Type&lt;/span> &lt;span class="s2">&amp;#34;show configuration&amp;#34;&lt;/span> &lt;span class="k">for&lt;/span> &lt;span class="n">configuration&lt;/span> &lt;span class="n">details&lt;/span>&lt;span class="o">.&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">For&lt;/span> &lt;span class="n">bug&lt;/span> &lt;span class="n">reporting&lt;/span> &lt;span class="n">instructions&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">please&lt;/span> &lt;span class="n">see&lt;/span>&lt;span class="p">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">http&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="o">//&lt;/span>&lt;span class="n">www&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">gnu&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">org&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">software&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">gdb&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">bugs&lt;/span>&lt;span class="o">/&amp;gt;.&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">Find&lt;/span> &lt;span class="n">the&lt;/span> &lt;span class="n">GDB&lt;/span> &lt;span class="n">manual&lt;/span> &lt;span class="ow">and&lt;/span> &lt;span class="n">other&lt;/span> &lt;span class="n">documentation&lt;/span> &lt;span class="n">resources&lt;/span> &lt;span class="n">online&lt;/span> &lt;span class="n">at&lt;/span>&lt;span class="p">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">http&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="o">//&lt;/span>&lt;span class="n">www&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">gnu&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">org&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">software&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">gdb&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">documentation&lt;/span>&lt;span class="o">/&amp;gt;.&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">For&lt;/span> &lt;span class="n">help&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">type&lt;/span> &lt;span class="s2">&amp;#34;help&amp;#34;&lt;/span>&lt;span class="o">.&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">Type&lt;/span> &lt;span class="s2">&amp;#34;apropos word&amp;#34;&lt;/span> &lt;span class="n">to&lt;/span> &lt;span class="n">search&lt;/span> &lt;span class="k">for&lt;/span> &lt;span class="n">commands&lt;/span> &lt;span class="n">related&lt;/span> &lt;span class="n">to&lt;/span> &lt;span class="s2">&amp;#34;word&amp;#34;&lt;/span>&lt;span class="o">...&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">Reading&lt;/span> &lt;span class="n">symbols&lt;/span> &lt;span class="n">from&lt;/span> &lt;span class="n">test&lt;/span>&lt;span class="o">...&lt;/span>&lt;span class="n">done&lt;/span>&lt;span class="o">.&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">(&lt;/span>&lt;span class="n">gdb&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="n">l&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="mi">2&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="mi">3&lt;/span> &lt;span class="ne">int&lt;/span> &lt;span class="k">func&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="ne">int&lt;/span> &lt;span class="n">n&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="mi">4&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="mi">5&lt;/span> &lt;span class="ne">int&lt;/span> &lt;span class="n">sum&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="mi">0&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="n">i&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="mi">6&lt;/span> &lt;span class="k">for&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">i&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="mi">0&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="n">i&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">n&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="n">i&lt;/span>&lt;span class="o">++&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="mi">7&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="mi">8&lt;/span> &lt;span class="n">sum&lt;/span>&lt;span class="o">+=&lt;/span>&lt;span class="n">i&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="mi">9&lt;/span> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="mi">10&lt;/span> &lt;span class="k">return&lt;/span> &lt;span class="n">sum&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="mi">11&lt;/span> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">(&lt;/span>&lt;span class="n">gdb&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="mi">12&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="mi">13&lt;/span> &lt;span class="n">main&lt;/span>&lt;span class="p">()&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="mi">14&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="mi">15&lt;/span> &lt;span class="ne">int&lt;/span> &lt;span class="n">i&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="mi">16&lt;/span> &lt;span class="n">long&lt;/span> &lt;span class="n">result&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="mi">17&lt;/span> &lt;span class="k">for&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">i&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="n">i&lt;/span>&lt;span class="o">&amp;lt;=&lt;/span>&lt;span class="mi">100&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="n">i&lt;/span>&lt;span class="o">++&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="mi">18&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="mi">19&lt;/span> &lt;span class="n">result&lt;/span> &lt;span class="o">+=&lt;/span> &lt;span class="n">i&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="mi">20&lt;/span> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="mi">21&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">(&lt;/span>&lt;span class="n">gdb&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="mi">22&lt;/span> &lt;span class="n">printf&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;result[1-100] = &lt;/span>&lt;span class="si">%d&lt;/span>&lt;span class="s2"> &lt;/span>&lt;span class="se">\n&lt;/span>&lt;span class="s2">&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">result&lt;/span> &lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="mi">23&lt;/span> &lt;span class="n">printf&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;result[1-250] = &lt;/span>&lt;span class="si">%d&lt;/span>&lt;span class="s2"> &lt;/span>&lt;span class="se">\n&lt;/span>&lt;span class="s2">&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="k">func&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">250&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="mi">24&lt;/span> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">(&lt;/span>&lt;span class="n">gdb&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">Line&lt;/span> &lt;span class="n">number&lt;/span> &lt;span class="mi">25&lt;/span> &lt;span class="n">out&lt;/span> &lt;span class="n">of&lt;/span> &lt;span class="nb">range&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="n">test&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">cpp&lt;/span> &lt;span class="n">has&lt;/span> &lt;span class="mi">24&lt;/span> &lt;span class="n">lines&lt;/span>&lt;span class="o">.&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">(&lt;/span>&lt;span class="n">gdb&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="k">break&lt;/span> &lt;span class="mi">15&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">Breakpoint&lt;/span> &lt;span class="mi">1&lt;/span> &lt;span class="n">at&lt;/span> &lt;span class="mh">0x706&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="n">file&lt;/span> &lt;span class="n">test&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">cpp&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">line&lt;/span> &lt;span class="mf">15.&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">(&lt;/span>&lt;span class="n">gdb&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="k">break&lt;/span> &lt;span class="k">func&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">Breakpoint&lt;/span> &lt;span class="mi">2&lt;/span> &lt;span class="n">at&lt;/span> &lt;span class="mh">0x6d7&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="n">file&lt;/span> &lt;span class="n">test&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">cpp&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">line&lt;/span> &lt;span class="mf">5.&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">(&lt;/span>&lt;span class="n">gdb&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="n">info&lt;/span> &lt;span class="k">break&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">Num&lt;/span> &lt;span class="n">Type&lt;/span> &lt;span class="n">Disp&lt;/span> &lt;span class="n">Enb&lt;/span> &lt;span class="n">Address&lt;/span> &lt;span class="n">What&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="mi">1&lt;/span> &lt;span class="k">breakpoint&lt;/span> &lt;span class="n">keep&lt;/span> &lt;span class="n">y&lt;/span> &lt;span class="mh">0x0000000000000706&lt;/span> &lt;span class="ow">in&lt;/span> &lt;span class="n">main&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="n">at&lt;/span> &lt;span class="n">test&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">cpp&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="mi">15&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="mi">2&lt;/span> &lt;span class="k">breakpoint&lt;/span> &lt;span class="n">keep&lt;/span> &lt;span class="n">y&lt;/span> &lt;span class="mh">0x00000000000006d7&lt;/span> &lt;span class="ow">in&lt;/span> &lt;span class="k">func&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="ne">int&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="n">at&lt;/span> &lt;span class="n">test&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">cpp&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="mi">5&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">(&lt;/span>&lt;span class="n">gdb&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="n">run&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">Starting&lt;/span> &lt;span class="n">program&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="o">/&lt;/span>&lt;span class="n">home&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">linan&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">test&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">Breakpoint&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">main&lt;/span> &lt;span class="p">()&lt;/span> &lt;span class="n">at&lt;/span> &lt;span class="n">test&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">cpp&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="mi">16&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="mi">16&lt;/span> &lt;span class="n">long&lt;/span> &lt;span class="n">result&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">(&lt;/span>&lt;span class="n">gdb&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="n">next&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="mi">17&lt;/span> &lt;span class="k">for&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">i&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="n">i&lt;/span>&lt;span class="o">&amp;lt;=&lt;/span>&lt;span class="mi">100&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="n">i&lt;/span>&lt;span class="o">++&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">(&lt;/span>&lt;span class="n">gdb&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="n">next&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="mi">19&lt;/span> &lt;span class="n">result&lt;/span> &lt;span class="o">+=&lt;/span> &lt;span class="n">i&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">(&lt;/span>&lt;span class="n">gdb&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="n">next&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="mi">17&lt;/span> &lt;span class="k">for&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">i&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="n">i&lt;/span>&lt;span class="o">&amp;lt;=&lt;/span>&lt;span class="mi">100&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="n">i&lt;/span>&lt;span class="o">++&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">(&lt;/span>&lt;span class="n">gdb&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="k">continue&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">Continuing&lt;/span>&lt;span class="o">.&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">result&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="mi">100&lt;/span>&lt;span class="p">]&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">5050&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">Breakpoint&lt;/span> &lt;span class="mi">2&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="k">func&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">n&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="mi">250&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="n">at&lt;/span> &lt;span class="n">test&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">cpp&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="mi">5&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="mi">5&lt;/span> &lt;span class="ne">int&lt;/span> &lt;span class="n">sum&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="mi">0&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="n">i&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">(&lt;/span>&lt;span class="n">gdb&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="n">p&lt;/span> &lt;span class="n">sum&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">$&lt;/span>&lt;span class="mi">1&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">32767&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">(&lt;/span>&lt;span class="n">gdb&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="n">n&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="mi">6&lt;/span> &lt;span class="k">for&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">i&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="mi">0&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="n">i&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">n&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="n">i&lt;/span>&lt;span class="o">++&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">(&lt;/span>&lt;span class="n">gdb&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="n">p&lt;/span> &lt;span class="n">sum&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">$&lt;/span>&lt;span class="mi">2&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">0&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">(&lt;/span>&lt;span class="n">gdb&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="n">p&lt;/span> &lt;span class="n">i&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">$&lt;/span>&lt;span class="mi">3&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="o">-&lt;/span>&lt;span class="mi">134225552&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">(&lt;/span>&lt;span class="n">gdb&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="nb">print&lt;/span> &lt;span class="n">i&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">$&lt;/span>&lt;span class="mi">4&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="o">-&lt;/span>&lt;span class="mi">134225552&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">(&lt;/span>&lt;span class="n">gdb&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="n">n&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="mi">8&lt;/span> &lt;span class="n">sum&lt;/span>&lt;span class="o">+=&lt;/span>&lt;span class="n">i&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">(&lt;/span>&lt;span class="n">gdb&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="nb">print&lt;/span> &lt;span class="n">i&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">$&lt;/span>&lt;span class="mi">5&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">0&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">(&lt;/span>&lt;span class="n">gdb&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="n">bt&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">#0 func (n=250) at test.cpp:8&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">#1 0x000055555555474c in main () at test.cpp:23&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">(&lt;/span>&lt;span class="n">gdb&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="n">help&lt;/span> &lt;span class="n">bt&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">Print&lt;/span> &lt;span class="n">backtrace&lt;/span> &lt;span class="n">of&lt;/span> &lt;span class="n">all&lt;/span> &lt;span class="n">stack&lt;/span> &lt;span class="n">frames&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="ow">or&lt;/span> &lt;span class="n">innermost&lt;/span> &lt;span class="n">COUNT&lt;/span> &lt;span class="n">frames&lt;/span>&lt;span class="o">.&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">With&lt;/span> &lt;span class="n">a&lt;/span> &lt;span class="n">negative&lt;/span> &lt;span class="n">argument&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nb">print&lt;/span> &lt;span class="n">outermost&lt;/span> &lt;span class="o">-&lt;/span>&lt;span class="n">COUNT&lt;/span> &lt;span class="n">frames&lt;/span>&lt;span class="o">.&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">Use&lt;/span> &lt;span class="n">of&lt;/span> &lt;span class="n">the&lt;/span> &lt;span class="s1">&amp;#39;full&amp;#39;&lt;/span> &lt;span class="n">qualifier&lt;/span> &lt;span class="n">also&lt;/span> &lt;span class="nb">prints&lt;/span> &lt;span class="n">the&lt;/span> &lt;span class="n">values&lt;/span> &lt;span class="n">of&lt;/span> &lt;span class="n">the&lt;/span> &lt;span class="n">local&lt;/span> &lt;span class="n">variables&lt;/span>&lt;span class="o">.&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">Use&lt;/span> &lt;span class="n">of&lt;/span> &lt;span class="n">the&lt;/span> &lt;span class="s1">&amp;#39;no-filters&amp;#39;&lt;/span> &lt;span class="n">qualifier&lt;/span> &lt;span class="n">prohibits&lt;/span> &lt;span class="n">frame&lt;/span> &lt;span class="n">filters&lt;/span> &lt;span class="n">from&lt;/span> &lt;span class="n">executing&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">on&lt;/span> &lt;span class="n">this&lt;/span> &lt;span class="n">backtrace&lt;/span>&lt;span class="o">.&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">(&lt;/span>&lt;span class="n">gdb&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="n">bt&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">#0 func (n=250) at test.cpp:8&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">#1 0x000055555555474c in main () at test.cpp:23&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">(&lt;/span>&lt;span class="n">gdb&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="n">finish&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">Run&lt;/span> &lt;span class="n">till&lt;/span> &lt;span class="n">exit&lt;/span> &lt;span class="n">from&lt;/span> &lt;span class="c1">#0 func (n=250) at test.cpp:8&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="mh">0x000055555555474c&lt;/span> &lt;span class="ow">in&lt;/span> &lt;span class="n">main&lt;/span> &lt;span class="p">()&lt;/span> &lt;span class="n">at&lt;/span> &lt;span class="n">test&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">cpp&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="mi">23&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="mi">23&lt;/span> &lt;span class="n">printf&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;result[1-250] = &lt;/span>&lt;span class="si">%d&lt;/span>&lt;span class="s2"> &lt;/span>&lt;span class="se">\n&lt;/span>&lt;span class="s2">&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="k">func&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">250&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">Value&lt;/span> &lt;span class="n">returned&lt;/span> &lt;span class="n">is&lt;/span> &lt;span class="o">$&lt;/span>&lt;span class="mi">6&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">31125&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">(&lt;/span>&lt;span class="n">gdb&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="n">c&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">Continuing&lt;/span>&lt;span class="o">.&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">result&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="mi">250&lt;/span>&lt;span class="p">]&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">31125&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">[&lt;/span>&lt;span class="n">Inferior&lt;/span> &lt;span class="mi">1&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">process&lt;/span> &lt;span class="mi">11480&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="n">exited&lt;/span> &lt;span class="n">normally&lt;/span>&lt;span class="p">]&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">(&lt;/span>&lt;span class="n">gdb&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;img src="https://nansenli.com/img/rescued/32228d4f4a18.gif"
 loading="lazy"
 alt="Peek 2018-04-16 17-39.gif"
 >&lt;/p>
@@ -270,15 +538,33 @@ If your program is a service program, you can specify the process ID of the runn
 &lt;h2 id="notes-for-gdb-beginners">Notes for GDB Beginners
 &lt;/h2>&lt;p>When debugging with GDB, you need to know where the source code files are located. In the example above, the source code and the running program are together. But this is not possible in practice. Add the source code directory using the -d parameter in the GDB command or using the directory command during runtime.&lt;/p>
 &lt;p>Other notes:&lt;/p>
-&lt;pre tabindex="0">&lt;code> -symbols &amp;lt;file&amp;gt;
--s &amp;lt;file&amp;gt;
-Read symbols from the specified file.
--se file
-Read symbol table information from the specified file and use it in the executable file.
--core &amp;lt;file&amp;gt;
--c &amp;lt;file&amp;gt;
-The core file from a core dump during debugging.
-&lt;/code>&lt;/pre></description></item><item><title>Effective C++ Notes</title><link>https://nansenli.com/post/jianshu/c++/effective-c++-%E7%AC%94%E8%AE%B0/</link><pubDate>Mon, 23 Apr 2018 10:40:00 +0000</pubDate><guid>https://nansenli.com/post/jianshu/c++/effective-c++-%E7%AC%94%E8%AE%B0/</guid><description>&lt;h2 id="chapter-1-from-c-to-c">Chapter 1: From C to C++
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl"> -symbols &amp;lt;file&amp;gt;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> -s &amp;lt;file&amp;gt;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> Read symbols from the specified file.
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> -se file
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> Read symbol table information from the specified file and use it in the executable file.
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> -core &amp;lt;file&amp;gt;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> -c &amp;lt;file&amp;gt;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> The core file from a core dump during debugging.
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div></description></item><item><title>Effective C++ Notes</title><link>https://nansenli.com/post/jianshu/c++/effective-c++-%E7%AC%94%E8%AE%B0/</link><pubDate>Mon, 23 Apr 2018 10:40:00 +0000</pubDate><guid>https://nansenli.com/post/jianshu/c++/effective-c++-%E7%AC%94%E8%AE%B0/</guid><description>&lt;h2 id="chapter-1-from-c-to-c">Chapter 1: From C to C++
 &lt;/h2>&lt;ul>
 &lt;li>
 &lt;p>Item 1: C++ is a federation of languages
@@ -527,44 +813,113 @@ Don&amp;rsquo;t ignore warnings.&lt;/p>
 &lt;p>&lt;a class="link" href="https://kelvinh.github.io/blog/2014/04/19/research-on-operator-new-and-delete/" target="_blank" rel="noopener"
 >https://kelvinh.github.io/blog/2014/04/19/research-on-operator-new-and-delete/&lt;/a>&lt;/p>
 &lt;h2 id="what-do-new-and-delete-code-mean">What do new and delete code mean
-&lt;/h2>&lt;pre tabindex="0">&lt;code>Class *pc = new Class;
-// ...
-delete pc;
-&lt;/code>&lt;/pre>&lt;p>The first line above is the new operator, and the third line is the delete operator. The code is simple, but for the compiler, it needs to do additional work, translating the above code into something approximate to the following code:&lt;/p>
-&lt;pre tabindex="0">&lt;code>void *p = operator new(sizeof(Class));
-// Call the constructor of Class on the memory pointed to by p, this can&amp;#39;t be shown with straightforward code
-Class *pc = static_cast&amp;lt;Class*&amp;gt;(p);
-// ...
-pc-&amp;gt;~Class();
-operator delete(pc);
-&lt;/code>&lt;/pre>&lt;h2 id="what-does-the-operator-new-actually-do-and-what-does-the-operator-delete-do">What does the operator new actually do, and what does the operator delete do?
-&lt;/h2>&lt;pre tabindex="0">&lt;code>void * operator new(std::size_t size) throw(std::bad_alloc) {
-if (size == 0)
-size = 1;
-void* p;
-while ((p = ::malloc(size)) == 0) {
-std::new_handler nh = std::get_new_handler();
-if (nh)
-nh();
-else
-throw std::bad_alloc();
-}
-return p;
-}
-void operator delete(void* ptr) {
-if (ptr)
-::free(ptr);
-}
-&lt;/code>&lt;/pre>&lt;p>It&amp;rsquo;s actually a wrapper for malloc, but it allocates at least one byte, and in case of memory failure, it attempts to get the user-set new_handler. If the user has previously set a new_handler, then it will call the new_handler; otherwise, it will throw a bad_alloc exception.&lt;/p>
+&lt;/h2>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">Class *pc = new Class;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">// ...
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">delete pc;
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>The first line above is the new operator, and the third line is the delete operator. The code is simple, but for the compiler, it needs to do additional work, translating the above code into something approximate to the following code:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-gdscript3" data-lang="gdscript3">&lt;span class="line">&lt;span class="cl">&lt;span class="n">void&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="n">p&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">operator&lt;/span> &lt;span class="n">new&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">sizeof&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">Class&lt;/span>&lt;span class="p">));&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">//&lt;/span> &lt;span class="n">Call&lt;/span> &lt;span class="n">the&lt;/span> &lt;span class="n">constructor&lt;/span> &lt;span class="n">of&lt;/span> &lt;span class="n">Class&lt;/span> &lt;span class="n">on&lt;/span> &lt;span class="n">the&lt;/span> &lt;span class="n">memory&lt;/span> &lt;span class="n">pointed&lt;/span> &lt;span class="n">to&lt;/span> &lt;span class="n">by&lt;/span> &lt;span class="n">p&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">this&lt;/span> &lt;span class="n">can&lt;/span>&lt;span class="s1">&amp;#39;t be shown with straightforward code&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">Class&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="n">pc&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">static_cast&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">Class&lt;/span>&lt;span class="o">*&amp;gt;&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">p&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">//&lt;/span> &lt;span class="o">...&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">pc&lt;/span>&lt;span class="o">-&amp;gt;~&lt;/span>&lt;span class="n">Class&lt;/span>&lt;span class="p">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">operator&lt;/span> &lt;span class="n">delete&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">pc&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="what-does-the-operator-new-actually-do-and-what-does-the-operator-delete-do">What does the operator new actually do, and what does the operator delete do?
+&lt;/h2>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">void * operator new(std::size_t size) throw(std::bad_alloc) {
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> if (size == 0)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> size = 1;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> void* p;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> while ((p = ::malloc(size)) == 0) {
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> std::new_handler nh = std::get_new_handler();
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> if (nh)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> nh();
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> else
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> throw std::bad_alloc();
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> }
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> return p;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">}
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">void operator delete(void* ptr) {
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> if (ptr)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> ::free(ptr);
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>It&amp;rsquo;s actually a wrapper for malloc, but it allocates at least one byte, and in case of memory failure, it attempts to get the user-set new_handler. If the user has previously set a new_handler, then it will call the new_handler; otherwise, it will throw a bad_alloc exception.&lt;/p>
 &lt;h2 id="what-is-placement-new">What is placement new
-&lt;/h2>&lt;pre tabindex="0">&lt;code>inline _LIBCPP_INLINE_VISIBILITY void* operator new (std::size_t, void* __p) _NOEXCEPT {return __p;}
-&lt;/code>&lt;/pre>&lt;p>This is an overload of operator new. It directly returns the value of the pointer. It seems quite useless. So how is it used?&lt;/p>
-&lt;pre tabindex="0">&lt;code>void *buf = // Allocate memory for buf here
-Class *pc = new (buf) Class();
-&lt;/code>&lt;/pre>&lt;p>The above code assigns buf&amp;rsquo;s memory to the pc pointer. It&amp;rsquo;s actually equivalent to:&lt;/p>
-&lt;pre tabindex="0">&lt;code>((* Class)buf)-&amp;gt;Class();
-Class *pc = buf;
-&lt;/code>&lt;/pre></description></item><item><title>C++ Basics — Differences Between Pointers and References</title><link>https://nansenli.com/post/jianshu/c++/c++%E5%9F%BA%E6%9C%AC%E9%97%AE%E9%A2%98%E6%8C%87%E9%92%88%E4%B8%8E%E5%BC%95%E7%94%A8%E7%9A%84%E5%8C%BA%E5%88%AB/</link><pubDate>Wed, 10 Jan 2018 08:44:00 +0000</pubDate><guid>https://nansenli.com/post/jianshu/c++/c++%E5%9F%BA%E6%9C%AC%E9%97%AE%E9%A2%98%E6%8C%87%E9%92%88%E4%B8%8E%E5%BC%95%E7%94%A8%E7%9A%84%E5%8C%BA%E5%88%AB/</guid><description>&lt;h3 id="differences-between-pointers-and-references">Differences Between Pointers and References
+&lt;/h2>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">inline _LIBCPP_INLINE_VISIBILITY void* operator new (std::size_t, void* __p) _NOEXCEPT {return __p;}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>This is an overload of operator new. It directly returns the value of the pointer. It seems quite useless. So how is it used?&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">void *buf = // Allocate memory for buf here
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Class *pc = new (buf) Class();
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>The above code assigns buf&amp;rsquo;s memory to the pc pointer. It&amp;rsquo;s actually equivalent to:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">((* Class)buf)-&amp;gt;Class();
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Class *pc = buf;
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div></description></item><item><title>C++ Basics — Differences Between Pointers and References</title><link>https://nansenli.com/post/jianshu/c++/c++%E5%9F%BA%E6%9C%AC%E9%97%AE%E9%A2%98%E6%8C%87%E9%92%88%E4%B8%8E%E5%BC%95%E7%94%A8%E7%9A%84%E5%8C%BA%E5%88%AB/</link><pubDate>Wed, 10 Jan 2018 08:44:00 +0000</pubDate><guid>https://nansenli.com/post/jianshu/c++/c++%E5%9F%BA%E6%9C%AC%E9%97%AE%E9%A2%98%E6%8C%87%E9%92%88%E4%B8%8E%E5%BC%95%E7%94%A8%E7%9A%84%E5%8C%BA%E5%88%AB/</guid><description>&lt;h3 id="differences-between-pointers-and-references">Differences Between Pointers and References
 &lt;/h3>&lt;ul>
 &lt;li>Pointers can be null pointers, but references cannot be null references. This leads to the following distinction.&lt;/li>
 &lt;li>Pointers can be invalid, while references are always valid. If a pointer is a null pointer, it cannot be legally used. This requires checking the validity of a pointer each time it is used. In contrast, references don&amp;rsquo;t need to be checked.&lt;/li>
@@ -599,141 +954,324 @@ Add element at the end (public member function)
 pop_back
 Delete last element (public member function)&lt;/p>
 &lt;h2 id="main-structure-of-a-basic-vector">Main Structure of a Basic Vector
-&lt;/h2>&lt;pre tabindex="0">&lt;code>#include &amp;lt;cstddef&amp;gt;
-#include &amp;lt;stdexcept&amp;gt;
-#include &amp;lt;memory&amp;gt;
-#include &amp;lt;iterator&amp;gt;
-template &amp;lt;typename T&amp;gt;
-class vector
-{
-public:
-using value_type = T;
-using iterator = value_type *;
-using size_type = std::size_t;
-public:
-vector() = default;
-~vector();
-iterator begin() const;
-iterator end() const;
-size_type size() const;
-value_type &amp;amp;operator[](size_type i) const;
-value_type &amp;amp;at(size_type i) const;
-void push_back(const value_type &amp;amp;new_elem);
-void pop_back();
-private:
-iterator startptr = nullptr;
-iterator endptr = nullptr;
-iterator capptr = nullptr;
-std::allocator&amp;lt;value_type&amp;gt; alloc;
-private:
-void check_cap();
-void free();
-};
-&lt;/code>&lt;/pre>&lt;p>In our class, we&amp;rsquo;ve simply implemented iterators, push_back, pop_back, as well as the [] operator, at function, and size function. To implement memory management, we also need to implement constructors, destructors, and capacity checking functions.&lt;/p>
+&lt;/h2>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;span class="lnt">30
+&lt;/span>&lt;span class="lnt">31
+&lt;/span>&lt;span class="lnt">32
+&lt;/span>&lt;span class="lnt">33
+&lt;/span>&lt;span class="lnt">34
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-c++" data-lang="c++">&lt;span class="line">&lt;span class="cl">&lt;span class="cp">#include&lt;/span> &lt;span class="cpf">&amp;lt;cstddef&amp;gt;&lt;/span>&lt;span class="cp">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp">#include&lt;/span> &lt;span class="cpf">&amp;lt;stdexcept&amp;gt;&lt;/span>&lt;span class="cp">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp">#include&lt;/span> &lt;span class="cpf">&amp;lt;memory&amp;gt;&lt;/span>&lt;span class="cp">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp">#include&lt;/span> &lt;span class="cpf">&amp;lt;iterator&amp;gt;&lt;/span>&lt;span class="cp">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp">&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">template&lt;/span> &lt;span class="o">&amp;lt;&lt;/span>&lt;span class="k">typename&lt;/span> &lt;span class="n">T&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">class&lt;/span> &lt;span class="nc">vector&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">public&lt;/span>&lt;span class="o">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">using&lt;/span> &lt;span class="n">value_type&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">T&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">using&lt;/span> &lt;span class="n">iterator&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">value_type&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">using&lt;/span> &lt;span class="n">size_type&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">size_t&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">public&lt;/span>&lt;span class="o">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">vector&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="k">default&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">~&lt;/span>&lt;span class="n">vector&lt;/span>&lt;span class="p">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">iterator&lt;/span> &lt;span class="nf">begin&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="k">const&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">iterator&lt;/span> &lt;span class="nf">end&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="k">const&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">size_type&lt;/span> &lt;span class="nf">size&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="k">const&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">value_type&lt;/span> &lt;span class="o">&amp;amp;&lt;/span>&lt;span class="k">operator&lt;/span>&lt;span class="p">[](&lt;/span>&lt;span class="n">size_type&lt;/span> &lt;span class="n">i&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="k">const&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">value_type&lt;/span> &lt;span class="o">&amp;amp;&lt;/span>&lt;span class="n">at&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">size_type&lt;/span> &lt;span class="n">i&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="k">const&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">void&lt;/span> &lt;span class="nf">push_back&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="k">const&lt;/span> &lt;span class="n">value_type&lt;/span> &lt;span class="o">&amp;amp;&lt;/span>&lt;span class="n">new_elem&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">void&lt;/span> &lt;span class="nf">pop_back&lt;/span>&lt;span class="p">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">private&lt;/span>&lt;span class="o">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">iterator&lt;/span> &lt;span class="n">startptr&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="k">nullptr&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">iterator&lt;/span> &lt;span class="n">endptr&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="k">nullptr&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">iterator&lt;/span> &lt;span class="n">capptr&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="k">nullptr&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">allocator&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">value_type&lt;/span>&lt;span class="o">&amp;gt;&lt;/span> &lt;span class="n">alloc&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">private&lt;/span>&lt;span class="o">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">void&lt;/span> &lt;span class="n">check_cap&lt;/span>&lt;span class="p">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">void&lt;/span> &lt;span class="nf">free&lt;/span>&lt;span class="p">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">};&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>In our class, we&amp;rsquo;ve simply implemented iterators, push_back, pop_back, as well as the [] operator, at function, and size function. To implement memory management, we also need to implement constructors, destructors, and capacity checking functions.&lt;/p>
 &lt;h2 id="internal-implementation-of-basic-functions">Internal Implementation of Basic Functions
-&lt;/h2>&lt;pre tabindex="0">&lt;code>template &amp;lt;typename T&amp;gt;
-typename vector&amp;lt;T&amp;gt;::iterator vector&amp;lt;T&amp;gt;::begin() const
-{
-return startptr;
-}
-template &amp;lt;typename T&amp;gt;
-typename vector&amp;lt;T&amp;gt;::iterator vector&amp;lt;T&amp;gt;::end() const
-{
-return endptr;
-}
-template &amp;lt;typename T&amp;gt;
-typename vector&amp;lt;T&amp;gt;::size_type vector&amp;lt;T&amp;gt;::size() const
-{
-return endptr - startptr;
-}
-template &amp;lt;typename T&amp;gt;
-typename vector&amp;lt;T&amp;gt;::value_type &amp;amp;vector&amp;lt;T&amp;gt;::operator[](size_type i) const
-{
-return *(startptr + i);
-}
-template &amp;lt;typename T&amp;gt;
-typename vector&amp;lt;T&amp;gt;::value_type &amp;amp;vector&amp;lt;T&amp;gt;::at(size_type i) const
-{
-if (startptr + i &amp;gt;= endptr)
-{
-throw std::runtime_error(&amp;#34;out of range!&amp;#34;);
-}
-return *(startptr + i);
-}
-template &amp;lt;typename T&amp;gt;
-vector&amp;lt;T&amp;gt;::~vector()
-{
-free();
-}
-&lt;/code>&lt;/pre>&lt;p>The above are implementations of simple functions. They simply retrieve internal data.&lt;/p>
-&lt;pre tabindex="0">&lt;code>template &amp;lt;typename T&amp;gt;
-void vector&amp;lt;T&amp;gt;::free()
-{
-if (startptr)
-{
-for (auto p = startptr; p != endptr; p++)
-{
-alloc.destroy(p);
-}
-alloc.deallocate(startptr, endptr - startptr);
-}
-}
-template &amp;lt;typename T&amp;gt;
-void vector&amp;lt;T&amp;gt;::check_cap()
-{
-if (endptr == capptr)
-{
-int newsize = size() ? size() &amp;lt;&amp;lt; 1 : 1;
-auto newstartptr = alloc.allocate(newsize);
-auto newendptr = uninitialized_copy(std::make_move_iterator(startptr), std::make_move_iterator(endptr), newstartptr);
-free();
-startptr = newstartptr;
-endptr = newendptr;
-capptr = newstartptr + newsize;
-}
-}
-template &amp;lt;typename T&amp;gt;
-void vector&amp;lt;T&amp;gt;::push_back(const value_type &amp;amp;new_elem)
-{
-check_cap();
-alloc.construct(endptr, new_elem);
-endptr++;
-}
-template &amp;lt;typename T&amp;gt;
-void vector&amp;lt;T&amp;gt;::pop_back()
-{
-if(endptr-startptr&amp;gt;0){
-alloc.destroy(endptr);
-endptr--;
-}
-}
-&lt;/code>&lt;/pre>&lt;p>This part deals with memory and uses allocator to manage memory. The constructor separates the allocation of space and construction, dividing the process into allocating space, reclaiming space, destruction, and construction. The capacity check involves these four scenarios: first allocate new space, then construct new elements in the new position, then destruct old elements, and release old space. The free function is used to destruct old elements and release old space. Here, uninitialized_copy function and make_move_iterator, move iterators, and uninitialized copy functions are used to construct new elements in new positions, aiming to speed up the construction of new elements.&lt;/p>
+&lt;/h2>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;span class="lnt">30
+&lt;/span>&lt;span class="lnt">31
+&lt;/span>&lt;span class="lnt">32
+&lt;/span>&lt;span class="lnt">33
+&lt;/span>&lt;span class="lnt">34
+&lt;/span>&lt;span class="lnt">35
+&lt;/span>&lt;span class="lnt">36
+&lt;/span>&lt;span class="lnt">37
+&lt;/span>&lt;span class="lnt">38
+&lt;/span>&lt;span class="lnt">39
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-gdscript3" data-lang="gdscript3">&lt;span class="line">&lt;span class="cl">&lt;span class="n">template&lt;/span> &lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">typename&lt;/span> &lt;span class="n">T&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">typename&lt;/span> &lt;span class="n">vector&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">T&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="p">::&lt;/span>&lt;span class="n">iterator&lt;/span> &lt;span class="n">vector&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">T&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="p">::&lt;/span>&lt;span class="n">begin&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="k">const&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="n">startptr&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">template&lt;/span> &lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">typename&lt;/span> &lt;span class="n">T&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">typename&lt;/span> &lt;span class="n">vector&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">T&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="p">::&lt;/span>&lt;span class="n">iterator&lt;/span> &lt;span class="n">vector&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">T&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="p">::&lt;/span>&lt;span class="n">end&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="k">const&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="n">endptr&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">template&lt;/span> &lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">typename&lt;/span> &lt;span class="n">T&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">typename&lt;/span> &lt;span class="n">vector&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">T&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="p">::&lt;/span>&lt;span class="n">size_type&lt;/span> &lt;span class="n">vector&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">T&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="p">::&lt;/span>&lt;span class="n">size&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="k">const&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="n">endptr&lt;/span> &lt;span class="o">-&lt;/span> &lt;span class="n">startptr&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">template&lt;/span> &lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">typename&lt;/span> &lt;span class="n">T&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">typename&lt;/span> &lt;span class="n">vector&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">T&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="p">::&lt;/span>&lt;span class="n">value_type&lt;/span> &lt;span class="o">&amp;amp;&lt;/span>&lt;span class="n">vector&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">T&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="p">::&lt;/span>&lt;span class="n">operator&lt;/span>&lt;span class="p">[](&lt;/span>&lt;span class="n">size_type&lt;/span> &lt;span class="n">i&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="k">const&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">startptr&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="n">i&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">template&lt;/span> &lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">typename&lt;/span> &lt;span class="n">T&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">typename&lt;/span> &lt;span class="n">vector&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">T&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="p">::&lt;/span>&lt;span class="n">value_type&lt;/span> &lt;span class="o">&amp;amp;&lt;/span>&lt;span class="n">vector&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">T&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="p">::&lt;/span>&lt;span class="n">at&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">size_type&lt;/span> &lt;span class="n">i&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="k">const&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">startptr&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="n">i&lt;/span> &lt;span class="o">&amp;gt;=&lt;/span> &lt;span class="n">endptr&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">throw&lt;/span> &lt;span class="n">std&lt;/span>&lt;span class="p">::&lt;/span>&lt;span class="n">runtime_error&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;out of range!&amp;#34;&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">startptr&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="n">i&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">template&lt;/span> &lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">typename&lt;/span> &lt;span class="n">T&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">vector&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">T&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="p">::&lt;/span>&lt;span class="o">~&lt;/span>&lt;span class="n">vector&lt;/span>&lt;span class="p">()&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">free&lt;/span>&lt;span class="p">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>The above are implementations of simple functions. They simply retrieve internal data.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;span class="lnt">30
+&lt;/span>&lt;span class="lnt">31
+&lt;/span>&lt;span class="lnt">32
+&lt;/span>&lt;span class="lnt">33
+&lt;/span>&lt;span class="lnt">34
+&lt;/span>&lt;span class="lnt">35
+&lt;/span>&lt;span class="lnt">36
+&lt;/span>&lt;span class="lnt">37
+&lt;/span>&lt;span class="lnt">38
+&lt;/span>&lt;span class="lnt">39
+&lt;/span>&lt;span class="lnt">40
+&lt;/span>&lt;span class="lnt">41
+&lt;/span>&lt;span class="lnt">42
+&lt;/span>&lt;span class="lnt">43
+&lt;/span>&lt;span class="lnt">44
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-gdscript3" data-lang="gdscript3">&lt;span class="line">&lt;span class="cl">&lt;span class="n">template&lt;/span> &lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">typename&lt;/span> &lt;span class="n">T&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">void&lt;/span> &lt;span class="n">vector&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">T&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="p">::&lt;/span>&lt;span class="n">free&lt;/span>&lt;span class="p">()&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">startptr&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">for&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">auto&lt;/span> &lt;span class="n">p&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">startptr&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="n">p&lt;/span> &lt;span class="o">!=&lt;/span> &lt;span class="n">endptr&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="n">p&lt;/span>&lt;span class="o">++&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">alloc&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">destroy&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">p&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">alloc&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">deallocate&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">startptr&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">endptr&lt;/span> &lt;span class="o">-&lt;/span> &lt;span class="n">startptr&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">template&lt;/span> &lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">typename&lt;/span> &lt;span class="n">T&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">void&lt;/span> &lt;span class="n">vector&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">T&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="p">::&lt;/span>&lt;span class="n">check_cap&lt;/span>&lt;span class="p">()&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">endptr&lt;/span> &lt;span class="o">==&lt;/span> &lt;span class="n">capptr&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="ne">int&lt;/span> &lt;span class="n">newsize&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">size&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="err">?&lt;/span> &lt;span class="n">size&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="o">&amp;lt;&amp;lt;&lt;/span> &lt;span class="mi">1&lt;/span> &lt;span class="p">:&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">auto&lt;/span> &lt;span class="n">newstartptr&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">alloc&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">allocate&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">newsize&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">auto&lt;/span> &lt;span class="n">newendptr&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">uninitialized_copy&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">std&lt;/span>&lt;span class="p">::&lt;/span>&lt;span class="n">make_move_iterator&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">startptr&lt;/span>&lt;span class="p">),&lt;/span> &lt;span class="n">std&lt;/span>&lt;span class="p">::&lt;/span>&lt;span class="n">make_move_iterator&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">endptr&lt;/span>&lt;span class="p">),&lt;/span> &lt;span class="n">newstartptr&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">free&lt;/span>&lt;span class="p">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">startptr&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">newstartptr&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">endptr&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">newendptr&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">capptr&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">newstartptr&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="n">newsize&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">template&lt;/span> &lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">typename&lt;/span> &lt;span class="n">T&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">void&lt;/span> &lt;span class="n">vector&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">T&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="p">::&lt;/span>&lt;span class="n">push_back&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="k">const&lt;/span> &lt;span class="n">value_type&lt;/span> &lt;span class="o">&amp;amp;&lt;/span>&lt;span class="n">new_elem&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">check_cap&lt;/span>&lt;span class="p">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">alloc&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">construct&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">endptr&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">new_elem&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">endptr&lt;/span>&lt;span class="o">++&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">template&lt;/span> &lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">typename&lt;/span> &lt;span class="n">T&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">void&lt;/span> &lt;span class="n">vector&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">T&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="p">::&lt;/span>&lt;span class="n">pop_back&lt;/span>&lt;span class="p">()&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">endptr&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">startptr&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="mi">0&lt;/span>&lt;span class="p">){&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">alloc&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">destroy&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">endptr&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">endptr&lt;/span>&lt;span class="o">--&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>This part deals with memory and uses allocator to manage memory. The constructor separates the allocation of space and construction, dividing the process into allocating space, reclaiming space, destruction, and construction. The capacity check involves these four scenarios: first allocate new space, then construct new elements in the new position, then destruct old elements, and release old space. The free function is used to destruct old elements and release old space. Here, uninitialized_copy function and make_move_iterator, move iterators, and uninitialized copy functions are used to construct new elements in new positions, aiming to speed up the construction of new elements.&lt;/p>
 &lt;h2 id="advanced-functions-and-implementation">Advanced Functions and Implementation
 &lt;/h2>&lt;h3 id="erase">erase
 &lt;/h3>&lt;p>Next, let&amp;rsquo;s implement some additional functions. Let&amp;rsquo;s start with erase.
 Erase deletes all content from the specified position to the specified position. The function prototype is as follows:&lt;/p>
-&lt;pre tabindex="0">&lt;code> public:
-iterator erase(const_iterator position);
-iterator erase(const_iterator first, const_iterator last);
-&lt;/code>&lt;/pre>&lt;p>The first function can also be seen as simply calling the second function. We implement the second function as follows:&lt;/p>
-&lt;pre tabindex="0">&lt;code>template &amp;lt;typename T&amp;gt;
-typename vector&amp;lt;T&amp;gt;::iterator vector&amp;lt;T&amp;gt;::erase(const_iterator first, const_iterator last)
-{
-if(last &amp;gt;= endptr || first &amp;lt; startptr) throw std::runtime_error(&amp;#34;out of range!&amp;#34;);
-iterator newendptr = std::copy(last, static_cast&amp;lt;const_iterator&amp;gt;(endptr), first);
-while(newendptr &amp;lt; endptr){
-alloc.destroy(--endptr);
-}
-return endptr;
-}
-&lt;/code>&lt;/pre>&lt;p>First, perform a validity check. Then, use std::copy to copy the later content to the part to be deleted. Note that the copy will automatically call the assignment function for the part being overwritten, and the assignment function should call the destructor internally. Then, if there is still content that needs to be destructed (this occurs only when the moved content is not as long as the deleted content), destruct that content. Then return the end pointer.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-gdscript3" data-lang="gdscript3">&lt;span class="line">&lt;span class="cl"> &lt;span class="n">public&lt;/span>&lt;span class="p">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">iterator&lt;/span> &lt;span class="n">erase&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">const_iterator&lt;/span> &lt;span class="n">position&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">iterator&lt;/span> &lt;span class="n">erase&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">const_iterator&lt;/span> &lt;span class="n">first&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">const_iterator&lt;/span> &lt;span class="n">last&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>The first function can also be seen as simply calling the second function. We implement the second function as follows:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-gdscript3" data-lang="gdscript3">&lt;span class="line">&lt;span class="cl">&lt;span class="n">template&lt;/span> &lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">typename&lt;/span> &lt;span class="n">T&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">typename&lt;/span> &lt;span class="n">vector&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">T&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="p">::&lt;/span>&lt;span class="n">iterator&lt;/span> &lt;span class="n">vector&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">T&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="p">::&lt;/span>&lt;span class="n">erase&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">const_iterator&lt;/span> &lt;span class="n">first&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">const_iterator&lt;/span> &lt;span class="n">last&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">last&lt;/span> &lt;span class="o">&amp;gt;=&lt;/span> &lt;span class="n">endptr&lt;/span> &lt;span class="o">||&lt;/span> &lt;span class="n">first&lt;/span> &lt;span class="o">&amp;lt;&lt;/span> &lt;span class="n">startptr&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="n">throw&lt;/span> &lt;span class="n">std&lt;/span>&lt;span class="p">::&lt;/span>&lt;span class="n">runtime_error&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;out of range!&amp;#34;&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">iterator&lt;/span> &lt;span class="n">newendptr&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">std&lt;/span>&lt;span class="p">::&lt;/span>&lt;span class="n">copy&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">last&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">static_cast&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">const_iterator&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">endptr&lt;/span>&lt;span class="p">),&lt;/span> &lt;span class="n">first&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">while&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">newendptr&lt;/span> &lt;span class="o">&amp;lt;&lt;/span> &lt;span class="n">endptr&lt;/span>&lt;span class="p">){&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">alloc&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">destroy&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="o">--&lt;/span>&lt;span class="n">endptr&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="n">endptr&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>First, perform a validity check. Then, use std::copy to copy the later content to the part to be deleted. Note that the copy will automatically call the assignment function for the part being overwritten, and the assignment function should call the destructor internally. Then, if there is still content that needs to be destructed (this occurs only when the moved content is not as long as the deleted content), destruct that content. Then return the end pointer.&lt;/p>
 &lt;p>The other overloaded function is relatively simple to implement:&lt;/p>
-&lt;pre tabindex="0">&lt;code>template&amp;lt;typename T&amp;gt;
-typename vector&amp;lt;T&amp;gt;::iterator vector&amp;lt;T&amp;gt;::erase(const_iterator position)
-{
-return erase(position, position+1);
-}
-&lt;/code>&lt;/pre></description></item><item><title>C++11 Features - Simple Introduction</title><link>https://nansenli.com/post/jianshu/c++/c++11-%E7%89%B9%E6%80%A7-%E7%AE%80%E5%8D%95%E4%BB%8B%E7%BB%8D/</link><pubDate>Thu, 28 Dec 2017 07:31:00 +0000</pubDate><guid>https://nansenli.com/post/jianshu/c++/c++11-%E7%89%B9%E6%80%A7-%E7%AE%80%E5%8D%95%E4%BB%8B%E7%BB%8D/</guid><description>&lt;h2 id="summarized-from-c-primer-5th-edition-as-a-quick-review-of-these-features">Summarized from C++ Primer 5th Edition, as a quick review of these features
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-gdscript3" data-lang="gdscript3">&lt;span class="line">&lt;span class="cl">&lt;span class="n">template&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">typename&lt;/span> &lt;span class="n">T&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">typename&lt;/span> &lt;span class="n">vector&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">T&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="p">::&lt;/span>&lt;span class="n">iterator&lt;/span> &lt;span class="n">vector&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">T&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="p">::&lt;/span>&lt;span class="n">erase&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">const_iterator&lt;/span> &lt;span class="n">position&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="n">erase&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">position&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">position&lt;/span>&lt;span class="o">+&lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div></description></item><item><title>C++11 Features - Simple Introduction</title><link>https://nansenli.com/post/jianshu/c++/c++11-%E7%89%B9%E6%80%A7-%E7%AE%80%E5%8D%95%E4%BB%8B%E7%BB%8D/</link><pubDate>Thu, 28 Dec 2017 07:31:00 +0000</pubDate><guid>https://nansenli.com/post/jianshu/c++/c++11-%E7%89%B9%E6%80%A7-%E7%AE%80%E5%8D%95%E4%BB%8B%E7%BB%8D/</guid><description>&lt;h2 id="summarized-from-c-primer-5th-edition-as-a-quick-review-of-these-features">Summarized from C++ Primer 5th Edition, as a quick review of these features
 &lt;/h2>&lt;ul>
 &lt;li>
 &lt;p>long long type
@@ -774,17 +1312,38 @@ When declaring a variable, you can use decltype(expressions) to determine the ty
 &lt;p>In-class initialization&lt;/p>
 &lt;/li>
 &lt;/ul>
-&lt;pre tabindex="0">&lt;code> class A {
-public:
-int a = 7;
-};
-&lt;/code>&lt;/pre>&lt;p>This is equivalent to the following in previous versions:&lt;/p>
-&lt;pre tabindex="0">&lt;code> class A {
-public:
-int a;
-A() : a(7) {}
-};
-&lt;/code>&lt;/pre>&lt;ul>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl"> class A {
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> public:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> int a = 7;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> };
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>This is equivalent to the following in previous versions:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl"> class A {
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> public:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> int a;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> A() : a(7) {}
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> };
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;ul>
 &lt;li>
 &lt;p>Using auto or decltype to deduce types
 auto len = line.size(); automatically deduces string::size_type which is better&lt;/p>
@@ -811,19 +1370,37 @@ Return iterators of type const_iterator&lt;/p>
 &lt;p>Using auto in two-dimensional arrays&lt;/p>
 &lt;/li>
 &lt;/ul>
-&lt;pre tabindex="0">&lt;code>int mat[3][4];
-int main()
-{
-for (int(*p)[4] = mat; p != mat + 3; p++)
-{
-/* ... */
-}
-for (auto p = mat; p != mat + 3; p++)
-{
-/* ... */
-}
-}
-&lt;/code>&lt;/pre>&lt;ul>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">int mat[3][4];
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">int main()
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">{
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> for (int(*p)[4] = mat; p != mat + 3; p++)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> {
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> /* ... */
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> }
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> for (auto p = mat; p != mat + 3; p++)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> {
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> /* ... */
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> }
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;ul>
 &lt;li>
 &lt;p>Division rounding
 C++11 specifies that division always rounds toward zero&lt;/p>
@@ -961,45 +1538,102 @@ shared_ptr&lt;!-- raw HTML omitted --> p1;&lt;/p>
 &lt;/h3>&lt;p>Object-oriented programming, also known as OOP, has three core ideas: data abstraction, inheritance, and dynamic binding. Data abstraction refers to the separation of declaration and implementation, inheritance refers to the subclass obtaining all members of the parent class, and dynamic binding means calling different functions based on the class type when invoking class functions.&lt;/p>
 &lt;h3 id="declaring-base-classes-and-derived-classes">Declaring Base Classes and Derived Classes
 &lt;/h3>&lt;p>The following code provides a simple example, declaring a base class animal and a derived class cat.&lt;/p>
-&lt;pre tabindex="0">&lt;code>#include &amp;lt;stdio.h&amp;gt;
-#include &amp;lt;iostream&amp;gt;
-class animal
-{
-public:
-virtual void eat(){};
-};
-class cat : public animal
-{
-public:
-void eat() { std::cout &amp;lt;&amp;lt; &amp;#34;eat fish&amp;#34; &amp;lt;&amp;lt; std::endl; }
-};
-int main()
-{
-cat c;
-c.eat();
-}
-&lt;/code>&lt;/pre>&lt;h3 id="type-conversion-and-inheritance">Type Conversion and Inheritance
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-c++" data-lang="c++">&lt;span class="line">&lt;span class="cl">&lt;span class="cp">#include&lt;/span> &lt;span class="cpf">&amp;lt;stdio.h&amp;gt;&lt;/span>&lt;span class="cp">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp">#include&lt;/span> &lt;span class="cpf">&amp;lt;iostream&amp;gt;&lt;/span>&lt;span class="cp">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp">&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">class&lt;/span> &lt;span class="nc">animal&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">public&lt;/span>&lt;span class="o">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">virtual&lt;/span> &lt;span class="kt">void&lt;/span> &lt;span class="n">eat&lt;/span>&lt;span class="p">(){};&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">};&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">class&lt;/span> &lt;span class="nc">cat&lt;/span> &lt;span class="o">:&lt;/span> &lt;span class="k">public&lt;/span> &lt;span class="n">animal&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">public&lt;/span>&lt;span class="o">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">void&lt;/span> &lt;span class="n">eat&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">cout&lt;/span> &lt;span class="o">&amp;lt;&amp;lt;&lt;/span> &lt;span class="s">&amp;#34;eat fish&amp;#34;&lt;/span> &lt;span class="o">&amp;lt;&amp;lt;&lt;/span> &lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">endl&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">};&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kt">int&lt;/span> &lt;span class="nf">main&lt;/span>&lt;span class="p">()&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">cat&lt;/span> &lt;span class="n">c&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">c&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">eat&lt;/span>&lt;span class="p">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="type-conversion-and-inheritance">Type Conversion and Inheritance
 &lt;/h3>&lt;p>Pointers and references of derived classes can be converted to pointers or references of base classes, but pointers or references of base classes cannot be converted to those of derived classes. This means that an object pointed to by a base class pointer could be a base class or a derived class, but definitely not a parent class of the base class.&lt;/p>
 &lt;p>A derived class object can be assigned to a base class, but only the base class portion will be copied.&lt;/p>
 &lt;h3 id="virtual-functions">Virtual Functions
 &lt;/h3>&lt;p>Virtual functions are resolved at runtime. Continuing with our example above, suppose we write a new function called doeat that internally calls the eat method of animal. For animal, eat is &amp;ldquo;eat meat or grass&amp;rdquo;, but the final displayed result is &amp;ldquo;eat fish&amp;rdquo;. This proves that at runtime, when the doeat function calls animal&amp;rsquo;s eat method, the eat method finds the real object cat&amp;rsquo;s eat method and calls it.&lt;/p>
-&lt;pre tabindex="0">&lt;code>class animal
-{
-public:
-virtual void eat() { std::cout &amp;lt;&amp;lt; &amp;#34;eat meat or grass&amp;#34; &amp;lt;&amp;lt; std::endl; };
-};
-class cat : public animal
-{
-public:
-void eat() { std::cout &amp;lt;&amp;lt; &amp;#34;eat fish&amp;#34; &amp;lt;&amp;lt; std::endl; }
-};
-void doeat(animal &amp;amp;a) { a.eat(); }
-int main()
-{
-cat c;
-doeat(c);
-}
-&lt;/code>&lt;/pre>&lt;p>Additionally, to develop good habits, it&amp;rsquo;s best to use the override keyword in derived classes to explicitly declare overridden virtual functions.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">class animal
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">{
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> public:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> virtual void eat() { std::cout &amp;lt;&amp;lt; &amp;#34;eat meat or grass&amp;#34; &amp;lt;&amp;lt; std::endl; };
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">};
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">class cat : public animal
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">{
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> public:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> void eat() { std::cout &amp;lt;&amp;lt; &amp;#34;eat fish&amp;#34; &amp;lt;&amp;lt; std::endl; }
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">};
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">void doeat(animal &amp;amp;a) { a.eat(); }
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">int main()
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">{
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> cat c;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> doeat(c);
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>Additionally, to develop good habits, it&amp;rsquo;s best to use the override keyword in derived classes to explicitly declare overridden virtual functions.&lt;/p>
 &lt;h3 id="pure-virtual-functions">Pure Virtual Functions
 &lt;/h3>&lt;p>Assigning a value of 0 after defining a virtual function declares a pure virtual function. Pure virtual functions are equivalent to interfaces, and derived classes must implement these interfaces.&lt;/p>
 &lt;h2 id="abstract-base-classes">Abstract Base Classes

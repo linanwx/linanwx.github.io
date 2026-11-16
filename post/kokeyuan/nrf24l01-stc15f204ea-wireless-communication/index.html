@@ -1,5 +1,5 @@
 <!doctype html><html lang=en dir=ltr><head><meta charset=utf-8><meta name=viewport content='width=device-width,initial-scale=1'><meta name=description content="This code is suitable for small wireless transceiver modules composed of NRF24L01 and STC15F204EA (STC15L204EA), and can also be applied to general 51 microcontrollers communicating with NRF24L01. A few days ago, I bought a small wireless transceiver module online. The source code provided by the seller was very simple and not particularly useful, so I ported the STM3224l01 program from ATOM, which is more complete and practical. Since there are almost no pins available to display transmission and reception content, serial communication is used to display the content."><title>NRF24L01 + STC15F204EA Wireless Communication Source Code</title>
-<link rel=canonical href=https://nansenli.com/post/kokeyuan/nrf24l01-stc15f204ea-wireless-communication/><link rel=stylesheet href=/scss/style.min.b9b97e7c3f7f078f7ec4f60195f6139d30ad5972cc05950321ee04a9e98c542f.css><meta property='og:title' content="NRF24L01 + STC15F204EA Wireless Communication Source Code"><meta property='og:description' content="This code is suitable for small wireless transceiver modules composed of NRF24L01 and STC15F204EA (STC15L204EA), and can also be applied to general 51 microcontrollers communicating with NRF24L01. A few days ago, I bought a small wireless transceiver module online. The source code provided by the seller was very simple and not particularly useful, so I ported the STM3224l01 program from ATOM, which is more complete and practical. Since there are almost no pins available to display transmission and reception content, serial communication is used to display the content."><meta property='og:url' content='https://nansenli.com/post/kokeyuan/nrf24l01-stc15f204ea-wireless-communication/'><meta property='og:site_name' content="Nansen Li's Blog
+<link rel=canonical href=https://nansenli.com/post/kokeyuan/nrf24l01-stc15f204ea-wireless-communication/><link rel=stylesheet href=/scss/style.min.13a07907ead250546ad0b764b76f2b704035157ccc91726856890c9c2e7e027e.css><meta property='og:title' content="NRF24L01 + STC15F204EA Wireless Communication Source Code"><meta property='og:description' content="This code is suitable for small wireless transceiver modules composed of NRF24L01 and STC15F204EA (STC15L204EA), and can also be applied to general 51 microcontrollers communicating with NRF24L01. A few days ago, I bought a small wireless transceiver module online. The source code provided by the seller was very simple and not particularly useful, so I ported the STM3224l01 program from ATOM, which is more complete and practical. Since there are almost no pins available to display transmission and reception content, serial communication is used to display the content."><meta property='og:url' content='https://nansenli.com/post/kokeyuan/nrf24l01-stc15f204ea-wireless-communication/'><meta property='og:site_name' content="Nansen Li's Blog
 李楠森的博客
 "><meta property='og:type' content='article'><meta property='article:section' content='Post'><meta property='article:tag' content='NRF24L01'><meta property='article:tag' content='NRF24L01+'><meta property='article:tag' content='STC15F204EA'><meta property='article:tag' content='STC15L204EA'><meta property='article:tag' content='51 MCU'><meta property='article:tag' content='Microcontroller'><meta property='article:tag' content='Communication'><meta property='article:tag' content='Wireless Communication'><meta property='article:published_time' content='2013-09-01T00:55:00+00:00'><meta property='article:modified_time' content='2013-09-01T00:55:00+00:00'><meta name=twitter:title content="NRF24L01 + STC15F204EA Wireless Communication Source Code"><meta name=twitter:description content="This code is suitable for small wireless transceiver modules composed of NRF24L01 and STC15F204EA (STC15L204EA), and can also be applied to general 51 microcontrollers communicating with NRF24L01. A few days ago, I bought a small wireless transceiver module online. The source code provided by the seller was very simple and not particularly useful, so I ported the STM3224l01 program from ATOM, which is more complete and practical. Since there are almost no pins available to display transmission and reception content, serial communication is used to display the content."><link rel="shortcut icon" href=/favicon.ico><script async src="https://www.googletagmanager.com/gtag/js?id=G-WC38C3XE3J"></script><script>var dnt,doNotTrack=!1;if(!1&&(dnt=navigator.doNotTrack||window.doNotTrack||navigator.msDoNotTrack,doNotTrack=dnt=="1"||dnt=="yes"),!doNotTrack){window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag("js",new Date),gtag("config","G-WC38C3XE3J")}</script></head><body class=article-page><script>(function(){const e="StackColorScheme";localStorage.getItem(e)||localStorage.setItem(e,"auto")})()</script><script>(function(){const t="StackColorScheme",e=localStorage.getItem(t),n=window.matchMedia("(prefers-color-scheme: dark)").matches===!0;e=="dark"||e==="auto"&&n?document.documentElement.dataset.scheme="dark":document.documentElement.dataset.scheme="light"})()</script><div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky"><button class="hamburger hamburger--spin" type=button id=toggle-menu aria-label="Toggle Menu">
 <span class=hamburger-box><span class=hamburger-inner></span></span></button><header><figure class=site-avatar><a href=/><img src=/img/avatar_hu96777ff80939aaa7d938dddcc232fcc6_1414962_300x0_resize_box_3.png width=300 height=300 class=site-logo loading=lazy alt=Avatar>
@@ -12,480 +12,953 @@
 <svg class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="16" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
 <span>Dark Mode</span></li></ol></li></ol></aside><main class="main full-width"><article class=main-article><header class=article-header><div class=article-details><header class=article-category><a href=/categories/microcontrollers/>Microcontrollers</a></header><div class=article-title-wrapper><h2 class=article-title><a href=/post/kokeyuan/nrf24l01-stc15f204ea-wireless-communication/>NRF24L01 + STC15F204EA Wireless Communication Source Code</a></h2></div><footer class=article-time><div><svg class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M11.795 21H5a2 2 0 01-2-2V7a2 2 0 012-2h12a2 2 0 012 2v4"/><circle cx="18" cy="18" r="4"/><path d="M15 3v4"/><path d="M7 3v4"/><path d="M3 11h16"/><path d="M18 16.496V18l1 1"/></svg>
 <time class=article-time--published>Sep 01, 2013</time></div><div><svg class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg>
-<time class=article-time--reading>12 minute read</time></div></footer><footer class=article-translations><svg class="icon icon-tabler icon-tabler-language" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 5h7"/><path d="M9 3v2c0 4.418-2.239 8-5 8"/><path d="M5 9c-.003 2.144 2.952 3.908 6.7 4"/><path d="M12 20l4-9 4 9"/><path d="M19.1 18h-6.2"/></svg><div><a href=https://nansenli.com/zh-cn/post/kokeyuan/nrf24l01-stc15f204ea-wireless-communication/ class=link>中文</a></div></footer></div></header><section class=article-content><p>This code is suitable for small wireless transceiver modules composed of NRF24L01 and STC15F204EA (STC15L204EA), and can also be applied to general 51 microcontrollers communicating with NRF24L01.</p><p>A few days ago, I bought a small wireless transceiver module online. The source code provided by the seller was very simple and not particularly useful, so I ported the STM3224l01 program from ATOM, which is more complete and practical.</p><p>Since there are almost no pins available to display transmission and reception content, serial communication is used to display the content.</p><p>Applicable module image:</p><p><img src=/img/rescued/6297a49400b0.png loading=lazy alt="Module image"></p><p>Main wiring diagram:</p><p><img src=/img/rescued/e6ede2277ff3.png loading=lazy alt="Wiring diagram"></p><p>First, for serial display, I collected the following code. The reason it&rsquo;s so complex is that this chip doesn&rsquo;t have a serial port function.</p><p>First is the H file:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-c data-lang=c><span style=display:flex><span><span style=color:#75715e>#ifndef _UART_H
-</span></span></span><span style=display:flex><span><span style=color:#75715e>#define _UART_H
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span>
-</span></span><span style=display:flex><span><span style=color:#75715e>#define MCU_FREQ                             11059200 </span><span style=color:#75715e>// Set crystal frequency
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span><span style=color:#75715e>#define UART_BUAD                            38400
-</span></span></span><span style=display:flex><span><span style=color:#75715e>#define ON                                   1
-</span></span></span><span style=display:flex><span><span style=color:#75715e>#define OFF                                  0  
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span>
-</span></span><span style=display:flex><span><span style=color:#75715e>#define UART_TX_PIN                          P31
-</span></span></span><span style=display:flex><span><span style=color:#75715e>#define UART_TX_SET(n)                       UART_TX_PIN = n
-</span></span></span><span style=display:flex><span><span style=color:#75715e>#define UART_TX_HIGH()                       UART_TX_SET(1)
-</span></span></span><span style=display:flex><span><span style=color:#75715e>#define UART_TX_LOW()                        UART_TX_SET(0)
-</span></span></span><span style=display:flex><span><span style=color:#75715e>#define UART_TX_FLIP()                       UART_TX_PIN = !UART_TX_PIN
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span>
-</span></span><span style=display:flex><span><span style=color:#75715e>#define UART_RX_PIN                          P30
-</span></span></span><span style=display:flex><span><span style=color:#75715e>#define UART_RX_SET(n)                       UART_RX_PIN = n
-</span></span></span><span style=display:flex><span><span style=color:#75715e>#define UART_RX_HIGH()                       UART_RX_SET(1)
-</span></span></span><span style=display:flex><span><span style=color:#75715e>#define UART_RX_LOW()                        UART_RX_SET(0)
-</span></span></span><span style=display:flex><span><span style=color:#75715e>#define UART_RX_FLIP()                       UART_RX_PIN = !UART_RX_PIN
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span>
-</span></span><span style=display:flex><span><span style=color:#66d9ef>void</span> <span style=color:#a6e22e>uartInit</span>(<span style=color:#66d9ef>void</span>);
-</span></span><span style=display:flex><span><span style=color:#66d9ef>void</span> <span style=color:#a6e22e>uartSendString</span>(<span style=color:#66d9ef>char</span> <span style=color:#f92672>*</span>pS);
-</span></span><span style=display:flex><span><span style=color:#66d9ef>void</span> <span style=color:#a6e22e>uartSendNum</span>(<span style=color:#66d9ef>int</span> num);
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span><span style=color:#75715e>#endif
-</span></span></span></code></pre></div><p>In the file, you need to set the crystal frequency and baud rate correctly, which are MCU_FREQ and UART_BUAD respectively. Once set, they enable correct transmission and reception.</p><p>Next is the C file:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-c data-lang=c><span style=display:flex><span><span style=color:#75715e>#include</span> <span style=color:#75715e>&#34;stdio.h&#34;</span><span style=color:#75715e>
-</span></span></span><span style=display:flex><span><span style=color:#75715e>#include</span> <span style=color:#75715e>&#34;uart.h&#34;</span><span style=color:#75715e>
-</span></span></span><span style=display:flex><span><span style=color:#75715e>#include</span> <span style=color:#75715e>&#34;15f204ea.h&#34;                // Header file provided by STC official website</span><span style=color:#75715e>
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span>
-</span></span><span style=display:flex><span><span style=color:#66d9ef>typedef</span> <span style=color:#66d9ef>unsigned</span> <span style=color:#66d9ef>char</span> u8;
-</span></span><span style=display:flex><span><span style=color:#66d9ef>typedef</span> <span style=color:#66d9ef>unsigned</span> <span style=color:#66d9ef>short</span> u16;
-</span></span><span style=display:flex><span><span style=color:#66d9ef>typedef</span> <span style=color:#66d9ef>unsigned</span> <span style=color:#66d9ef>int</span> u32;
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span><span style=color:#66d9ef>typedef</span> <span style=color:#66d9ef>unsigned</span> <span style=color:#66d9ef>char</span> uchar;
-</span></span><span style=display:flex><span><span style=color:#66d9ef>typedef</span> <span style=color:#66d9ef>unsigned</span> <span style=color:#66d9ef>int</span> uint;
-</span></span><span style=display:flex><span><span style=color:#66d9ef>typedef</span> <span style=color:#66d9ef>unsigned</span> <span style=color:#66d9ef>char</span> BYTE;
-</span></span><span style=display:flex><span><span style=color:#66d9ef>static</span> bit bUartFlag;
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span><span style=color:#75715e>/******************************************************************************/</span>
-</span></span><span style=display:flex><span><span style=color:#75715e>// Function name: uartInit 
-</span></span></span><span style=display:flex><span><span style=color:#75715e>// Input parameters: none
-</span></span></span><span style=display:flex><span><span style=color:#75715e>// Output parameters: none
-</span></span></span><span style=display:flex><span><span style=color:#75715e>// Function: Set up timer0 operating mode 
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span><span style=color:#75715e>/******************************************************************************/</span>
-</span></span><span style=display:flex><span><span style=color:#66d9ef>void</span> <span style=color:#a6e22e>uartInit</span>(<span style=color:#66d9ef>void</span>)
-</span></span><span style=display:flex><span>{
-</span></span><span style=display:flex><span>    <span style=color:#75715e>/*
-</span></span></span><span style=display:flex><span><span style=color:#75715e>     * Set timer0 as 16-bit auto-reload timer
-</span></span></span><span style=display:flex><span><span style=color:#75715e>    */</span>
-</span></span><span style=display:flex><span>    AUXR <span style=color:#f92672>|=</span> <span style=color:#ae81ff>0x80</span>; <span style=color:#75715e>// Timer0 in 1T mode
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    TMOD <span style=color:#f92672>&amp;=</span> <span style=color:#ae81ff>0xF0</span>; <span style=color:#75715e>// Set timer to mode 0 (16-bit auto-reload)
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span>        TL0 <span style=color:#f92672>=</span> (<span style=color:#ae81ff>0xFFFF</span> <span style=color:#f92672>-</span> MCU_FREQ <span style=color:#f92672>/</span> UART_BUAD) <span style=color:#f92672>&amp;</span> <span style=color:#ae81ff>0xFF</span>; <span style=color:#75715e>// Set timer initial value
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span>        TH0 <span style=color:#f92672>=</span> ((<span style=color:#ae81ff>0xFFFF</span> <span style=color:#f92672>-</span> MCU_FREQ <span style=color:#f92672>/</span> UART_BUAD) <span style=color:#f92672>&gt;&gt;</span> <span style=color:#ae81ff>8</span>) <span style=color:#f92672>&amp;</span> <span style=color:#ae81ff>0xFF</span>; <span style=color:#75715e>// Set timer initial value
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    TR0 <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>; <span style=color:#75715e>// Timer0 starts counting
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    ET0 <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>; <span style=color:#75715e>// Enable timer0 interrupt
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    EA <span style=color:#f92672>=</span> <span style=color:#ae81ff>1</span>;
-</span></span><span style=display:flex><span>}
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span><span style=color:#75715e>/******************************************************************************/</span>
-</span></span><span style=display:flex><span><span style=color:#75715e>// Function name: uartSendData 
-</span></span></span><span style=display:flex><span><span style=color:#75715e>// Input parameters: ucData: byte to send
-</span></span></span><span style=display:flex><span><span style=color:#75715e>// Output parameters: none
-</span></span></span><span style=display:flex><span><span style=color:#75715e>// Function: Use serial port to send one byte of data 
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span><span style=color:#75715e>/******************************************************************************/</span>
-</span></span><span style=display:flex><span><span style=color:#66d9ef>void</span> <span style=color:#a6e22e>uartSendData</span>(u8 ucData)
-</span></span><span style=display:flex><span>{
-</span></span><span style=display:flex><span>    u8 ucCnt;
-</span></span><span style=display:flex><span>    <span style=color:#a6e22e>UART_TX_LOW</span>(); <span style=color:#75715e>// Serial start bit begins
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    TR0 <span style=color:#f92672>=</span> <span style=color:#ae81ff>1</span>; <span style=color:#75715e>// Timer0 starts counting
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    ET0 <span style=color:#f92672>=</span> <span style=color:#ae81ff>1</span>; <span style=color:#75715e>// Enable timer0 interrupt
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    bUartFlag <span style=color:#f92672>=</span> ON; 
-</span></span><span style=display:flex><span>    <span style=color:#66d9ef>while</span>(bUartFlag <span style=color:#f92672>==</span> ON);
-</span></span><span style=display:flex><span>    <span style=color:#75715e>/*
-</span></span></span><span style=display:flex><span><span style=color:#75715e>     * Starting from the lowest bit, output data through serial port
-</span></span></span><span style=display:flex><span><span style=color:#75715e>     */</span>
-</span></span><span style=display:flex><span>    <span style=color:#66d9ef>for</span> (ucCnt <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>; ucCnt <span style=color:#f92672>&lt;</span> <span style=color:#ae81ff>8</span>; ucCnt<span style=color:#f92672>++</span>) {
-</span></span><span style=display:flex><span>        <span style=color:#a6e22e>UART_TX_SET</span>(ucData <span style=color:#f92672>&amp;</span> <span style=color:#ae81ff>0x01</span>);
-</span></span><span style=display:flex><span>        ucData <span style=color:#f92672>&gt;&gt;=</span> <span style=color:#ae81ff>1</span>;
-</span></span><span style=display:flex><span>        bUartFlag <span style=color:#f92672>=</span> ON; 
-</span></span><span style=display:flex><span>        <span style=color:#66d9ef>while</span>(bUartFlag <span style=color:#f92672>==</span> ON);
-</span></span><span style=display:flex><span>    }
-</span></span><span style=display:flex><span>    <span style=color:#a6e22e>UART_TX_HIGH</span>(); <span style=color:#75715e>// Send serial stop bit  
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    bUartFlag <span style=color:#f92672>=</span> ON; 
-</span></span><span style=display:flex><span>    <span style=color:#66d9ef>while</span>(bUartFlag <span style=color:#f92672>==</span> ON);
-</span></span><span style=display:flex><span>    TR0 <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>; <span style=color:#75715e>// Timer0 stops counting
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    ET0 <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>; <span style=color:#75715e>// Disable timer0 interrupt
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span>}
-</span></span><span style=display:flex><span><span style=color:#75715e>/******************************************************************************/</span>
-</span></span><span style=display:flex><span><span style=color:#75715e>// Function name: uartSendString
-</span></span></span><span style=display:flex><span><span style=color:#75715e>// Input parameters: pS: string&#39;s address 
-</span></span></span><span style=display:flex><span><span style=color:#75715e>// Output parameters: none
-</span></span></span><span style=display:flex><span><span style=color:#75715e>// Function: Send string through serial output
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span><span style=color:#75715e>/******************************************************************************/</span>
-</span></span><span style=display:flex><span><span style=color:#66d9ef>void</span> <span style=color:#a6e22e>uartSendString</span>(<span style=color:#66d9ef>char</span> <span style=color:#f92672>*</span>pS)
-</span></span><span style=display:flex><span>{
-</span></span><span style=display:flex><span>    <span style=color:#66d9ef>while</span> (<span style=color:#f92672>*</span>pS)                      <span style=color:#75715e>// Check for string end marker
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    {
-</span></span><span style=display:flex><span>        <span style=color:#a6e22e>uartSendData</span>(<span style=color:#f92672>*</span>pS<span style=color:#f92672>++</span>);         <span style=color:#75715e>// Send current character
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    }
-</span></span><span style=display:flex><span>        <span style=color:#a6e22e>uartSendData</span>(<span style=color:#e6db74>&#39;\r&#39;</span>);
-</span></span><span style=display:flex><span>        <span style=color:#a6e22e>uartSendData</span>(<span style=color:#e6db74>&#39;\n&#39;</span>);
-</span></span><span style=display:flex><span>}
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span><span style=color:#66d9ef>void</span> <span style=color:#a6e22e>uartSendNum</span>(<span style=color:#66d9ef>int</span> num){           <span style=color:#75715e>// Use sprintf function to print integer (can also print decimal)
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#66d9ef>char</span> temp[<span style=color:#ae81ff>14</span>];
-</span></span><span style=display:flex><span>  <span style=color:#a6e22e>sprintf</span>(temp,<span style=color:#e6db74>&#34;%d&#34;</span>,num);
-</span></span><span style=display:flex><span>    <span style=color:#a6e22e>uartSendString</span>(temp);
-</span></span><span style=display:flex><span>}
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span><span style=color:#75715e>/******************************************************************************/</span>
-</span></span><span style=display:flex><span><span style=color:#75715e>// Function name: time0ISR 
-</span></span></span><span style=display:flex><span><span style=color:#75715e>// Input parameters: none
-</span></span></span><span style=display:flex><span><span style=color:#75715e>// Output parameters: none
-</span></span></span><span style=display:flex><span><span style=color:#75715e>// Function: Serial port 0 service function
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span><span style=color:#75715e>/******************************************************************************/</span>
-</span></span><span style=display:flex><span><span style=color:#66d9ef>void</span> <span style=color:#a6e22e>time0ISR</span>(<span style=color:#66d9ef>void</span>) interrupt <span style=color:#ae81ff>1</span> using <span style=color:#ae81ff>1</span>
-</span></span><span style=display:flex><span>{
-</span></span><span style=display:flex><span>    EA <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>;
-</span></span><span style=display:flex><span>    bUartFlag <span style=color:#f92672>=</span> OFF;
-</span></span><span style=display:flex><span>    EA <span style=color:#f92672>=</span> <span style=color:#ae81ff>1</span>;
-</span></span><span style=display:flex><span>}
-</span></span></code></pre></div><p>This code calls 15f204ea.h, which is a header file I downloaded from the STC website. For ease of reference, I won&rsquo;t list the entire file here as it&rsquo;s too long.</p><p>Now that we&rsquo;ve handled the serial display, let&rsquo;s move on to the 24l01 program code.</p><p>First is the H file:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-c data-lang=c><span style=display:flex><span><span style=color:#75715e>#ifndef __24L01_H
-</span></span></span><span style=display:flex><span><span style=color:#75715e>#define __24L01_H
-</span></span></span><span style=display:flex><span><span style=color:#75715e>#include</span> <span style=color:#75715e>&#34;15f204ea.h&#34;</span><span style=color:#75715e>
-</span></span></span><span style=display:flex><span><span style=color:#75715e>#define u8 unsigned char
-</span></span></span><span style=display:flex><span><span style=color:#75715e>#define u16 unsigned int
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span>
-</span></span><span style=display:flex><span><span style=color:#66d9ef>typedef</span> <span style=color:#66d9ef>unsigned</span> <span style=color:#66d9ef>char</span> uchar; 
-</span></span><span style=display:flex><span><span style=color:#66d9ef>typedef</span> <span style=color:#66d9ef>unsigned</span> <span style=color:#66d9ef>char</span> uint;
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span><span style=color:#75715e>/*nRF24L01 pin definitions*/</span> 
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span>sbit CE <span style=color:#f92672>=</span> P1<span style=color:#f92672>^</span><span style=color:#ae81ff>4</span>; 
-</span></span><span style=display:flex><span>sbit CSN <span style=color:#f92672>=</span> P1<span style=color:#f92672>^</span><span style=color:#ae81ff>5</span>; 
-</span></span><span style=display:flex><span>sbit SCK <span style=color:#f92672>=</span> P1<span style=color:#f92672>^</span><span style=color:#ae81ff>2</span>; 
-</span></span><span style=display:flex><span>sbit MOSI <span style=color:#f92672>=</span> P1<span style=color:#f92672>^</span><span style=color:#ae81ff>3</span>; 
-</span></span><span style=display:flex><span>sbit MISO <span style=color:#f92672>=</span> P1<span style=color:#f92672>^</span><span style=color:#ae81ff>0</span>; 
-</span></span><span style=display:flex><span>sbit IRQ <span style=color:#f92672>=</span> P1<span style=color:#f92672>^</span><span style=color:#ae81ff>1</span>; 
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span><span style=color:#75715e>//NRF24L01 register operation commands
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span><span style=color:#75715e>#define READ_NRF_REG 0x00 </span><span style=color:#75715e>//Read configuration register, lower 5 bits are register address
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span><span style=color:#75715e>#define WRITE_NRF_REG 0x20 </span><span style=color:#75715e>//Write configuration register, lower 5 bits are register address
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span><span style=color:#75715e>#define RD_RX_PLOAD 0x61 </span><span style=color:#75715e>//Read RX valid data, 1~32 bytes
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span><span style=color:#75715e>#define WR_TX_PLOAD 0xA0 </span><span style=color:#75715e>//Write TX valid data, 1~32 bytes
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span><span style=color:#75715e>#define FLUSH_TX 0xE1 </span><span style=color:#75715e>//Clear TX FIFO register. Used in transmit mode
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span><span style=color:#75715e>#define FLUSH_RX 0xE2 </span><span style=color:#75715e>//Clear RX FIFO register. Used in receive mode
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span><span style=color:#75715e>#define REUSE_TX_PL 0xE3 </span><span style=color:#75715e>//Reuse last sent packet, CE is high, data packet is continuously sent
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span><span style=color:#75715e>#define NOP 0xFF </span><span style=color:#75715e>//No operation, can be used to read status register
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span>
-</span></span><span style=display:flex><span><span style=color:#75715e>//SPI(NRF24L01) register addresses
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span><span style=color:#75715e>#define CONFIG 0x00 </span><span style=color:#75715e>//Configuration register address; bit0:1 receive mode, 0 transmit mode; bit1:power select; bit2:CRC mode; bit3:CRC enable;
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span>
-</span></span><span style=display:flex><span><span style=color:#75715e>//bit4:interrupt MAX_RT (max retransmit interruption) enable; bit5:interrupt TX_DS enable; bit6:interrupt RX_DR enable
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span><span style=color:#75715e>#define EN_AA 0x01 </span><span style=color:#75715e>//Enable auto-acknowledge function bit0~5, corresponding to channels 0~5
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span><span style=color:#75715e>#define EN_RXADDR 0x02 </span><span style=color:#75715e>//Receive address allow, bit0~5, corresponding to channels 0~5
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span><span style=color:#75715e>#define SETUP_AW 0x03 </span><span style=color:#75715e>//Set address width (all data channels): bit1,0:00,3 bytes; 01,4 bytes; 02,5 bytes;
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span><span style=color:#75715e>#define SETUP_RETR 0x04 </span><span style=color:#75715e>//Set auto retransmit; bit3:0, auto retransmit counter; bit7:4, auto retransmit delay 250*x+86us
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span><span style=color:#75715e>#define RF_CH 0x05 </span><span style=color:#75715e>//RF channel, bit6:0, working channel frequency;
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span><span style=color:#75715e>#define RF_SETUP 0x06 </span><span style=color:#75715e>//RF register; bit3:transmission rate(0:1Mbps,1:2Mbps); bit2:1, transmission power; bit0:low noise amplifier gain
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span><span style=color:#75715e>#define STATUS 0x07 </span><span style=color:#75715e>//Status register; bit0:TX FIFO full flag; bit3:1, receive data channel number (max:6); bit4, reached max retransmit
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span>
-</span></span><span style=display:flex><span><span style=color:#75715e>//bit5:data send complete interrupt; bit6:receive data interrupt
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span><span style=color:#75715e>#define MAX_TX 0x10 </span><span style=color:#75715e>//Reached maximum send times interrupt
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span><span style=color:#75715e>#define TX_OK 0x20 </span><span style=color:#75715e>//TX send complete interrupt
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span><span style=color:#75715e>#define RX_OK 0x40 </span><span style=color:#75715e>//Received data interrupt
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span><span style=color:#75715e>#define OBSERVE_TX 0x08 </span><span style=color:#75715e>//Send detection register, bit7:4, data packet loss counter; bit3:0, retransmit counter
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span><span style=color:#75715e>#define CD 0x09 </span><span style=color:#75715e>//Carrier detection register, bit0, carrier detection;
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span><span style=color:#75715e>#define RX_ADDR_P0 0x0A </span><span style=color:#75715e>//Data channel 0 receive address, max length 5 bytes, low byte first
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span><span style=color:#75715e>#define RX_ADDR_P1 0x0B </span><span style=color:#75715e>//Data channel 1 receive address, max length 5 bytes, low byte first
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span><span style=color:#75715e>#define RX_ADDR_P2 0x0C </span><span style=color:#75715e>//Data channel 2 receive address, lowest byte can be set, high bytes must be equal to RX_ADDR_P1[39:8];
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span><span style=color:#75715e>#define RX_ADDR_P3 0x0D </span><span style=color:#75715e>//Data channel 3 receive address, lowest byte can be set, high bytes must be equal to RX_ADDR_P1[39:8];
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span><span style=color:#75715e>#define RX_ADDR_P4 0x0E </span><span style=color:#75715e>//Data channel 4 receive address, lowest byte can be set, high bytes must be equal to RX_ADDR_P1[39:8];
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span><span style=color:#75715e>#define RX_ADDR_P5 0x0F </span><span style=color:#75715e>//Data channel 5 receive address, lowest byte can be set, high bytes must be equal to RX_ADDR_P1[39:8];
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span>
-</span></span><span style=display:flex><span><span style=color:#75715e>#define TX_ADDR 0x10 </span><span style=color:#75715e>//Send address (low byte first), under ShockBurstTM mode, RX_ADDR_P0 equals this address
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span><span style=color:#75715e>#define RX_PW_P0 0x11 </span><span style=color:#75715e>//Receive data channel 0 valid data width (1~32 bytes), setting to 0 is invalid
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span><span style=color:#75715e>#define RX_PW_P1 0x12 </span><span style=color:#75715e>//Receive data channel 1 valid data width (1~32 bytes), setting to 0 is invalid
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span><span style=color:#75715e>#define RX_PW_P2 0x13 </span><span style=color:#75715e>//Receive data channel 2 valid data width (1~32 bytes), setting to 0 is invalid
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span><span style=color:#75715e>#define RX_PW_P3 0x14 </span><span style=color:#75715e>//Receive data channel 3 valid data width (1~32 bytes), setting to 0 is invalid
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span><span style=color:#75715e>#define RX_PW_P4 0x15 </span><span style=color:#75715e>//Receive data channel 4 valid data width (1~32 bytes), setting to 0 is invalid
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span><span style=color:#75715e>#define RX_PW_P5 0x16 </span><span style=color:#75715e>//Receive data channel 5 valid data width (1~32 bytes), setting to 0 is invalid
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span><span style=color:#75715e>#define FIFO_STATUS 0x17 </span><span style=color:#75715e>//FIFO status register; bit0, RX FIFO register empty flag; bit1, RX FIFO full flag; bit2,3, reserved
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span>
-</span></span><span style=display:flex><span><span style=color:#75715e>//bit4, TX FIFO empty flag; bit5, TX FIFO full flag; bit6,1, cycle send previous data packet. 0, don&#39;t cycle;
-</span></span></span><span style=display:flex><span><span style=color:#75715e>//////////////////////////////////////////////////////////////////////////////
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span>
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span><span style=color:#75715e>//24L01 operation lines
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span><span style=color:#75715e>#define NRF24L01_CE  CE  </span><span style=color:#75715e>//24L01 chip select signal
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span><span style=color:#75715e>#define NRF24L01_CSN CSN </span><span style=color:#75715e>//SPI chip select signal
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span><span style=color:#75715e>#define NRF24L01_IRQ IRQ </span><span style=color:#75715e>//IRQ host data input
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span>
-</span></span><span style=display:flex><span><span style=color:#75715e>//24L01 send and receive data width definitions
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span><span style=color:#75715e>#define TX_ADR_WIDTH 5 </span><span style=color:#75715e>//5 bytes address width
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span><span style=color:#75715e>#define RX_ADR_WIDTH 5 </span><span style=color:#75715e>//5 bytes address width
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span><span style=color:#75715e>#define TX_PLOAD_WIDTH 32 </span><span style=color:#75715e>//20 bytes user data width
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span><span style=color:#75715e>#define RX_PLOAD_WIDTH 32 </span><span style=color:#75715e>//20 bytes user data width
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span>
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span><span style=color:#66d9ef>void</span> <span style=color:#a6e22e>NRF24L01_Init</span>(<span style=color:#66d9ef>void</span>);<span style=color:#75715e>//Initialization
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span><span style=color:#66d9ef>void</span> <span style=color:#a6e22e>RX_Mode</span>(<span style=color:#66d9ef>void</span>);<span style=color:#75715e>//Configure as receive mode
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span><span style=color:#66d9ef>void</span> <span style=color:#a6e22e>TX_Mode</span>(<span style=color:#66d9ef>void</span>);<span style=color:#75715e>//Configure as transmit mode
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span>
-</span></span><span style=display:flex><span>u8 <span style=color:#a6e22e>NRF24L01_Check</span>(<span style=color:#66d9ef>void</span>);<span style=color:#75715e>//Check if 24L01 exists
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span>u8 <span style=color:#a6e22e>NRF24L01_TxPacket</span>(u8 <span style=color:#f92672>*</span>txbuf);<span style=color:#75715e>//Send a packet of data
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span>u8 <span style=color:#a6e22e>NRF24L01_RxPacket</span>(u8 <span style=color:#f92672>*</span>rxbuf);<span style=color:#75715e>//Receive a packet of data
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span><span style=color:#75715e>#endif
-</span></span></span></code></pre></div><p>Next is the C file:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-c data-lang=c><span style=display:flex><span><span style=color:#75715e>#include</span> <span style=color:#75715e>&#34;15f204ea.h&#34;</span><span style=color:#75715e>
-</span></span></span><span style=display:flex><span><span style=color:#75715e>#include</span> <span style=color:#75715e>&#34;24l01.h&#34;</span><span style=color:#75715e>
-</span></span></span><span style=display:flex><span><span style=color:#75715e>#include</span> <span style=color:#75715e>&#34;intrins.h&#34;</span><span style=color:#75715e>
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span>
-</span></span><span style=display:flex><span><span style=color:#66d9ef>const</span> u8 TX_ADDRESS[TX_ADR_WIDTH]<span style=color:#f92672>=</span>{<span style=color:#ae81ff>0x34</span>,<span style=color:#ae81ff>0x43</span>,<span style=color:#ae81ff>0x10</span>,<span style=color:#ae81ff>0x10</span>,<span style=color:#ae81ff>0x03</span>}; <span style=color:#75715e>//Transmit address
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span><span style=color:#66d9ef>const</span> u8 RX_ADDRESS[RX_ADR_WIDTH]<span style=color:#f92672>=</span>{<span style=color:#ae81ff>0x34</span>,<span style=color:#ae81ff>0x43</span>,<span style=color:#ae81ff>0x10</span>,<span style=color:#ae81ff>0x10</span>,<span style=color:#ae81ff>0x03</span>}; <span style=color:#75715e>//Receive address
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span>
-</span></span><span style=display:flex><span><span style=color:#75715e>/******************************************************************************************
-</span></span></span><span style=display:flex><span><span style=color:#75715e>/*Delay function
-</span></span></span><span style=display:flex><span><span style=color:#75715e>/******************************************************************************************/</span>
-</span></span><span style=display:flex><span><span style=color:#66d9ef>void</span> <span style=color:#a6e22e>inerDelay_us</span>(<span style=color:#66d9ef>unsigned</span> <span style=color:#66d9ef>char</span> n)
-</span></span><span style=display:flex><span>{
-</span></span><span style=display:flex><span>    <span style=color:#66d9ef>for</span>(;n<span style=color:#f92672>&gt;</span><span style=color:#ae81ff>0</span>;n<span style=color:#f92672>--</span>)
-</span></span><span style=display:flex><span>        <span style=color:#a6e22e>_nop_</span>();
-</span></span><span style=display:flex><span>}
-</span></span><span style=display:flex><span><span style=color:#75715e>//****************************************************************************************
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span><span style=color:#75715e>/*NRF24L01 initialization
-</span></span></span><span style=display:flex><span><span style=color:#75715e>//***************************************************************************************/</span>
-</span></span><span style=display:flex><span><span style=color:#66d9ef>void</span> <span style=color:#a6e22e>NRF24L01_Init</span>(<span style=color:#66d9ef>void</span>)
-</span></span><span style=display:flex><span>{
-</span></span><span style=display:flex><span>  <span style=color:#a6e22e>inerDelay_us</span>(<span style=color:#ae81ff>100</span>);
-</span></span><span style=display:flex><span>     CE<span style=color:#f92672>=</span><span style=color:#ae81ff>0</span>;    <span style=color:#75715e>// chip enable
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span>     CSN<span style=color:#f92672>=</span><span style=color:#ae81ff>1</span>;   <span style=color:#75715e>// Spi disable 
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span>     SCK<span style=color:#f92672>=</span><span style=color:#ae81ff>0</span>;   <span style=color:#75715e>// 
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span>}
-</span></span><span style=display:flex><span><span style=color:#75715e>/****************************************************************************************************
-</span></span></span><span style=display:flex><span><span style=color:#75715e>/*Function: uint SPI_RW(uint uchar)
-</span></span></span><span style=display:flex><span><span style=color:#75715e>/*Function: NRF24L01 SPI write sequence
-</span></span></span><span style=display:flex><span><span style=color:#75715e>/****************************************************************************************************/</span>
-</span></span><span style=display:flex><span>uint <span style=color:#a6e22e>SPI_RW</span>(uint uchar)
-</span></span><span style=display:flex><span>{
-</span></span><span style=display:flex><span>    uint bit_ctr;
-</span></span><span style=display:flex><span>       <span style=color:#66d9ef>for</span>(bit_ctr<span style=color:#f92672>=</span><span style=color:#ae81ff>0</span>;bit_ctr<span style=color:#f92672>&lt;</span><span style=color:#ae81ff>8</span>;bit_ctr<span style=color:#f92672>++</span>) <span style=color:#75715e>// output 8-bit
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span>       {
-</span></span><span style=display:flex><span>            MOSI <span style=color:#f92672>=</span> (uchar <span style=color:#f92672>&amp;</span> <span style=color:#ae81ff>0x80</span>);         <span style=color:#75715e>// output &#39;uchar&#39;, MSB to MOSI
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span>            uchar <span style=color:#f92672>=</span> (uchar <span style=color:#f92672>&lt;&lt;</span> <span style=color:#ae81ff>1</span>);           <span style=color:#75715e>// shift next bit into MSB..
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span>            SCK <span style=color:#f92672>=</span> <span style=color:#ae81ff>1</span>;                      <span style=color:#75715e>// Set SCK high..
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span>            uchar <span style=color:#f92672>|=</span> MISO;                 <span style=color:#75715e>// capture current MISO bit
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span>            SCK <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>;                      <span style=color:#75715e>// ..then set SCK low again
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span>       }
-</span></span><span style=display:flex><span>    <span style=color:#66d9ef>return</span>(uchar);                     <span style=color:#75715e>// return read uchar
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span>}
-</span></span><span style=display:flex><span><span style=color:#75715e>/****************************************************************************************************
-</span></span></span><span style=display:flex><span><span style=color:#75715e>/*Function: uchar SPI_Read(uchar reg)
-</span></span></span><span style=display:flex><span><span style=color:#75715e>/*Function: NRF24L01 SPI sequence
-</span></span></span><span style=display:flex><span><span style=color:#75715e>/****************************************************************************************************/</span>
-</span></span><span style=display:flex><span>uchar <span style=color:#a6e22e>NRF24L01_Read_Reg</span>(uchar reg)
-</span></span><span style=display:flex><span>{
-</span></span><span style=display:flex><span>    uchar reg_val;
-</span></span><span style=display:flex><span>    
-</span></span><span style=display:flex><span>    CSN <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>;                <span style=color:#75715e>// CSN low, initialize SPI communication...
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#a6e22e>SPI_RW</span>(reg);            <span style=color:#75715e>// Select register to read from..
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    reg_val <span style=color:#f92672>=</span> <span style=color:#a6e22e>SPI_RW</span>(<span style=color:#ae81ff>0</span>);    <span style=color:#75715e>// ..then read registervalue
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    CSN <span style=color:#f92672>=</span> <span style=color:#ae81ff>1</span>;                <span style=color:#75715e>// CSN high, terminate SPI communication
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    
-</span></span><span style=display:flex><span>    <span style=color:#66d9ef>return</span>(reg_val);        <span style=color:#75715e>// return register value
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span>}
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span><span style=color:#75715e>/****************************************************************************************************/</span>
-</span></span><span style=display:flex><span><span style=color:#75715e>/*Function: NRF24L01 read and write register function
-</span></span></span><span style=display:flex><span><span style=color:#75715e>/****************************************************************************************************/</span>
-</span></span><span style=display:flex><span>uint <span style=color:#a6e22e>NRF24L01_Write_Reg</span>(uchar reg, uchar value)
-</span></span><span style=display:flex><span>{
-</span></span><span style=display:flex><span>    uint status;
-</span></span><span style=display:flex><span>    
-</span></span><span style=display:flex><span>    CSN <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>;                   <span style=color:#75715e>// CSN low, init SPI transaction
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    status <span style=color:#f92672>=</span> <span style=color:#a6e22e>SPI_RW</span>(reg);      <span style=color:#75715e>// select register
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#a6e22e>SPI_RW</span>(value);             <span style=color:#75715e>// ..and write value to it..
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    CSN <span style=color:#f92672>=</span> <span style=color:#ae81ff>1</span>;                   <span style=color:#75715e>// CSN high again
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    
-</span></span><span style=display:flex><span>    <span style=color:#66d9ef>return</span>(status);            <span style=color:#75715e>// return nRF24L01 status uchar
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span>}
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span><span style=color:#75715e>/****************************************************************************************************/</span>
-</span></span><span style=display:flex><span><span style=color:#75715e>/*Function: uint SPI_Read_Buf(uchar reg, uchar *pBuf, uchar uchars)
-</span></span></span><span style=display:flex><span><span style=color:#75715e>/*Function: Used to read data, reg: register address, pBuf: destination data address, uchars: number of bytes to read
-</span></span></span><span style=display:flex><span><span style=color:#75715e>/****************************************************************************************************/</span>
-</span></span><span style=display:flex><span>uint <span style=color:#a6e22e>NRF24L01_Read_Buf</span>(uchar reg, uchar <span style=color:#f92672>*</span>pBuf, uchar uchars)
-</span></span><span style=display:flex><span>{
-</span></span><span style=display:flex><span>    uint status,uchar_ctr;
-</span></span><span style=display:flex><span>    
-</span></span><span style=display:flex><span>    CSN <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>;                            <span style=color:#75715e>// Set CSN low, init SPI tranaction
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    status <span style=color:#f92672>=</span> <span style=color:#a6e22e>SPI_RW</span>(reg);               <span style=color:#75715e>// Select register to write to and read status uchar
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    
-</span></span><span style=display:flex><span>    <span style=color:#66d9ef>for</span>(uchar_ctr<span style=color:#f92672>=</span><span style=color:#ae81ff>0</span>;uchar_ctr<span style=color:#f92672>&lt;</span>uchars;uchar_ctr<span style=color:#f92672>++</span>)
-</span></span><span style=display:flex><span>        pBuf[uchar_ctr] <span style=color:#f92672>=</span> <span style=color:#a6e22e>SPI_RW</span>(<span style=color:#ae81ff>0</span>);    <span style=color:#75715e>// 
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    
-</span></span><span style=display:flex><span>    CSN <span style=color:#f92672>=</span> <span style=color:#ae81ff>1</span>;                           
-</span></span><span style=display:flex><span>    
-</span></span><span style=display:flex><span>    <span style=color:#66d9ef>return</span>(status);                    <span style=color:#75715e>// return nRF24L01 status uchar
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span>}
-</span></span><span style=display:flex><span><span style=color:#75715e>/*********************************************************************************************************
-</span></span></span><span style=display:flex><span><span style=color:#75715e>/*Function: uint SPI_Write_Buf(uchar reg, uchar *pBuf, uchar uchars)
-</span></span></span><span style=display:flex><span><span style=color:#75715e>/*Function: Used to write data: register address, pBuf: data to write, uchars: number of bytes to write
-</span></span></span><span style=display:flex><span><span style=color:#75715e>/*********************************************************************************************************/</span>
-</span></span><span style=display:flex><span>uint <span style=color:#a6e22e>NRF24L01_Write_Buf</span>(uchar reg, uchar <span style=color:#f92672>*</span>pBuf, uchar uchars)
-</span></span><span style=display:flex><span>{
-</span></span><span style=display:flex><span>    uint status,uchar_ctr;
-</span></span><span style=display:flex><span>    
-</span></span><span style=display:flex><span>    CSN <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>;            <span style=color:#75715e>//SPI enable       
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    status <span style=color:#f92672>=</span> <span style=color:#a6e22e>SPI_RW</span>(reg);   
-</span></span><span style=display:flex><span>    <span style=color:#66d9ef>for</span>(uchar_ctr<span style=color:#f92672>=</span><span style=color:#ae81ff>0</span>; uchar_ctr<span style=color:#f92672>&lt;</span>uchars; uchar_ctr<span style=color:#f92672>++</span>) <span style=color:#75715e>//
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span>        <span style=color:#a6e22e>SPI_RW</span>(<span style=color:#f92672>*</span>pBuf<span style=color:#f92672>++</span>);
-</span></span><span style=display:flex><span>    CSN <span style=color:#f92672>=</span> <span style=color:#ae81ff>1</span>;           <span style=color:#75715e>//Close SPI
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#66d9ef>return</span>(status);    <span style=color:#75715e>// 
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span>}
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span><span style=color:#75715e>//Check if 24L01 exists
-</span></span></span><span style=display:flex><span><span style=color:#75715e>//Return value: 0, success; 1, failure
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span>u8 <span style=color:#a6e22e>NRF24L01_Check</span>(<span style=color:#66d9ef>void</span>)
-</span></span><span style=display:flex><span>{
-</span></span><span style=display:flex><span>    u8 buf[<span style=color:#ae81ff>5</span>]<span style=color:#f92672>=</span>{<span style=color:#ae81ff>0</span>XA5,<span style=color:#ae81ff>0</span>XA5,<span style=color:#ae81ff>0</span>XA5,<span style=color:#ae81ff>0</span>XA5,<span style=color:#ae81ff>0</span>XA5};
-</span></span><span style=display:flex><span>    u8 i;
-</span></span><span style=display:flex><span>    <span style=color:#a6e22e>NRF24L01_Write_Buf</span>(WRITE_NRF_REG<span style=color:#f92672>+</span>TX_ADDR,buf,<span style=color:#ae81ff>5</span>);<span style=color:#75715e>//Write 5 bytes address
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#a6e22e>NRF24L01_Read_Buf</span>(TX_ADDR,buf,<span style=color:#ae81ff>5</span>); <span style=color:#75715e>//Read the written address
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#66d9ef>for</span>(i<span style=color:#f92672>=</span><span style=color:#ae81ff>0</span>;i<span style=color:#f92672>&lt;</span><span style=color:#ae81ff>5</span>;i<span style=color:#f92672>++</span>) <span style=color:#66d9ef>if</span>(buf[i]<span style=color:#f92672>!=</span><span style=color:#ae81ff>0</span>XA5)<span style=color:#66d9ef>break</span>;
-</span></span><span style=display:flex><span>    <span style=color:#66d9ef>if</span>(i<span style=color:#f92672>!=</span><span style=color:#ae81ff>5</span>)<span style=color:#66d9ef>return</span> <span style=color:#ae81ff>1</span>;<span style=color:#75715e>//24L01 detection error
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#66d9ef>return</span> <span style=color:#ae81ff>0</span>; <span style=color:#75715e>//24L01 detected
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span>}
-</span></span><span style=display:flex><span>u8 <span style=color:#a6e22e>NRF24L01_TxPacket</span>(u8 <span style=color:#f92672>*</span>txbuf)
-</span></span><span style=display:flex><span>{
-</span></span><span style=display:flex><span>    u8 sta;
-</span></span><span style=display:flex><span>    NRF24L01_CE<span style=color:#f92672>=</span><span style=color:#ae81ff>0</span>;
-</span></span><span style=display:flex><span>    <span style=color:#a6e22e>NRF24L01_Write_Buf</span>(WR_TX_PLOAD,txbuf,TX_PLOAD_WIDTH);<span style=color:#75715e>//Write data to TX BUF, 32 bytes
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    NRF24L01_CE<span style=color:#f92672>=</span><span style=color:#ae81ff>1</span>;<span style=color:#75715e>//Start transmission
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#66d9ef>while</span>(NRF24L01_IRQ<span style=color:#f92672>!=</span><span style=color:#ae81ff>0</span>);<span style=color:#75715e>//Wait for transmission to complete
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    sta<span style=color:#f92672>=</span><span style=color:#a6e22e>NRF24L01_Read_Reg</span>(STATUS); <span style=color:#75715e>//Read status register value
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#a6e22e>NRF24L01_Write_Reg</span>(WRITE_NRF_REG<span style=color:#f92672>+</span>STATUS,sta); <span style=color:#75715e>//Clear TX_DS or MAX_RT interrupt flag
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#66d9ef>if</span>(sta<span style=color:#f92672>&amp;</span>MAX_TX)<span style=color:#75715e>//Maximum retransmission reached
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    {
-</span></span><span style=display:flex><span>        <span style=color:#a6e22e>NRF24L01_Write_Reg</span>(FLUSH_TX,<span style=color:#ae81ff>0xff</span>);<span style=color:#75715e>//Clear TX FIFO register
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span>        <span style=color:#66d9ef>return</span> MAX_TX;
-</span></span><span style=display:flex><span>    }
-</span></span><span style=display:flex><span>    <span style=color:#66d9ef>if</span>(sta<span style=color:#f92672>&amp;</span>TX_OK)<span style=color:#75715e>//Transmission completed
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    {
-</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> TX_OK;
-</span></span><span style=display:flex><span>    }
-</span></span><span style=display:flex><span>    <span style=color:#66d9ef>return</span> <span style=color:#ae81ff>0xff</span>;<span style=color:#75715e>//Other reasons for transmission failure
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span>}
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span><span style=color:#75715e>//Start NRF24L01 to send data once
-</span></span></span><span style=display:flex><span><span style=color:#75715e>//txbuf: data source address to be sent
-</span></span></span><span style=display:flex><span><span style=color:#75715e>//Return value: 0, reception complete; others, error code
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span>u8 <span style=color:#a6e22e>NRF24L01_RxPacket</span>(u8 <span style=color:#f92672>*</span>rxbuf)
-</span></span><span style=display:flex><span>{
-</span></span><span style=display:flex><span>    u8 sta;
-</span></span><span style=display:flex><span>    sta<span style=color:#f92672>=</span><span style=color:#a6e22e>NRF24L01_Read_Reg</span>(STATUS); <span style=color:#75715e>//Read status register value
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#a6e22e>NRF24L01_Write_Reg</span>(WRITE_NRF_REG<span style=color:#f92672>+</span>STATUS,sta); <span style=color:#75715e>//Clear TX_DS or MAX_RT interrupt flag
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#66d9ef>if</span>(sta<span style=color:#f92672>&amp;</span>RX_OK)<span style=color:#75715e>//Data received
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    {
-</span></span><span style=display:flex><span>    <span style=color:#a6e22e>NRF24L01_Read_Buf</span>(RD_RX_PLOAD,rxbuf,RX_PLOAD_WIDTH);<span style=color:#75715e>//Read data
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#a6e22e>NRF24L01_Write_Reg</span>(FLUSH_RX,<span style=color:#ae81ff>0xff</span>);<span style=color:#75715e>//Clear RX FIFO register
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#66d9ef>return</span> <span style=color:#ae81ff>0</span>;
-</span></span><span style=display:flex><span>    }
-</span></span><span style=display:flex><span>    <span style=color:#66d9ef>return</span> <span style=color:#ae81ff>1</span>;<span style=color:#75715e>//No data received
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span>}
-</span></span><span style=display:flex><span><span style=color:#75715e>//This function initializes NRF24L01 to RX mode
-</span></span></span><span style=display:flex><span><span style=color:#75715e>//Set RX address, write RX data width, select RF channel, baud rate and LNA HCURR
-</span></span></span><span style=display:flex><span><span style=color:#75715e>//When CE becomes high, it enters RX mode and can receive data
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span><span style=color:#66d9ef>void</span> <span style=color:#a6e22e>RX_Mode</span>(<span style=color:#66d9ef>void</span>)
-</span></span><span style=display:flex><span>{
-</span></span><span style=display:flex><span>    NRF24L01_CE<span style=color:#f92672>=</span><span style=color:#ae81ff>0</span>;
-</span></span><span style=display:flex><span>    <span style=color:#a6e22e>NRF24L01_Write_Buf</span>(WRITE_NRF_REG<span style=color:#f92672>+</span>RX_ADDR_P0,(u8<span style=color:#f92672>*</span>)RX_ADDRESS,RX_ADR_WIDTH);<span style=color:#75715e>//Write RX node address
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#a6e22e>NRF24L01_Write_Reg</span>(WRITE_NRF_REG<span style=color:#f92672>+</span>EN_AA,<span style=color:#ae81ff>0x01</span>); <span style=color:#75715e>//Enable channel 0 auto-acknowledge
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#a6e22e>NRF24L01_Write_Reg</span>(WRITE_NRF_REG<span style=color:#f92672>+</span>EN_RXADDR,<span style=color:#ae81ff>0x01</span>);<span style=color:#75715e>//Enable channel 0 receive address
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#a6e22e>NRF24L01_Write_Reg</span>(WRITE_NRF_REG<span style=color:#f92672>+</span>RF_CH,<span style=color:#ae81ff>40</span>); <span style=color:#75715e>//Set RF communication frequency
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#a6e22e>NRF24L01_Write_Reg</span>(WRITE_NRF_REG<span style=color:#f92672>+</span>RX_PW_P0,RX_PLOAD_WIDTH);<span style=color:#75715e>//Select channel 0 valid data width
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#a6e22e>NRF24L01_Write_Reg</span>(WRITE_NRF_REG<span style=color:#f92672>+</span>RF_SETUP,<span style=color:#ae81ff>0x0f</span>);<span style=color:#75715e>//Set TX transmission parameters, 0db gain, 2Mbps, low noise gain enabled
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#a6e22e>NRF24L01_Write_Reg</span>(WRITE_NRF_REG<span style=color:#f92672>+</span>CONFIG, <span style=color:#ae81ff>0x0f</span>);<span style=color:#75715e>//Configure basic working mode parameters: PWR_UP, EN_CRC, 16BIT_CRC, receive mode
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    NRF24L01_CE <span style=color:#f92672>=</span> <span style=color:#ae81ff>1</span>; <span style=color:#75715e>//CE is high, enter receive mode
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span>}
-</span></span><span style=display:flex><span><span style=color:#75715e>//This function initializes NRF24L01 to TX mode
-</span></span></span><span style=display:flex><span><span style=color:#75715e>//Set TX address, write TX data width, set RX auto-acknowledge address, fill TX send data, select RF channel, baud rate and LNA HCURR
-</span></span></span><span style=display:flex><span><span style=color:#75715e>//PWR_UP, CRC enable
-</span></span></span><span style=display:flex><span><span style=color:#75715e>//When CE becomes high, it enters RX mode and can receive data
-</span></span></span><span style=display:flex><span><span style=color:#75715e>//CE high for more than 10us will start transmission
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span><span style=color:#66d9ef>void</span> <span style=color:#a6e22e>TX_Mode</span>(<span style=color:#66d9ef>void</span>)
-</span></span><span style=display:flex><span>{
-</span></span><span style=display:flex><span>    NRF24L01_CE<span style=color:#f92672>=</span><span style=color:#ae81ff>0</span>;
-</span></span><span style=display:flex><span>    <span style=color:#a6e22e>NRF24L01_Write_Buf</span>(WRITE_NRF_REG<span style=color:#f92672>+</span>TX_ADDR,(u8<span style=color:#f92672>*</span>)TX_ADDRESS,TX_ADR_WIDTH);<span style=color:#75715e>//Write TX node address
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#a6e22e>NRF24L01_Write_Buf</span>(WRITE_NRF_REG<span style=color:#f92672>+</span>RX_ADDR_P0,(u8<span style=color:#f92672>*</span>)RX_ADDRESS,RX_ADR_WIDTH); <span style=color:#75715e>//Set TX node address, mainly to enable ACK
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#a6e22e>NRF24L01_Write_Reg</span>(WRITE_NRF_REG<span style=color:#f92672>+</span>EN_AA,<span style=color:#ae81ff>0x01</span>); <span style=color:#75715e>//Enable channel 0 auto-acknowledge
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#a6e22e>NRF24L01_Write_Reg</span>(WRITE_NRF_REG<span style=color:#f92672>+</span>EN_RXADDR,<span style=color:#ae81ff>0x01</span>); <span style=color:#75715e>//Enable channel 0 receive address
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#a6e22e>NRF24L01_Write_Reg</span>(WRITE_NRF_REG<span style=color:#f92672>+</span>SETUP_RETR,<span style=color:#ae81ff>0x1a</span>);<span style=color:#75715e>//Set auto retransmit interval time: 500us + 86us; maximum auto retransmit times: 10
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#a6e22e>NRF24L01_Write_Reg</span>(WRITE_NRF_REG<span style=color:#f92672>+</span>RF_CH,<span style=color:#ae81ff>40</span>); <span style=color:#75715e>//Set RF channel to 40
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#a6e22e>NRF24L01_Write_Reg</span>(WRITE_NRF_REG<span style=color:#f92672>+</span>RF_SETUP,<span style=color:#ae81ff>0x0f</span>); <span style=color:#75715e>//Set TX transmission parameters, 0db gain, 2Mbps, low noise gain enabled
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#a6e22e>NRF24L01_Write_Reg</span>(WRITE_NRF_REG<span style=color:#f92672>+</span>CONFIG,<span style=color:#ae81ff>0x0e</span>); <span style=color:#75715e>//Configure basic working mode parameters: PWR_UP, EN_CRC, 16BIT_CRC, receive mode, enable all interrupts
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    NRF24L01_CE<span style=color:#f92672>=</span><span style=color:#ae81ff>1</span>;<span style=color:#75715e>//CE is high, start transmission after 10us
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#a6e22e>inerDelay_us</span>(<span style=color:#ae81ff>20</span>);
-</span></span><span style=display:flex><span>}
-</span></span></code></pre></div><p>Next is the main program debugging section:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-c data-lang=c><span style=display:flex><span><span style=color:#75715e>#include</span> <span style=color:#75715e>&#34;15f204ea.h&#34;</span><span style=color:#75715e>
-</span></span></span><span style=display:flex><span><span style=color:#75715e>#include</span> <span style=color:#75715e>&#34;24l01.h&#34;</span><span style=color:#75715e>
-</span></span></span><span style=display:flex><span><span style=color:#75715e>#include</span> <span style=color:#75715e>&#34;uart.h&#34;</span><span style=color:#75715e>
-</span></span></span><span style=display:flex><span><span style=color:#75715e>#include</span> <span style=color:#75715e>&#34;intrins.h&#34;</span><span style=color:#75715e>
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span>
-</span></span><span style=display:flex><span><span style=color:#66d9ef>void</span> <span style=color:#a6e22e>delay500ms</span>(<span style=color:#66d9ef>void</span>)   <span style=color:#75715e>//Error -0.000000000063us
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span>{
-</span></span><span style=display:flex><span>    <span style=color:#66d9ef>unsigned</span> <span style=color:#66d9ef>char</span> a,b,c;
-</span></span><span style=display:flex><span>    <span style=color:#66d9ef>for</span>(c<span style=color:#f92672>=</span><span style=color:#ae81ff>212</span>;c<span style=color:#f92672>&gt;</span><span style=color:#ae81ff>0</span>;c<span style=color:#f92672>--</span>)
-</span></span><span style=display:flex><span>        <span style=color:#66d9ef>for</span>(b<span style=color:#f92672>=</span><span style=color:#ae81ff>160</span>;b<span style=color:#f92672>&gt;</span><span style=color:#ae81ff>0</span>;b<span style=color:#f92672>--</span>)
-</span></span><span style=display:flex><span>            <span style=color:#66d9ef>for</span>(a<span style=color:#f92672>=</span><span style=color:#ae81ff>80</span>;a<span style=color:#f92672>&gt;</span><span style=color:#ae81ff>0</span>;a<span style=color:#f92672>--</span>);
-</span></span><span style=display:flex><span>    <span style=color:#a6e22e>_nop_</span>();  <span style=color:#75715e>//if Keil, require use intrins.h
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span>}
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span><span style=color:#66d9ef>void</span> <span style=color:#a6e22e>delay100us</span>(<span style=color:#66d9ef>void</span>)   <span style=color:#75715e>//Error -0.083188657407us
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span>{
-</span></span><span style=display:flex><span>    <span style=color:#66d9ef>unsigned</span> <span style=color:#66d9ef>char</span> a,b;
-</span></span><span style=display:flex><span>    <span style=color:#66d9ef>for</span>(b<span style=color:#f92672>=</span><span style=color:#ae81ff>58</span>;b<span style=color:#f92672>&gt;</span><span style=color:#ae81ff>0</span>;b<span style=color:#f92672>--</span>)
-</span></span><span style=display:flex><span>        <span style=color:#66d9ef>for</span>(a<span style=color:#f92672>=</span><span style=color:#ae81ff>8</span>;a<span style=color:#f92672>&gt;</span><span style=color:#ae81ff>0</span>;a<span style=color:#f92672>--</span>);
-</span></span><span style=display:flex><span>}
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span><span style=color:#66d9ef>void</span> <span style=color:#a6e22e>main</span>(){
-</span></span><span style=display:flex><span>    u8 tmp_buf[<span style=color:#ae81ff>33</span>];
-</span></span><span style=display:flex><span>    u8 key,mode;
-</span></span><span style=display:flex><span>    u16 t<span style=color:#f92672>=</span><span style=color:#ae81ff>0</span>;
-</span></span><span style=display:flex><span>    <span style=color:#a6e22e>delay500ms</span>();
-</span></span><span style=display:flex><span>    <span style=color:#a6e22e>uartInit</span>();
-</span></span><span style=display:flex><span>    <span style=color:#a6e22e>uartSendString</span>(<span style=color:#e6db74>&#34;Test&#34;</span>);
-</span></span><span style=display:flex><span>    <span style=color:#a6e22e>uartSendNum</span>(<span style=color:#ae81ff>1234</span>);
-</span></span><span style=display:flex><span>    <span style=color:#a6e22e>NRF24L01_Init</span>();
-</span></span><span style=display:flex><span>    <span style=color:#66d9ef>while</span>(<span style=color:#a6e22e>NRF24L01_Check</span>())<span style=color:#75715e>//Cannot detect 24L01
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    {
-</span></span><span style=display:flex><span>        <span style=color:#a6e22e>uartSendString</span>(<span style=color:#e6db74>&#34;Initialization failed&#34;</span>);
-</span></span><span style=display:flex><span>        <span style=color:#a6e22e>delay500ms</span>();
-</span></span><span style=display:flex><span>        <span style=color:#a6e22e>uartSendString</span>(<span style=color:#e6db74>&#34;Please check&#34;</span>);
-</span></span><span style=display:flex><span>        <span style=color:#a6e22e>delay500ms</span>();
-</span></span><span style=display:flex><span>    }
-</span></span><span style=display:flex><span>    <span style=color:#a6e22e>uartSendString</span>(<span style=color:#e6db74>&#34;Starting&#34;</span>);
-</span></span><span style=display:flex><span>    <span style=color:#66d9ef>if</span>(<span style=color:#ae81ff>0</span>){
-</span></span><span style=display:flex><span>        <span style=color:#a6e22e>RX_Mode</span>();
-</span></span><span style=display:flex><span>        <span style=color:#a6e22e>uartSendString</span>(<span style=color:#e6db74>&#34;Receive mode&#34;</span>);
-</span></span><span style=display:flex><span>        <span style=color:#66d9ef>while</span>(<span style=color:#ae81ff>1</span>){
-</span></span><span style=display:flex><span>            <span style=color:#66d9ef>if</span>(<span style=color:#a6e22e>NRF24L01_RxPacket</span>(tmp_buf)<span style=color:#f92672>==</span><span style=color:#ae81ff>0</span>){
-</span></span><span style=display:flex><span>                tmp_buf[<span style=color:#ae81ff>32</span>]<span style=color:#f92672>=</span><span style=color:#ae81ff>0</span>;<span style=color:#75715e>//Add string terminator
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span>                <span style=color:#a6e22e>uartSendString</span>(tmp_buf);
-</span></span><span style=display:flex><span>            }
-</span></span><span style=display:flex><span>            <span style=color:#66d9ef>else</span> <span style=color:#a6e22e>delay100us</span>();
-</span></span><span style=display:flex><span>        }
-</span></span><span style=display:flex><span>    }
-</span></span><span style=display:flex><span>    <span style=color:#66d9ef>else</span>{
-</span></span><span style=display:flex><span>        <span style=color:#a6e22e>TX_Mode</span>();
-</span></span><span style=display:flex><span>        <span style=color:#a6e22e>uartSendString</span>(<span style=color:#e6db74>&#34;Transmit mode&#34;</span>);
-</span></span><span style=display:flex><span>        mode<span style=color:#f92672>=</span><span style=color:#e6db74>&#39; &#39;</span>;<span style=color:#75715e>//Start from space character
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span>        <span style=color:#66d9ef>while</span>(<span style=color:#ae81ff>1</span>){
-</span></span><span style=display:flex><span>            <span style=color:#66d9ef>if</span>(<span style=color:#a6e22e>NRF24L01_TxPacket</span>(tmp_buf)<span style=color:#f92672>==</span>TX_OK)
-</span></span><span style=display:flex><span>            {
-</span></span><span style=display:flex><span>                <span style=color:#a6e22e>uartSendString</span>(tmp_buf);
-</span></span><span style=display:flex><span>                key<span style=color:#f92672>=</span>mode;
-</span></span><span style=display:flex><span>                <span style=color:#66d9ef>for</span>(t<span style=color:#f92672>=</span><span style=color:#ae81ff>0</span>;t<span style=color:#f92672>&lt;</span><span style=color:#ae81ff>32</span>;t<span style=color:#f92672>++</span>)
-</span></span><span style=display:flex><span>                {
-</span></span><span style=display:flex><span>                    key<span style=color:#f92672>++</span>;
-</span></span><span style=display:flex><span>                    <span style=color:#66d9ef>if</span>(key<span style=color:#f92672>&gt;</span>(<span style=color:#e6db74>&#39;~&#39;</span>))key<span style=color:#f92672>=</span><span style=color:#e6db74>&#39; &#39;</span>;
-</span></span><span style=display:flex><span>                    tmp_buf[t]<span style=color:#f92672>=</span>key;
-</span></span><span style=display:flex><span>                }
-</span></span><span style=display:flex><span>                mode<span style=color:#f92672>++</span>;
-</span></span><span style=display:flex><span>                <span style=color:#66d9ef>if</span>(mode<span style=color:#f92672>&gt;</span><span style=color:#e6db74>&#39;~&#39;</span>)mode<span style=color:#f92672>=</span><span style=color:#e6db74>&#39; &#39;</span>;
-</span></span><span style=display:flex><span>                    tmp_buf[<span style=color:#ae81ff>32</span>]<span style=color:#f92672>=</span><span style=color:#ae81ff>0</span>;<span style=color:#75715e>//Add terminator
-</span></span></span><span style=display:flex><span><span style=color:#75715e></span>            }
-</span></span><span style=display:flex><span>            <span style=color:#66d9ef>else</span>{
-</span></span><span style=display:flex><span>                <span style=color:#a6e22e>uartSendString</span>(<span style=color:#e6db74>&#34;Send failed&#34;</span>);
-</span></span><span style=display:flex><span>            };
-</span></span><span style=display:flex><span>            <span style=color:#a6e22e>delay500ms</span>();            
-</span></span><span style=display:flex><span>        }
-</span></span><span style=display:flex><span>    }
-</span></span><span style=display:flex><span>}
-</span></span></code></pre></div><p>Set the crystal to 11.0594MHZ, then write the program.</p><p>First, connect the serial port, then power on. After half a second, the program will send serial data &ldquo;Test&rdquo; and the number &ldquo;1234&rdquo; to the computer. Note that the serial working frequency is 38400.</p><p>If you can receive serial data correctly, then everything is fine; otherwise, there&rsquo;s an issue with the frequency settings or the data cable.</p><p>The program will then perform a check. Upon success, it returns &ldquo;Starting&rdquo;; upon failure, it displays &ldquo;Initialization failed&rdquo; and &ldquo;Please check&rdquo;. Failure is either because the nrf24l01 is damaged or the pins are connected incorrectly.</p><p>Depending on the value in the if statement&rsquo;s parentheses (0 or 1), the program will enter either receive mode or transmit mode.</p><p>In receive mode, the program will send &ldquo;Receive mode&rdquo; through the serial port. If it receives data, it will return the data content.</p><p>In transmit mode, the program will send a code (a sequence of changing characters) to the specified address. If transmission is successful, it returns the length of the data sent and the data itself. When sending fails, it will display &ldquo;Send failed&rdquo;.</p><p>If sending fails, it might be because the receiver doesn&rsquo;t exist. In this case, NRF24L01_TxPacket returns 10 (maximum retransmission attempts) instead of 32 (data bit count), so an error is reported.</p><p>It could also be due to other reasons, in which case NRF24L01 returns 0xff, indicating other causes of failure. In this situation, the problem is unclear and needs careful investigation.</p><p>By writing the transmit program to one chip and the receive program to another, you can see the effect ^_^</p><p>Thus, NRF24L01 and STC15F204EA (STC15L204EA) communication is achieved.</p></section><footer class=article-footer><section class=article-tags><a href=/tags/nrf24l01/>NRF24L01</a>
+<time class=article-time--reading>14 minute read</time></div></footer><footer class=article-translations><svg class="icon icon-tabler icon-tabler-language" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 5h7"/><path d="M9 3v2c0 4.418-2.239 8-5 8"/><path d="M5 9c-.003 2.144 2.952 3.908 6.7 4"/><path d="M12 20l4-9 4 9"/><path d="M19.1 18h-6.2"/></svg><div><a href=https://nansenli.com/zh-cn/post/kokeyuan/nrf24l01-stc15f204ea-wireless-communication/ class=link>中文</a></div></footer></div></header><section class=article-content><p>This code is suitable for small wireless transceiver modules composed of NRF24L01 and STC15F204EA (STC15L204EA), and can also be applied to general 51 microcontrollers communicating with NRF24L01.</p><p>A few days ago, I bought a small wireless transceiver module online. The source code provided by the seller was very simple and not particularly useful, so I ported the STM3224l01 program from ATOM, which is more complete and practical.</p><p>Since there are almost no pins available to display transmission and reception content, serial communication is used to display the content.</p><p>Applicable module image:</p><p><img src=/img/rescued/6297a49400b0.png loading=lazy alt="Module image"></p><p>Main wiring diagram:</p><p><img src=/img/rescued/e6ede2277ff3.png loading=lazy alt="Wiring diagram"></p><p>First, for serial display, I collected the following code. The reason it&rsquo;s so complex is that this chip doesn&rsquo;t have a serial port function.</p><p>First is the H file:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-c data-lang=c><span class=line><span class=cl><span class=cp>#ifndef _UART_H
+</span></span></span><span class=line><span class=cl><span class=cp>#define _UART_H
+</span></span></span><span class=line><span class=cl><span class=cp></span>
+</span></span><span class=line><span class=cl><span class=cp>#define MCU_FREQ                             11059200 </span><span class=c1>// Set crystal frequency
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=cp>#define UART_BUAD                            38400
+</span></span></span><span class=line><span class=cl><span class=cp>#define ON                                   1
+</span></span></span><span class=line><span class=cl><span class=cp>#define OFF                                  0  
+</span></span></span><span class=line><span class=cl><span class=cp></span>
+</span></span><span class=line><span class=cl><span class=cp>#define UART_TX_PIN                          P31
+</span></span></span><span class=line><span class=cl><span class=cp>#define UART_TX_SET(n)                       UART_TX_PIN = n
+</span></span></span><span class=line><span class=cl><span class=cp>#define UART_TX_HIGH()                       UART_TX_SET(1)
+</span></span></span><span class=line><span class=cl><span class=cp>#define UART_TX_LOW()                        UART_TX_SET(0)
+</span></span></span><span class=line><span class=cl><span class=cp>#define UART_TX_FLIP()                       UART_TX_PIN = !UART_TX_PIN
+</span></span></span><span class=line><span class=cl><span class=cp></span>
+</span></span><span class=line><span class=cl><span class=cp>#define UART_RX_PIN                          P30
+</span></span></span><span class=line><span class=cl><span class=cp>#define UART_RX_SET(n)                       UART_RX_PIN = n
+</span></span></span><span class=line><span class=cl><span class=cp>#define UART_RX_HIGH()                       UART_RX_SET(1)
+</span></span></span><span class=line><span class=cl><span class=cp>#define UART_RX_LOW()                        UART_RX_SET(0)
+</span></span></span><span class=line><span class=cl><span class=cp>#define UART_RX_FLIP()                       UART_RX_PIN = !UART_RX_PIN
+</span></span></span><span class=line><span class=cl><span class=cp></span>
+</span></span><span class=line><span class=cl><span class=kt>void</span> <span class=nf>uartInit</span><span class=p>(</span><span class=kt>void</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=kt>void</span> <span class=nf>uartSendString</span><span class=p>(</span><span class=kt>char</span> <span class=o>*</span><span class=n>pS</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=kt>void</span> <span class=nf>uartSendNum</span><span class=p>(</span><span class=kt>int</span> <span class=n>num</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=cp>#endif
+</span></span></span></code></pre></td></tr></table></div></div><p>In the file, you need to set the crystal frequency and baud rate correctly, which are MCU_FREQ and UART_BUAD respectively. Once set, they enable correct transmission and reception.</p><p>Next is the C file:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span><span class=lnt>45
+</span><span class=lnt>46
+</span><span class=lnt>47
+</span><span class=lnt>48
+</span><span class=lnt>49
+</span><span class=lnt>50
+</span><span class=lnt>51
+</span><span class=lnt>52
+</span><span class=lnt>53
+</span><span class=lnt>54
+</span><span class=lnt>55
+</span><span class=lnt>56
+</span><span class=lnt>57
+</span><span class=lnt>58
+</span><span class=lnt>59
+</span><span class=lnt>60
+</span><span class=lnt>61
+</span><span class=lnt>62
+</span><span class=lnt>63
+</span><span class=lnt>64
+</span><span class=lnt>65
+</span><span class=lnt>66
+</span><span class=lnt>67
+</span><span class=lnt>68
+</span><span class=lnt>69
+</span><span class=lnt>70
+</span><span class=lnt>71
+</span><span class=lnt>72
+</span><span class=lnt>73
+</span><span class=lnt>74
+</span><span class=lnt>75
+</span><span class=lnt>76
+</span><span class=lnt>77
+</span><span class=lnt>78
+</span><span class=lnt>79
+</span><span class=lnt>80
+</span><span class=lnt>81
+</span><span class=lnt>82
+</span><span class=lnt>83
+</span><span class=lnt>84
+</span><span class=lnt>85
+</span><span class=lnt>86
+</span><span class=lnt>87
+</span><span class=lnt>88
+</span><span class=lnt>89
+</span><span class=lnt>90
+</span><span class=lnt>91
+</span><span class=lnt>92
+</span><span class=lnt>93
+</span><span class=lnt>94
+</span><span class=lnt>95
+</span><span class=lnt>96
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-c data-lang=c><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&#34;stdio.h&#34;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&#34;uart.h&#34;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&#34;15f204ea.h&#34;                // Header file provided by STC official website</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp></span>
+</span></span><span class=line><span class=cl><span class=k>typedef</span> <span class=kt>unsigned</span> <span class=kt>char</span> <span class=n>u8</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=k>typedef</span> <span class=kt>unsigned</span> <span class=kt>short</span> <span class=n>u16</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=k>typedef</span> <span class=kt>unsigned</span> <span class=kt>int</span> <span class=n>u32</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>typedef</span> <span class=kt>unsigned</span> <span class=kt>char</span> <span class=n>uchar</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=k>typedef</span> <span class=kt>unsigned</span> <span class=kt>int</span> <span class=n>uint</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=k>typedef</span> <span class=kt>unsigned</span> <span class=kt>char</span> <span class=n>BYTE</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=k>static</span> <span class=n>bit</span> <span class=n>bUartFlag</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=cm>/******************************************************************************/</span>
+</span></span><span class=line><span class=cl><span class=c1>// Function name: uartInit 
+</span></span></span><span class=line><span class=cl><span class=c1>// Input parameters: none
+</span></span></span><span class=line><span class=cl><span class=c1>// Output parameters: none
+</span></span></span><span class=line><span class=cl><span class=c1>// Function: Set up timer0 operating mode 
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=cm>/******************************************************************************/</span>
+</span></span><span class=line><span class=cl><span class=kt>void</span> <span class=nf>uartInit</span><span class=p>(</span><span class=kt>void</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=cm>/*
+</span></span></span><span class=line><span class=cl><span class=cm>     * Set timer0 as 16-bit auto-reload timer
+</span></span></span><span class=line><span class=cl><span class=cm>    */</span>
+</span></span><span class=line><span class=cl>    <span class=n>AUXR</span> <span class=o>|=</span> <span class=mh>0x80</span><span class=p>;</span> <span class=c1>// Timer0 in 1T mode
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=n>TMOD</span> <span class=o>&amp;=</span> <span class=mh>0xF0</span><span class=p>;</span> <span class=c1>// Set timer to mode 0 (16-bit auto-reload)
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=n>TL0</span> <span class=o>=</span> <span class=p>(</span><span class=mh>0xFFFF</span> <span class=o>-</span> <span class=n>MCU_FREQ</span> <span class=o>/</span> <span class=n>UART_BUAD</span><span class=p>)</span> <span class=o>&amp;</span> <span class=mh>0xFF</span><span class=p>;</span> <span class=c1>// Set timer initial value
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=n>TH0</span> <span class=o>=</span> <span class=p>((</span><span class=mh>0xFFFF</span> <span class=o>-</span> <span class=n>MCU_FREQ</span> <span class=o>/</span> <span class=n>UART_BUAD</span><span class=p>)</span> <span class=o>&gt;&gt;</span> <span class=mi>8</span><span class=p>)</span> <span class=o>&amp;</span> <span class=mh>0xFF</span><span class=p>;</span> <span class=c1>// Set timer initial value
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=n>TR0</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span> <span class=c1>// Timer0 starts counting
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=n>ET0</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span> <span class=c1>// Enable timer0 interrupt
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=n>EA</span> <span class=o>=</span> <span class=mi>1</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=cm>/******************************************************************************/</span>
+</span></span><span class=line><span class=cl><span class=c1>// Function name: uartSendData 
+</span></span></span><span class=line><span class=cl><span class=c1>// Input parameters: ucData: byte to send
+</span></span></span><span class=line><span class=cl><span class=c1>// Output parameters: none
+</span></span></span><span class=line><span class=cl><span class=c1>// Function: Use serial port to send one byte of data 
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=cm>/******************************************************************************/</span>
+</span></span><span class=line><span class=cl><span class=kt>void</span> <span class=nf>uartSendData</span><span class=p>(</span><span class=n>u8</span> <span class=n>ucData</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=n>u8</span> <span class=n>ucCnt</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=nf>UART_TX_LOW</span><span class=p>();</span> <span class=c1>// Serial start bit begins
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=n>TR0</span> <span class=o>=</span> <span class=mi>1</span><span class=p>;</span> <span class=c1>// Timer0 starts counting
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=n>ET0</span> <span class=o>=</span> <span class=mi>1</span><span class=p>;</span> <span class=c1>// Enable timer0 interrupt
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=n>bUartFlag</span> <span class=o>=</span> <span class=n>ON</span><span class=p>;</span> 
+</span></span><span class=line><span class=cl>    <span class=k>while</span><span class=p>(</span><span class=n>bUartFlag</span> <span class=o>==</span> <span class=n>ON</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=cm>/*
+</span></span></span><span class=line><span class=cl><span class=cm>     * Starting from the lowest bit, output data through serial port
+</span></span></span><span class=line><span class=cl><span class=cm>     */</span>
+</span></span><span class=line><span class=cl>    <span class=k>for</span> <span class=p>(</span><span class=n>ucCnt</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span> <span class=n>ucCnt</span> <span class=o>&lt;</span> <span class=mi>8</span><span class=p>;</span> <span class=n>ucCnt</span><span class=o>++</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=nf>UART_TX_SET</span><span class=p>(</span><span class=n>ucData</span> <span class=o>&amp;</span> <span class=mh>0x01</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=n>ucData</span> <span class=o>&gt;&gt;=</span> <span class=mi>1</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=n>bUartFlag</span> <span class=o>=</span> <span class=n>ON</span><span class=p>;</span> 
+</span></span><span class=line><span class=cl>        <span class=k>while</span><span class=p>(</span><span class=n>bUartFlag</span> <span class=o>==</span> <span class=n>ON</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=nf>UART_TX_HIGH</span><span class=p>();</span> <span class=c1>// Send serial stop bit  
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=n>bUartFlag</span> <span class=o>=</span> <span class=n>ON</span><span class=p>;</span> 
+</span></span><span class=line><span class=cl>    <span class=k>while</span><span class=p>(</span><span class=n>bUartFlag</span> <span class=o>==</span> <span class=n>ON</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=n>TR0</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span> <span class=c1>// Timer0 stops counting
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=n>ET0</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span> <span class=c1>// Disable timer0 interrupt
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=cm>/******************************************************************************/</span>
+</span></span><span class=line><span class=cl><span class=c1>// Function name: uartSendString
+</span></span></span><span class=line><span class=cl><span class=c1>// Input parameters: pS: string&#39;s address 
+</span></span></span><span class=line><span class=cl><span class=c1>// Output parameters: none
+</span></span></span><span class=line><span class=cl><span class=c1>// Function: Send string through serial output
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=cm>/******************************************************************************/</span>
+</span></span><span class=line><span class=cl><span class=kt>void</span> <span class=nf>uartSendString</span><span class=p>(</span><span class=kt>char</span> <span class=o>*</span><span class=n>pS</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>while</span> <span class=p>(</span><span class=o>*</span><span class=n>pS</span><span class=p>)</span>                      <span class=c1>// Check for string end marker
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=nf>uartSendData</span><span class=p>(</span><span class=o>*</span><span class=n>pS</span><span class=o>++</span><span class=p>);</span>         <span class=c1>// Send current character
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>        <span class=nf>uartSendData</span><span class=p>(</span><span class=sc>&#39;\r&#39;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=nf>uartSendData</span><span class=p>(</span><span class=sc>&#39;\n&#39;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kt>void</span> <span class=nf>uartSendNum</span><span class=p>(</span><span class=kt>int</span> <span class=n>num</span><span class=p>){</span>           <span class=c1>// Use sprintf function to print integer (can also print decimal)
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=kt>char</span> <span class=n>temp</span><span class=p>[</span><span class=mi>14</span><span class=p>];</span>
+</span></span><span class=line><span class=cl>  <span class=nf>sprintf</span><span class=p>(</span><span class=n>temp</span><span class=p>,</span><span class=s>&#34;%d&#34;</span><span class=p>,</span><span class=n>num</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=nf>uartSendString</span><span class=p>(</span><span class=n>temp</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=cm>/******************************************************************************/</span>
+</span></span><span class=line><span class=cl><span class=c1>// Function name: time0ISR 
+</span></span></span><span class=line><span class=cl><span class=c1>// Input parameters: none
+</span></span></span><span class=line><span class=cl><span class=c1>// Output parameters: none
+</span></span></span><span class=line><span class=cl><span class=c1>// Function: Serial port 0 service function
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=cm>/******************************************************************************/</span>
+</span></span><span class=line><span class=cl><span class=kt>void</span> <span class=nf>time0ISR</span><span class=p>(</span><span class=kt>void</span><span class=p>)</span> <span class=n>interrupt</span> <span class=mi>1</span> <span class=n>using</span> <span class=mi>1</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=n>EA</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=n>bUartFlag</span> <span class=o>=</span> <span class=n>OFF</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=n>EA</span> <span class=o>=</span> <span class=mi>1</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>This code calls 15f204ea.h, which is a header file I downloaded from the STC website. For ease of reference, I won&rsquo;t list the entire file here as it&rsquo;s too long.</p><p>Now that we&rsquo;ve handled the serial display, let&rsquo;s move on to the 24l01 program code.</p><p>First is the H file:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span><span class=lnt>45
+</span><span class=lnt>46
+</span><span class=lnt>47
+</span><span class=lnt>48
+</span><span class=lnt>49
+</span><span class=lnt>50
+</span><span class=lnt>51
+</span><span class=lnt>52
+</span><span class=lnt>53
+</span><span class=lnt>54
+</span><span class=lnt>55
+</span><span class=lnt>56
+</span><span class=lnt>57
+</span><span class=lnt>58
+</span><span class=lnt>59
+</span><span class=lnt>60
+</span><span class=lnt>61
+</span><span class=lnt>62
+</span><span class=lnt>63
+</span><span class=lnt>64
+</span><span class=lnt>65
+</span><span class=lnt>66
+</span><span class=lnt>67
+</span><span class=lnt>68
+</span><span class=lnt>69
+</span><span class=lnt>70
+</span><span class=lnt>71
+</span><span class=lnt>72
+</span><span class=lnt>73
+</span><span class=lnt>74
+</span><span class=lnt>75
+</span><span class=lnt>76
+</span><span class=lnt>77
+</span><span class=lnt>78
+</span><span class=lnt>79
+</span><span class=lnt>80
+</span><span class=lnt>81
+</span><span class=lnt>82
+</span><span class=lnt>83
+</span><span class=lnt>84
+</span><span class=lnt>85
+</span><span class=lnt>86
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-c data-lang=c><span class=line><span class=cl><span class=cp>#ifndef __24L01_H
+</span></span></span><span class=line><span class=cl><span class=cp>#define __24L01_H
+</span></span></span><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&#34;15f204ea.h&#34;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp>#define u8 unsigned char
+</span></span></span><span class=line><span class=cl><span class=cp>#define u16 unsigned int
+</span></span></span><span class=line><span class=cl><span class=cp></span>
+</span></span><span class=line><span class=cl><span class=k>typedef</span> <span class=kt>unsigned</span> <span class=kt>char</span> <span class=n>uchar</span><span class=p>;</span> 
+</span></span><span class=line><span class=cl><span class=k>typedef</span> <span class=kt>unsigned</span> <span class=kt>char</span> <span class=n>uint</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=cm>/*nRF24L01 pin definitions*/</span> 
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>sbit</span> <span class=n>CE</span> <span class=o>=</span> <span class=n>P1</span><span class=o>^</span><span class=mi>4</span><span class=p>;</span> 
+</span></span><span class=line><span class=cl><span class=n>sbit</span> <span class=n>CSN</span> <span class=o>=</span> <span class=n>P1</span><span class=o>^</span><span class=mi>5</span><span class=p>;</span> 
+</span></span><span class=line><span class=cl><span class=n>sbit</span> <span class=n>SCK</span> <span class=o>=</span> <span class=n>P1</span><span class=o>^</span><span class=mi>2</span><span class=p>;</span> 
+</span></span><span class=line><span class=cl><span class=n>sbit</span> <span class=n>MOSI</span> <span class=o>=</span> <span class=n>P1</span><span class=o>^</span><span class=mi>3</span><span class=p>;</span> 
+</span></span><span class=line><span class=cl><span class=n>sbit</span> <span class=n>MISO</span> <span class=o>=</span> <span class=n>P1</span><span class=o>^</span><span class=mi>0</span><span class=p>;</span> 
+</span></span><span class=line><span class=cl><span class=n>sbit</span> <span class=n>IRQ</span> <span class=o>=</span> <span class=n>P1</span><span class=o>^</span><span class=mi>1</span><span class=p>;</span> 
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>//NRF24L01 register operation commands
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=cp>#define READ_NRF_REG 0x00 </span><span class=c1>//Read configuration register, lower 5 bits are register address
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=cp>#define WRITE_NRF_REG 0x20 </span><span class=c1>//Write configuration register, lower 5 bits are register address
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=cp>#define RD_RX_PLOAD 0x61 </span><span class=c1>//Read RX valid data, 1~32 bytes
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=cp>#define WR_TX_PLOAD 0xA0 </span><span class=c1>//Write TX valid data, 1~32 bytes
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=cp>#define FLUSH_TX 0xE1 </span><span class=c1>//Clear TX FIFO register. Used in transmit mode
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=cp>#define FLUSH_RX 0xE2 </span><span class=c1>//Clear RX FIFO register. Used in receive mode
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=cp>#define REUSE_TX_PL 0xE3 </span><span class=c1>//Reuse last sent packet, CE is high, data packet is continuously sent
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=cp>#define NOP 0xFF </span><span class=c1>//No operation, can be used to read status register
+</span></span></span><span class=line><span class=cl><span class=c1></span>
+</span></span><span class=line><span class=cl><span class=c1>//SPI(NRF24L01) register addresses
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=cp>#define CONFIG 0x00 </span><span class=c1>//Configuration register address; bit0:1 receive mode, 0 transmit mode; bit1:power select; bit2:CRC mode; bit3:CRC enable;
+</span></span></span><span class=line><span class=cl><span class=c1></span>
+</span></span><span class=line><span class=cl><span class=c1>//bit4:interrupt MAX_RT (max retransmit interruption) enable; bit5:interrupt TX_DS enable; bit6:interrupt RX_DR enable
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=cp>#define EN_AA 0x01 </span><span class=c1>//Enable auto-acknowledge function bit0~5, corresponding to channels 0~5
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=cp>#define EN_RXADDR 0x02 </span><span class=c1>//Receive address allow, bit0~5, corresponding to channels 0~5
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=cp>#define SETUP_AW 0x03 </span><span class=c1>//Set address width (all data channels): bit1,0:00,3 bytes; 01,4 bytes; 02,5 bytes;
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=cp>#define SETUP_RETR 0x04 </span><span class=c1>//Set auto retransmit; bit3:0, auto retransmit counter; bit7:4, auto retransmit delay 250*x+86us
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=cp>#define RF_CH 0x05 </span><span class=c1>//RF channel, bit6:0, working channel frequency;
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=cp>#define RF_SETUP 0x06 </span><span class=c1>//RF register; bit3:transmission rate(0:1Mbps,1:2Mbps); bit2:1, transmission power; bit0:low noise amplifier gain
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=cp>#define STATUS 0x07 </span><span class=c1>//Status register; bit0:TX FIFO full flag; bit3:1, receive data channel number (max:6); bit4, reached max retransmit
+</span></span></span><span class=line><span class=cl><span class=c1></span>
+</span></span><span class=line><span class=cl><span class=c1>//bit5:data send complete interrupt; bit6:receive data interrupt
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=cp>#define MAX_TX 0x10 </span><span class=c1>//Reached maximum send times interrupt
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=cp>#define TX_OK 0x20 </span><span class=c1>//TX send complete interrupt
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=cp>#define RX_OK 0x40 </span><span class=c1>//Received data interrupt
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=cp>#define OBSERVE_TX 0x08 </span><span class=c1>//Send detection register, bit7:4, data packet loss counter; bit3:0, retransmit counter
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=cp>#define CD 0x09 </span><span class=c1>//Carrier detection register, bit0, carrier detection;
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=cp>#define RX_ADDR_P0 0x0A </span><span class=c1>//Data channel 0 receive address, max length 5 bytes, low byte first
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=cp>#define RX_ADDR_P1 0x0B </span><span class=c1>//Data channel 1 receive address, max length 5 bytes, low byte first
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=cp>#define RX_ADDR_P2 0x0C </span><span class=c1>//Data channel 2 receive address, lowest byte can be set, high bytes must be equal to RX_ADDR_P1[39:8];
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=cp>#define RX_ADDR_P3 0x0D </span><span class=c1>//Data channel 3 receive address, lowest byte can be set, high bytes must be equal to RX_ADDR_P1[39:8];
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=cp>#define RX_ADDR_P4 0x0E </span><span class=c1>//Data channel 4 receive address, lowest byte can be set, high bytes must be equal to RX_ADDR_P1[39:8];
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=cp>#define RX_ADDR_P5 0x0F </span><span class=c1>//Data channel 5 receive address, lowest byte can be set, high bytes must be equal to RX_ADDR_P1[39:8];
+</span></span></span><span class=line><span class=cl><span class=c1></span>
+</span></span><span class=line><span class=cl><span class=cp>#define TX_ADDR 0x10 </span><span class=c1>//Send address (low byte first), under ShockBurstTM mode, RX_ADDR_P0 equals this address
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=cp>#define RX_PW_P0 0x11 </span><span class=c1>//Receive data channel 0 valid data width (1~32 bytes), setting to 0 is invalid
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=cp>#define RX_PW_P1 0x12 </span><span class=c1>//Receive data channel 1 valid data width (1~32 bytes), setting to 0 is invalid
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=cp>#define RX_PW_P2 0x13 </span><span class=c1>//Receive data channel 2 valid data width (1~32 bytes), setting to 0 is invalid
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=cp>#define RX_PW_P3 0x14 </span><span class=c1>//Receive data channel 3 valid data width (1~32 bytes), setting to 0 is invalid
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=cp>#define RX_PW_P4 0x15 </span><span class=c1>//Receive data channel 4 valid data width (1~32 bytes), setting to 0 is invalid
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=cp>#define RX_PW_P5 0x16 </span><span class=c1>//Receive data channel 5 valid data width (1~32 bytes), setting to 0 is invalid
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=cp>#define FIFO_STATUS 0x17 </span><span class=c1>//FIFO status register; bit0, RX FIFO register empty flag; bit1, RX FIFO full flag; bit2,3, reserved
+</span></span></span><span class=line><span class=cl><span class=c1></span>
+</span></span><span class=line><span class=cl><span class=c1>//bit4, TX FIFO empty flag; bit5, TX FIFO full flag; bit6,1, cycle send previous data packet. 0, don&#39;t cycle;
+</span></span></span><span class=line><span class=cl><span class=c1>//////////////////////////////////////////////////////////////////////////////
+</span></span></span><span class=line><span class=cl><span class=c1></span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>//24L01 operation lines
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=cp>#define NRF24L01_CE  CE  </span><span class=c1>//24L01 chip select signal
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=cp>#define NRF24L01_CSN CSN </span><span class=c1>//SPI chip select signal
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=cp>#define NRF24L01_IRQ IRQ </span><span class=c1>//IRQ host data input
+</span></span></span><span class=line><span class=cl><span class=c1></span>
+</span></span><span class=line><span class=cl><span class=c1>//24L01 send and receive data width definitions
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=cp>#define TX_ADR_WIDTH 5 </span><span class=c1>//5 bytes address width
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=cp>#define RX_ADR_WIDTH 5 </span><span class=c1>//5 bytes address width
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=cp>#define TX_PLOAD_WIDTH 32 </span><span class=c1>//20 bytes user data width
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=cp>#define RX_PLOAD_WIDTH 32 </span><span class=c1>//20 bytes user data width
+</span></span></span><span class=line><span class=cl><span class=c1></span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kt>void</span> <span class=nf>NRF24L01_Init</span><span class=p>(</span><span class=kt>void</span><span class=p>);</span><span class=c1>//Initialization
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=kt>void</span> <span class=nf>RX_Mode</span><span class=p>(</span><span class=kt>void</span><span class=p>);</span><span class=c1>//Configure as receive mode
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=kt>void</span> <span class=nf>TX_Mode</span><span class=p>(</span><span class=kt>void</span><span class=p>);</span><span class=c1>//Configure as transmit mode
+</span></span></span><span class=line><span class=cl><span class=c1></span>
+</span></span><span class=line><span class=cl><span class=n>u8</span> <span class=nf>NRF24L01_Check</span><span class=p>(</span><span class=kt>void</span><span class=p>);</span><span class=c1>//Check if 24L01 exists
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=n>u8</span> <span class=nf>NRF24L01_TxPacket</span><span class=p>(</span><span class=n>u8</span> <span class=o>*</span><span class=n>txbuf</span><span class=p>);</span><span class=c1>//Send a packet of data
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=n>u8</span> <span class=nf>NRF24L01_RxPacket</span><span class=p>(</span><span class=n>u8</span> <span class=o>*</span><span class=n>rxbuf</span><span class=p>);</span><span class=c1>//Receive a packet of data
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=cp>#endif
+</span></span></span></code></pre></td></tr></table></div></div><p>Next is the C file:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>  1
+</span><span class=lnt>  2
+</span><span class=lnt>  3
+</span><span class=lnt>  4
+</span><span class=lnt>  5
+</span><span class=lnt>  6
+</span><span class=lnt>  7
+</span><span class=lnt>  8
+</span><span class=lnt>  9
+</span><span class=lnt> 10
+</span><span class=lnt> 11
+</span><span class=lnt> 12
+</span><span class=lnt> 13
+</span><span class=lnt> 14
+</span><span class=lnt> 15
+</span><span class=lnt> 16
+</span><span class=lnt> 17
+</span><span class=lnt> 18
+</span><span class=lnt> 19
+</span><span class=lnt> 20
+</span><span class=lnt> 21
+</span><span class=lnt> 22
+</span><span class=lnt> 23
+</span><span class=lnt> 24
+</span><span class=lnt> 25
+</span><span class=lnt> 26
+</span><span class=lnt> 27
+</span><span class=lnt> 28
+</span><span class=lnt> 29
+</span><span class=lnt> 30
+</span><span class=lnt> 31
+</span><span class=lnt> 32
+</span><span class=lnt> 33
+</span><span class=lnt> 34
+</span><span class=lnt> 35
+</span><span class=lnt> 36
+</span><span class=lnt> 37
+</span><span class=lnt> 38
+</span><span class=lnt> 39
+</span><span class=lnt> 40
+</span><span class=lnt> 41
+</span><span class=lnt> 42
+</span><span class=lnt> 43
+</span><span class=lnt> 44
+</span><span class=lnt> 45
+</span><span class=lnt> 46
+</span><span class=lnt> 47
+</span><span class=lnt> 48
+</span><span class=lnt> 49
+</span><span class=lnt> 50
+</span><span class=lnt> 51
+</span><span class=lnt> 52
+</span><span class=lnt> 53
+</span><span class=lnt> 54
+</span><span class=lnt> 55
+</span><span class=lnt> 56
+</span><span class=lnt> 57
+</span><span class=lnt> 58
+</span><span class=lnt> 59
+</span><span class=lnt> 60
+</span><span class=lnt> 61
+</span><span class=lnt> 62
+</span><span class=lnt> 63
+</span><span class=lnt> 64
+</span><span class=lnt> 65
+</span><span class=lnt> 66
+</span><span class=lnt> 67
+</span><span class=lnt> 68
+</span><span class=lnt> 69
+</span><span class=lnt> 70
+</span><span class=lnt> 71
+</span><span class=lnt> 72
+</span><span class=lnt> 73
+</span><span class=lnt> 74
+</span><span class=lnt> 75
+</span><span class=lnt> 76
+</span><span class=lnt> 77
+</span><span class=lnt> 78
+</span><span class=lnt> 79
+</span><span class=lnt> 80
+</span><span class=lnt> 81
+</span><span class=lnt> 82
+</span><span class=lnt> 83
+</span><span class=lnt> 84
+</span><span class=lnt> 85
+</span><span class=lnt> 86
+</span><span class=lnt> 87
+</span><span class=lnt> 88
+</span><span class=lnt> 89
+</span><span class=lnt> 90
+</span><span class=lnt> 91
+</span><span class=lnt> 92
+</span><span class=lnt> 93
+</span><span class=lnt> 94
+</span><span class=lnt> 95
+</span><span class=lnt> 96
+</span><span class=lnt> 97
+</span><span class=lnt> 98
+</span><span class=lnt> 99
+</span><span class=lnt>100
+</span><span class=lnt>101
+</span><span class=lnt>102
+</span><span class=lnt>103
+</span><span class=lnt>104
+</span><span class=lnt>105
+</span><span class=lnt>106
+</span><span class=lnt>107
+</span><span class=lnt>108
+</span><span class=lnt>109
+</span><span class=lnt>110
+</span><span class=lnt>111
+</span><span class=lnt>112
+</span><span class=lnt>113
+</span><span class=lnt>114
+</span><span class=lnt>115
+</span><span class=lnt>116
+</span><span class=lnt>117
+</span><span class=lnt>118
+</span><span class=lnt>119
+</span><span class=lnt>120
+</span><span class=lnt>121
+</span><span class=lnt>122
+</span><span class=lnt>123
+</span><span class=lnt>124
+</span><span class=lnt>125
+</span><span class=lnt>126
+</span><span class=lnt>127
+</span><span class=lnt>128
+</span><span class=lnt>129
+</span><span class=lnt>130
+</span><span class=lnt>131
+</span><span class=lnt>132
+</span><span class=lnt>133
+</span><span class=lnt>134
+</span><span class=lnt>135
+</span><span class=lnt>136
+</span><span class=lnt>137
+</span><span class=lnt>138
+</span><span class=lnt>139
+</span><span class=lnt>140
+</span><span class=lnt>141
+</span><span class=lnt>142
+</span><span class=lnt>143
+</span><span class=lnt>144
+</span><span class=lnt>145
+</span><span class=lnt>146
+</span><span class=lnt>147
+</span><span class=lnt>148
+</span><span class=lnt>149
+</span><span class=lnt>150
+</span><span class=lnt>151
+</span><span class=lnt>152
+</span><span class=lnt>153
+</span><span class=lnt>154
+</span><span class=lnt>155
+</span><span class=lnt>156
+</span><span class=lnt>157
+</span><span class=lnt>158
+</span><span class=lnt>159
+</span><span class=lnt>160
+</span><span class=lnt>161
+</span><span class=lnt>162
+</span><span class=lnt>163
+</span><span class=lnt>164
+</span><span class=lnt>165
+</span><span class=lnt>166
+</span><span class=lnt>167
+</span><span class=lnt>168
+</span><span class=lnt>169
+</span><span class=lnt>170
+</span><span class=lnt>171
+</span><span class=lnt>172
+</span><span class=lnt>173
+</span><span class=lnt>174
+</span><span class=lnt>175
+</span><span class=lnt>176
+</span><span class=lnt>177
+</span><span class=lnt>178
+</span><span class=lnt>179
+</span><span class=lnt>180
+</span><span class=lnt>181
+</span><span class=lnt>182
+</span><span class=lnt>183
+</span><span class=lnt>184
+</span><span class=lnt>185
+</span><span class=lnt>186
+</span><span class=lnt>187
+</span><span class=lnt>188
+</span><span class=lnt>189
+</span><span class=lnt>190
+</span><span class=lnt>191
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-c data-lang=c><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&#34;15f204ea.h&#34;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&#34;24l01.h&#34;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&#34;intrins.h&#34;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp></span>
+</span></span><span class=line><span class=cl><span class=k>const</span> <span class=n>u8</span> <span class=n>TX_ADDRESS</span><span class=p>[</span><span class=n>TX_ADR_WIDTH</span><span class=p>]</span><span class=o>=</span><span class=p>{</span><span class=mh>0x34</span><span class=p>,</span><span class=mh>0x43</span><span class=p>,</span><span class=mh>0x10</span><span class=p>,</span><span class=mh>0x10</span><span class=p>,</span><span class=mh>0x03</span><span class=p>};</span> <span class=c1>//Transmit address
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=k>const</span> <span class=n>u8</span> <span class=n>RX_ADDRESS</span><span class=p>[</span><span class=n>RX_ADR_WIDTH</span><span class=p>]</span><span class=o>=</span><span class=p>{</span><span class=mh>0x34</span><span class=p>,</span><span class=mh>0x43</span><span class=p>,</span><span class=mh>0x10</span><span class=p>,</span><span class=mh>0x10</span><span class=p>,</span><span class=mh>0x03</span><span class=p>};</span> <span class=c1>//Receive address
+</span></span></span><span class=line><span class=cl><span class=c1></span>
+</span></span><span class=line><span class=cl><span class=cm>/******************************************************************************************
+</span></span></span><span class=line><span class=cl><span class=cm>/*Delay function
+</span></span></span><span class=line><span class=cl><span class=cm>/******************************************************************************************/</span>
+</span></span><span class=line><span class=cl><span class=kt>void</span> <span class=nf>inerDelay_us</span><span class=p>(</span><span class=kt>unsigned</span> <span class=kt>char</span> <span class=n>n</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>for</span><span class=p>(;</span><span class=n>n</span><span class=o>&gt;</span><span class=mi>0</span><span class=p>;</span><span class=n>n</span><span class=o>--</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=nf>_nop_</span><span class=p>();</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=c1>//****************************************************************************************
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=cm>/*NRF24L01 initialization
+</span></span></span><span class=line><span class=cl><span class=cm>//***************************************************************************************/</span>
+</span></span><span class=line><span class=cl><span class=kt>void</span> <span class=nf>NRF24L01_Init</span><span class=p>(</span><span class=kt>void</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=nf>inerDelay_us</span><span class=p>(</span><span class=mi>100</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>     <span class=n>CE</span><span class=o>=</span><span class=mi>0</span><span class=p>;</span>    <span class=c1>// chip enable
+</span></span></span><span class=line><span class=cl><span class=c1></span>     <span class=n>CSN</span><span class=o>=</span><span class=mi>1</span><span class=p>;</span>   <span class=c1>// Spi disable 
+</span></span></span><span class=line><span class=cl><span class=c1></span>     <span class=n>SCK</span><span class=o>=</span><span class=mi>0</span><span class=p>;</span>   <span class=c1>// 
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=cm>/****************************************************************************************************
+</span></span></span><span class=line><span class=cl><span class=cm>/*Function: uint SPI_RW(uint uchar)
+</span></span></span><span class=line><span class=cl><span class=cm>/*Function: NRF24L01 SPI write sequence
+</span></span></span><span class=line><span class=cl><span class=cm>/****************************************************************************************************/</span>
+</span></span><span class=line><span class=cl><span class=n>uint</span> <span class=nf>SPI_RW</span><span class=p>(</span><span class=n>uint</span> <span class=n>uchar</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=n>uint</span> <span class=n>bit_ctr</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>       <span class=k>for</span><span class=p>(</span><span class=n>bit_ctr</span><span class=o>=</span><span class=mi>0</span><span class=p>;</span><span class=n>bit_ctr</span><span class=o>&lt;</span><span class=mi>8</span><span class=p>;</span><span class=n>bit_ctr</span><span class=o>++</span><span class=p>)</span> <span class=c1>// output 8-bit
+</span></span></span><span class=line><span class=cl><span class=c1></span>       <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=n>MOSI</span> <span class=o>=</span> <span class=p>(</span><span class=n>uchar</span> <span class=o>&amp;</span> <span class=mh>0x80</span><span class=p>);</span>         <span class=c1>// output &#39;uchar&#39;, MSB to MOSI
+</span></span></span><span class=line><span class=cl><span class=c1></span>            <span class=n>uchar</span> <span class=o>=</span> <span class=p>(</span><span class=n>uchar</span> <span class=o>&lt;&lt;</span> <span class=mi>1</span><span class=p>);</span>           <span class=c1>// shift next bit into MSB..
+</span></span></span><span class=line><span class=cl><span class=c1></span>            <span class=n>SCK</span> <span class=o>=</span> <span class=mi>1</span><span class=p>;</span>                      <span class=c1>// Set SCK high..
+</span></span></span><span class=line><span class=cl><span class=c1></span>            <span class=n>uchar</span> <span class=o>|=</span> <span class=n>MISO</span><span class=p>;</span>                 <span class=c1>// capture current MISO bit
+</span></span></span><span class=line><span class=cl><span class=c1></span>            <span class=n>SCK</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>                      <span class=c1>// ..then set SCK low again
+</span></span></span><span class=line><span class=cl><span class=c1></span>       <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span><span class=p>(</span><span class=n>uchar</span><span class=p>);</span>                     <span class=c1>// return read uchar
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=cm>/****************************************************************************************************
+</span></span></span><span class=line><span class=cl><span class=cm>/*Function: uchar SPI_Read(uchar reg)
+</span></span></span><span class=line><span class=cl><span class=cm>/*Function: NRF24L01 SPI sequence
+</span></span></span><span class=line><span class=cl><span class=cm>/****************************************************************************************************/</span>
+</span></span><span class=line><span class=cl><span class=n>uchar</span> <span class=nf>NRF24L01_Read_Reg</span><span class=p>(</span><span class=n>uchar</span> <span class=n>reg</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=n>uchar</span> <span class=n>reg_val</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=n>CSN</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>                <span class=c1>// CSN low, initialize SPI communication...
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=nf>SPI_RW</span><span class=p>(</span><span class=n>reg</span><span class=p>);</span>            <span class=c1>// Select register to read from..
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=n>reg_val</span> <span class=o>=</span> <span class=nf>SPI_RW</span><span class=p>(</span><span class=mi>0</span><span class=p>);</span>    <span class=c1>// ..then read registervalue
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=n>CSN</span> <span class=o>=</span> <span class=mi>1</span><span class=p>;</span>                <span class=c1>// CSN high, terminate SPI communication
+</span></span></span><span class=line><span class=cl><span class=c1></span>    
+</span></span><span class=line><span class=cl>    <span class=k>return</span><span class=p>(</span><span class=n>reg_val</span><span class=p>);</span>        <span class=c1>// return register value
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=cm>/****************************************************************************************************/</span>
+</span></span><span class=line><span class=cl><span class=cm>/*Function: NRF24L01 read and write register function
+</span></span></span><span class=line><span class=cl><span class=cm>/****************************************************************************************************/</span>
+</span></span><span class=line><span class=cl><span class=n>uint</span> <span class=nf>NRF24L01_Write_Reg</span><span class=p>(</span><span class=n>uchar</span> <span class=n>reg</span><span class=p>,</span> <span class=n>uchar</span> <span class=n>value</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=n>uint</span> <span class=n>status</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=n>CSN</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>                   <span class=c1>// CSN low, init SPI transaction
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=n>status</span> <span class=o>=</span> <span class=nf>SPI_RW</span><span class=p>(</span><span class=n>reg</span><span class=p>);</span>      <span class=c1>// select register
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=nf>SPI_RW</span><span class=p>(</span><span class=n>value</span><span class=p>);</span>             <span class=c1>// ..and write value to it..
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=n>CSN</span> <span class=o>=</span> <span class=mi>1</span><span class=p>;</span>                   <span class=c1>// CSN high again
+</span></span></span><span class=line><span class=cl><span class=c1></span>    
+</span></span><span class=line><span class=cl>    <span class=k>return</span><span class=p>(</span><span class=n>status</span><span class=p>);</span>            <span class=c1>// return nRF24L01 status uchar
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=cm>/****************************************************************************************************/</span>
+</span></span><span class=line><span class=cl><span class=cm>/*Function: uint SPI_Read_Buf(uchar reg, uchar *pBuf, uchar uchars)
+</span></span></span><span class=line><span class=cl><span class=cm>/*Function: Used to read data, reg: register address, pBuf: destination data address, uchars: number of bytes to read
+</span></span></span><span class=line><span class=cl><span class=cm>/****************************************************************************************************/</span>
+</span></span><span class=line><span class=cl><span class=n>uint</span> <span class=nf>NRF24L01_Read_Buf</span><span class=p>(</span><span class=n>uchar</span> <span class=n>reg</span><span class=p>,</span> <span class=n>uchar</span> <span class=o>*</span><span class=n>pBuf</span><span class=p>,</span> <span class=n>uchar</span> <span class=n>uchars</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=n>uint</span> <span class=n>status</span><span class=p>,</span><span class=n>uchar_ctr</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=n>CSN</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>                            <span class=c1>// Set CSN low, init SPI tranaction
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=n>status</span> <span class=o>=</span> <span class=nf>SPI_RW</span><span class=p>(</span><span class=n>reg</span><span class=p>);</span>               <span class=c1>// Select register to write to and read status uchar
+</span></span></span><span class=line><span class=cl><span class=c1></span>    
+</span></span><span class=line><span class=cl>    <span class=k>for</span><span class=p>(</span><span class=n>uchar_ctr</span><span class=o>=</span><span class=mi>0</span><span class=p>;</span><span class=n>uchar_ctr</span><span class=o>&lt;</span><span class=n>uchars</span><span class=p>;</span><span class=n>uchar_ctr</span><span class=o>++</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=n>pBuf</span><span class=p>[</span><span class=n>uchar_ctr</span><span class=p>]</span> <span class=o>=</span> <span class=nf>SPI_RW</span><span class=p>(</span><span class=mi>0</span><span class=p>);</span>    <span class=c1>// 
+</span></span></span><span class=line><span class=cl><span class=c1></span>    
+</span></span><span class=line><span class=cl>    <span class=n>CSN</span> <span class=o>=</span> <span class=mi>1</span><span class=p>;</span>                           
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=k>return</span><span class=p>(</span><span class=n>status</span><span class=p>);</span>                    <span class=c1>// return nRF24L01 status uchar
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=cm>/*********************************************************************************************************
+</span></span></span><span class=line><span class=cl><span class=cm>/*Function: uint SPI_Write_Buf(uchar reg, uchar *pBuf, uchar uchars)
+</span></span></span><span class=line><span class=cl><span class=cm>/*Function: Used to write data: register address, pBuf: data to write, uchars: number of bytes to write
+</span></span></span><span class=line><span class=cl><span class=cm>/*********************************************************************************************************/</span>
+</span></span><span class=line><span class=cl><span class=n>uint</span> <span class=nf>NRF24L01_Write_Buf</span><span class=p>(</span><span class=n>uchar</span> <span class=n>reg</span><span class=p>,</span> <span class=n>uchar</span> <span class=o>*</span><span class=n>pBuf</span><span class=p>,</span> <span class=n>uchar</span> <span class=n>uchars</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=n>uint</span> <span class=n>status</span><span class=p>,</span><span class=n>uchar_ctr</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=n>CSN</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>            <span class=c1>//SPI enable       
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=n>status</span> <span class=o>=</span> <span class=nf>SPI_RW</span><span class=p>(</span><span class=n>reg</span><span class=p>);</span>   
+</span></span><span class=line><span class=cl>    <span class=k>for</span><span class=p>(</span><span class=n>uchar_ctr</span><span class=o>=</span><span class=mi>0</span><span class=p>;</span> <span class=n>uchar_ctr</span><span class=o>&lt;</span><span class=n>uchars</span><span class=p>;</span> <span class=n>uchar_ctr</span><span class=o>++</span><span class=p>)</span> <span class=c1>//
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=nf>SPI_RW</span><span class=p>(</span><span class=o>*</span><span class=n>pBuf</span><span class=o>++</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=n>CSN</span> <span class=o>=</span> <span class=mi>1</span><span class=p>;</span>           <span class=c1>//Close SPI
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=k>return</span><span class=p>(</span><span class=n>status</span><span class=p>);</span>    <span class=c1>// 
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>//Check if 24L01 exists
+</span></span></span><span class=line><span class=cl><span class=c1>//Return value: 0, success; 1, failure
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=n>u8</span> <span class=nf>NRF24L01_Check</span><span class=p>(</span><span class=kt>void</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=n>u8</span> <span class=n>buf</span><span class=p>[</span><span class=mi>5</span><span class=p>]</span><span class=o>=</span><span class=p>{</span><span class=mi>0</span><span class=n>XA5</span><span class=p>,</span><span class=mi>0</span><span class=n>XA5</span><span class=p>,</span><span class=mi>0</span><span class=n>XA5</span><span class=p>,</span><span class=mi>0</span><span class=n>XA5</span><span class=p>,</span><span class=mi>0</span><span class=n>XA5</span><span class=p>};</span>
+</span></span><span class=line><span class=cl>    <span class=n>u8</span> <span class=n>i</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=nf>NRF24L01_Write_Buf</span><span class=p>(</span><span class=n>WRITE_NRF_REG</span><span class=o>+</span><span class=n>TX_ADDR</span><span class=p>,</span><span class=n>buf</span><span class=p>,</span><span class=mi>5</span><span class=p>);</span><span class=c1>//Write 5 bytes address
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=nf>NRF24L01_Read_Buf</span><span class=p>(</span><span class=n>TX_ADDR</span><span class=p>,</span><span class=n>buf</span><span class=p>,</span><span class=mi>5</span><span class=p>);</span> <span class=c1>//Read the written address
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=k>for</span><span class=p>(</span><span class=n>i</span><span class=o>=</span><span class=mi>0</span><span class=p>;</span><span class=n>i</span><span class=o>&lt;</span><span class=mi>5</span><span class=p>;</span><span class=n>i</span><span class=o>++</span><span class=p>)</span> <span class=k>if</span><span class=p>(</span><span class=n>buf</span><span class=p>[</span><span class=n>i</span><span class=p>]</span><span class=o>!=</span><span class=mi>0</span><span class=n>XA5</span><span class=p>)</span><span class=k>break</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span><span class=p>(</span><span class=n>i</span><span class=o>!=</span><span class=mi>5</span><span class=p>)</span><span class=k>return</span> <span class=mi>1</span><span class=p>;</span><span class=c1>//24L01 detection error
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=k>return</span> <span class=mi>0</span><span class=p>;</span> <span class=c1>//24L01 detected
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=n>u8</span> <span class=nf>NRF24L01_TxPacket</span><span class=p>(</span><span class=n>u8</span> <span class=o>*</span><span class=n>txbuf</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=n>u8</span> <span class=n>sta</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=n>NRF24L01_CE</span><span class=o>=</span><span class=mi>0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=nf>NRF24L01_Write_Buf</span><span class=p>(</span><span class=n>WR_TX_PLOAD</span><span class=p>,</span><span class=n>txbuf</span><span class=p>,</span><span class=n>TX_PLOAD_WIDTH</span><span class=p>);</span><span class=c1>//Write data to TX BUF, 32 bytes
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=n>NRF24L01_CE</span><span class=o>=</span><span class=mi>1</span><span class=p>;</span><span class=c1>//Start transmission
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=k>while</span><span class=p>(</span><span class=n>NRF24L01_IRQ</span><span class=o>!=</span><span class=mi>0</span><span class=p>);</span><span class=c1>//Wait for transmission to complete
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=n>sta</span><span class=o>=</span><span class=nf>NRF24L01_Read_Reg</span><span class=p>(</span><span class=n>STATUS</span><span class=p>);</span> <span class=c1>//Read status register value
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=nf>NRF24L01_Write_Reg</span><span class=p>(</span><span class=n>WRITE_NRF_REG</span><span class=o>+</span><span class=n>STATUS</span><span class=p>,</span><span class=n>sta</span><span class=p>);</span> <span class=c1>//Clear TX_DS or MAX_RT interrupt flag
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=k>if</span><span class=p>(</span><span class=n>sta</span><span class=o>&amp;</span><span class=n>MAX_TX</span><span class=p>)</span><span class=c1>//Maximum retransmission reached
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=nf>NRF24L01_Write_Reg</span><span class=p>(</span><span class=n>FLUSH_TX</span><span class=p>,</span><span class=mh>0xff</span><span class=p>);</span><span class=c1>//Clear TX FIFO register
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=k>return</span> <span class=n>MAX_TX</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span><span class=p>(</span><span class=n>sta</span><span class=o>&amp;</span><span class=n>TX_OK</span><span class=p>)</span><span class=c1>//Transmission completed
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=n>TX_OK</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=mh>0xff</span><span class=p>;</span><span class=c1>//Other reasons for transmission failure
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>//Start NRF24L01 to send data once
+</span></span></span><span class=line><span class=cl><span class=c1>//txbuf: data source address to be sent
+</span></span></span><span class=line><span class=cl><span class=c1>//Return value: 0, reception complete; others, error code
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=n>u8</span> <span class=nf>NRF24L01_RxPacket</span><span class=p>(</span><span class=n>u8</span> <span class=o>*</span><span class=n>rxbuf</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=n>u8</span> <span class=n>sta</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=n>sta</span><span class=o>=</span><span class=nf>NRF24L01_Read_Reg</span><span class=p>(</span><span class=n>STATUS</span><span class=p>);</span> <span class=c1>//Read status register value
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=nf>NRF24L01_Write_Reg</span><span class=p>(</span><span class=n>WRITE_NRF_REG</span><span class=o>+</span><span class=n>STATUS</span><span class=p>,</span><span class=n>sta</span><span class=p>);</span> <span class=c1>//Clear TX_DS or MAX_RT interrupt flag
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=k>if</span><span class=p>(</span><span class=n>sta</span><span class=o>&amp;</span><span class=n>RX_OK</span><span class=p>)</span><span class=c1>//Data received
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nf>NRF24L01_Read_Buf</span><span class=p>(</span><span class=n>RD_RX_PLOAD</span><span class=p>,</span><span class=n>rxbuf</span><span class=p>,</span><span class=n>RX_PLOAD_WIDTH</span><span class=p>);</span><span class=c1>//Read data
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=nf>NRF24L01_Write_Reg</span><span class=p>(</span><span class=n>FLUSH_RX</span><span class=p>,</span><span class=mh>0xff</span><span class=p>);</span><span class=c1>//Clear RX FIFO register
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=k>return</span> <span class=mi>0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=mi>1</span><span class=p>;</span><span class=c1>//No data received
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=c1>//This function initializes NRF24L01 to RX mode
+</span></span></span><span class=line><span class=cl><span class=c1>//Set RX address, write RX data width, select RF channel, baud rate and LNA HCURR
+</span></span></span><span class=line><span class=cl><span class=c1>//When CE becomes high, it enters RX mode and can receive data
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=kt>void</span> <span class=nf>RX_Mode</span><span class=p>(</span><span class=kt>void</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=n>NRF24L01_CE</span><span class=o>=</span><span class=mi>0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=nf>NRF24L01_Write_Buf</span><span class=p>(</span><span class=n>WRITE_NRF_REG</span><span class=o>+</span><span class=n>RX_ADDR_P0</span><span class=p>,(</span><span class=n>u8</span><span class=o>*</span><span class=p>)</span><span class=n>RX_ADDRESS</span><span class=p>,</span><span class=n>RX_ADR_WIDTH</span><span class=p>);</span><span class=c1>//Write RX node address
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=nf>NRF24L01_Write_Reg</span><span class=p>(</span><span class=n>WRITE_NRF_REG</span><span class=o>+</span><span class=n>EN_AA</span><span class=p>,</span><span class=mh>0x01</span><span class=p>);</span> <span class=c1>//Enable channel 0 auto-acknowledge
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=nf>NRF24L01_Write_Reg</span><span class=p>(</span><span class=n>WRITE_NRF_REG</span><span class=o>+</span><span class=n>EN_RXADDR</span><span class=p>,</span><span class=mh>0x01</span><span class=p>);</span><span class=c1>//Enable channel 0 receive address
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=nf>NRF24L01_Write_Reg</span><span class=p>(</span><span class=n>WRITE_NRF_REG</span><span class=o>+</span><span class=n>RF_CH</span><span class=p>,</span><span class=mi>40</span><span class=p>);</span> <span class=c1>//Set RF communication frequency
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=nf>NRF24L01_Write_Reg</span><span class=p>(</span><span class=n>WRITE_NRF_REG</span><span class=o>+</span><span class=n>RX_PW_P0</span><span class=p>,</span><span class=n>RX_PLOAD_WIDTH</span><span class=p>);</span><span class=c1>//Select channel 0 valid data width
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=nf>NRF24L01_Write_Reg</span><span class=p>(</span><span class=n>WRITE_NRF_REG</span><span class=o>+</span><span class=n>RF_SETUP</span><span class=p>,</span><span class=mh>0x0f</span><span class=p>);</span><span class=c1>//Set TX transmission parameters, 0db gain, 2Mbps, low noise gain enabled
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=nf>NRF24L01_Write_Reg</span><span class=p>(</span><span class=n>WRITE_NRF_REG</span><span class=o>+</span><span class=n>CONFIG</span><span class=p>,</span> <span class=mh>0x0f</span><span class=p>);</span><span class=c1>//Configure basic working mode parameters: PWR_UP, EN_CRC, 16BIT_CRC, receive mode
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=n>NRF24L01_CE</span> <span class=o>=</span> <span class=mi>1</span><span class=p>;</span> <span class=c1>//CE is high, enter receive mode
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=c1>//This function initializes NRF24L01 to TX mode
+</span></span></span><span class=line><span class=cl><span class=c1>//Set TX address, write TX data width, set RX auto-acknowledge address, fill TX send data, select RF channel, baud rate and LNA HCURR
+</span></span></span><span class=line><span class=cl><span class=c1>//PWR_UP, CRC enable
+</span></span></span><span class=line><span class=cl><span class=c1>//When CE becomes high, it enters RX mode and can receive data
+</span></span></span><span class=line><span class=cl><span class=c1>//CE high for more than 10us will start transmission
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=kt>void</span> <span class=nf>TX_Mode</span><span class=p>(</span><span class=kt>void</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=n>NRF24L01_CE</span><span class=o>=</span><span class=mi>0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=nf>NRF24L01_Write_Buf</span><span class=p>(</span><span class=n>WRITE_NRF_REG</span><span class=o>+</span><span class=n>TX_ADDR</span><span class=p>,(</span><span class=n>u8</span><span class=o>*</span><span class=p>)</span><span class=n>TX_ADDRESS</span><span class=p>,</span><span class=n>TX_ADR_WIDTH</span><span class=p>);</span><span class=c1>//Write TX node address
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=nf>NRF24L01_Write_Buf</span><span class=p>(</span><span class=n>WRITE_NRF_REG</span><span class=o>+</span><span class=n>RX_ADDR_P0</span><span class=p>,(</span><span class=n>u8</span><span class=o>*</span><span class=p>)</span><span class=n>RX_ADDRESS</span><span class=p>,</span><span class=n>RX_ADR_WIDTH</span><span class=p>);</span> <span class=c1>//Set TX node address, mainly to enable ACK
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=nf>NRF24L01_Write_Reg</span><span class=p>(</span><span class=n>WRITE_NRF_REG</span><span class=o>+</span><span class=n>EN_AA</span><span class=p>,</span><span class=mh>0x01</span><span class=p>);</span> <span class=c1>//Enable channel 0 auto-acknowledge
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=nf>NRF24L01_Write_Reg</span><span class=p>(</span><span class=n>WRITE_NRF_REG</span><span class=o>+</span><span class=n>EN_RXADDR</span><span class=p>,</span><span class=mh>0x01</span><span class=p>);</span> <span class=c1>//Enable channel 0 receive address
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=nf>NRF24L01_Write_Reg</span><span class=p>(</span><span class=n>WRITE_NRF_REG</span><span class=o>+</span><span class=n>SETUP_RETR</span><span class=p>,</span><span class=mh>0x1a</span><span class=p>);</span><span class=c1>//Set auto retransmit interval time: 500us + 86us; maximum auto retransmit times: 10
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=nf>NRF24L01_Write_Reg</span><span class=p>(</span><span class=n>WRITE_NRF_REG</span><span class=o>+</span><span class=n>RF_CH</span><span class=p>,</span><span class=mi>40</span><span class=p>);</span> <span class=c1>//Set RF channel to 40
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=nf>NRF24L01_Write_Reg</span><span class=p>(</span><span class=n>WRITE_NRF_REG</span><span class=o>+</span><span class=n>RF_SETUP</span><span class=p>,</span><span class=mh>0x0f</span><span class=p>);</span> <span class=c1>//Set TX transmission parameters, 0db gain, 2Mbps, low noise gain enabled
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=nf>NRF24L01_Write_Reg</span><span class=p>(</span><span class=n>WRITE_NRF_REG</span><span class=o>+</span><span class=n>CONFIG</span><span class=p>,</span><span class=mh>0x0e</span><span class=p>);</span> <span class=c1>//Configure basic working mode parameters: PWR_UP, EN_CRC, 16BIT_CRC, receive mode, enable all interrupts
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=n>NRF24L01_CE</span><span class=o>=</span><span class=mi>1</span><span class=p>;</span><span class=c1>//CE is high, start transmission after 10us
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=nf>inerDelay_us</span><span class=p>(</span><span class=mi>20</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>Next is the main program debugging section:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span><span class=lnt>45
+</span><span class=lnt>46
+</span><span class=lnt>47
+</span><span class=lnt>48
+</span><span class=lnt>49
+</span><span class=lnt>50
+</span><span class=lnt>51
+</span><span class=lnt>52
+</span><span class=lnt>53
+</span><span class=lnt>54
+</span><span class=lnt>55
+</span><span class=lnt>56
+</span><span class=lnt>57
+</span><span class=lnt>58
+</span><span class=lnt>59
+</span><span class=lnt>60
+</span><span class=lnt>61
+</span><span class=lnt>62
+</span><span class=lnt>63
+</span><span class=lnt>64
+</span><span class=lnt>65
+</span><span class=lnt>66
+</span><span class=lnt>67
+</span><span class=lnt>68
+</span><span class=lnt>69
+</span><span class=lnt>70
+</span><span class=lnt>71
+</span><span class=lnt>72
+</span><span class=lnt>73
+</span><span class=lnt>74
+</span><span class=lnt>75
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-c data-lang=c><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&#34;15f204ea.h&#34;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&#34;24l01.h&#34;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&#34;uart.h&#34;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&#34;intrins.h&#34;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp></span>
+</span></span><span class=line><span class=cl><span class=kt>void</span> <span class=nf>delay500ms</span><span class=p>(</span><span class=kt>void</span><span class=p>)</span>   <span class=c1>//Error -0.000000000063us
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=kt>unsigned</span> <span class=kt>char</span> <span class=n>a</span><span class=p>,</span><span class=n>b</span><span class=p>,</span><span class=n>c</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=k>for</span><span class=p>(</span><span class=n>c</span><span class=o>=</span><span class=mi>212</span><span class=p>;</span><span class=n>c</span><span class=o>&gt;</span><span class=mi>0</span><span class=p>;</span><span class=n>c</span><span class=o>--</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=k>for</span><span class=p>(</span><span class=n>b</span><span class=o>=</span><span class=mi>160</span><span class=p>;</span><span class=n>b</span><span class=o>&gt;</span><span class=mi>0</span><span class=p>;</span><span class=n>b</span><span class=o>--</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>            <span class=k>for</span><span class=p>(</span><span class=n>a</span><span class=o>=</span><span class=mi>80</span><span class=p>;</span><span class=n>a</span><span class=o>&gt;</span><span class=mi>0</span><span class=p>;</span><span class=n>a</span><span class=o>--</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=nf>_nop_</span><span class=p>();</span>  <span class=c1>//if Keil, require use intrins.h
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kt>void</span> <span class=nf>delay100us</span><span class=p>(</span><span class=kt>void</span><span class=p>)</span>   <span class=c1>//Error -0.083188657407us
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=kt>unsigned</span> <span class=kt>char</span> <span class=n>a</span><span class=p>,</span><span class=n>b</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=k>for</span><span class=p>(</span><span class=n>b</span><span class=o>=</span><span class=mi>58</span><span class=p>;</span><span class=n>b</span><span class=o>&gt;</span><span class=mi>0</span><span class=p>;</span><span class=n>b</span><span class=o>--</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=k>for</span><span class=p>(</span><span class=n>a</span><span class=o>=</span><span class=mi>8</span><span class=p>;</span><span class=n>a</span><span class=o>&gt;</span><span class=mi>0</span><span class=p>;</span><span class=n>a</span><span class=o>--</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kt>void</span> <span class=nf>main</span><span class=p>(){</span>
+</span></span><span class=line><span class=cl>    <span class=n>u8</span> <span class=n>tmp_buf</span><span class=p>[</span><span class=mi>33</span><span class=p>];</span>
+</span></span><span class=line><span class=cl>    <span class=n>u8</span> <span class=n>key</span><span class=p>,</span><span class=n>mode</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=n>u16</span> <span class=n>t</span><span class=o>=</span><span class=mi>0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=nf>delay500ms</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>    <span class=nf>uartInit</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>    <span class=nf>uartSendString</span><span class=p>(</span><span class=s>&#34;Test&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=nf>uartSendNum</span><span class=p>(</span><span class=mi>1234</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=nf>NRF24L01_Init</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>    <span class=k>while</span><span class=p>(</span><span class=nf>NRF24L01_Check</span><span class=p>())</span><span class=c1>//Cannot detect 24L01
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=nf>uartSendString</span><span class=p>(</span><span class=s>&#34;Initialization failed&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=nf>delay500ms</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>        <span class=nf>uartSendString</span><span class=p>(</span><span class=s>&#34;Please check&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=nf>delay500ms</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=nf>uartSendString</span><span class=p>(</span><span class=s>&#34;Starting&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span><span class=p>(</span><span class=mi>0</span><span class=p>){</span>
+</span></span><span class=line><span class=cl>        <span class=nf>RX_Mode</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>        <span class=nf>uartSendString</span><span class=p>(</span><span class=s>&#34;Receive mode&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=k>while</span><span class=p>(</span><span class=mi>1</span><span class=p>){</span>
+</span></span><span class=line><span class=cl>            <span class=k>if</span><span class=p>(</span><span class=nf>NRF24L01_RxPacket</span><span class=p>(</span><span class=n>tmp_buf</span><span class=p>)</span><span class=o>==</span><span class=mi>0</span><span class=p>){</span>
+</span></span><span class=line><span class=cl>                <span class=n>tmp_buf</span><span class=p>[</span><span class=mi>32</span><span class=p>]</span><span class=o>=</span><span class=mi>0</span><span class=p>;</span><span class=c1>//Add string terminator
+</span></span></span><span class=line><span class=cl><span class=c1></span>                <span class=nf>uartSendString</span><span class=p>(</span><span class=n>tmp_buf</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>            <span class=p>}</span>
+</span></span><span class=line><span class=cl>            <span class=k>else</span> <span class=nf>delay100us</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=k>else</span><span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=nf>TX_Mode</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>        <span class=nf>uartSendString</span><span class=p>(</span><span class=s>&#34;Transmit mode&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=n>mode</span><span class=o>=</span><span class=sc>&#39; &#39;</span><span class=p>;</span><span class=c1>//Start from space character
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=k>while</span><span class=p>(</span><span class=mi>1</span><span class=p>){</span>
+</span></span><span class=line><span class=cl>            <span class=k>if</span><span class=p>(</span><span class=nf>NRF24L01_TxPacket</span><span class=p>(</span><span class=n>tmp_buf</span><span class=p>)</span><span class=o>==</span><span class=n>TX_OK</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>            <span class=p>{</span>
+</span></span><span class=line><span class=cl>                <span class=nf>uartSendString</span><span class=p>(</span><span class=n>tmp_buf</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>                <span class=n>key</span><span class=o>=</span><span class=n>mode</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>                <span class=k>for</span><span class=p>(</span><span class=n>t</span><span class=o>=</span><span class=mi>0</span><span class=p>;</span><span class=n>t</span><span class=o>&lt;</span><span class=mi>32</span><span class=p>;</span><span class=n>t</span><span class=o>++</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>                <span class=p>{</span>
+</span></span><span class=line><span class=cl>                    <span class=n>key</span><span class=o>++</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>                    <span class=k>if</span><span class=p>(</span><span class=n>key</span><span class=o>&gt;</span><span class=p>(</span><span class=sc>&#39;~&#39;</span><span class=p>))</span><span class=n>key</span><span class=o>=</span><span class=sc>&#39; &#39;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>                    <span class=n>tmp_buf</span><span class=p>[</span><span class=n>t</span><span class=p>]</span><span class=o>=</span><span class=n>key</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>                <span class=p>}</span>
+</span></span><span class=line><span class=cl>                <span class=n>mode</span><span class=o>++</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>                <span class=k>if</span><span class=p>(</span><span class=n>mode</span><span class=o>&gt;</span><span class=sc>&#39;~&#39;</span><span class=p>)</span><span class=n>mode</span><span class=o>=</span><span class=sc>&#39; &#39;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>                    <span class=n>tmp_buf</span><span class=p>[</span><span class=mi>32</span><span class=p>]</span><span class=o>=</span><span class=mi>0</span><span class=p>;</span><span class=c1>//Add terminator
+</span></span></span><span class=line><span class=cl><span class=c1></span>            <span class=p>}</span>
+</span></span><span class=line><span class=cl>            <span class=k>else</span><span class=p>{</span>
+</span></span><span class=line><span class=cl>                <span class=nf>uartSendString</span><span class=p>(</span><span class=s>&#34;Send failed&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>            <span class=p>};</span>
+</span></span><span class=line><span class=cl>            <span class=nf>delay500ms</span><span class=p>();</span>            
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>Set the crystal to 11.0594MHZ, then write the program.</p><p>First, connect the serial port, then power on. After half a second, the program will send serial data &ldquo;Test&rdquo; and the number &ldquo;1234&rdquo; to the computer. Note that the serial working frequency is 38400.</p><p>If you can receive serial data correctly, then everything is fine; otherwise, there&rsquo;s an issue with the frequency settings or the data cable.</p><p>The program will then perform a check. Upon success, it returns &ldquo;Starting&rdquo;; upon failure, it displays &ldquo;Initialization failed&rdquo; and &ldquo;Please check&rdquo;. Failure is either because the nrf24l01 is damaged or the pins are connected incorrectly.</p><p>Depending on the value in the if statement&rsquo;s parentheses (0 or 1), the program will enter either receive mode or transmit mode.</p><p>In receive mode, the program will send &ldquo;Receive mode&rdquo; through the serial port. If it receives data, it will return the data content.</p><p>In transmit mode, the program will send a code (a sequence of changing characters) to the specified address. If transmission is successful, it returns the length of the data sent and the data itself. When sending fails, it will display &ldquo;Send failed&rdquo;.</p><p>If sending fails, it might be because the receiver doesn&rsquo;t exist. In this case, NRF24L01_TxPacket returns 10 (maximum retransmission attempts) instead of 32 (data bit count), so an error is reported.</p><p>It could also be due to other reasons, in which case NRF24L01 returns 0xff, indicating other causes of failure. In this situation, the problem is unclear and needs careful investigation.</p><p>By writing the transmit program to one chip and the receive program to another, you can see the effect ^_^</p><p>Thus, NRF24L01 and STC15F204EA (STC15L204EA) communication is achieved.</p></section><footer class=article-footer><section class=article-tags><a href=/tags/nrf24l01/>NRF24L01</a>
 <a href=/tags/nrf24l01+/>NRF24L01+</a>
 <a href=/tags/stc15f204ea/>STC15F204EA</a>
 <a href=/tags/stc15l204ea/>STC15L204EA</a>

@@ -14,46 +14,100 @@ loading="lazy"
 alt="image.png"
 >&lt;/p>
 &lt;p>在openssl目录下运行以下命令：&lt;/p>
-&lt;pre tabindex="0">&lt;code>source ../arm-linux
-./Configure --prefix=$(pwd)/../output shared no-asm linux-armv4
-make -j4
-make install
-&lt;/code>&lt;/pre>&lt;p>首先导入环境变量。然后进行编译，输出路径在output下面。&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">source ../arm-linux
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">./Configure --prefix=$(pwd)/../output shared no-asm linux-armv4
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">make -j4
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">make install
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>首先导入环境变量。然后进行编译，输出路径在output下面。&lt;/p>
 &lt;p>然后在libcurl 下运行以下命令&lt;/p>
-&lt;pre tabindex="0">&lt;code>source ../arm-linux
-./configure --with-ssl=$(pwd)/../output --prefix=$PWD/../output --build=x86_64-pc-linux-gnu --host=arm-linux-gnueabihf CC=arm-linux-gnueabihf-gcc-5 --without-zlib
-&lt;/code>&lt;/pre>&lt;p>curl配置结果一览&lt;/p>
-&lt;pre tabindex="0">&lt;code> curl version: 7.58.0
-Host setup: x86_64-pc-linux-gnu
-Install prefix: /media/linan/72605383-b1ba-4c79-90fd-443514396fbc/curl_workdir/curl-7.58.0/output
-Compiler: arm-linux-gnueabihf-gcc-5
-SSL support: enabled (OpenSSL)
-SSH support: no (--with-libssh2)
-zlib support: no (--with-zlib)
-brotli support: no (--with-brotli)
-GSS-API support: no (--with-gssapi)
-TLS-SRP support: enabled
-resolver: POSIX threaded
-IPv6 support: enabled
-Unix sockets support: enabled
-IDN support: no (--with-{libidn2,winidn})
-Build libcurl: Shared=yes, Static=yes
-Built-in manual: enabled
---libcurl option: enabled (--disable-libcurl-option)
-Verbose errors: enabled (--disable-verbose)
-SSPI support: no (--enable-sspi)
-ca cert bundle: no
-ca cert path: no
-ca fallback: no
-LDAP support: no (--enable-ldap / --with-ldap-lib / --with-lber-lib)
-LDAPS support: no (--enable-ldaps)
-RTSP support: enabled
-RTMP support: no (--with-librtmp)
-metalink support: no (--with-libmetalink)
-PSL support: no (libpsl not found)
-HTTP2 support: disabled (--with-nghttp2)
-Protocols: DICT FILE FTP FTPS GOPHER HTTP HTTPS IMAP IMAPS POP3 POP3S RTSP SMB SMBS SMTP SMTPS TELNET TFTP
-&lt;/code>&lt;/pre>&lt;p>然后在运行make 以及make install，在curl目录下就会出现output目录。&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">source ../arm-linux
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">./configure --with-ssl=$(pwd)/../output --prefix=$PWD/../output --build=x86_64-pc-linux-gnu --host=arm-linux-gnueabihf CC=arm-linux-gnueabihf-gcc-5 --without-zlib
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>curl配置结果一览&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;span class="lnt">30
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl"> curl version: 7.58.0
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> Host setup: x86_64-pc-linux-gnu
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> Install prefix: /media/linan/72605383-b1ba-4c79-90fd-443514396fbc/curl_workdir/curl-7.58.0/output
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> Compiler: arm-linux-gnueabihf-gcc-5
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> SSL support: enabled (OpenSSL)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> SSH support: no (--with-libssh2)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> zlib support: no (--with-zlib)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> brotli support: no (--with-brotli)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> GSS-API support: no (--with-gssapi)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> TLS-SRP support: enabled
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> resolver: POSIX threaded
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> IPv6 support: enabled
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> Unix sockets support: enabled
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> IDN support: no (--with-{libidn2,winidn})
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> Build libcurl: Shared=yes, Static=yes
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> Built-in manual: enabled
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> --libcurl option: enabled (--disable-libcurl-option)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> Verbose errors: enabled (--disable-verbose)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> SSPI support: no (--enable-sspi)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> ca cert bundle: no
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> ca cert path: no
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> ca fallback: no
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> LDAP support: no (--enable-ldap / --with-ldap-lib / --with-lber-lib)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> LDAPS support: no (--enable-ldaps)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> RTSP support: enabled
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> RTMP support: no (--with-librtmp)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> metalink support: no (--with-libmetalink)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> PSL support: no (libpsl not found)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> HTTP2 support: disabled (--with-nghttp2)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> Protocols: DICT FILE FTP FTPS GOPHER HTTP HTTPS IMAP IMAPS POP3 POP3S RTSP SMB SMBS SMTP SMTPS TELNET TFTP
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>然后在运行make 以及make install，在curl目录下就会出现output目录。&lt;/p>
 &lt;p>最终，我们需要的是openssl以及curl的动态库，分别是：libssl.so libcrypto.so libcurl.so&lt;/p></description></item><item><title>在RT-Thread中使用stm32的hal库驱动串口UART</title><link>https://nansenli.com/zh-cn/post/jianshu/%E5%B5%8C%E5%85%A5%E5%BC%8F/%E5%9C%A8rt-thread%E4%B8%AD%E4%BD%BF%E7%94%A8stm32%E7%9A%84hal%E5%BA%93%E9%A9%B1%E5%8A%A8%E4%B8%B2%E5%8F%A3uart/</link><pubDate>Thu, 06 Apr 2017 10:22:00 +0000</pubDate><guid>https://nansenli.com/zh-cn/post/jianshu/%E5%B5%8C%E5%85%A5%E5%BC%8F/%E5%9C%A8rt-thread%E4%B8%AD%E4%BD%BF%E7%94%A8stm32%E7%9A%84hal%E5%BA%93%E9%A9%B1%E5%8A%A8%E4%B8%B2%E5%8F%A3uart/</guid><description>&lt;h2 id="前言">前言
 &lt;/h2>&lt;p>之前一直在Linux下面尝试进行部署了RT-Thread的stm32的开发，这种方式确实是可行的，但是也会带来种种不便之处。使用VSCode + Scons + openocd 进行编辑、编译链接、烧录确实是可以进行开发，但是若要进行调试则没有这种环境的解决方案，只得在eclipse中进行调试。而将RT-Thread改成eclipse的方案虽然可行，但是这样还不如直接在windows下面采用keil 5 来进行开发。&lt;/p>
 &lt;p>由于stm32f103板载flash过小，栈也十分的小，于是换成stm32f411。板子来自于微雪科技的XNUCLEO，和STM官方NUCLEO板子是兼容的。&lt;/p>
@@ -68,33 +122,78 @@ Protocols: DICT FILE FTP FTPS GOPHER HTTP HTTPS IMAP IMAPS POP3 POP3S RTSP SMB S
 &lt;h2 id="下载nucleo工程">下载nucleo工程
 &lt;/h2>&lt;p>打开&lt;code>rt-thread-master\bsp\stm32f411-nucleo&lt;/code>下的Keil 5工程，尝试编译，通过后，简单设置工程的debug，使用ST-Link来进行调试，然后将程序下载到板子里面。虽然程序下进去了，但是没有任何效果，因为主函数是空的。&lt;/p>
 &lt;p>我们在main函数中加入如下代码：&lt;/p>
-&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-C" data-lang="C">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">int&lt;/span> &lt;span style="color:#a6e22e">main&lt;/span>(&lt;span style="color:#66d9ef">void&lt;/span>)
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>{
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">/* user app entry */&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">MX_GPIO_Init&lt;/span>();
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">while&lt;/span>(&lt;span style="color:#ae81ff">1&lt;/span>){
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">rt_thread_delay&lt;/span>(&lt;span style="color:#ae81ff">5&lt;/span>);
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">HAL_GPIO_WritePin&lt;/span> (GPIOC, GPIO_PIN_5, GPIO_PIN_SET);
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">rt_thread_delay&lt;/span>(&lt;span style="color:#ae81ff">5&lt;/span>);
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">HAL_GPIO_WritePin&lt;/span> (GPIOC, GPIO_PIN_5, GPIO_PIN_RESET);
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>并加上LED的初始化函数&lt;/p>
-&lt;pre tabindex="0">&lt;code>static void MX_GPIO_Init(void)
-{
-GPIO_InitTypeDef GPIO_InitStruct;
-/* GPIO Ports Clock Enable */
-__HAL_RCC_GPIOC_CLK_ENABLE();
-/*Configure GPIO pin Output Level */
-HAL_GPIO_WritePin(GPIOC, GPIO_PIN_5, GPIO_PIN_RESET);
-/*Configure GPIO pin : PC5 */
-GPIO_InitStruct.Pin = GPIO_PIN_5;
-GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-GPIO_InitStruct.Pull = GPIO_NOPULL;
-GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-HAL_GPIO_Init(GPIOC, &amp;amp;GPIO_InitStruct);
-}
-&lt;/code>&lt;/pre>&lt;p>这样我们就可以看到板载的LED4灯亮起来了，并且在闪烁。&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-C" data-lang="C">&lt;span class="line">&lt;span class="cl">&lt;span class="kt">int&lt;/span> &lt;span class="nf">main&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="kt">void&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="cm">/* user app entry */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nf">MX_GPIO_Init&lt;/span>&lt;span class="p">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">while&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="p">){&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nf">rt_thread_delay&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">5&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nf">HAL_GPIO_WritePin&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">GPIOC&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">GPIO_PIN_5&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">GPIO_PIN_SET&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nf">rt_thread_delay&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">5&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nf">HAL_GPIO_WritePin&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">GPIOC&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">GPIO_PIN_5&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">GPIO_PIN_RESET&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>并加上LED的初始化函数&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">static void MX_GPIO_Init(void)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">{
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> GPIO_InitTypeDef GPIO_InitStruct;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> /* GPIO Ports Clock Enable */
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> __HAL_RCC_GPIOC_CLK_ENABLE();
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> /*Configure GPIO pin Output Level */
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> HAL_GPIO_WritePin(GPIOC, GPIO_PIN_5, GPIO_PIN_RESET);
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> /*Configure GPIO pin : PC5 */
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> GPIO_InitStruct.Pin = GPIO_PIN_5;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> GPIO_InitStruct.Pull = GPIO_NOPULL;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> HAL_GPIO_Init(GPIOC, &amp;amp;GPIO_InitStruct);
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>这样我们就可以看到板载的LED4灯亮起来了，并且在闪烁。&lt;/p>
 &lt;p>这些初始化代码是从哪来的呢？主函数中的代码，是从网上找的，很简单的操作GPIO的函数，而MX_GPIO_Init这段代码，则来自于STM32CubeMX自动生成的代码。下面会讲如何通过STM32CubeMX生成初始化UART代码。&lt;/p>
 &lt;h2 id="使用stm32cubemx生成uart初始化代码">使用STM32CubeMX生成UART初始化代码
 &lt;/h2>&lt;ul>
@@ -123,60 +222,143 @@ alt="2017-04-06_17-01-11.gif"
 &lt;li>移植代码
 在void HAL_UART_MspInit(UART_HandleTypeDef *huart)中，添加USART6的代码：&lt;/li>
 &lt;/ul>
-&lt;pre tabindex="0">&lt;code>void HAL_UART_MspInit(UART_HandleTypeDef *huart)
-{
-GPIO_InitTypeDef GPIO_InitStruct;
-if (huart-&amp;gt;Instance == USART2)
-{
-/*##-1- Enable peripherals and GPIO Clocks #################################*/
-/* Enable GPIO TX/RX clock */
-USARTx_TX_GPIO_CLK_ENABLE();
-USARTx_RX_GPIO_CLK_ENABLE();
-/* Enable USARTx clock */
-USARTx_CLK_ENABLE();
-/*##-2- Configure peripheral GPIO ##########################################*/
-/* UART TX GPIO pin configuration */
-GPIO_InitStruct.Pin = USARTx_TX_PIN;
-GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-GPIO_InitStruct.Pull = GPIO_PULLUP;
-GPIO_InitStruct.Speed = GPIO_SPEED_FAST;
-GPIO_InitStruct.Alternate = USARTx_TX_AF;
-HAL_GPIO_Init(USARTx_TX_GPIO_PORT, &amp;amp;GPIO_InitStruct);
-/* UART RX GPIO pin configuration */
-GPIO_InitStruct.Pin = USARTx_RX_PIN;
-GPIO_InitStruct.Alternate = USARTx_RX_AF;
-HAL_GPIO_Init(USARTx_RX_GPIO_PORT, &amp;amp;GPIO_InitStruct);
-HAL_NVIC_SetPriority(USART2_IRQn, 0, 1);
-HAL_NVIC_EnableIRQ(USART2_IRQn);
-}
-if (huart-&amp;gt;Instance == USART6)
-{
-/* USER CODE BEGIN USART6_MspInit 0 */
-/* USER CODE END USART6_MspInit 0 */
-/* Peripheral clock enable */
-__HAL_RCC_USART6_CLK_ENABLE();
-/**USART6 GPIO Configuration
-PC6 ------&amp;gt; USART6_TX
-PC7 ------&amp;gt; USART6_RX
-*/
-GPIO_InitStruct.Pin = GPIO_PIN_6|GPIO_PIN_7;
-GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-GPIO_InitStruct.Pull = GPIO_PULLUP;
-GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
-GPIO_InitStruct.Alternate = GPIO_AF8_USART6;
-HAL_GPIO_Init(GPIOC, &amp;amp;GPIO_InitStruct);
-/* Peripheral interrupt init */
-HAL_NVIC_SetPriority(USART6_IRQn, 0, 0);
-HAL_NVIC_EnableIRQ(USART6_IRQn);
-/* USER CODE BEGIN USART6_MspInit 1 */
-/* USER CODE END USART6_MspInit 1 */
-}
-}
-&lt;/code>&lt;/pre>&lt;p>在main.c文件中，添加&lt;code>MX_USART6_UART_Init();&lt;/code>函数内容，并在主函数中，调用&lt;code>MX_USART6_UART_Init();&lt;/code>进行初始化。&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;span class="lnt">30
+&lt;/span>&lt;span class="lnt">31
+&lt;/span>&lt;span class="lnt">32
+&lt;/span>&lt;span class="lnt">33
+&lt;/span>&lt;span class="lnt">34
+&lt;/span>&lt;span class="lnt">35
+&lt;/span>&lt;span class="lnt">36
+&lt;/span>&lt;span class="lnt">37
+&lt;/span>&lt;span class="lnt">38
+&lt;/span>&lt;span class="lnt">39
+&lt;/span>&lt;span class="lnt">40
+&lt;/span>&lt;span class="lnt">41
+&lt;/span>&lt;span class="lnt">42
+&lt;/span>&lt;span class="lnt">43
+&lt;/span>&lt;span class="lnt">44
+&lt;/span>&lt;span class="lnt">45
+&lt;/span>&lt;span class="lnt">46
+&lt;/span>&lt;span class="lnt">47
+&lt;/span>&lt;span class="lnt">48
+&lt;/span>&lt;span class="lnt">49
+&lt;/span>&lt;span class="lnt">50
+&lt;/span>&lt;span class="lnt">51
+&lt;/span>&lt;span class="lnt">52
+&lt;/span>&lt;span class="lnt">53
+&lt;/span>&lt;span class="lnt">54
+&lt;/span>&lt;span class="lnt">55
+&lt;/span>&lt;span class="lnt">56
+&lt;/span>&lt;span class="lnt">57
+&lt;/span>&lt;span class="lnt">58
+&lt;/span>&lt;span class="lnt">59
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">void HAL_UART_MspInit(UART_HandleTypeDef *huart)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">{
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> GPIO_InitTypeDef GPIO_InitStruct;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> if (huart-&amp;gt;Instance == USART2)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> {
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> /*##-1- Enable peripherals and GPIO Clocks #################################*/
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> /* Enable GPIO TX/RX clock */
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> USARTx_TX_GPIO_CLK_ENABLE();
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> USARTx_RX_GPIO_CLK_ENABLE();
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> /* Enable USARTx clock */
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> USARTx_CLK_ENABLE();
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> /*##-2- Configure peripheral GPIO ##########################################*/
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> /* UART TX GPIO pin configuration */
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> GPIO_InitStruct.Pin = USARTx_TX_PIN;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> GPIO_InitStruct.Pull = GPIO_PULLUP;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> GPIO_InitStruct.Speed = GPIO_SPEED_FAST;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> GPIO_InitStruct.Alternate = USARTx_TX_AF;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> HAL_GPIO_Init(USARTx_TX_GPIO_PORT, &amp;amp;GPIO_InitStruct);
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> /* UART RX GPIO pin configuration */
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> GPIO_InitStruct.Pin = USARTx_RX_PIN;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> GPIO_InitStruct.Alternate = USARTx_RX_AF;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> HAL_GPIO_Init(USARTx_RX_GPIO_PORT, &amp;amp;GPIO_InitStruct);
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> HAL_NVIC_SetPriority(USART2_IRQn, 0, 1);
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> HAL_NVIC_EnableIRQ(USART2_IRQn);
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> }
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> if (huart-&amp;gt;Instance == USART6)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> {
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> /* USER CODE BEGIN USART6_MspInit 0 */
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> /* USER CODE END USART6_MspInit 0 */
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> /* Peripheral clock enable */
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> __HAL_RCC_USART6_CLK_ENABLE();
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> /**USART6 GPIO Configuration
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> PC6 ------&amp;gt; USART6_TX
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> PC7 ------&amp;gt; USART6_RX
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> */
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> GPIO_InitStruct.Pin = GPIO_PIN_6|GPIO_PIN_7;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> GPIO_InitStruct.Pull = GPIO_PULLUP;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> GPIO_InitStruct.Alternate = GPIO_AF8_USART6;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> HAL_GPIO_Init(GPIOC, &amp;amp;GPIO_InitStruct);
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> /* Peripheral interrupt init */
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> HAL_NVIC_SetPriority(USART6_IRQn, 0, 0);
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> HAL_NVIC_EnableIRQ(USART6_IRQn);
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> /* USER CODE BEGIN USART6_MspInit 1 */
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> /* USER CODE END USART6_MspInit 1 */
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> }
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>在main.c文件中，添加&lt;code>MX_USART6_UART_Init();&lt;/code>函数内容，并在主函数中，调用&lt;code>MX_USART6_UART_Init();&lt;/code>进行初始化。&lt;/p>
 &lt;p>之后，在main()函数中进行测试：&lt;/p>
-&lt;pre tabindex="0">&lt;code> uint8_t TxData[10]= &amp;#34;01234abcde&amp;#34;;
-HAL_UART_Transmit(&amp;amp;huart6,TxData,10,0xf);
-&lt;/code>&lt;/pre>&lt;p>我们将微雪的板子上的JP4跳帽接在右侧，这样，USB TO UART就能使用PC6、PC7作为串口接口了。然后，接上USB接口到PC机，我们可以在XSHELL之类的串口终端查看PC接受到的字符串。&lt;/p></description></item><item><title>在RT-Thread中使用SPI和UART设备</title><link>https://nansenli.com/zh-cn/post/jianshu/%E5%B5%8C%E5%85%A5%E5%BC%8F/%E5%9C%A8rt-thread%E4%B8%AD%E4%BD%BF%E7%94%A8spi%E5%92%8Cuart%E8%AE%BE%E5%A4%87/</link><pubDate>Tue, 07 Mar 2017 09:41:00 +0000</pubDate><guid>https://nansenli.com/zh-cn/post/jianshu/%E5%B5%8C%E5%85%A5%E5%BC%8F/%E5%9C%A8rt-thread%E4%B8%AD%E4%BD%BF%E7%94%A8spi%E5%92%8Cuart%E8%AE%BE%E5%A4%87/</guid><description>&lt;p>RT-Thread采用了类似于linux的函数调用方法，这里说明一下如何简单的使用设备。&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl"> uint8_t TxData[10]= &amp;#34;01234abcde&amp;#34;;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> HAL_UART_Transmit(&amp;amp;huart6,TxData,10,0xf);
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>我们将微雪的板子上的JP4跳帽接在右侧，这样，USB TO UART就能使用PC6、PC7作为串口接口了。然后，接上USB接口到PC机，我们可以在XSHELL之类的串口终端查看PC接受到的字符串。&lt;/p></description></item><item><title>在RT-Thread中使用SPI和UART设备</title><link>https://nansenli.com/zh-cn/post/jianshu/%E5%B5%8C%E5%85%A5%E5%BC%8F/%E5%9C%A8rt-thread%E4%B8%AD%E4%BD%BF%E7%94%A8spi%E5%92%8Cuart%E8%AE%BE%E5%A4%87/</link><pubDate>Tue, 07 Mar 2017 09:41:00 +0000</pubDate><guid>https://nansenli.com/zh-cn/post/jianshu/%E5%B5%8C%E5%85%A5%E5%BC%8F/%E5%9C%A8rt-thread%E4%B8%AD%E4%BD%BF%E7%94%A8spi%E5%92%8Cuart%E8%AE%BE%E5%A4%87/</guid><description>&lt;p>RT-Thread采用了类似于linux的函数调用方法，这里说明一下如何简单的使用设备。&lt;/p>
 &lt;ul>
 &lt;li>硬件环境 ：STM32F103RBT6&lt;/li>
 &lt;/ul>
@@ -185,43 +367,98 @@ HAL_UART_Transmit(&amp;amp;huart6,TxData,10,0xf);
 &lt;h2 id="spi-驱动文件">SPI 驱动文件
 &lt;/h2>&lt;p>stm32f10x下面的drivers并没有spi驱动，我们需要将stm32f107对应的spi驱动移植过来。将rt_stm32f10x_spi.c，rt_stm32f10x_spi.h，以及platform.c文件复制过去，然后在rt_init_thread_entry函数中添加rt_platform_init();的调用，在对应文件中加入头文件。然后修改SConscript添加对platform.c，rt_stm32f10x_spi.c的编译，并在config中添加RT_USING_SPI和RT_USING_SPI1的宏定义&lt;/p>
 &lt;p>在platform.c中spi初始化加入如下代码，配置频率&lt;/p>
-&lt;pre tabindex="0">&lt;code> /* config spi */
-{
-struct rt_spi_configuration cfg;
-cfg.data_width = 8;
-cfg.mode = RT_SPI_MODE_3 | RT_SPI_MSB; /* SPI Compatible Modes 3 and SPI_FirstBit_MSB in lis302dl datasheet */
-//APB2=168M/2=84M, SPI1 = 84/2,4,8,16,32 = 42M, 21M, 10.5M, 5.25M, 2.625M ...
-cfg.max_hz = 2625000; /* SPI_BaudRatePrescaler_16=84000000/16=5.25MHz. The max_hz of lis302dl is 10MHz in datasheet */
-rt_spi_configure(&amp;amp;spi_device, &amp;amp;cfg);
-} /* config spi */
-&lt;/code>&lt;/pre>&lt;h2 id="硬件配置">硬件配置
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl"> /* config spi */
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> {
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> struct rt_spi_configuration cfg;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> cfg.data_width = 8;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> cfg.mode = RT_SPI_MODE_3 | RT_SPI_MSB; /* SPI Compatible Modes 3 and SPI_FirstBit_MSB in lis302dl datasheet */
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> //APB2=168M/2=84M, SPI1 = 84/2,4,8,16,32 = 42M, 21M, 10.5M, 5.25M, 2.625M ...
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> cfg.max_hz = 2625000; /* SPI_BaudRatePrescaler_16=84000000/16=5.25MHz. The max_hz of lis302dl is 10MHz in datasheet */
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> rt_spi_configure(&amp;amp;spi_device, &amp;amp;cfg);
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> } /* config spi */
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="硬件配置">硬件配置
 &lt;/h2>&lt;p>硬件管脚被配置在platform.c文件中, 我们不修改默认的配置,也就是 PA4567这几个管脚为默认的spi输入输出管脚&lt;/p>
-&lt;pre tabindex="0">&lt;code>/*
-* SPI1_MOSI: PA7
-* SPI1_MISO: PA6
-* SPI1_SCK : PA5
-*
-* CS0: PA4 SD card. 这里可以改成自己的spi设备的cs管脚
-*/
-&lt;/code>&lt;/pre>&lt;h2 id="spi调用">SPI调用
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">/*
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> * SPI1_MOSI: PA7
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> * SPI1_MISO: PA6
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> * SPI1_SCK : PA5
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> *
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> * CS0: PA4 SD card. 这里可以改成自己的spi设备的cs管脚
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">*/
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="spi调用">SPI调用
 &lt;/h2>&lt;p>SPI调用不用使用open函数，只需执行&lt;/p>
-&lt;pre tabindex="0">&lt;code> rt_spi_transfer(spi_device, &amp;amp;ReadAddr, &amp;amp;pBuffer, 1);
-&lt;/code>&lt;/pre>&lt;p>或者rt_spi_send_then_recv也可以实现不同的效果。&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl"> rt_spi_transfer(spi_device, &amp;amp;ReadAddr, &amp;amp;pBuffer, 1);
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>或者rt_spi_send_then_recv也可以实现不同的效果。&lt;/p>
 &lt;h2 id="uart调用">UART调用
 &lt;/h2>&lt;p>UART调用需要使用open函数，这里给出一个简单的例子使用串口设备。&lt;/p>
-&lt;pre tabindex="0">&lt;code>void device_thread_entry(void* parameter)
-{
-rt_device_t device;
-device = rt_device_find(&amp;#34;uart2&amp;#34;);
-rt_device_open(device, RT_DEVICE_OFLAG_RDWR|RT_DEVICE_FLAG_INT_RX);
-char test[10] = &amp;#34;abc&amp;#34;;
-while(1){
-rt_size_t reclen = rt_device_read(device, 0, test, 10);
-if(reclen &amp;gt; 0) rt_device_write(device, 0, test, reclen);
-rt_thread_delay(500);
-}
-}
-&lt;/code>&lt;/pre>&lt;p>可以开启这个线程，我们在uart2中输入10个以内的字符，在5秒后就会回显。如果超过10个字符，应该会在下一次5秒显示。
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">void device_thread_entry(void* parameter)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">{
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> rt_device_t device;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> device = rt_device_find(&amp;#34;uart2&amp;#34;);
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> rt_device_open(device, RT_DEVICE_OFLAG_RDWR|RT_DEVICE_FLAG_INT_RX);
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> char test[10] = &amp;#34;abc&amp;#34;;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> while(1){
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> rt_size_t reclen = rt_device_read(device, 0, test, 10);
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> if(reclen &amp;gt; 0) rt_device_write(device, 0, test, reclen);
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> rt_thread_delay(500);
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> }
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>可以开启这个线程，我们在uart2中输入10个以内的字符，在5秒后就会回显。如果超过10个字符，应该会在下一次5秒显示。
 在官方markdown文档中，使用了消息机制来处理UART通信，也可以参考。&lt;/p></description></item><item><title>Ubuntu环境下在STM32上部署RT-thread系统</title><link>https://nansenli.com/zh-cn/post/jianshu/%E5%B5%8C%E5%85%A5%E5%BC%8F/ubuntu%E7%8E%AF%E5%A2%83%E4%B8%8B%E5%9C%A8stm32%E4%B8%8A%E9%83%A8%E7%BD%B2rt-thread%E7%B3%BB%E7%BB%9F/</link><pubDate>Thu, 02 Mar 2017 07:59:00 +0000</pubDate><guid>https://nansenli.com/zh-cn/post/jianshu/%E5%B5%8C%E5%85%A5%E5%BC%8F/ubuntu%E7%8E%AF%E5%A2%83%E4%B8%8B%E5%9C%A8stm32%E4%B8%8A%E9%83%A8%E7%BD%B2rt-thread%E7%B3%BB%E7%BB%9F/</guid><description>&lt;p>RT-Thread是一个中国开源嵌入式系统，目前版本为2.2，已经支持许多微控制器，例如STM32系列，甚至可以在蓝牙BLE芯片中运行。尽管微控制器中资源紧张，但是部署一个易用的微操作系统对项目开发和代码管理是很有益的。&lt;/p>
 &lt;h2 id="准备工具">准备工具
 &lt;/h2>&lt;ul>
@@ -288,279 +525,604 @@ rt_thread_delay(500);
 &lt;p>##4.编译内核（ubuntu下）&lt;/p>
 &lt;p>准备好arm-linux-gnueabihf-gcc编译器，版本不高于5.0&lt;/p>
 &lt;p>在内核目录中，使用终端，输入&lt;/p>
-&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span>make ARCH&lt;span style="color:#f92672">=&lt;/span>arm CROSS_COMPILE&lt;span style="color:#f92672">=&lt;/span>arm-linux-gnueabihf- sun7i_defconfig
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>输入&lt;/p>
-&lt;pre tabindex="0">&lt;code>gedit .config
-&lt;/code>&lt;/pre>&lt;p>找到以下选项，并将其改为&lt;/p>
-&lt;pre tabindex="0">&lt;code>CONFIG_SPI=y
-CONFIG_SUNXI_NAND_PARTITION=y
-CONFIG_SUNXI_NAND=y
-&lt;/code>&lt;/pre>&lt;p>输入以下命令开始编译内核&lt;/p>
-&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span>make -j4ARCH&lt;span style="color:#f92672">=&lt;/span>arm CROSS_COMPILE&lt;span style="color:#f92672">=&lt;/span>arm-linux-gnueabihf- uImage modules
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>由于开启了CONFIG_SPI支持和CONFIG_SUNXI_NAND支持，需要进行一系列的设置。当遇到spi support，CONFIG_SPI_SUN7I，CONFIG_SUN7I_SPI_NDMA时，输入y，其他情况输入回车。&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">make &lt;span class="nv">ARCH&lt;/span>&lt;span class="o">=&lt;/span>arm &lt;span class="nv">CROSS_COMPILE&lt;/span>&lt;span class="o">=&lt;/span>arm-linux-gnueabihf- sun7i_defconfig
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>输入&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">gedit .config
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>找到以下选项，并将其改为&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">CONFIG_SPI=y
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">CONFIG_SUNXI_NAND_PARTITION=y
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">CONFIG_SUNXI_NAND=y
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>输入以下命令开始编译内核&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">make -j4ARCH&lt;span class="o">=&lt;/span>arm &lt;span class="nv">CROSS_COMPILE&lt;/span>&lt;span class="o">=&lt;/span>arm-linux-gnueabihf- uImage modules
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>由于开启了CONFIG_SPI支持和CONFIG_SUNXI_NAND支持，需要进行一系列的设置。当遇到spi support，CONFIG_SPI_SUN7I，CONFIG_SUN7I_SPI_NDMA时，输入y，其他情况输入回车。&lt;/p>
 &lt;p>检查路径arch/arm/boot下是否有uImage文件&lt;/p>
 &lt;p>输入以下命令生成内核模块&lt;/p>
-&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span>make ARCH&lt;span style="color:#f92672">=&lt;/span>arm CROSS_COMPILE&lt;span style="color:#f92672">=&lt;/span>arm-linux-gnueabihf- INSTALL_MOD_PATH&lt;span style="color:#f92672">=&lt;/span>output modules_install
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>检查路径&lt;code>output/lib/modules/3.4.104&lt;/code>目录是否产生&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">make &lt;span class="nv">ARCH&lt;/span>&lt;span class="o">=&lt;/span>arm &lt;span class="nv">CROSS_COMPILE&lt;/span>&lt;span class="o">=&lt;/span>arm-linux-gnueabihf- &lt;span class="nv">INSTALL_MOD_PATH&lt;/span>&lt;span class="o">=&lt;/span>output modules_install
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>检查路径&lt;code>output/lib/modules/3.4.104&lt;/code>目录是否产生&lt;/p>
 &lt;p>##5.替换内核（cubieboard2下）&lt;/p>
 &lt;p>在cubieboard2 中，打开终端，输入&lt;/p>
-&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span>mkdir /media/nanda
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>mount /dev/nanda /media/nanda
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>将uImage拷贝至cubieboard2 debian系统的&lt;code>/media/nanda&lt;/code>目录覆盖原来内核&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">mkdir /media/nanda
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">mount /dev/nanda /media/nanda
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>将uImage拷贝至cubieboard2 debian系统的&lt;code>/media/nanda&lt;/code>目录覆盖原来内核&lt;/p>
 &lt;p>使用tar命令打包&lt;code>output/lib/modules/3.4.104&lt;/code> 目录，将该文件传入cubieboard2 的 &lt;code>/lib/modules&lt;/code> 目录，然后解压&lt;/p>
 &lt;p>##6.检查编译成功&lt;/p>
 &lt;p>重启，如果系统正常进入，则成功&lt;/p>
 &lt;p>##7.修改系统文件打开SPI，并使其支持全双工SPI（cubieboard2下）
 重新挂载&lt;code>/dev/nanda&lt;/code>到&lt;code>/media/nanda/&lt;/code> 目录并进入&lt;/p>
 &lt;p>输入如下命令&lt;/p>
-&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span>bin2fex script.bin script.fex
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>nano script.fex
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>找到[spi0_para]，将其下面的used改为1，并额外增加如下代码&lt;/p>
-&lt;pre tabindex="0">&lt;code>[spi_devices]
-spi_dev_num =1
-[spi_board0]
-modalias =&amp;#34;spidev&amp;#34;
-max_speed_hz =100000
-bus_num =0
-chip_select =0
-mode =0
-full_duplex =1
-manual_cs =0
-&lt;/code>&lt;/pre>&lt;p>输入如下命令&lt;/p>
-&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span>fex2bin script.fex script.bin
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>nano /usr/include/linux/spi/spidev.h
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>在&lt;code>__u16 delay_usecs;&lt;/code>上面一行添加&lt;/p>
-&lt;pre tabindex="0">&lt;code>__u16 interbyte_usecs;
-&lt;/code>&lt;/pre>&lt;p>##8.测试spi
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">bin2fex script.bin script.fex
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">nano script.fex
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>找到[spi0_para]，将其下面的used改为1，并额外增加如下代码&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">[spi_devices]
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">spi_dev_num =1
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">[spi_board0]
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">modalias =&amp;#34;spidev&amp;#34;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">max_speed_hz =100000
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">bus_num =0
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">chip_select =0
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">mode =0
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">full_duplex =1
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">manual_cs =0
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>输入如下命令&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">fex2bin script.fex script.bin
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">nano /usr/include/linux/spi/spidev.h
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>在&lt;code>__u16 delay_usecs;&lt;/code>上面一行添加&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">__u16 interbyte_usecs;
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>##8.测试spi
 重启cubieboard2。检查路径&lt;code>/dev&lt;/code>下是否存在spidev设备。短接46，48pin脚，管脚图&lt;code>http://docs.cubieboard.org/products/a10_cubieboard/expansion_ports&lt;/code>。
 新建文本输入如下代码&lt;/p>
-&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-c" data-lang="c">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">/*
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"> * SPI testing utility (using spidev driver)
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"> *
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"> * Copyright (c) 2007 MontaVista Software, Inc.
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"> * Copyright (c) 2007 Anton Vorontsov &amp;lt;avorontsov@ru.mvista.com&amp;gt;
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"> *
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"> * This program is free software; you can redistribute it and/or modify
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"> * it under the terms of the GNU General Public License as published by
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"> * the Free Software Foundation; either version 2 of the License.
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"> *
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"> * Cross-compile with cross-gcc -I/path/to/cross-kernel/include
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"> */&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#include&lt;/span> &lt;span style="color:#75715e">&amp;lt;stdint.h&amp;gt;&lt;/span>&lt;span style="color:#75715e">
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#include&lt;/span> &lt;span style="color:#75715e">&amp;lt;unistd.h&amp;gt;&lt;/span>&lt;span style="color:#75715e">
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#include&lt;/span> &lt;span style="color:#75715e">&amp;lt;stdio.h&amp;gt;&lt;/span>&lt;span style="color:#75715e">
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#include&lt;/span> &lt;span style="color:#75715e">&amp;lt;stdlib.h&amp;gt;&lt;/span>&lt;span style="color:#75715e">
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#include&lt;/span> &lt;span style="color:#75715e">&amp;lt;getopt.h&amp;gt;&lt;/span>&lt;span style="color:#75715e">
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#include&lt;/span> &lt;span style="color:#75715e">&amp;lt;fcntl.h&amp;gt;&lt;/span>&lt;span style="color:#75715e">
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#include&lt;/span> &lt;span style="color:#75715e">&amp;lt;sys/ioctl.h&amp;gt;&lt;/span>&lt;span style="color:#75715e">
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#include&lt;/span> &lt;span style="color:#75715e">&amp;lt;linux/types.h&amp;gt;&lt;/span>&lt;span style="color:#75715e">
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#include&lt;/span> &lt;span style="color:#75715e">&amp;lt;linux/spi/spidev.h&amp;gt;&lt;/span>&lt;span style="color:#75715e">
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#define ARRAY_SIZE(a) (sizeof(a) / sizeof((a)[0]))
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">static&lt;/span> &lt;span style="color:#66d9ef">void&lt;/span> &lt;span style="color:#a6e22e">pabort&lt;/span>(&lt;span style="color:#66d9ef">const&lt;/span> &lt;span style="color:#66d9ef">char&lt;/span> &lt;span style="color:#f92672">*&lt;/span>s)
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>{
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">perror&lt;/span>(s);
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">abort&lt;/span>();
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">static&lt;/span> &lt;span style="color:#66d9ef">const&lt;/span> &lt;span style="color:#66d9ef">char&lt;/span> &lt;span style="color:#f92672">*&lt;/span>device &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#e6db74">&amp;#34;/dev/spidev0.0&amp;#34;&lt;/span>;
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">static&lt;/span> &lt;span style="color:#66d9ef">uint8_t&lt;/span> mode;
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">static&lt;/span> &lt;span style="color:#66d9ef">uint8_t&lt;/span> bits &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">8&lt;/span>;
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">static&lt;/span> &lt;span style="color:#66d9ef">uint32_t&lt;/span> speed &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">500000&lt;/span>;
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">static&lt;/span> &lt;span style="color:#66d9ef">uint16_t&lt;/span> delay;
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">static&lt;/span> &lt;span style="color:#66d9ef">void&lt;/span> &lt;span style="color:#a6e22e">transfer&lt;/span>(&lt;span style="color:#66d9ef">int&lt;/span> fd)
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>{
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">int&lt;/span> ret;
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">uint8_t&lt;/span> tx[] &lt;span style="color:#f92672">=&lt;/span> {
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#ae81ff">0xFF&lt;/span>, &lt;span style="color:#ae81ff">0xFF&lt;/span>, &lt;span style="color:#ae81ff">0xFF&lt;/span>, &lt;span style="color:#ae81ff">0xFF&lt;/span>, &lt;span style="color:#ae81ff">0xFF&lt;/span>, &lt;span style="color:#ae81ff">0xFF&lt;/span>,
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#ae81ff">0x40&lt;/span>, &lt;span style="color:#ae81ff">0x00&lt;/span>, &lt;span style="color:#ae81ff">0x00&lt;/span>, &lt;span style="color:#ae81ff">0x00&lt;/span>, &lt;span style="color:#ae81ff">0x00&lt;/span>, &lt;span style="color:#ae81ff">0x95&lt;/span>,
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#ae81ff">0xFF&lt;/span>, &lt;span style="color:#ae81ff">0xFF&lt;/span>, &lt;span style="color:#ae81ff">0xFF&lt;/span>, &lt;span style="color:#ae81ff">0xFF&lt;/span>, &lt;span style="color:#ae81ff">0xFF&lt;/span>, &lt;span style="color:#ae81ff">0xFF&lt;/span>,
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#ae81ff">0xFF&lt;/span>, &lt;span style="color:#ae81ff">0xFF&lt;/span>, &lt;span style="color:#ae81ff">0xFF&lt;/span>, &lt;span style="color:#ae81ff">0xFF&lt;/span>, &lt;span style="color:#ae81ff">0xFF&lt;/span>, &lt;span style="color:#ae81ff">0xFF&lt;/span>,
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#ae81ff">0xFF&lt;/span>, &lt;span style="color:#ae81ff">0xFF&lt;/span>, &lt;span style="color:#ae81ff">0xFF&lt;/span>, &lt;span style="color:#ae81ff">0xFF&lt;/span>, &lt;span style="color:#ae81ff">0xFF&lt;/span>, &lt;span style="color:#ae81ff">0xFF&lt;/span>,
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#ae81ff">0xDE&lt;/span>, &lt;span style="color:#ae81ff">0xAD&lt;/span>, &lt;span style="color:#ae81ff">0xBE&lt;/span>, &lt;span style="color:#ae81ff">0xEF&lt;/span>, &lt;span style="color:#ae81ff">0xBA&lt;/span>, &lt;span style="color:#ae81ff">0xAD&lt;/span>,
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#ae81ff">0xF0&lt;/span>, &lt;span style="color:#ae81ff">0x0D&lt;/span>,
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> };
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">uint8_t&lt;/span> rx[&lt;span style="color:#a6e22e">ARRAY_SIZE&lt;/span>(tx)] &lt;span style="color:#f92672">=&lt;/span> {
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#ae81ff">0&lt;/span>,
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> };
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">struct&lt;/span> spi_ioc_transfer tr &lt;span style="color:#f92672">=&lt;/span> {
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> .tx_buf &lt;span style="color:#f92672">=&lt;/span> (&lt;span style="color:#66d9ef">unsigned&lt;/span> &lt;span style="color:#66d9ef">long&lt;/span>)tx,
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> .rx_buf &lt;span style="color:#f92672">=&lt;/span> (&lt;span style="color:#66d9ef">unsigned&lt;/span> &lt;span style="color:#66d9ef">long&lt;/span>)rx,
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> .len &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#a6e22e">ARRAY_SIZE&lt;/span>(tx),
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> .delay_usecs &lt;span style="color:#f92672">=&lt;/span> delay,
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> .speed_hz &lt;span style="color:#f92672">=&lt;/span> speed,
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> .bits_per_word &lt;span style="color:#f92672">=&lt;/span> bits,
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> };
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> ret &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#a6e22e">ioctl&lt;/span>(fd, &lt;span style="color:#a6e22e">SPI_IOC_MESSAGE&lt;/span>(&lt;span style="color:#ae81ff">1&lt;/span>), &lt;span style="color:#f92672">&amp;amp;&lt;/span>tr);
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">if&lt;/span> (ret &lt;span style="color:#f92672">==&lt;/span> &lt;span style="color:#ae81ff">1&lt;/span>)
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">pabort&lt;/span>(&lt;span style="color:#e6db74">&amp;#34;can&amp;#39;t send spi message&amp;#34;&lt;/span>);
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">for&lt;/span> (ret &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>; ret &lt;span style="color:#f92672">&amp;lt;&lt;/span> &lt;span style="color:#a6e22e">ARRAY_SIZE&lt;/span>(tx); ret&lt;span style="color:#f92672">++&lt;/span>)
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">if&lt;/span> (&lt;span style="color:#f92672">!&lt;/span>(ret &lt;span style="color:#f92672">%&lt;/span> &lt;span style="color:#ae81ff">6&lt;/span>))
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">puts&lt;/span>(&lt;span style="color:#e6db74">&amp;#34;&amp;#34;&lt;/span>);
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">printf&lt;/span>(&lt;span style="color:#e6db74">&amp;#34;%.2X &amp;#34;&lt;/span>, rx[ret]);
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">puts&lt;/span>(&lt;span style="color:#e6db74">&amp;#34;&amp;#34;&lt;/span>);
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">static&lt;/span> &lt;span style="color:#66d9ef">void&lt;/span> &lt;span style="color:#a6e22e">print_usage&lt;/span>(&lt;span style="color:#66d9ef">const&lt;/span> &lt;span style="color:#66d9ef">char&lt;/span> &lt;span style="color:#f92672">*&lt;/span>prog)
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>{
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">printf&lt;/span>(&lt;span style="color:#e6db74">&amp;#34;Usage: %s [-DsbdlHOLC3]&lt;/span>&lt;span style="color:#ae81ff">\n&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>, prog);
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">puts&lt;/span>(&lt;span style="color:#e6db74">&amp;#34; -D --device device to use (default /dev/spidev0.0)&lt;/span>&lt;span style="color:#ae81ff">\n&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#e6db74">&amp;#34; -s --speed max speed (Hz)&lt;/span>&lt;span style="color:#ae81ff">\n&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#e6db74">&amp;#34; -d --delay delay (usec)&lt;/span>&lt;span style="color:#ae81ff">\n&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#e6db74">&amp;#34; -b --bpw bits per word &lt;/span>&lt;span style="color:#ae81ff">\n&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#e6db74">&amp;#34; -l --loop loopback&lt;/span>&lt;span style="color:#ae81ff">\n&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#e6db74">&amp;#34; -H --cpha clock phase&lt;/span>&lt;span style="color:#ae81ff">\n&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#e6db74">&amp;#34; -O --cpol clock polarity&lt;/span>&lt;span style="color:#ae81ff">\n&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#e6db74">&amp;#34; -L --lsb least significant bit first&lt;/span>&lt;span style="color:#ae81ff">\n&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#e6db74">&amp;#34; -C --cs-high chip select active high&lt;/span>&lt;span style="color:#ae81ff">\n&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#e6db74">&amp;#34; -3 --3wire SI/SO signals shared&lt;/span>&lt;span style="color:#ae81ff">\n&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>);
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">exit&lt;/span>(&lt;span style="color:#ae81ff">1&lt;/span>);
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">static&lt;/span> &lt;span style="color:#66d9ef">void&lt;/span> &lt;span style="color:#a6e22e">parse_opts&lt;/span>(&lt;span style="color:#66d9ef">int&lt;/span> argc, &lt;span style="color:#66d9ef">char&lt;/span> &lt;span style="color:#f92672">*&lt;/span>argv[])
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>{
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">while&lt;/span> (&lt;span style="color:#ae81ff">1&lt;/span>)
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">static&lt;/span> &lt;span style="color:#66d9ef">const&lt;/span> &lt;span style="color:#66d9ef">struct&lt;/span> option lopts[] &lt;span style="color:#f92672">=&lt;/span> {
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {&lt;span style="color:#e6db74">&amp;#34;device&amp;#34;&lt;/span>, &lt;span style="color:#ae81ff">1&lt;/span>, &lt;span style="color:#ae81ff">0&lt;/span>, &lt;span style="color:#e6db74">&amp;#39;D&amp;#39;&lt;/span>},
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {&lt;span style="color:#e6db74">&amp;#34;speed&amp;#34;&lt;/span>, &lt;span style="color:#ae81ff">1&lt;/span>, &lt;span style="color:#ae81ff">0&lt;/span>, &lt;span style="color:#e6db74">&amp;#39;s&amp;#39;&lt;/span>},
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {&lt;span style="color:#e6db74">&amp;#34;delay&amp;#34;&lt;/span>, &lt;span style="color:#ae81ff">1&lt;/span>, &lt;span style="color:#ae81ff">0&lt;/span>, &lt;span style="color:#e6db74">&amp;#39;d&amp;#39;&lt;/span>},
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {&lt;span style="color:#e6db74">&amp;#34;bpw&amp;#34;&lt;/span>, &lt;span style="color:#ae81ff">1&lt;/span>, &lt;span style="color:#ae81ff">0&lt;/span>, &lt;span style="color:#e6db74">&amp;#39;b&amp;#39;&lt;/span>},
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {&lt;span style="color:#e6db74">&amp;#34;loop&amp;#34;&lt;/span>, &lt;span style="color:#ae81ff">0&lt;/span>, &lt;span style="color:#ae81ff">0&lt;/span>, &lt;span style="color:#e6db74">&amp;#39;l&amp;#39;&lt;/span>},
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {&lt;span style="color:#e6db74">&amp;#34;cpha&amp;#34;&lt;/span>, &lt;span style="color:#ae81ff">0&lt;/span>, &lt;span style="color:#ae81ff">0&lt;/span>, &lt;span style="color:#e6db74">&amp;#39;H&amp;#39;&lt;/span>},
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {&lt;span style="color:#e6db74">&amp;#34;cpol&amp;#34;&lt;/span>, &lt;span style="color:#ae81ff">0&lt;/span>, &lt;span style="color:#ae81ff">0&lt;/span>, &lt;span style="color:#e6db74">&amp;#39;O&amp;#39;&lt;/span>},
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {&lt;span style="color:#e6db74">&amp;#34;lsb&amp;#34;&lt;/span>, &lt;span style="color:#ae81ff">0&lt;/span>, &lt;span style="color:#ae81ff">0&lt;/span>, &lt;span style="color:#e6db74">&amp;#39;L&amp;#39;&lt;/span>},
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {&lt;span style="color:#e6db74">&amp;#34;cs-high&amp;#34;&lt;/span>, &lt;span style="color:#ae81ff">0&lt;/span>, &lt;span style="color:#ae81ff">0&lt;/span>, &lt;span style="color:#e6db74">&amp;#39;C&amp;#39;&lt;/span>},
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {&lt;span style="color:#e6db74">&amp;#34;3wire&amp;#34;&lt;/span>, &lt;span style="color:#ae81ff">0&lt;/span>, &lt;span style="color:#ae81ff">0&lt;/span>, &lt;span style="color:#e6db74">&amp;#39;3&amp;#39;&lt;/span>},
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {&lt;span style="color:#e6db74">&amp;#34;no-cs&amp;#34;&lt;/span>, &lt;span style="color:#ae81ff">0&lt;/span>, &lt;span style="color:#ae81ff">0&lt;/span>, &lt;span style="color:#e6db74">&amp;#39;N&amp;#39;&lt;/span>},
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {&lt;span style="color:#e6db74">&amp;#34;ready&amp;#34;&lt;/span>, &lt;span style="color:#ae81ff">0&lt;/span>, &lt;span style="color:#ae81ff">0&lt;/span>, &lt;span style="color:#e6db74">&amp;#39;R&amp;#39;&lt;/span>},
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {NULL, &lt;span style="color:#ae81ff">0&lt;/span>, &lt;span style="color:#ae81ff">0&lt;/span>, &lt;span style="color:#ae81ff">0&lt;/span>},
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> };
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">int&lt;/span> c;
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> c &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#a6e22e">getopt_long&lt;/span>(argc, argv, &lt;span style="color:#e6db74">&amp;#34;D:s:d:b:lHOLC3NR&amp;#34;&lt;/span>, lopts, NULL);
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">if&lt;/span> (c &lt;span style="color:#f92672">==&lt;/span> &lt;span style="color:#f92672">-&lt;/span>&lt;span style="color:#ae81ff">1&lt;/span>)
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">break&lt;/span>;
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">switch&lt;/span> (c)
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">case&lt;/span> &lt;span style="color:#e6db74">&amp;#39;D&amp;#39;&lt;/span>&lt;span style="color:#f92672">:&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> device &lt;span style="color:#f92672">=&lt;/span> optarg;
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">break&lt;/span>;
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">case&lt;/span> &lt;span style="color:#e6db74">&amp;#39;s&amp;#39;&lt;/span>&lt;span style="color:#f92672">:&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> speed &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#a6e22e">atoi&lt;/span>(optarg);
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">break&lt;/span>;
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">case&lt;/span> &lt;span style="color:#e6db74">&amp;#39;d&amp;#39;&lt;/span>&lt;span style="color:#f92672">:&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> delay &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#a6e22e">atoi&lt;/span>(optarg);
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">break&lt;/span>;
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">case&lt;/span> &lt;span style="color:#e6db74">&amp;#39;b&amp;#39;&lt;/span>&lt;span style="color:#f92672">:&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> bits &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#a6e22e">atoi&lt;/span>(optarg);
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">break&lt;/span>;
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">case&lt;/span> &lt;span style="color:#e6db74">&amp;#39;l&amp;#39;&lt;/span>&lt;span style="color:#f92672">:&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> mode &lt;span style="color:#f92672">|=&lt;/span> SPI_LOOP;
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">break&lt;/span>;
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">case&lt;/span> &lt;span style="color:#e6db74">&amp;#39;H&amp;#39;&lt;/span>&lt;span style="color:#f92672">:&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> mode &lt;span style="color:#f92672">|=&lt;/span> SPI_CPHA;
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">break&lt;/span>;
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">case&lt;/span> &lt;span style="color:#e6db74">&amp;#39;O&amp;#39;&lt;/span>&lt;span style="color:#f92672">:&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> mode &lt;span style="color:#f92672">|=&lt;/span> SPI_CPOL;
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">break&lt;/span>;
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">case&lt;/span> &lt;span style="color:#e6db74">&amp;#39;L&amp;#39;&lt;/span>&lt;span style="color:#f92672">:&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> mode &lt;span style="color:#f92672">|=&lt;/span> SPI_LSB_FIRST;
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">break&lt;/span>;
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">case&lt;/span> &lt;span style="color:#e6db74">&amp;#39;C&amp;#39;&lt;/span>&lt;span style="color:#f92672">:&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> mode &lt;span style="color:#f92672">|=&lt;/span> SPI_CS_HIGH;
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">break&lt;/span>;
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">case&lt;/span> &lt;span style="color:#e6db74">&amp;#39;3&amp;#39;&lt;/span>&lt;span style="color:#f92672">:&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> mode &lt;span style="color:#f92672">|=&lt;/span> SPI_3WIRE;
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">break&lt;/span>;
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">case&lt;/span> &lt;span style="color:#e6db74">&amp;#39;N&amp;#39;&lt;/span>&lt;span style="color:#f92672">:&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> mode &lt;span style="color:#f92672">|=&lt;/span> SPI_NO_CS;
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">break&lt;/span>;
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">case&lt;/span> &lt;span style="color:#e6db74">&amp;#39;R&amp;#39;&lt;/span>&lt;span style="color:#f92672">:&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> mode &lt;span style="color:#f92672">|=&lt;/span> SPI_READY;
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">break&lt;/span>;
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">default&lt;/span>&lt;span style="color:#f92672">:&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">print_usage&lt;/span>(argv[&lt;span style="color:#ae81ff">0&lt;/span>]);
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">break&lt;/span>;
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">int&lt;/span> &lt;span style="color:#a6e22e">main&lt;/span>(&lt;span style="color:#66d9ef">int&lt;/span> argc, &lt;span style="color:#66d9ef">char&lt;/span> &lt;span style="color:#f92672">*&lt;/span>argv[])
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>{
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">int&lt;/span> ret &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>;
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">int&lt;/span> fd;
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">parse_opts&lt;/span>(argc, argv);
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> fd &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#a6e22e">open&lt;/span>(device, O_RDWR);
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">if&lt;/span> (fd &lt;span style="color:#f92672">&amp;lt;&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>)
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">pabort&lt;/span>(&lt;span style="color:#e6db74">&amp;#34;can&amp;#39;t open device&amp;#34;&lt;/span>);
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">/*
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"> * spi mode
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"> */&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> ret &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#a6e22e">ioctl&lt;/span>(fd, SPI_IOC_WR_MODE, &lt;span style="color:#f92672">&amp;amp;&lt;/span>mode);
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">if&lt;/span> (ret &lt;span style="color:#f92672">==&lt;/span> &lt;span style="color:#f92672">-&lt;/span>&lt;span style="color:#ae81ff">1&lt;/span>)
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">pabort&lt;/span>(&lt;span style="color:#e6db74">&amp;#34;can&amp;#39;t set spi mode&amp;#34;&lt;/span>);
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> ret &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#a6e22e">ioctl&lt;/span>(fd, SPI_IOC_RD_MODE, &lt;span style="color:#f92672">&amp;amp;&lt;/span>mode);
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">if&lt;/span> (ret &lt;span style="color:#f92672">==&lt;/span> &lt;span style="color:#f92672">-&lt;/span>&lt;span style="color:#ae81ff">1&lt;/span>)
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">pabort&lt;/span>(&lt;span style="color:#e6db74">&amp;#34;can&amp;#39;t get spi mode&amp;#34;&lt;/span>);
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">/*
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"> * bits per word
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"> */&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> ret &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#a6e22e">ioctl&lt;/span>(fd, SPI_IOC_WR_BITS_PER_WORD, &lt;span style="color:#f92672">&amp;amp;&lt;/span>bits);
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">if&lt;/span> (ret &lt;span style="color:#f92672">==&lt;/span> &lt;span style="color:#f92672">-&lt;/span>&lt;span style="color:#ae81ff">1&lt;/span>)
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">pabort&lt;/span>(&lt;span style="color:#e6db74">&amp;#34;can&amp;#39;t set bits per word&amp;#34;&lt;/span>);
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> ret &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#a6e22e">ioctl&lt;/span>(fd, SPI_IOC_RD_BITS_PER_WORD, &lt;span style="color:#f92672">&amp;amp;&lt;/span>bits);
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">if&lt;/span> (ret &lt;span style="color:#f92672">==&lt;/span> &lt;span style="color:#f92672">-&lt;/span>&lt;span style="color:#ae81ff">1&lt;/span>)
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">pabort&lt;/span>(&lt;span style="color:#e6db74">&amp;#34;can&amp;#39;t get bits per word&amp;#34;&lt;/span>);
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">/*
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"> * max speed hz
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"> */&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> ret &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#a6e22e">ioctl&lt;/span>(fd, SPI_IOC_WR_MAX_SPEED_HZ, &lt;span style="color:#f92672">&amp;amp;&lt;/span>speed);
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">if&lt;/span> (ret &lt;span style="color:#f92672">==&lt;/span> &lt;span style="color:#f92672">-&lt;/span>&lt;span style="color:#ae81ff">1&lt;/span>)
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">pabort&lt;/span>(&lt;span style="color:#e6db74">&amp;#34;can&amp;#39;t set max speed hz&amp;#34;&lt;/span>);
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> ret &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#a6e22e">ioctl&lt;/span>(fd, SPI_IOC_RD_MAX_SPEED_HZ, &lt;span style="color:#f92672">&amp;amp;&lt;/span>speed);
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">if&lt;/span> (ret &lt;span style="color:#f92672">==&lt;/span> &lt;span style="color:#f92672">-&lt;/span>&lt;span style="color:#ae81ff">1&lt;/span>)
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">pabort&lt;/span>(&lt;span style="color:#e6db74">&amp;#34;can&amp;#39;t get max speed hz&amp;#34;&lt;/span>);
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">printf&lt;/span>(&lt;span style="color:#e6db74">&amp;#34;spi mode: %d&lt;/span>&lt;span style="color:#ae81ff">\n&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>, mode);
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">printf&lt;/span>(&lt;span style="color:#e6db74">&amp;#34;bits per word: %d&lt;/span>&lt;span style="color:#ae81ff">\n&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>, bits);
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">printf&lt;/span>(&lt;span style="color:#e6db74">&amp;#34;max speed: %d Hz (%d KHz)&lt;/span>&lt;span style="color:#ae81ff">\n&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>, speed, speed &lt;span style="color:#f92672">/&lt;/span> &lt;span style="color:#ae81ff">1000&lt;/span>);
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">transfer&lt;/span>(fd);
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">close&lt;/span>(fd);
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> ret;
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>编译该文件运行，若输出结果如下则修改成功&lt;/p>
-&lt;pre tabindex="0">&lt;code>spi mode: 0
-bits per word: 8
-max speed: 500000 Hz (500 KHz)
-FF FF FF FF FF FF
-40 00 00 00 00 95
-FF FF FF FF FF FF
-FF FF FF FF FF FF
-FF FF FF FF FF FF
-DE AD BE EF BA AD
-F0 0D
-&lt;/code>&lt;/pre></description></item><item><title>ARM GIC-400 寄存器</title><link>https://nansenli.com/zh-cn/post/kokeyuan/arm-gic-400-registers/</link><pubDate>Thu, 30 Jun 2016 20:00:00 +0000</pubDate><guid>https://nansenli.com/zh-cn/post/kokeyuan/arm-gic-400-registers/</guid><description>&lt;h2 id="1简介">1.简介
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt"> 10
+&lt;/span>&lt;span class="lnt"> 11
+&lt;/span>&lt;span class="lnt"> 12
+&lt;/span>&lt;span class="lnt"> 13
+&lt;/span>&lt;span class="lnt"> 14
+&lt;/span>&lt;span class="lnt"> 15
+&lt;/span>&lt;span class="lnt"> 16
+&lt;/span>&lt;span class="lnt"> 17
+&lt;/span>&lt;span class="lnt"> 18
+&lt;/span>&lt;span class="lnt"> 19
+&lt;/span>&lt;span class="lnt"> 20
+&lt;/span>&lt;span class="lnt"> 21
+&lt;/span>&lt;span class="lnt"> 22
+&lt;/span>&lt;span class="lnt"> 23
+&lt;/span>&lt;span class="lnt"> 24
+&lt;/span>&lt;span class="lnt"> 25
+&lt;/span>&lt;span class="lnt"> 26
+&lt;/span>&lt;span class="lnt"> 27
+&lt;/span>&lt;span class="lnt"> 28
+&lt;/span>&lt;span class="lnt"> 29
+&lt;/span>&lt;span class="lnt"> 30
+&lt;/span>&lt;span class="lnt"> 31
+&lt;/span>&lt;span class="lnt"> 32
+&lt;/span>&lt;span class="lnt"> 33
+&lt;/span>&lt;span class="lnt"> 34
+&lt;/span>&lt;span class="lnt"> 35
+&lt;/span>&lt;span class="lnt"> 36
+&lt;/span>&lt;span class="lnt"> 37
+&lt;/span>&lt;span class="lnt"> 38
+&lt;/span>&lt;span class="lnt"> 39
+&lt;/span>&lt;span class="lnt"> 40
+&lt;/span>&lt;span class="lnt"> 41
+&lt;/span>&lt;span class="lnt"> 42
+&lt;/span>&lt;span class="lnt"> 43
+&lt;/span>&lt;span class="lnt"> 44
+&lt;/span>&lt;span class="lnt"> 45
+&lt;/span>&lt;span class="lnt"> 46
+&lt;/span>&lt;span class="lnt"> 47
+&lt;/span>&lt;span class="lnt"> 48
+&lt;/span>&lt;span class="lnt"> 49
+&lt;/span>&lt;span class="lnt"> 50
+&lt;/span>&lt;span class="lnt"> 51
+&lt;/span>&lt;span class="lnt"> 52
+&lt;/span>&lt;span class="lnt"> 53
+&lt;/span>&lt;span class="lnt"> 54
+&lt;/span>&lt;span class="lnt"> 55
+&lt;/span>&lt;span class="lnt"> 56
+&lt;/span>&lt;span class="lnt"> 57
+&lt;/span>&lt;span class="lnt"> 58
+&lt;/span>&lt;span class="lnt"> 59
+&lt;/span>&lt;span class="lnt"> 60
+&lt;/span>&lt;span class="lnt"> 61
+&lt;/span>&lt;span class="lnt"> 62
+&lt;/span>&lt;span class="lnt"> 63
+&lt;/span>&lt;span class="lnt"> 64
+&lt;/span>&lt;span class="lnt"> 65
+&lt;/span>&lt;span class="lnt"> 66
+&lt;/span>&lt;span class="lnt"> 67
+&lt;/span>&lt;span class="lnt"> 68
+&lt;/span>&lt;span class="lnt"> 69
+&lt;/span>&lt;span class="lnt"> 70
+&lt;/span>&lt;span class="lnt"> 71
+&lt;/span>&lt;span class="lnt"> 72
+&lt;/span>&lt;span class="lnt"> 73
+&lt;/span>&lt;span class="lnt"> 74
+&lt;/span>&lt;span class="lnt"> 75
+&lt;/span>&lt;span class="lnt"> 76
+&lt;/span>&lt;span class="lnt"> 77
+&lt;/span>&lt;span class="lnt"> 78
+&lt;/span>&lt;span class="lnt"> 79
+&lt;/span>&lt;span class="lnt"> 80
+&lt;/span>&lt;span class="lnt"> 81
+&lt;/span>&lt;span class="lnt"> 82
+&lt;/span>&lt;span class="lnt"> 83
+&lt;/span>&lt;span class="lnt"> 84
+&lt;/span>&lt;span class="lnt"> 85
+&lt;/span>&lt;span class="lnt"> 86
+&lt;/span>&lt;span class="lnt"> 87
+&lt;/span>&lt;span class="lnt"> 88
+&lt;/span>&lt;span class="lnt"> 89
+&lt;/span>&lt;span class="lnt"> 90
+&lt;/span>&lt;span class="lnt"> 91
+&lt;/span>&lt;span class="lnt"> 92
+&lt;/span>&lt;span class="lnt"> 93
+&lt;/span>&lt;span class="lnt"> 94
+&lt;/span>&lt;span class="lnt"> 95
+&lt;/span>&lt;span class="lnt"> 96
+&lt;/span>&lt;span class="lnt"> 97
+&lt;/span>&lt;span class="lnt"> 98
+&lt;/span>&lt;span class="lnt"> 99
+&lt;/span>&lt;span class="lnt">100
+&lt;/span>&lt;span class="lnt">101
+&lt;/span>&lt;span class="lnt">102
+&lt;/span>&lt;span class="lnt">103
+&lt;/span>&lt;span class="lnt">104
+&lt;/span>&lt;span class="lnt">105
+&lt;/span>&lt;span class="lnt">106
+&lt;/span>&lt;span class="lnt">107
+&lt;/span>&lt;span class="lnt">108
+&lt;/span>&lt;span class="lnt">109
+&lt;/span>&lt;span class="lnt">110
+&lt;/span>&lt;span class="lnt">111
+&lt;/span>&lt;span class="lnt">112
+&lt;/span>&lt;span class="lnt">113
+&lt;/span>&lt;span class="lnt">114
+&lt;/span>&lt;span class="lnt">115
+&lt;/span>&lt;span class="lnt">116
+&lt;/span>&lt;span class="lnt">117
+&lt;/span>&lt;span class="lnt">118
+&lt;/span>&lt;span class="lnt">119
+&lt;/span>&lt;span class="lnt">120
+&lt;/span>&lt;span class="lnt">121
+&lt;/span>&lt;span class="lnt">122
+&lt;/span>&lt;span class="lnt">123
+&lt;/span>&lt;span class="lnt">124
+&lt;/span>&lt;span class="lnt">125
+&lt;/span>&lt;span class="lnt">126
+&lt;/span>&lt;span class="lnt">127
+&lt;/span>&lt;span class="lnt">128
+&lt;/span>&lt;span class="lnt">129
+&lt;/span>&lt;span class="lnt">130
+&lt;/span>&lt;span class="lnt">131
+&lt;/span>&lt;span class="lnt">132
+&lt;/span>&lt;span class="lnt">133
+&lt;/span>&lt;span class="lnt">134
+&lt;/span>&lt;span class="lnt">135
+&lt;/span>&lt;span class="lnt">136
+&lt;/span>&lt;span class="lnt">137
+&lt;/span>&lt;span class="lnt">138
+&lt;/span>&lt;span class="lnt">139
+&lt;/span>&lt;span class="lnt">140
+&lt;/span>&lt;span class="lnt">141
+&lt;/span>&lt;span class="lnt">142
+&lt;/span>&lt;span class="lnt">143
+&lt;/span>&lt;span class="lnt">144
+&lt;/span>&lt;span class="lnt">145
+&lt;/span>&lt;span class="lnt">146
+&lt;/span>&lt;span class="lnt">147
+&lt;/span>&lt;span class="lnt">148
+&lt;/span>&lt;span class="lnt">149
+&lt;/span>&lt;span class="lnt">150
+&lt;/span>&lt;span class="lnt">151
+&lt;/span>&lt;span class="lnt">152
+&lt;/span>&lt;span class="lnt">153
+&lt;/span>&lt;span class="lnt">154
+&lt;/span>&lt;span class="lnt">155
+&lt;/span>&lt;span class="lnt">156
+&lt;/span>&lt;span class="lnt">157
+&lt;/span>&lt;span class="lnt">158
+&lt;/span>&lt;span class="lnt">159
+&lt;/span>&lt;span class="lnt">160
+&lt;/span>&lt;span class="lnt">161
+&lt;/span>&lt;span class="lnt">162
+&lt;/span>&lt;span class="lnt">163
+&lt;/span>&lt;span class="lnt">164
+&lt;/span>&lt;span class="lnt">165
+&lt;/span>&lt;span class="lnt">166
+&lt;/span>&lt;span class="lnt">167
+&lt;/span>&lt;span class="lnt">168
+&lt;/span>&lt;span class="lnt">169
+&lt;/span>&lt;span class="lnt">170
+&lt;/span>&lt;span class="lnt">171
+&lt;/span>&lt;span class="lnt">172
+&lt;/span>&lt;span class="lnt">173
+&lt;/span>&lt;span class="lnt">174
+&lt;/span>&lt;span class="lnt">175
+&lt;/span>&lt;span class="lnt">176
+&lt;/span>&lt;span class="lnt">177
+&lt;/span>&lt;span class="lnt">178
+&lt;/span>&lt;span class="lnt">179
+&lt;/span>&lt;span class="lnt">180
+&lt;/span>&lt;span class="lnt">181
+&lt;/span>&lt;span class="lnt">182
+&lt;/span>&lt;span class="lnt">183
+&lt;/span>&lt;span class="lnt">184
+&lt;/span>&lt;span class="lnt">185
+&lt;/span>&lt;span class="lnt">186
+&lt;/span>&lt;span class="lnt">187
+&lt;/span>&lt;span class="lnt">188
+&lt;/span>&lt;span class="lnt">189
+&lt;/span>&lt;span class="lnt">190
+&lt;/span>&lt;span class="lnt">191
+&lt;/span>&lt;span class="lnt">192
+&lt;/span>&lt;span class="lnt">193
+&lt;/span>&lt;span class="lnt">194
+&lt;/span>&lt;span class="lnt">195
+&lt;/span>&lt;span class="lnt">196
+&lt;/span>&lt;span class="lnt">197
+&lt;/span>&lt;span class="lnt">198
+&lt;/span>&lt;span class="lnt">199
+&lt;/span>&lt;span class="lnt">200
+&lt;/span>&lt;span class="lnt">201
+&lt;/span>&lt;span class="lnt">202
+&lt;/span>&lt;span class="lnt">203
+&lt;/span>&lt;span class="lnt">204
+&lt;/span>&lt;span class="lnt">205
+&lt;/span>&lt;span class="lnt">206
+&lt;/span>&lt;span class="lnt">207
+&lt;/span>&lt;span class="lnt">208
+&lt;/span>&lt;span class="lnt">209
+&lt;/span>&lt;span class="lnt">210
+&lt;/span>&lt;span class="lnt">211
+&lt;/span>&lt;span class="lnt">212
+&lt;/span>&lt;span class="lnt">213
+&lt;/span>&lt;span class="lnt">214
+&lt;/span>&lt;span class="lnt">215
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-c" data-lang="c">&lt;span class="line">&lt;span class="cl">&lt;span class="cm">/*
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> * SPI testing utility (using spidev driver)
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> *
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> * Copyright (c) 2007 MontaVista Software, Inc.
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> * Copyright (c) 2007 Anton Vorontsov &amp;lt;avorontsov@ru.mvista.com&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> *
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> * This program is free software; you can redistribute it and/or modify
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> * it under the terms of the GNU General Public License as published by
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> * the Free Software Foundation; either version 2 of the License.
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> *
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> * Cross-compile with cross-gcc -I/path/to/cross-kernel/include
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp">#include&lt;/span> &lt;span class="cpf">&amp;lt;stdint.h&amp;gt;&lt;/span>&lt;span class="cp">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp">#include&lt;/span> &lt;span class="cpf">&amp;lt;unistd.h&amp;gt;&lt;/span>&lt;span class="cp">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp">#include&lt;/span> &lt;span class="cpf">&amp;lt;stdio.h&amp;gt;&lt;/span>&lt;span class="cp">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp">#include&lt;/span> &lt;span class="cpf">&amp;lt;stdlib.h&amp;gt;&lt;/span>&lt;span class="cp">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp">#include&lt;/span> &lt;span class="cpf">&amp;lt;getopt.h&amp;gt;&lt;/span>&lt;span class="cp">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp">#include&lt;/span> &lt;span class="cpf">&amp;lt;fcntl.h&amp;gt;&lt;/span>&lt;span class="cp">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp">#include&lt;/span> &lt;span class="cpf">&amp;lt;sys/ioctl.h&amp;gt;&lt;/span>&lt;span class="cp">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp">#include&lt;/span> &lt;span class="cpf">&amp;lt;linux/types.h&amp;gt;&lt;/span>&lt;span class="cp">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp">#include&lt;/span> &lt;span class="cpf">&amp;lt;linux/spi/spidev.h&amp;gt;&lt;/span>&lt;span class="cp">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp">&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp">#define ARRAY_SIZE(a) (sizeof(a) / sizeof((a)[0]))
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp">&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">static&lt;/span> &lt;span class="kt">void&lt;/span> &lt;span class="nf">pabort&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="k">const&lt;/span> &lt;span class="kt">char&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="n">s&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nf">perror&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">s&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nf">abort&lt;/span>&lt;span class="p">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">static&lt;/span> &lt;span class="k">const&lt;/span> &lt;span class="kt">char&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="n">device&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="s">&amp;#34;/dev/spidev0.0&amp;#34;&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">static&lt;/span> &lt;span class="kt">uint8_t&lt;/span> &lt;span class="n">mode&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">static&lt;/span> &lt;span class="kt">uint8_t&lt;/span> &lt;span class="n">bits&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">8&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">static&lt;/span> &lt;span class="kt">uint32_t&lt;/span> &lt;span class="n">speed&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">500000&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">static&lt;/span> &lt;span class="kt">uint16_t&lt;/span> &lt;span class="n">delay&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">static&lt;/span> &lt;span class="kt">void&lt;/span> &lt;span class="nf">transfer&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="kt">int&lt;/span> &lt;span class="n">fd&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">int&lt;/span> &lt;span class="n">ret&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">uint8_t&lt;/span> &lt;span class="n">tx&lt;/span>&lt;span class="p">[]&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="mh">0xFF&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mh">0xFF&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mh">0xFF&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mh">0xFF&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mh">0xFF&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mh">0xFF&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="mh">0x40&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mh">0x00&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mh">0x00&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mh">0x00&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mh">0x00&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mh">0x95&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="mh">0xFF&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mh">0xFF&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mh">0xFF&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mh">0xFF&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mh">0xFF&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mh">0xFF&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="mh">0xFF&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mh">0xFF&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mh">0xFF&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mh">0xFF&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mh">0xFF&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mh">0xFF&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="mh">0xFF&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mh">0xFF&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mh">0xFF&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mh">0xFF&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mh">0xFF&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mh">0xFF&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="mh">0xDE&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mh">0xAD&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mh">0xBE&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mh">0xEF&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mh">0xBA&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mh">0xAD&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="mh">0xF0&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mh">0x0D&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">};&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">uint8_t&lt;/span> &lt;span class="n">rx&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="nf">ARRAY_SIZE&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">tx&lt;/span>&lt;span class="p">)]&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="mi">0&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">};&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">struct&lt;/span> &lt;span class="n">spi_ioc_transfer&lt;/span> &lt;span class="n">tr&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">.&lt;/span>&lt;span class="n">tx_buf&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="kt">unsigned&lt;/span> &lt;span class="kt">long&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="n">tx&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">.&lt;/span>&lt;span class="n">rx_buf&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="kt">unsigned&lt;/span> &lt;span class="kt">long&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="n">rx&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">.&lt;/span>&lt;span class="n">len&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="nf">ARRAY_SIZE&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">tx&lt;/span>&lt;span class="p">),&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">.&lt;/span>&lt;span class="n">delay_usecs&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">delay&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">.&lt;/span>&lt;span class="n">speed_hz&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">speed&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">.&lt;/span>&lt;span class="n">bits_per_word&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">bits&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">};&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">ret&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="nf">ioctl&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">fd&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nf">SPI_IOC_MESSAGE&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="p">),&lt;/span> &lt;span class="o">&amp;amp;&lt;/span>&lt;span class="n">tr&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">ret&lt;/span> &lt;span class="o">==&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nf">pabort&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;can&amp;#39;t send spi message&amp;#34;&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">for&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">ret&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="n">ret&lt;/span> &lt;span class="o">&amp;lt;&lt;/span> &lt;span class="nf">ARRAY_SIZE&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">tx&lt;/span>&lt;span class="p">);&lt;/span> &lt;span class="n">ret&lt;/span>&lt;span class="o">++&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="o">!&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">ret&lt;/span> &lt;span class="o">%&lt;/span> &lt;span class="mi">6&lt;/span>&lt;span class="p">))&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nf">puts&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;&amp;#34;&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nf">printf&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;%.2X &amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">rx&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">ret&lt;/span>&lt;span class="p">]);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nf">puts&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;&amp;#34;&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">static&lt;/span> &lt;span class="kt">void&lt;/span> &lt;span class="nf">print_usage&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="k">const&lt;/span> &lt;span class="kt">char&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="n">prog&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nf">printf&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;Usage: %s [-DsbdlHOLC3]&lt;/span>&lt;span class="se">\n&lt;/span>&lt;span class="s">&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">prog&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nf">puts&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34; -D --device device to use (default /dev/spidev0.0)&lt;/span>&lt;span class="se">\n&lt;/span>&lt;span class="s">&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s">&amp;#34; -s --speed max speed (Hz)&lt;/span>&lt;span class="se">\n&lt;/span>&lt;span class="s">&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s">&amp;#34; -d --delay delay (usec)&lt;/span>&lt;span class="se">\n&lt;/span>&lt;span class="s">&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s">&amp;#34; -b --bpw bits per word &lt;/span>&lt;span class="se">\n&lt;/span>&lt;span class="s">&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s">&amp;#34; -l --loop loopback&lt;/span>&lt;span class="se">\n&lt;/span>&lt;span class="s">&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s">&amp;#34; -H --cpha clock phase&lt;/span>&lt;span class="se">\n&lt;/span>&lt;span class="s">&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s">&amp;#34; -O --cpol clock polarity&lt;/span>&lt;span class="se">\n&lt;/span>&lt;span class="s">&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s">&amp;#34; -L --lsb least significant bit first&lt;/span>&lt;span class="se">\n&lt;/span>&lt;span class="s">&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s">&amp;#34; -C --cs-high chip select active high&lt;/span>&lt;span class="se">\n&lt;/span>&lt;span class="s">&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s">&amp;#34; -3 --3wire SI/SO signals shared&lt;/span>&lt;span class="se">\n&lt;/span>&lt;span class="s">&amp;#34;&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nf">exit&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">static&lt;/span> &lt;span class="kt">void&lt;/span> &lt;span class="nf">parse_opts&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="kt">int&lt;/span> &lt;span class="n">argc&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="kt">char&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="n">argv&lt;/span>&lt;span class="p">[])&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">while&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">static&lt;/span> &lt;span class="k">const&lt;/span> &lt;span class="k">struct&lt;/span> &lt;span class="n">option&lt;/span> &lt;span class="n">lopts&lt;/span>&lt;span class="p">[]&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">{&lt;/span>&lt;span class="s">&amp;#34;device&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="sc">&amp;#39;D&amp;#39;&lt;/span>&lt;span class="p">},&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">{&lt;/span>&lt;span class="s">&amp;#34;speed&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="sc">&amp;#39;s&amp;#39;&lt;/span>&lt;span class="p">},&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">{&lt;/span>&lt;span class="s">&amp;#34;delay&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="sc">&amp;#39;d&amp;#39;&lt;/span>&lt;span class="p">},&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">{&lt;/span>&lt;span class="s">&amp;#34;bpw&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="sc">&amp;#39;b&amp;#39;&lt;/span>&lt;span class="p">},&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">{&lt;/span>&lt;span class="s">&amp;#34;loop&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="sc">&amp;#39;l&amp;#39;&lt;/span>&lt;span class="p">},&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">{&lt;/span>&lt;span class="s">&amp;#34;cpha&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="sc">&amp;#39;H&amp;#39;&lt;/span>&lt;span class="p">},&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">{&lt;/span>&lt;span class="s">&amp;#34;cpol&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="sc">&amp;#39;O&amp;#39;&lt;/span>&lt;span class="p">},&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">{&lt;/span>&lt;span class="s">&amp;#34;lsb&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="sc">&amp;#39;L&amp;#39;&lt;/span>&lt;span class="p">},&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">{&lt;/span>&lt;span class="s">&amp;#34;cs-high&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="sc">&amp;#39;C&amp;#39;&lt;/span>&lt;span class="p">},&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">{&lt;/span>&lt;span class="s">&amp;#34;3wire&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="sc">&amp;#39;3&amp;#39;&lt;/span>&lt;span class="p">},&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">{&lt;/span>&lt;span class="s">&amp;#34;no-cs&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="sc">&amp;#39;N&amp;#39;&lt;/span>&lt;span class="p">},&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">{&lt;/span>&lt;span class="s">&amp;#34;ready&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="sc">&amp;#39;R&amp;#39;&lt;/span>&lt;span class="p">},&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">{&lt;/span>&lt;span class="nb">NULL&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">},&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">};&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">int&lt;/span> &lt;span class="n">c&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">c&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="nf">getopt_long&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">argc&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">argv&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s">&amp;#34;D:s:d:b:lHOLC3NR&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">lopts&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nb">NULL&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">c&lt;/span> &lt;span class="o">==&lt;/span> &lt;span class="o">-&lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">break&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">switch&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">c&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">case&lt;/span> &lt;span class="sc">&amp;#39;D&amp;#39;&lt;/span>&lt;span class="o">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">device&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">optarg&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">break&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">case&lt;/span> &lt;span class="sc">&amp;#39;s&amp;#39;&lt;/span>&lt;span class="o">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">speed&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="nf">atoi&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">optarg&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">break&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">case&lt;/span> &lt;span class="sc">&amp;#39;d&amp;#39;&lt;/span>&lt;span class="o">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">delay&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="nf">atoi&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">optarg&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">break&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">case&lt;/span> &lt;span class="sc">&amp;#39;b&amp;#39;&lt;/span>&lt;span class="o">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">bits&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="nf">atoi&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">optarg&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">break&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">case&lt;/span> &lt;span class="sc">&amp;#39;l&amp;#39;&lt;/span>&lt;span class="o">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">mode&lt;/span> &lt;span class="o">|=&lt;/span> &lt;span class="n">SPI_LOOP&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">break&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">case&lt;/span> &lt;span class="sc">&amp;#39;H&amp;#39;&lt;/span>&lt;span class="o">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">mode&lt;/span> &lt;span class="o">|=&lt;/span> &lt;span class="n">SPI_CPHA&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">break&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">case&lt;/span> &lt;span class="sc">&amp;#39;O&amp;#39;&lt;/span>&lt;span class="o">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">mode&lt;/span> &lt;span class="o">|=&lt;/span> &lt;span class="n">SPI_CPOL&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">break&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">case&lt;/span> &lt;span class="sc">&amp;#39;L&amp;#39;&lt;/span>&lt;span class="o">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">mode&lt;/span> &lt;span class="o">|=&lt;/span> &lt;span class="n">SPI_LSB_FIRST&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">break&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">case&lt;/span> &lt;span class="sc">&amp;#39;C&amp;#39;&lt;/span>&lt;span class="o">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">mode&lt;/span> &lt;span class="o">|=&lt;/span> &lt;span class="n">SPI_CS_HIGH&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">break&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">case&lt;/span> &lt;span class="sc">&amp;#39;3&amp;#39;&lt;/span>&lt;span class="o">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">mode&lt;/span> &lt;span class="o">|=&lt;/span> &lt;span class="n">SPI_3WIRE&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">break&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">case&lt;/span> &lt;span class="sc">&amp;#39;N&amp;#39;&lt;/span>&lt;span class="o">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">mode&lt;/span> &lt;span class="o">|=&lt;/span> &lt;span class="n">SPI_NO_CS&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">break&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">case&lt;/span> &lt;span class="sc">&amp;#39;R&amp;#39;&lt;/span>&lt;span class="o">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">mode&lt;/span> &lt;span class="o">|=&lt;/span> &lt;span class="n">SPI_READY&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">break&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">default&lt;/span>&lt;span class="o">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nf">print_usage&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">argv&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="mi">0&lt;/span>&lt;span class="p">]);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">break&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kt">int&lt;/span> &lt;span class="nf">main&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="kt">int&lt;/span> &lt;span class="n">argc&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="kt">char&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="n">argv&lt;/span>&lt;span class="p">[])&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">int&lt;/span> &lt;span class="n">ret&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">int&lt;/span> &lt;span class="n">fd&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nf">parse_opts&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">argc&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">argv&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">fd&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="nf">open&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">device&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">O_RDWR&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">fd&lt;/span> &lt;span class="o">&amp;lt;&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nf">pabort&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;can&amp;#39;t open device&amp;#34;&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="cm">/*
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> * spi mode
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">ret&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="nf">ioctl&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">fd&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">SPI_IOC_WR_MODE&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="o">&amp;amp;&lt;/span>&lt;span class="n">mode&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">ret&lt;/span> &lt;span class="o">==&lt;/span> &lt;span class="o">-&lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nf">pabort&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;can&amp;#39;t set spi mode&amp;#34;&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">ret&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="nf">ioctl&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">fd&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">SPI_IOC_RD_MODE&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="o">&amp;amp;&lt;/span>&lt;span class="n">mode&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">ret&lt;/span> &lt;span class="o">==&lt;/span> &lt;span class="o">-&lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nf">pabort&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;can&amp;#39;t get spi mode&amp;#34;&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="cm">/*
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> * bits per word
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">ret&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="nf">ioctl&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">fd&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">SPI_IOC_WR_BITS_PER_WORD&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="o">&amp;amp;&lt;/span>&lt;span class="n">bits&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">ret&lt;/span> &lt;span class="o">==&lt;/span> &lt;span class="o">-&lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nf">pabort&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;can&amp;#39;t set bits per word&amp;#34;&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">ret&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="nf">ioctl&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">fd&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">SPI_IOC_RD_BITS_PER_WORD&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="o">&amp;amp;&lt;/span>&lt;span class="n">bits&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">ret&lt;/span> &lt;span class="o">==&lt;/span> &lt;span class="o">-&lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nf">pabort&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;can&amp;#39;t get bits per word&amp;#34;&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="cm">/*
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> * max speed hz
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">ret&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="nf">ioctl&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">fd&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">SPI_IOC_WR_MAX_SPEED_HZ&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="o">&amp;amp;&lt;/span>&lt;span class="n">speed&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">ret&lt;/span> &lt;span class="o">==&lt;/span> &lt;span class="o">-&lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nf">pabort&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;can&amp;#39;t set max speed hz&amp;#34;&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">ret&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="nf">ioctl&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">fd&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">SPI_IOC_RD_MAX_SPEED_HZ&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="o">&amp;amp;&lt;/span>&lt;span class="n">speed&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">ret&lt;/span> &lt;span class="o">==&lt;/span> &lt;span class="o">-&lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nf">pabort&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;can&amp;#39;t get max speed hz&amp;#34;&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nf">printf&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;spi mode: %d&lt;/span>&lt;span class="se">\n&lt;/span>&lt;span class="s">&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">mode&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nf">printf&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;bits per word: %d&lt;/span>&lt;span class="se">\n&lt;/span>&lt;span class="s">&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">bits&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nf">printf&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;max speed: %d Hz (%d KHz)&lt;/span>&lt;span class="se">\n&lt;/span>&lt;span class="s">&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">speed&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">speed&lt;/span> &lt;span class="o">/&lt;/span> &lt;span class="mi">1000&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nf">transfer&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">fd&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nf">close&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">fd&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="n">ret&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>编译该文件运行，若输出结果如下则修改成功&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">spi mode: 0
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">bits per word: 8
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">max speed: 500000 Hz (500 KHz)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">FF FF FF FF FF FF
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">40 00 00 00 00 95
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">FF FF FF FF FF FF
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">FF FF FF FF FF FF
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">FF FF FF FF FF FF
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">DE AD BE EF BA AD
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">F0 0D
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div></description></item><item><title>ARM GIC-400 寄存器</title><link>https://nansenli.com/zh-cn/post/kokeyuan/arm-gic-400-registers/</link><pubDate>Thu, 30 Jun 2016 20:00:00 +0000</pubDate><guid>https://nansenli.com/zh-cn/post/kokeyuan/arm-gic-400-registers/</guid><description>&lt;h2 id="1简介">1.简介
 &lt;/h2>&lt;p>GIC-400是用于控制中断的。在cubieboard2 上 的A20芯片采用了这款控制器。&lt;/p>
 &lt;p>cubieboard2 的GIC控制器 的地址是0x01C80000&amp;mdash;0x01C87FFF ，长度等于GIC-400寄存器的长度。&lt;/p>
 &lt;p>具体的内容如下所示。&lt;/p>

@@ -1,7 +1,7 @@
-<!doctype html><html lang=en dir=ltr><head><meta charset=utf-8><meta name=viewport content='width=device-width,initial-scale=1'><meta name=description content='Run on All Machines All machines are running Debian. First, install Docker: sudo apt-get update sudo apt-get install -y \\ apt-transport-https \\ ca-certificates \\ curl \\ gnupg \\ lsb-release curl -fsSL https://download.docker.com/linux/debian/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg echo \\ "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/debian \\ $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null sudo apt-get update sudo apt-get install -y docker-ce docker-ce-cli containerd.io sudo mkdir /etc/docker cat <<EOF | sudo tee /etc/docker/daemon.'><title>Classic Kubernetes Installation Process</title>
-<link rel=canonical href=https://nansenli.com/post/jianshu/k8s/k8s%E7%BB%8F%E5%85%B8%E5%AE%89%E8%A3%85%E6%B5%81%E7%A8%8B/><link rel=stylesheet href=/scss/style.min.b9b97e7c3f7f078f7ec4f60195f6139d30ad5972cc05950321ee04a9e98c542f.css><meta property='og:title' content="Classic Kubernetes Installation Process"><meta property='og:description' content='Run on All Machines All machines are running Debian. First, install Docker: sudo apt-get update sudo apt-get install -y \\ apt-transport-https \\ ca-certificates \\ curl \\ gnupg \\ lsb-release curl -fsSL https://download.docker.com/linux/debian/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg echo \\ "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/debian \\ $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null sudo apt-get update sudo apt-get install -y docker-ce docker-ce-cli containerd.io sudo mkdir /etc/docker cat <<EOF | sudo tee /etc/docker/daemon.'><meta property='og:url' content='https://nansenli.com/post/jianshu/k8s/k8s%E7%BB%8F%E5%85%B8%E5%AE%89%E8%A3%85%E6%B5%81%E7%A8%8B/'><meta property='og:site_name' content="Nansen Li's Blog
+<!doctype html><html lang=en dir=ltr><head><meta charset=utf-8><meta name=viewport content='width=device-width,initial-scale=1'><meta name=description content="Run on All Machines All machines are running Debian. First, install Docker: 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 sudo apt-get update sudo apt-get install -y \\ apt-transport-https \\ ca-certificates \\ curl \\ gnupg \\ lsb-release curl -fsSL https://download.docker.com/linux/debian/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring."><title>Classic Kubernetes Installation Process</title>
+<link rel=canonical href=https://nansenli.com/post/jianshu/k8s/k8s%E7%BB%8F%E5%85%B8%E5%AE%89%E8%A3%85%E6%B5%81%E7%A8%8B/><link rel=stylesheet href=/scss/style.min.13a07907ead250546ad0b764b76f2b704035157ccc91726856890c9c2e7e027e.css><meta property='og:title' content="Classic Kubernetes Installation Process"><meta property='og:description' content="Run on All Machines All machines are running Debian. First, install Docker: 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 sudo apt-get update sudo apt-get install -y \\ apt-transport-https \\ ca-certificates \\ curl \\ gnupg \\ lsb-release curl -fsSL https://download.docker.com/linux/debian/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring."><meta property='og:url' content='https://nansenli.com/post/jianshu/k8s/k8s%E7%BB%8F%E5%85%B8%E5%AE%89%E8%A3%85%E6%B5%81%E7%A8%8B/'><meta property='og:site_name' content="Nansen Li's Blog
 李楠森的博客
-"><meta property='og:type' content='article'><meta property='article:section' content='Post'><meta property='article:published_time' content='2021-06-20T12:21:00+00:00'><meta property='article:modified_time' content='2021-06-20T12:21:00+00:00'><meta name=twitter:title content="Classic Kubernetes Installation Process"><meta name=twitter:description content='Run on All Machines All machines are running Debian. First, install Docker: sudo apt-get update sudo apt-get install -y \\ apt-transport-https \\ ca-certificates \\ curl \\ gnupg \\ lsb-release curl -fsSL https://download.docker.com/linux/debian/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg echo \\ "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/debian \\ $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null sudo apt-get update sudo apt-get install -y docker-ce docker-ce-cli containerd.io sudo mkdir /etc/docker cat <<EOF | sudo tee /etc/docker/daemon.'><link rel="shortcut icon" href=/favicon.ico><script async src="https://www.googletagmanager.com/gtag/js?id=G-WC38C3XE3J"></script><script>var dnt,doNotTrack=!1;if(!1&&(dnt=navigator.doNotTrack||window.doNotTrack||navigator.msDoNotTrack,doNotTrack=dnt=="1"||dnt=="yes"),!doNotTrack){window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag("js",new Date),gtag("config","G-WC38C3XE3J")}</script></head><body class=article-page><script>(function(){const e="StackColorScheme";localStorage.getItem(e)||localStorage.setItem(e,"auto")})()</script><script>(function(){const t="StackColorScheme",e=localStorage.getItem(t),n=window.matchMedia("(prefers-color-scheme: dark)").matches===!0;e=="dark"||e==="auto"&&n?document.documentElement.dataset.scheme="dark":document.documentElement.dataset.scheme="light"})()</script><div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky"><button class="hamburger hamburger--spin" type=button id=toggle-menu aria-label="Toggle Menu">
+"><meta property='og:type' content='article'><meta property='article:section' content='Post'><meta property='article:published_time' content='2021-06-20T12:21:00+00:00'><meta property='article:modified_time' content='2021-06-20T12:21:00+00:00'><meta name=twitter:title content="Classic Kubernetes Installation Process"><meta name=twitter:description content="Run on All Machines All machines are running Debian. First, install Docker: 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 sudo apt-get update sudo apt-get install -y \\ apt-transport-https \\ ca-certificates \\ curl \\ gnupg \\ lsb-release curl -fsSL https://download.docker.com/linux/debian/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring."><link rel="shortcut icon" href=/favicon.ico><script async src="https://www.googletagmanager.com/gtag/js?id=G-WC38C3XE3J"></script><script>var dnt,doNotTrack=!1;if(!1&&(dnt=navigator.doNotTrack||window.doNotTrack||navigator.msDoNotTrack,doNotTrack=dnt=="1"||dnt=="yes"),!doNotTrack){window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag("js",new Date),gtag("config","G-WC38C3XE3J")}</script></head><body class=article-page><script>(function(){const e="StackColorScheme";localStorage.getItem(e)||localStorage.setItem(e,"auto")})()</script><script>(function(){const t="StackColorScheme",e=localStorage.getItem(t),n=window.matchMedia("(prefers-color-scheme: dark)").matches===!0;e=="dark"||e==="auto"&&n?document.documentElement.dataset.scheme="dark":document.documentElement.dataset.scheme="light"})()</script><div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky"><button class="hamburger hamburger--spin" type=button id=toggle-menu aria-label="Toggle Menu">
 <span class=hamburger-box><span class=hamburger-inner></span></span></button><header><figure class=site-avatar><a href=/><img src=/img/avatar_hu96777ff80939aaa7d938dddcc232fcc6_1414962_300x0_resize_box_3.png width=300 height=300 class=site-logo loading=lazy alt=Avatar>
 </a><span class=emoji>🌈</span></figure><div class=site-meta><h1 class=site-name><a href=/>Nansen Li's Blog
 李楠森的博客</a></h1><h2 class=site-description></h2></div></header><ol class=menu-social><li><a href=https://github.com/linanwx target=_blank title=GitHub rel=me><svg class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 19c-4.3 1.4-4.3-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6.0 00-1.3-3.2 4.2 4.2.0 00-.1-3.2s-1.1-.3-3.5 1.3a12.3 12.3.0 00-6.2.0C6.5 2.8 5.4 3.1 5.4 3.1a4.2 4.2.0 00-.1 3.2A4.6 4.6.0 004 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"/></svg></a></li><li><a href=https://www.linkedin.com/in/nansen-li-3bb0a3146/ target=_blank title=LinkedIn rel=me><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-brand-linkedin"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M8 11v5"/><path d="M8 8v.01"/><path d="M12 16v-5"/><path d="M16 16v-3a2 2 0 10-4 0"/><path d="M3 7a4 4 0 014-4h10a4 4 0 014 4v10a4 4 0 01-4 4H7a4 4 0 01-4-4z"/></svg></a></li><li><a href=index.xml target=_blank title=RSS rel=me><svg class="icon icon-tabler icon-tabler-rss" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="5" cy="19" r="1"/><path d="M4 4a16 16 0 0116 16"/><path d="M4 11a9 9 0 019 9"/></svg></a></li></ol><ol class=menu id=main-menu><li><a href=/><svg class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><polyline points="5 12 3 12 12 3 21 12 19 12"/><path d="M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/><path d="M9 21v-6a2 2 0 012-2h2a2 2 0 012 2v6"/></svg>
@@ -10,77 +10,141 @@
 <span>Search</span></a></li><li class=menu-bottom-section><ol class=menu><li id=i18n-switch><svg class="icon icon-tabler icon-tabler-language" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 5h7"/><path d="M9 3v2c0 4.418-2.239 8-5 8"/><path d="M5 9c-.003 2.144 2.952 3.908 6.7 4"/><path d="M12 20l4-9 4 9"/><path d="M19.1 18h-6.2"/></svg>
 <select name=language title=language onchange="window.location.href=this.selectedOptions[0].value"><option value=https://nansenli.com/ selected>English</option><option value=https://nansenli.com/zh-cn/>中文</option></select></li><li id=dark-mode-toggle><svg class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="8" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
 <svg class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="16" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
-<span>Dark Mode</span></li></ol></li></ol></aside><main class="main full-width"><article class=main-article><header class=article-header><div class=article-details><header class=article-category><a href=/categories/k8s/>K8s</a></header><div class=article-title-wrapper><h2 class=article-title><a href=/post/jianshu/k8s/k8s%E7%BB%8F%E5%85%B8%E5%AE%89%E8%A3%85%E6%B5%81%E7%A8%8B/>Classic Kubernetes Installation Process</a></h2></div><footer class=article-time><div><svg class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M11.795 21H5a2 2 0 01-2-2V7a2 2 0 012-2h12a2 2 0 012 2v4"/><circle cx="18" cy="18" r="4"/><path d="M15 3v4"/><path d="M7 3v4"/><path d="M3 11h16"/><path d="M18 16.496V18l1 1"/></svg>
+<span>Dark Mode</span></li></ol></li></ol></aside><aside class="sidebar right-sidebar sticky"><section class="widget archives"><div class=widget-icon><svg class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><line x1="5" y1="9" x2="19" y2="9"/><line x1="5" y1="15" x2="19" y2="15"/><line x1="11" y1="4" x2="7" y2="20"/><line x1="17" y1="4" x2="13" y2="20"/></svg></div><h2 class="widget-title section-title">Table of contents</h2><div class=widget--toc><nav id=TableOfContents><ul><li><a href=#run-on-all-machines>Run on All Machines</a></li><li><a href=#run-on-the-master-node>Run on the Master Node</a></li></ul></nav></div></section></aside><main class="main full-width"><article class=main-article><header class=article-header><div class=article-details><header class=article-category><a href=/categories/k8s/>K8s</a></header><div class=article-title-wrapper><h2 class=article-title><a href=/post/jianshu/k8s/k8s%E7%BB%8F%E5%85%B8%E5%AE%89%E8%A3%85%E6%B5%81%E7%A8%8B/>Classic Kubernetes Installation Process</a></h2></div><footer class=article-time><div><svg class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M11.795 21H5a2 2 0 01-2-2V7a2 2 0 012-2h12a2 2 0 012 2v4"/><circle cx="18" cy="18" r="4"/><path d="M15 3v4"/><path d="M7 3v4"/><path d="M3 11h16"/><path d="M18 16.496V18l1 1"/></svg>
 <time class=article-time--published>Jun 20, 2021</time></div><div><svg class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg>
-<time class=article-time--reading>2 minute read</time></div></footer><footer class=article-translations><svg class="icon icon-tabler icon-tabler-language" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 5h7"/><path d="M9 3v2c0 4.418-2.239 8-5 8"/><path d="M5 9c-.003 2.144 2.952 3.908 6.7 4"/><path d="M12 20l4-9 4 9"/><path d="M19.1 18h-6.2"/></svg><div><a href=https://nansenli.com/zh-cn/post/jianshu/k8s/k8s%E7%BB%8F%E5%85%B8%E5%AE%89%E8%A3%85%E6%B5%81%E7%A8%8B/ class=link>中文</a></div></footer></div></header><section class=article-content><h1 id=run-on-all-machines>Run on All Machines</h1><p>All machines are running Debian.
-First, install Docker:</p><pre tabindex=0><code> sudo apt-get update
- sudo apt-get install -y \
-    apt-transport-https \
-    ca-certificates \
-    curl \
-    gnupg \
-    lsb-release
-
-curl -fsSL https://download.docker.com/linux/debian/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
-
-echo \
-  &#34;deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/debian \
-  $(lsb_release -cs) stable&#34; | sudo tee /etc/apt/sources.list.d/docker.list &gt; /dev/null
-
-sudo apt-get update
-sudo apt-get install -y docker-ce docker-ce-cli containerd.io
-
-sudo mkdir /etc/docker
-cat &lt;&lt;EOF | sudo tee /etc/docker/daemon.json
-{
-  &#34;exec-opts&#34;: [&#34;native.cgroupdriver=systemd&#34;],
-  &#34;log-driver&#34;: &#34;json-file&#34;,
-  &#34;log-opts&#34;: {
-    &#34;max-size&#34;: &#34;100m&#34;
-  },
-  &#34;storage-driver&#34;: &#34;overlay2&#34;
-}
-EOF
-
-
-sudo usermod -aG docker ${USER}
-
-sudo systemctl restart docker
-
-sudo su ${USER}
-</code></pre><p>At this point, running <code>docker ps -a</code> should work without errors, indicating Docker was installed successfully.</p><p>Next, install Kubernetes components:</p><pre tabindex=0><code>cat &lt;&lt;EOF | sudo tee /etc/modules-load.d/k8s.conf
-br_netfilter
-EOF
-
-cat &lt;&lt;EOF | sudo tee /etc/sysctl.d/k8s.conf
-net.bridge.bridge-nf-call-ip6tables = 1
-net.bridge.bridge-nf-call-iptables = 1
-EOF
-sudo sysctl --system
-
-sudo apt-get update
-sudo apt-get install -y apt-transport-https ca-certificates curl
-
-sudo curl -fsSLo /usr/share/keyrings/kubernetes-archive-keyring.gpg https://packages.cloud.google.com/apt/doc/apt-key.gpg
-
-echo &#34;deb [signed-by=/usr/share/keyrings/kubernetes-archive-keyring.gpg] https://apt.kubernetes.io/ kubernetes-xenial main&#34; | sudo tee /etc/apt/sources.list.d/kubernetes.list
-
-sudo apt-get update
-sudo apt-get install -y kubelet kubeadm kubectl
-sudo apt-mark hold kubelet kubeadm kubectl
-</code></pre><h1 id=run-on-the-master-node>Run on the Master Node</h1><p>Initialize the control plane:</p><pre tabindex=0><code>sudo kubeadm init --apiserver-advertise-address masterip --control-plane-endpoint masterdns --pod-network-cidr 10.244.0.0/16
-</code></pre><p>Save the last part of the output for later use, including instructions on how to configure .kube and the join command for nodes. Follow the instructions to configure the .kube file.</p><p>Then initialize the network plugin:</p><pre tabindex=0><code>wget https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
-kubectl apply -f kube-flannel.yml
-</code></pre><p>Check if pods are running properly:</p><pre tabindex=0><code>kubectl get pods -A
-</code></pre><p>On another node, install Kubernetes components, then run the join command. This command is printed at the end of the kubeadm init process.</p><p>Afterwards, check if the pods are running properly.</p><p>Download the dashboard:</p><pre tabindex=0><code>wget https://raw.githubusercontent.com/kubernetes/dashboard/v2.2.0/aio/deploy/recommended.yaml -o dashboard.yaml
-</code></pre><p>Edit dashboard.yaml:
+<time class=article-time--reading>3 minute read</time></div></footer><footer class=article-translations><svg class="icon icon-tabler icon-tabler-language" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 5h7"/><path d="M9 3v2c0 4.418-2.239 8-5 8"/><path d="M5 9c-.003 2.144 2.952 3.908 6.7 4"/><path d="M12 20l4-9 4 9"/><path d="M19.1 18h-6.2"/></svg><div><a href=https://nansenli.com/zh-cn/post/jianshu/k8s/k8s%E7%BB%8F%E5%85%B8%E5%AE%89%E8%A3%85%E6%B5%81%E7%A8%8B/ class=link>中文</a></div></footer></div></header><section class=article-content><h1 id=run-on-all-machines>Run on All Machines</h1><p>All machines are running Debian.
+First, install Docker:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-gdscript3 data-lang=gdscript3><span class=line><span class=cl> <span class=n>sudo</span> <span class=n>apt</span><span class=o>-</span><span class=n>get</span> <span class=n>update</span>
+</span></span><span class=line><span class=cl> <span class=n>sudo</span> <span class=n>apt</span><span class=o>-</span><span class=n>get</span> <span class=n>install</span> <span class=o>-</span><span class=n>y</span> \
+</span></span><span class=line><span class=cl>    <span class=n>apt</span><span class=o>-</span><span class=n>transport</span><span class=o>-</span><span class=n>https</span> \
+</span></span><span class=line><span class=cl>    <span class=n>ca</span><span class=o>-</span><span class=n>certificates</span> \
+</span></span><span class=line><span class=cl>    <span class=n>curl</span> \
+</span></span><span class=line><span class=cl>    <span class=n>gnupg</span> \
+</span></span><span class=line><span class=cl>    <span class=n>lsb</span><span class=o>-</span><span class=n>release</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>curl</span> <span class=o>-</span><span class=n>fsSL</span> <span class=n>https</span><span class=p>:</span><span class=o>//</span><span class=n>download</span><span class=o>.</span><span class=n>docker</span><span class=o>.</span><span class=n>com</span><span class=o>/</span><span class=n>linux</span><span class=o>/</span><span class=n>debian</span><span class=o>/</span><span class=n>gpg</span> <span class=o>|</span> <span class=n>sudo</span> <span class=n>gpg</span> <span class=o>--</span><span class=n>dearmor</span> <span class=o>-</span><span class=n>o</span> <span class=o>/</span><span class=n>usr</span><span class=o>/</span><span class=n>share</span><span class=o>/</span><span class=n>keyrings</span><span class=o>/</span><span class=n>docker</span><span class=o>-</span><span class=n>archive</span><span class=o>-</span><span class=n>keyring</span><span class=o>.</span><span class=n>gpg</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>echo</span> \
+</span></span><span class=line><span class=cl>  <span class=s2>&#34;deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/debian </span><span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span><span class=s2>  $(lsb_release -cs) stable&#34;</span> <span class=o>|</span> <span class=n>sudo</span> <span class=n>tee</span> <span class=o>/</span><span class=n>etc</span><span class=o>/</span><span class=n>apt</span><span class=o>/</span><span class=n>sources</span><span class=o>.</span><span class=n>list</span><span class=o>.</span><span class=n>d</span><span class=o>/</span><span class=n>docker</span><span class=o>.</span><span class=n>list</span> <span class=o>&gt;</span> <span class=o>/</span><span class=n>dev</span><span class=o>/</span><span class=n>null</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>sudo</span> <span class=n>apt</span><span class=o>-</span><span class=n>get</span> <span class=n>update</span>
+</span></span><span class=line><span class=cl><span class=n>sudo</span> <span class=n>apt</span><span class=o>-</span><span class=n>get</span> <span class=n>install</span> <span class=o>-</span><span class=n>y</span> <span class=n>docker</span><span class=o>-</span><span class=n>ce</span> <span class=n>docker</span><span class=o>-</span><span class=n>ce</span><span class=o>-</span><span class=n>cli</span> <span class=n>containerd</span><span class=o>.</span><span class=n>io</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>sudo</span> <span class=n>mkdir</span> <span class=o>/</span><span class=n>etc</span><span class=o>/</span><span class=n>docker</span>
+</span></span><span class=line><span class=cl><span class=n>cat</span> <span class=o>&lt;&lt;</span><span class=n>EOF</span> <span class=o>|</span> <span class=n>sudo</span> <span class=n>tee</span> <span class=o>/</span><span class=n>etc</span><span class=o>/</span><span class=n>docker</span><span class=o>/</span><span class=n>daemon</span><span class=o>.</span><span class=n>json</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=s2>&#34;exec-opts&#34;</span><span class=p>:</span> <span class=p>[</span><span class=s2>&#34;native.cgroupdriver=systemd&#34;</span><span class=p>],</span>
+</span></span><span class=line><span class=cl>  <span class=s2>&#34;log-driver&#34;</span><span class=p>:</span> <span class=s2>&#34;json-file&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>  <span class=s2>&#34;log-opts&#34;</span><span class=p>:</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;max-size&#34;</span><span class=p>:</span> <span class=s2>&#34;100m&#34;</span>
+</span></span><span class=line><span class=cl>  <span class=p>},</span>
+</span></span><span class=line><span class=cl>  <span class=s2>&#34;storage-driver&#34;</span><span class=p>:</span> <span class=s2>&#34;overlay2&#34;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=n>EOF</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>sudo</span> <span class=n>usermod</span> <span class=o>-</span><span class=n>aG</span> <span class=n>docker</span> <span class=o>$</span><span class=p>{</span><span class=n>USER</span><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>sudo</span> <span class=n>systemctl</span> <span class=n>restart</span> <span class=n>docker</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>sudo</span> <span class=n>su</span> <span class=o>$</span><span class=p>{</span><span class=n>USER</span><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>At this point, running <code>docker ps -a</code> should work without errors, indicating Docker was installed successfully.</p><p>Next, install Kubernetes components:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-gdscript3 data-lang=gdscript3><span class=line><span class=cl><span class=n>cat</span> <span class=o>&lt;&lt;</span><span class=n>EOF</span> <span class=o>|</span> <span class=n>sudo</span> <span class=n>tee</span> <span class=o>/</span><span class=n>etc</span><span class=o>/</span><span class=n>modules</span><span class=o>-</span><span class=nb>load</span><span class=o>.</span><span class=n>d</span><span class=o>/</span><span class=n>k8s</span><span class=o>.</span><span class=n>conf</span>
+</span></span><span class=line><span class=cl><span class=n>br_netfilter</span>
+</span></span><span class=line><span class=cl><span class=n>EOF</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>cat</span> <span class=o>&lt;&lt;</span><span class=n>EOF</span> <span class=o>|</span> <span class=n>sudo</span> <span class=n>tee</span> <span class=o>/</span><span class=n>etc</span><span class=o>/</span><span class=n>sysctl</span><span class=o>.</span><span class=n>d</span><span class=o>/</span><span class=n>k8s</span><span class=o>.</span><span class=n>conf</span>
+</span></span><span class=line><span class=cl><span class=n>net</span><span class=o>.</span><span class=n>bridge</span><span class=o>.</span><span class=n>bridge</span><span class=o>-</span><span class=n>nf</span><span class=o>-</span><span class=n>call</span><span class=o>-</span><span class=n>ip6tables</span> <span class=o>=</span> <span class=mi>1</span>
+</span></span><span class=line><span class=cl><span class=n>net</span><span class=o>.</span><span class=n>bridge</span><span class=o>.</span><span class=n>bridge</span><span class=o>-</span><span class=n>nf</span><span class=o>-</span><span class=n>call</span><span class=o>-</span><span class=n>iptables</span> <span class=o>=</span> <span class=mi>1</span>
+</span></span><span class=line><span class=cl><span class=n>EOF</span>
+</span></span><span class=line><span class=cl><span class=n>sudo</span> <span class=n>sysctl</span> <span class=o>--</span><span class=n>system</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>sudo</span> <span class=n>apt</span><span class=o>-</span><span class=n>get</span> <span class=n>update</span>
+</span></span><span class=line><span class=cl><span class=n>sudo</span> <span class=n>apt</span><span class=o>-</span><span class=n>get</span> <span class=n>install</span> <span class=o>-</span><span class=n>y</span> <span class=n>apt</span><span class=o>-</span><span class=n>transport</span><span class=o>-</span><span class=n>https</span> <span class=n>ca</span><span class=o>-</span><span class=n>certificates</span> <span class=n>curl</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>sudo</span> <span class=n>curl</span> <span class=o>-</span><span class=n>fsSLo</span> <span class=o>/</span><span class=n>usr</span><span class=o>/</span><span class=n>share</span><span class=o>/</span><span class=n>keyrings</span><span class=o>/</span><span class=n>kubernetes</span><span class=o>-</span><span class=n>archive</span><span class=o>-</span><span class=n>keyring</span><span class=o>.</span><span class=n>gpg</span> <span class=n>https</span><span class=p>:</span><span class=o>//</span><span class=n>packages</span><span class=o>.</span><span class=n>cloud</span><span class=o>.</span><span class=n>google</span><span class=o>.</span><span class=n>com</span><span class=o>/</span><span class=n>apt</span><span class=o>/</span><span class=n>doc</span><span class=o>/</span><span class=n>apt</span><span class=o>-</span><span class=n>key</span><span class=o>.</span><span class=n>gpg</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>echo</span> <span class=s2>&#34;deb [signed-by=/usr/share/keyrings/kubernetes-archive-keyring.gpg] https://apt.kubernetes.io/ kubernetes-xenial main&#34;</span> <span class=o>|</span> <span class=n>sudo</span> <span class=n>tee</span> <span class=o>/</span><span class=n>etc</span><span class=o>/</span><span class=n>apt</span><span class=o>/</span><span class=n>sources</span><span class=o>.</span><span class=n>list</span><span class=o>.</span><span class=n>d</span><span class=o>/</span><span class=n>kubernetes</span><span class=o>.</span><span class=n>list</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>sudo</span> <span class=n>apt</span><span class=o>-</span><span class=n>get</span> <span class=n>update</span>
+</span></span><span class=line><span class=cl><span class=n>sudo</span> <span class=n>apt</span><span class=o>-</span><span class=n>get</span> <span class=n>install</span> <span class=o>-</span><span class=n>y</span> <span class=n>kubelet</span> <span class=n>kubeadm</span> <span class=n>kubectl</span>
+</span></span><span class=line><span class=cl><span class=n>sudo</span> <span class=n>apt</span><span class=o>-</span><span class=n>mark</span> <span class=n>hold</span> <span class=n>kubelet</span> <span class=n>kubeadm</span> <span class=n>kubectl</span>
+</span></span></code></pre></td></tr></table></div></div><h1 id=run-on-the-master-node>Run on the Master Node</h1><p>Initialize the control plane:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>sudo kubeadm init --apiserver-advertise-address masterip --control-plane-endpoint masterdns --pod-network-cidr 10.244.0.0/16
+</span></span></code></pre></td></tr></table></div></div><p>Save the last part of the output for later use, including instructions on how to configure .kube and the join command for nodes. Follow the instructions to configure the .kube file.</p><p>Then initialize the network plugin:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>wget https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
+</span></span><span class=line><span class=cl>kubectl apply -f kube-flannel.yml
+</span></span></code></pre></td></tr></table></div></div><p>Check if pods are running properly:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>kubectl get pods -A
+</span></span></code></pre></td></tr></table></div></div><p>On another node, install Kubernetes components, then run the join command. This command is printed at the end of the kubeadm init process.</p><p>Afterwards, check if the pods are running properly.</p><p>Download the dashboard:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>wget https://raw.githubusercontent.com/kubernetes/dashboard/v2.2.0/aio/deploy/recommended.yaml -o dashboard.yaml
+</span></span></code></pre></td></tr></table></div></div><p>Edit dashboard.yaml:
 Add nodePort: 31001 below port 8443, and change the type to NodePort above it. Find the namespace= line and add a line below it: - &ndash;token-ttl=43200
 For details, refer to:
-<a class=link href=https://www.huaweicloud.com/articles/dc1dcb0c48cc785a9193c9ce709c8b35.html target=_blank rel=noopener>https://www.huaweicloud.com/articles/dc1dcb0c48cc785a9193c9ce709c8b35.html</a></p><p>Create an admin role:</p><pre tabindex=0><code>kubectl create -f https://raw.githubusercontent.com/rootsongjc/kubernetes-handbook/master/manifests/dashboard-1.7.1/admin-role.yaml
-</code></pre><p>Apply the pod:</p><pre tabindex=0><code>kubectl apply -f dashboard.yaml
-</code></pre><p>Check the port:</p><pre tabindex=0><code>sudo lsof -i:31001 
-</code></pre><p>Get the token:</p><pre tabindex=0><code>kubectl -n kube-system describe secret $(kubectl -n kube-system get secret | grep admin-token | awk &#39;{print $1}&#39;)
-</code></pre><p>Visit https://masterip:31001 and enter &rsquo;thisisunsafe&rsquo; in Chrome, then input the token.</p><p><img src=/img/rescued/6e04c88e778d.png loading=lazy alt=dashboard></p></section><footer class=article-footer></footer></article><div class=disqus-container><div id=disqus_thread></div><script>window.disqus_config=function(){},function(){if(["localhost","127.0.0.1"].indexOf(window.location.hostname)!=-1){document.getElementById("disqus_thread").innerHTML="Disqus comments not available by default when the website is previewed locally.";return}var t=document,e=t.createElement("script");e.async=!0,e.src="//nansenli.disqus.com/embed.js",e.setAttribute("data-timestamp",+new Date),(t.head||t.body).appendChild(e)}()</script><noscript>Please enable JavaScript to view the <a href=https://disqus.com/?ref_noscript>comments powered by Disqus.</a></noscript><a href=https://disqus.com class=dsq-brlink>comments powered by <span class=logo-disqus>Disqus</span></a></div><style>.disqus-container{background-color:var(--card-background);border-radius:var(--card-border-radius);box-shadow:var(--shadow-l1);padding:var(--card-padding)}</style><script>window.addEventListener("onColorSchemeChange",e=>{typeof DISQUS=="object"&&DISQUS.reset({reload:!0})})</script><footer class=site-footer><section class=copyright>&copy;
+<a class=link href=https://www.huaweicloud.com/articles/dc1dcb0c48cc785a9193c9ce709c8b35.html target=_blank rel=noopener>https://www.huaweicloud.com/articles/dc1dcb0c48cc785a9193c9ce709c8b35.html</a></p><p>Create an admin role:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>kubectl create -f https://raw.githubusercontent.com/rootsongjc/kubernetes-handbook/master/manifests/dashboard-1.7.1/admin-role.yaml
+</span></span></code></pre></td></tr></table></div></div><p>Apply the pod:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>kubectl apply -f dashboard.yaml
+</span></span></code></pre></td></tr></table></div></div><p>Check the port:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>sudo lsof -i:31001 
+</span></span></code></pre></td></tr></table></div></div><p>Get the token:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>kubectl -n kube-system describe secret $(kubectl -n kube-system get secret | grep admin-token | awk &#39;{print $1}&#39;)
+</span></span></code></pre></td></tr></table></div></div><p>Visit https://masterip:31001 and enter &rsquo;thisisunsafe&rsquo; in Chrome, then input the token.</p><p><img src=/img/rescued/6e04c88e778d.png loading=lazy alt=dashboard></p></section><footer class=article-footer></footer></article><div class=disqus-container><div id=disqus_thread></div><script>window.disqus_config=function(){},function(){if(["localhost","127.0.0.1"].indexOf(window.location.hostname)!=-1){document.getElementById("disqus_thread").innerHTML="Disqus comments not available by default when the website is previewed locally.";return}var t=document,e=t.createElement("script");e.async=!0,e.src="//nansenli.disqus.com/embed.js",e.setAttribute("data-timestamp",+new Date),(t.head||t.body).appendChild(e)}()</script><noscript>Please enable JavaScript to view the <a href=https://disqus.com/?ref_noscript>comments powered by Disqus.</a></noscript><a href=https://disqus.com class=dsq-brlink>comments powered by <span class=logo-disqus>Disqus</span></a></div><style>.disqus-container{background-color:var(--card-background);border-radius:var(--card-border-radius);box-shadow:var(--shadow-l1);padding:var(--card-padding)}</style><script>window.addEventListener("onColorSchemeChange",e=>{typeof DISQUS=="object"&&DISQUS.reset({reload:!0})})</script><footer class=site-footer><section class=copyright>&copy;
 2026 Nansen Li 🌈 （李楠森）</section><section class=powerby>Built with <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a><br>Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.31.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a></section></footer><div class=pswp tabindex=-1 role=dialog aria-hidden=true><div class=pswp__bg></div><div class=pswp__scroll-wrap><div class=pswp__container><div class=pswp__item></div><div class=pswp__item></div><div class=pswp__item></div></div><div class="pswp__ui pswp__ui--hidden"><div class=pswp__top-bar><div class=pswp__counter></div><button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
 <button class="pswp__button pswp__button--share" title=Share></button>
 <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
