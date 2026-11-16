@@ -1272,18 +1272,18 @@ FEAL-4 算法因为较低的轮数和简单的结构为差分分析提供了便�
 &lt;p>对于 DCU 安全编程这门课的反汇编，由于题目有一定套路，使用固定的解题思路，可以快速解题&lt;/p>
 &lt;h1 id="前置技能">前置技能
 &lt;/h1>&lt;ol>
-&lt;li>熟悉各种汇编命令 &lt;a class="link" href="craftdocs://open?blockId=8DC79A21-6886-4C9D-BAF2-8CAB0A186B73&amp;amp;spaceId=c5e6e898-910c-6f27-fbc5-91f4c34a9511" >汇编指令&lt;/a>&lt;/li>
-&lt;li>熟悉 % 和 $ 表示寄存器和立即数 &lt;a class="link" href="craftdocs://open?blockId=624020ED-93E1-483B-8FA7-7D21D0B71036&amp;amp;spaceId=c5e6e898-910c-6f27-fbc5-91f4c34a9511" >$ 与 % 寄存器与立即数&lt;/a>&lt;/li>
-&lt;li>熟悉直接寻址和间接寻址 &lt;a class="link" href="craftdocs://open?blockId=C4F438DF-5C27-4FAF-82DF-7D815FB93AD1&amp;amp;spaceId=c5e6e898-910c-6f27-fbc5-91f4c34a9511" >直接寻址与间接寻址&lt;/a>&lt;/li>
-&lt;li>了解一个case &lt;a class="link" href="craftdocs://open?blockId=F8D3758A-2BBE-46A0-B06A-9CB8EBC9D23E&amp;amp;spaceId=c5e6e898-910c-6f27-fbc5-91f4c34a9511" >C语言代码到汇编的例子&lt;/a>&lt;/li>
+&lt;li>熟悉各种汇编命令 汇编指令&lt;/li>
+&lt;li>熟悉 % 和 $ 表示寄存器和立即数 $ 与 % 寄存器与立即数&lt;/li>
+&lt;li>熟悉直接寻址和间接寻址 直接寻址与间接寻址&lt;/li>
+&lt;li>了解一个case C语言代码到汇编的例子&lt;/li>
 &lt;/ol>
 &lt;h1 id="解题思路">解题思路
 &lt;/h1>&lt;ol>
-&lt;li>&lt;a class="link" href="craftdocs://open?blockId=5FC17CD5-B366-4554-B226-D38877BAB7A4&amp;amp;spaceId=c5e6e898-910c-6f27-fbc5-91f4c34a9511" >找到入参个数&lt;/a>&lt;/li>
-&lt;li>&lt;a class="link" href="craftdocs://open?blockId=8B96E2AA-7B13-4371-8DF9-37856DD028BD&amp;amp;spaceId=c5e6e898-910c-6f27-fbc5-91f4c34a9511" >找到局部变量个数&lt;/a>&lt;/li>
-&lt;li>&lt;a class="link" href="craftdocs://open?blockId=F7BE55C0-B922-4724-8405-BD72D9F0C85A&amp;amp;spaceId=c5e6e898-910c-6f27-fbc5-91f4c34a9511" >识别循环体&lt;/a>&lt;/li>
-&lt;li>&lt;a class="link" href="craftdocs://open?blockId=4E432226-5F3A-411D-8479-34D681002111&amp;amp;spaceId=c5e6e898-910c-6f27-fbc5-91f4c34a9511" >解析剩余代码片段&lt;/a>&lt;/li>
-&lt;li>&lt;a class="link" href="craftdocs://open?blockId=E0AD97BA-3EFF-4498-9847-0536A7B7DABD&amp;amp;spaceId=c5e6e898-910c-6f27-fbc5-91f4c34a9511" >识别返回数据&lt;/a>&lt;/li>
+&lt;li>&lt;a class="link" href="#%e6%89%be%e5%88%b0%e5%85%a5%e5%8f%82%e4%b8%aa%e6%95%b0" >找到入参个数&lt;/a>&lt;/li>
+&lt;li>&lt;a class="link" href="#%e6%89%be%e5%88%b0%e5%b1%80%e9%83%a8%e5%8f%98%e9%87%8f%e4%b8%aa%e6%95%b0" >找到局部变量个数&lt;/a>&lt;/li>
+&lt;li>&lt;a class="link" href="#%e8%af%86%e5%88%ab%e5%be%aa%e7%8e%af%e4%bd%93" >识别循环体&lt;/a>&lt;/li>
+&lt;li>&lt;a class="link" href="#%e8%a7%a3%e6%9e%90%e5%89%a9%e4%bd%99%e4%bb%a3%e7%a0%81%e7%89%87%e6%ae%b5" >解析剩余代码片段&lt;/a>&lt;/li>
+&lt;li>&lt;a class="link" href="#%e8%af%86%e5%88%ab%e8%bf%94%e5%9b%9e%e6%95%b0%e6%8d%ae" >识别返回数据&lt;/a>&lt;/li>
 &lt;/ol>
 &lt;h1 id="找到入参个数">找到入参个数
 &lt;/h1>&lt;p>ebp的位置是saved frame ptr，ebp+4的位置是return address。由于题目往往是约定入参全部为int 或者 int * 类型，因此 ebp+8，ebp+c，ebp+10的位置，分别是入参的第一个参数，第二个参数，第三个参数。&lt;/p>
@@ -1430,7 +1430,7 @@ FEAL-4 算法因为较低的轮数和简单的结构为差分分析提供了便�
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h1 id="识别返回数据">识别返回数据
-&lt;/h1>&lt;p>按照C语言的x86的&lt;a class="link" href="craftdocs://open?blockId=742A9A8D-28C1-462B-A1D8-2D6CDB66B3BA&amp;amp;spaceId=c5e6e898-910c-6f27-fbc5-91f4c34a9511" >调用约定&lt;/a>，返回数据放在eax中。&lt;/p>
+&lt;/h1>&lt;p>按照C语言的x86的调用约定，返回数据放在eax中。&lt;/p>
 &lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-cpp" data-lang="cpp">&lt;span style="display:flex;">&lt;span>mov &lt;span style="color:#960050;background-color:#1e0010">$&lt;/span>&lt;span style="color:#ae81ff">0x0&lt;/span>, &lt;span style="color:#f92672">%&lt;/span>eax
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>很显然，这里直接返回了0&lt;/p>
 &lt;h1 id="最终代码">最终代码
