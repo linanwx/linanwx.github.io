@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Socket on Nansen Li's Blog
+李楠森的博客</title><link>https://nansenli.com/tags/socket/</link><description>Recent content in Socket on Nansen Li's Blog
+李楠森的博客</description><generator>Hugo -- gohugo.io</generator><language>en</language><copyright>Nansen Li 🌈 （李楠森）</copyright><lastBuildDate>Tue, 11 Dec 2018 10:50:00 +0000</lastBuildDate><atom:link href="https://nansenli.com/tags/socket/index.xml" rel="self" type="application/rss+xml"/><item><title>Socket.io Learning</title><link>https://nansenli.com/post/jianshu/%E7%BD%91%E7%BB%9C/socket-io%E5%AD%A6%E4%B9%A0/</link><pubDate>Tue, 11 Dec 2018 10:50:00 +0000</pubDate><guid>https://nansenli.com/post/jianshu/%E7%BD%91%E7%BB%9C/socket-io%E5%AD%A6%E4%B9%A0/</guid><description>&lt;h2 id="introduction">Introduction
+&lt;/h2>&lt;p>In a hurry, will write more later&lt;/p>
+&lt;h2 id="core-concepts">Core Concepts
+&lt;/h2>&lt;p>Both the server and client have &lt;code>emit&lt;/code> and &lt;code>on&lt;/code> functions, which can be considered the core of socket.io. Through &lt;code>emit&lt;/code> and &lt;code>on&lt;/code>, bidirectional communication between server and client can be easily implemented.&lt;/p>
+&lt;p>emit: Used to emit or trigger an event. The first parameter is the event name, the second parameter is the data to be sent, and the third parameter is a callback function (generally omitted, but needed when immediate confirmation is required after the other party receives the information).
+on: Used to listen for an event emitted by &lt;code>emit&lt;/code>. The first parameter is the name of the event to listen for, and the second parameter is an anonymous function used to receive data from the other party. The first parameter of this anonymous function is the received data, and if there is a second parameter, it is the function to be returned.
+socket.io provides three default events (both client and server have them): connect, message, and disconnect. The connect event is automatically triggered when a connection is established with the other party, the message event is triggered when data is received from the other party (usually triggered by socket.send()), and the disconnect event is triggered when the other party closes the connection.&lt;/p>
+&lt;p>On the server side, distinguish between these three situations:&lt;/p>
+&lt;p>socket.emit(): Broadcasts to the client that established the connection
+socket.broadcast.emit(): Broadcasts to all clients except the one that established the connection
+io.sockets.emit(): Broadcasts to all clients, equivalent to the sum of the above two&lt;/p></description></item><item><title>Learning the socat Command</title><link>https://nansenli.com/post/jianshu/%E7%BD%91%E7%BB%9C/socat%E5%91%BD%E4%BB%A4%E5%AD%A6%E4%B9%A0/</link><pubDate>Wed, 23 May 2018 09:04:00 +0000</pubDate><guid>https://nansenli.com/post/jianshu/%E7%BD%91%E7%BB%9C/socat%E5%91%BD%E4%BB%A4%E5%AD%A6%E4%B9%A0/</guid><description>&lt;h2 id="introduction">Introduction
+&lt;/h2>&lt;p>socat is a powerful and easy-to-use tool that can implement conversions between any types of sockets.&lt;/p>
+&lt;h2 id="usage">Usage
+&lt;/h2>&lt;p>&lt;code>socat [options] &amp;lt;address&amp;gt; &amp;lt;address&amp;gt;&lt;/code>&lt;/p>
+&lt;p>You can check the help documentation for options.&lt;/p>
+&lt;p>Address can take several forms:&lt;/p>
+&lt;ul>
+&lt;li>&lt;code>-&lt;/code> &lt;code>STDIN&lt;/code> &lt;code>STDOUT&lt;/code>: Represents standard input/output, can be replaced with just a dash&lt;/li>
+&lt;li>&lt;code>/var/log/syslog&lt;/code>: Can also be any path (use ./ for relative paths), opens a file as a data stream&lt;/li>
+&lt;li>&lt;code>TCP:127.0.0.1:1080&lt;/code>: Establishes a TCP connection as a data stream, TCP can also be replaced with UDP&lt;/li>
+&lt;li>&lt;code>TCP-LISTEN:12345&lt;/code>: Creates a TCP listening port, TCP can also be replaced with UDP&lt;/li>
+&lt;li>&lt;code>EXEC:/bin/bash&lt;/code>: Executes a program as a data stream&lt;/li>
+&lt;/ul>
+&lt;h2 id="scenario-1">Scenario 1
+&lt;/h2>&lt;p>I have a local file that I want to display in the terminal&lt;/p>
+&lt;p>&lt;code>socat - /etc/sysctl.conf&lt;/code>&lt;/p>
+&lt;h2 id="scenario-2">Scenario 2
+&lt;/h2>&lt;p>A TCP connection will connect, and I want to see what data will be received
+&lt;code>socat TCP-LISTEN:12345 -&lt;/code>&lt;/p>
+&lt;h2 id="scenario-3">Scenario 3
+&lt;/h2>&lt;p>I&amp;rsquo;m a hacker and I want to create a shell proxy on the target machine
+&lt;code>socat TCP-LISTEN:12345 EXEC:/bin/bash&lt;/code>&lt;/p>
+&lt;h2 id="scenario-4">Scenario 4
+&lt;/h2>&lt;p>I have a UNIX DOMAIN socket locally, and I want to convert it to a TCP SOCKET for use by machines in the local network. How do I do it?&lt;/p>
+&lt;p>&lt;code>socat TCP-LISTEN:12345,reuseaddr,fork UNIX-CONNECT:/data/deCOREIDPS/unix.domain&lt;/code>&lt;/p>
+&lt;p>When multiple TCP connections come in, it forks one to connect to the domain socket&lt;/p>
+&lt;h2 id="scenario-5">Scenario 5
+&lt;/h2>&lt;p>Forward local port 80 to a remote destination&lt;/p>
+&lt;p>&lt;code>socat TCP-LISTEN:80,fork TCP:www.baidu.com:80&lt;/code>&lt;/p>
+&lt;blockquote>
+&lt;p>Reference: &lt;a class="link" href="http://brieflyx.me/2015/linux-tools/socat-introduction/" target="_blank" rel="noopener"
+>http://brieflyx.me/2015/linux-tools/socat-introduction/&lt;/a>&lt;/p>
+&lt;/blockquote></description></item><item><title>TCP UDP Connection Establishment Process via Socket</title><link>https://nansenli.com/post/jianshu/%E7%BD%91%E7%BB%9C/tcp-udp-%E9%80%9A%E8%BF%87socket%E5%BB%BA%E7%AB%8B%E8%BF%9E%E6%8E%A5%E7%9A%84%E8%BF%87%E7%A8%8B/</link><pubDate>Mon, 26 Mar 2018 14:46:00 +0000</pubDate><guid>https://nansenli.com/post/jianshu/%E7%BD%91%E7%BB%9C/tcp-udp-%E9%80%9A%E8%BF%87socket%E5%BB%BA%E7%AB%8B%E8%BF%9E%E6%8E%A5%E7%9A%84%E8%BF%87%E7%A8%8B/</guid><description>&lt;h2 id="tcp">TCP
+&lt;/h2>&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>Phase&lt;/th>
+&lt;th style="text-align:right">Server&lt;/th>
+&lt;th style="text-align:center">Client&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>&lt;/td>
+&lt;td style="text-align:right">socket&lt;/td>
+&lt;td style="text-align:center">socket&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;/td>
+&lt;td style="text-align:right">bind&lt;/td>
+&lt;td style="text-align:center">&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;/td>
+&lt;td style="text-align:right">listen&lt;/td>
+&lt;td style="text-align:center">&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;/td>
+&lt;td style="text-align:right">accept&lt;/td>
+&lt;td style="text-align:center">connect&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;/td>
+&lt;td style="text-align:right">write&lt;/td>
+&lt;td style="text-align:center">write&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;/td>
+&lt;td style="text-align:right">read&lt;/td>
+&lt;td style="text-align:center">read&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;/td>
+&lt;td style="text-align:right">close&lt;/td>
+&lt;td style="text-align:center">close&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;h2 id="udp">UDP
+&lt;/h2>&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>Phase&lt;/th>
+&lt;th style="text-align:right">Server&lt;/th>
+&lt;th style="text-align:center">Client&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>&lt;/td>
+&lt;td style="text-align:right">socket&lt;/td>
+&lt;td style="text-align:center">socket&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;/td>
+&lt;td style="text-align:right">bind&lt;/td>
+&lt;td style="text-align:center">&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;/td>
+&lt;td style="text-align:right">sendto&lt;/td>
+&lt;td style="text-align:center">recvfrom&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;/td>
+&lt;td style="text-align:right">recvfrom&lt;/td>
+&lt;td style="text-align:center">sendto&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;/td>
+&lt;td style="text-align:right">close&lt;/td>
+&lt;td style="text-align:center">close&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table></description></item><item><title>SOCKET Learning Notes</title><link>https://nansenli.com/post/jianshu/%E7%BD%91%E7%BB%9C/socket-%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/</link><pubDate>Mon, 25 Dec 2017 02:34:00 +0000</pubDate><guid>https://nansenli.com/post/jianshu/%E7%BD%91%E7%BB%9C/socket-%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/</guid><description>&lt;h2 id="introduction">Introduction
+&lt;/h2>&lt;p>Interview questions mentioning epoll involve socket programming. To understand epoll principles in depth, we first need to understand socket programming. A socket is an inter-process communication (IPC) mechanism, even in networks. This means the main entities communicating in a network are processes, not computers. Socket learning includes how to establish servers and clients, and how to use socket APIs.&lt;/p>
+&lt;h4 id="fdsocketdomain-type-protocol">fd=socket(domain, type, protocol);
+&lt;/h4>&lt;p>The socket call can be used to create a socket, for example,
+domain can specify IPv4, type can specify TCP, and protocol is generally 0.&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>domain
+domain specifies the communication scope and the type of communication address. There are several classic types:
+UNIX IPV4 IPV6, corresponding to parameters AF_UNIX AF_INET AF_INET6.
+The domain parameters all start with AF, representing address families. PF stands for protocol families. Originally, address families and protocol families were designed to have many-to-many relationships, but during implementation, each protocol family corresponds to exactly one address family. So basically, specifying the domain determines the protocol family and the address family.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>type
+Socket indicates whether it&amp;rsquo;s a stream or a datagram, which essentially means TCP or UDP. For TCP, it&amp;rsquo;s SOCK_STREAM; for UDP, it&amp;rsquo;s SOCK_DGRAM.&lt;/p>
+&lt;/li>
+&lt;/ul>
+&lt;h4 id="bindint-sockfd-const-struct-sockaddr-addr-socklen_t-addrlen">bind(int sockfd, const struct sockaddr *addr, socklen_t addrlen);
+&lt;/h4>&lt;p>This call is used to bind a socket to an address. After that, TCP packets can be sent, and in some cases, UDP packets can also be sent through write, but only data from the peer socket can be read on this socket.&lt;/p>
+&lt;ul>
+&lt;li>sockaddr
+This structure has an integer representing the address type, followed by a char array. As we&amp;rsquo;ll see, depending on the use case, other data structures are passed in, but they are generic.&lt;/li>
+&lt;/ul>
+&lt;h4 id="listenint-sockfd-int-backlog">listen(int sockfd, int backlog)
+&lt;/h4>&lt;p>Marks a socket descriptor as passive. It can be connected by active sockets. backlog is used to limit the number of pending connections.&lt;/p>
+&lt;h4 id="acceptint-sockfd-struct-sockaddr-addr-socklen_t--addrlen">accept(int sockfd, struct sockaddr *addr, socklen_t * addrlen);
+&lt;/h4>&lt;p>The accept call blocks and waits for an incoming request on the file descriptor sockfd. Once the request succeeds, a new socket is created, and this new socket connects with the other party.&lt;/p>
+&lt;ul>
+&lt;li>addr
+Returns the address of the other party&lt;/li>
+&lt;li>addrlen
+Passes in the length of addr, indicating the maximum length that can be written.&lt;/li>
+&lt;/ul>
+&lt;h4 id="connectint-sockfd-const-struct-sockaddr--addr-socklen_t-addrlen">connect(int sockfd, const struct sockaddr * addr, socklen_t addrlen);
+&lt;/h4>&lt;p>Connects sockfd to the address described by addr.&lt;/p>
+&lt;h4 id="closeint-fd">close(int fd)
+&lt;/h4>&lt;p>Used to close the connection&lt;/p>
+&lt;h4 id="read-write">read write
+&lt;/h4>&lt;p>Used for reading from or writing to sockfd&lt;/p>
+&lt;h4 id="recvfromint-sockfd-void-buffer-size_t-length-int-flags-struct-sockaddr-src_addr-socklen_t-addrlen">recvfrom(int sockfd, void *buffer, size_t length, int flags, struct sockaddr *src_addr, socklen_t *addrlen);
+&lt;/h4>&lt;h4 id="sendtoint-sockfd-const-void-buffer-size_t-length-int-flags-const-struct-sockaddr-dest_addr-socklen_t-addrlen">sendto(int sockfd, const void *buffer, size_t length, int flags, const struct sockaddr *dest_addr, socklen_t addrlen);
+&lt;/h4>&lt;p>Used to send and receive UDP packets. The server side cannot use the listen function and accept function, and the client side cannot use the connect function.&lt;/p>
+&lt;h4 id="unix-domain">unix domain
+&lt;/h4>&lt;p>Using the APIs above, communication through files on the local machine can be implemented.
+The sockaddr used by unix domain is sockaddr_un, represented as follows:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">struct sockaddr_un{
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> sa_family_t sun_family;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> char sun_path[108];
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h4 id="network-byte-order">Network Byte Order
+&lt;/h4>&lt;p>The network byte order follows big-endian, while x86 is a little-endian structure. The conversion is done using the following functions:&lt;/p>
+&lt;ul>
+&lt;li>htons&lt;/li>
+&lt;li>htonl&lt;/li>
+&lt;li>ntohs&lt;/li>
+&lt;li>ntohl
+h is for host, n is for net, s is for 16-bit, and l is for 32-bit. s and l stand for short and long, although these standards are no longer used that way now.&lt;/li>
+&lt;/ul>
+&lt;h4 id="internet-socket-address-structure">Internet Socket Address Structure
+&lt;/h4>&lt;p>The socket address used in networks is sockaddr_in, defined as follows:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">struct sockaddr_in{
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> sa_family_t sin_family;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> in_port_t sin_port;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> struct in_addr sin_addr;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> unsigned char __pad[X];
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>As you can see, the difference is that the char array is replaced by a port and an address. sin is the abbreviation of socket Internet, which is as poor an abbreviation as sun.&lt;/p>
+&lt;h4 id="internet-socket-address-conversion">Internet Socket Address Conversion
+&lt;/h4>&lt;p>APIs for converting string address formats to binary address formats:&lt;/p>
+&lt;h4 id="inet_ptonint-domain-const-char-src-void-addrptr">inet_pton(int domain, const char *src, void *addrptr);
+&lt;/h4>&lt;p>This function is used to convert the string contained in src to a &lt;strong>network byte order&lt;/strong> binary address, storing it in addrptr. p stands for presentation, meaning a human-readable address.&lt;/p>
+&lt;h4 id="const-char--inet_ntopint-domain-const-void-addrptr-char-dst_str-size_t-len">const char * inet_ntop(int domain, const void *addrptr, char *dst_str, size_t len);
+&lt;/h4>&lt;p>This function converts a network byte order binary address to a human-readable address, writing it to dst_str. The buffer size is passed in by len.&lt;/p>
+&lt;h4 id="getaddrinfoconst-char-host-const-char-service-const-struct-addrinfo-hints-struct-result">getaddrinfo(const char *host, const char *service, const struct addrinfo *hints, struct **result);
+&lt;/h4>&lt;p>This function returns a socket address and port number given a host name and service name.
+getaddrinfo takes host, service, and hints as inputs, where the host parameter includes a hostname or an IPv4 string. Service is a service name or a port number. After calling this function, freeaddrinfo should be used to free the space.&lt;/p>
+&lt;h4 id="getnameinfoconst-struct-sockaddr-addr-socklen_t-addrlen-char-host-size_t-hostlen-char-service-size_t-servlen-int-flags">getnameinfo(const struct sockaddr *addr, socklen_t addrlen, char *host, size_t hostlen, char *service, size_t servlen, int flags);
+&lt;/h4>&lt;p>Given a socket address structure, returns a host and service name string.&lt;/p>
+&lt;h4 id="setsockoptint-sockfd-int-level-int-optname-const-void-optval-socklen_t-optlen">setsockopt(int sockfd, int level, int optname, const void *optval, socklen_t optlen);
+&lt;/h4>&lt;p>sockfd is the file descriptor pointing to the socket. The level parameter specifies the protocol to which the socket option applies, such as TCP or IP, indicating the socket API layer where the option takes effect. Generally, this option is set to SOL_SOCKET, indicating that it applies to the socket API layer. The optname parameter indicates the option we expect to set, optvalue is used to set the value of that option, which can be an integer or a pointer to a structure pointing to a buffer, and the optlen parameter is the size of the region pointed to by that pointer.&lt;/p>
+&lt;p>For example, to set sockfd to the reuseaddr property, you can call:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl"> int reuse = 1;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> if(setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &amp;amp;reuse, sizeof(reuse)) == -1)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> {
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> err_exit(&amp;#34;setsockopt&amp;#34;);
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> }
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h4 id="getsockoptint-sockfd-int-level-int-optname-void-optval-socklen_t-optlen">getsockopt(int sockfd, int level, int optname, void *optval, socklen_t optlen);
+&lt;/h4>&lt;p>The usage is the same as above, but it&amp;rsquo;s for getting rather than setting.&lt;/p></description></item></channel></rss>

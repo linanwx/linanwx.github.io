@@ -1,0 +1,383 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>工具 on Nansen Li's Blog
+李楠森的博客</title><link>https://nansenli.com/zh-cn/categories/%E5%B7%A5%E5%85%B7/</link><description>Recent content in 工具 on Nansen Li's Blog
+李楠森的博客</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><copyright>Nansen Li 🌈 （李楠森）</copyright><lastBuildDate>Sat, 01 Feb 2025 13:02:01 +0000</lastBuildDate><atom:link href="https://nansenli.com/zh-cn/categories/%E5%B7%A5%E5%85%B7/index.xml" rel="self" type="application/rss+xml"/><item><title>如何在搭载 Apple 芯片的 MacBook 上安装 Rodin 软件</title><link>https://nansenli.com/zh-cn/post/2025/02/rodin/</link><pubDate>Sat, 01 Feb 2025 13:02:01 +0000</pubDate><guid>https://nansenli.com/zh-cn/post/2025/02/rodin/</guid><description>&lt;h3 id="在-macos-上安装-rodin-的步骤m1-arm-架构">&lt;strong>在 macOS 上安装 Rodin 的步骤（M1 ARM 架构）：&lt;/strong>
+&lt;/h3>&lt;ol>
+&lt;li>
+&lt;p>&lt;strong>安装 x86 JDK&lt;/strong>&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>从 Oracle 下载 &lt;strong>Intel x86 JDK 18&lt;/strong>（macOS .dmg）：&lt;/p>
+&lt;p>&lt;a class="link" href="https://download.oracle.com/java/18/archive/jdk-18.0.2.1_macos-x64_bin.dmg" target="_blank" rel="noopener"
+>jdk-18.0.2.1_macos-x64_bin.dmg&lt;/a>&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>运行安装程序，它会自动配置 Java 环境。&lt;/p>
+&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;strong>下载并安装 Rodin&lt;/strong>&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>从 SourceForge 获取 &lt;strong>Rodin 3.8/3.9&lt;/strong>（x86_64 版本）：&lt;/p>
+&lt;p>&lt;a class="link" href="https://sourceforge.net/projects/rodin-b-sharp/files/Core_Rodin_Platform/3.8/rodin-3.8.0.202304051545-af2f57e1e-macosx.cocoa.x86_64.tar.gz/download" target="_blank" rel="noopener"
+>rodin-3.8.0.202304051545-macosx.cocoa.x86_64.tar.gz&lt;/a>&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>解压 &lt;code>.tar.gz&lt;/code> 文件，并将 &lt;code>Rodin.app&lt;/code> 移动到 &lt;code>/Applications&lt;/code> 文件夹。&lt;/p>
+&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;strong>修复 macOS 安全权限&lt;/strong>&lt;/p>
+&lt;/li>
+&lt;/ol>
+&lt;ul>
+&lt;li>运行以下命令以绕过&amp;quot;应用程序已损坏&amp;quot;的错误：&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">sudo xattr -cr /Applications/Rodin.app
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>Rodin 应该可以正常运行，无需其他步骤（例如配置 Java VM 路径）。&lt;/p></description></item><item><title>如何处理ChatGPT的Latex格式和Obsidian与Craft不一致的问题</title><link>https://nansenli.com/zh-cn/post/2024/10/raycast-craft/</link><pubDate>Sat, 26 Oct 2024 12:59:17 +0000</pubDate><guid>https://nansenli.com/zh-cn/post/2024/10/raycast-craft/</guid><description>&lt;p>在之前的文章中，我使用了 Obsidian 的 QuickAdd 来创建一个脚本，自动转换从 ChatGPT 中复制的文本，修复其中的 LaTeX 格式。然而，对于 Craft 这款应用，并没有合适的插件可以使用。&lt;/p>
+&lt;p>我们可以通过 Raycast 来实现这个功能的统一操作。&lt;/p>
+&lt;hr>
+&lt;h1 id="创建-raycast-脚本">创建 Raycast 脚本
+&lt;/h1>&lt;p>首先，我们需要创建一个脚本。&lt;/p>
+&lt;p>&lt;img src="https://nansenli.com/img/rescued/2abd177df831.png"
+loading="lazy"
+alt="image"
+>&lt;/p>
+&lt;p>接着选择 Bash 模板。&lt;/p>
+&lt;p>然后，我们编辑这个 Bash 脚本，输入如下代码：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;span class="lnt">30
+&lt;/span>&lt;span class="lnt">31
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">&lt;span class="cp">#!/bin/bash
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp">&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># Required parameters:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># @raycast.schemaVersion 1&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># @raycast.title Copy From ChatGPT&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># @raycast.mode silent&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># Optional parameters:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># @raycast.icon 🤖&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># @raycast.packageName ChatGPT Utils&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># Documentation:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># @raycast.description Copy From ChatGPT&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># @raycast.author Nansen Li&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># @raycast.authorURL nansenli.com&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 获取剪贴板内容&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nv">clipboard_content&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="k">$(&lt;/span>pbpaste&lt;span class="k">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 检查是否成功获取内容&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">if&lt;/span> &lt;span class="o">[&lt;/span> -z &lt;span class="s2">&amp;#34;&lt;/span>&lt;span class="nv">$clipboard_content&lt;/span>&lt;span class="s2">&amp;#34;&lt;/span> &lt;span class="o">]&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="k">then&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">echo&lt;/span> &lt;span class="s2">&amp;#34;剪贴板为空或无法访问。&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">exit&lt;/span> &lt;span class="m">1&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">fi&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 处理剪贴板内容&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nv">modified_content&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="k">$(&lt;/span>&lt;span class="nb">echo&lt;/span> &lt;span class="s2">&amp;#34;&lt;/span>&lt;span class="nv">$clipboard_content&lt;/span>&lt;span class="s2">&amp;#34;&lt;/span> &lt;span class="p">|&lt;/span> &lt;span class="se">\
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="se">&lt;/span> sed &lt;span class="s1">&amp;#39;s/\\\[/$$/g; s/\\\]/$$/g; s/\\( /$/g; s/ \\\)/$/g&amp;#39;&lt;/span>&lt;span class="k">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 将修改后的内容写回剪贴板&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">echo&lt;/span> &lt;span class="s2">&amp;#34;&lt;/span>&lt;span class="nv">$modified_content&lt;/span>&lt;span class="s2">&amp;#34;&lt;/span> &lt;span class="p">|&lt;/span> pbcopy
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;hr>
+&lt;p>创建完脚本后，我们还需要将脚本所在的目录添加到 Raycast 中。&lt;/p>
+&lt;p>&lt;img src="https://nansenli.com/img/rescued/60724508c66a.png"
+loading="lazy"
+alt="image"
+>&lt;/p>
+&lt;p>在这一步中，选择刚刚创建的脚本目录。此时，我们可以在 &lt;code>Script Commands&lt;/code> 中看到刚刚创建的脚本。&lt;/p>
+&lt;hr>
+&lt;h1 id="如何使用">如何使用
+&lt;/h1>&lt;p>在复制完 ChatGPT 的公式后，打开 Raycast 的面板，找到刚刚的脚本并运行，此时剪贴板中的内容就会被自动修复。接下来，只需将其粘贴到 Obsidian 或 Craft 中即可。&lt;/p></description></item><item><title>将ChatGPT公式格式转换为Obsidian兼容格式</title><link>https://nansenli.com/zh-cn/post/2024/10/obsidian-latex-fix/</link><pubDate>Mon, 14 Oct 2024 15:24:27 +0000</pubDate><guid>https://nansenli.com/zh-cn/post/2024/10/obsidian-latex-fix/</guid><description>&lt;p>ChatGPT生成的公式使用了以下格式：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">\[
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">公式内容
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">\]
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>而Obsidian中的公式渲染使用的是以下格式：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">$$
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">公式内容
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">$$
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>当我们将ChatGPT的公式复制到Obsidian中时，这种差异会导致无法正确渲染。&lt;/p>
+&lt;h2 id="解决方案">解决方案
+&lt;/h2>&lt;p>我们可以创建一个Obsidian脚本，在粘贴操作时自动替换公式的格式。&lt;/p>
+&lt;h3 id="1-创建脚本">1. 创建脚本
+&lt;/h3>&lt;p>可以使用Obsidian中的插件来解决这个问题。&lt;/p>
+&lt;p>在你的库中，在&lt;code>template&lt;/code>目录下创建一个文件&lt;code>fixlatex.js&lt;/code>，并输入以下内容：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-js" data-lang="js">&lt;span class="line">&lt;span class="cl">&lt;span class="nx">module&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">exports&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="kr">async&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nx">params&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">=&amp;gt;&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kr">const&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="nx">quickAddApi&lt;/span> &lt;span class="p">}&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="nx">params&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// 获取剪贴板内容
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="kr">const&lt;/span> &lt;span class="nx">clipboardContent&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="kr">await&lt;/span> &lt;span class="nx">quickAddApi&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">utility&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">getClipboard&lt;/span>&lt;span class="p">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// 检查是否成功获取内容
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="k">if&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="o">!&lt;/span>&lt;span class="nx">clipboardContent&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">new&lt;/span> &lt;span class="nx">Notice&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;剪贴板为空或无法访问。&amp;#34;&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kr">const&lt;/span> &lt;span class="nx">modifiedContent&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="nx">clipboardContent&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">.&lt;/span>&lt;span class="nx">replace&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="sr">/\\\[|\\\]/g&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s1">&amp;#39;$$$$&amp;#39;&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="c1">// 转换 \[ \] 为 $$ $$
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="p">.&lt;/span>&lt;span class="nx">replace&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="sr">/\\\(\s*|\s*\\\)/g&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s1">&amp;#39;$$&amp;#39;&lt;/span>&lt;span class="p">);&lt;/span> &lt;span class="c1">// 转换 \( \) 为 $
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// 将修改后的内容写回剪贴板
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="kr">await&lt;/span> &lt;span class="nx">navigator&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">clipboard&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">writeText&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">modifiedContent&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">new&lt;/span> &lt;span class="nx">Notice&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;剪贴板内容已处理并修改！&amp;#34;&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">};&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="2-在quickadd中设置脚本">2. 在QuickAdd中设置脚本
+&lt;/h3>&lt;p>安装QuickAdd插件，并创建一个&lt;code>Macro&lt;/code>，按如下图中的配置进行设置并保存。Macro的第一步是执行我们刚刚创建的用户脚本&lt;code>fixlatex.js&lt;/code>，第二步是等待100毫秒，第三步是执行粘贴操作。&lt;/p>
+&lt;p>&lt;img src="https://nansenli.com/img/rescued/ec99ec1deab8.png"
+loading="lazy"
+>&lt;/p>
+&lt;h3 id="3-在commander中设置侧边快捷键">3. 在Commander中设置侧边快捷键
+&lt;/h3>&lt;p>安装Commander插件，并将刚刚创建的QuickAdd操作设置为侧边栏的快捷键。你也可以跳过这一步，直接使用Obsidian命令执行这个操作。&lt;/p>
+&lt;h3 id="4-验证效果">4. 验证效果
+&lt;/h3>&lt;p>现在，在ChatGPT的网页中（目前在APP中点击复制按钮似乎有点问题），点击复制按钮后，在Obsidian中点击侧边栏快捷键，或者手动执行QuickAdd命令，就可以将ChatGPT中的内容复制到Obsidian中，并自动转换Latex格式。&lt;/p></description></item><item><title>关于 Windows 10 使用 SSD 每隔一段时间卡顿问题的探究与解决</title><link>https://nansenli.com/zh-cn/post/jianshu/%E9%9A%8F%E7%AC%94/%E5%85%B3%E4%BA%8E-windows-10-%E4%BD%BF%E7%94%A8-ssd-%E6%AF%8F%E9%9A%94%E4%B8%80%E6%AE%B5%E6%97%B6%E9%97%B4%E5%8D%A1%E9%A1%BF%E9%97%AE%E9%A2%98%E7%9A%84%E6%8E%A2%E7%A9%B6%E4%B8%8E%E8%A7%A3%E5%86%B3/</link><pubDate>Wed, 24 Oct 2018 11:47:00 +0000</pubDate><guid>https://nansenli.com/zh-cn/post/jianshu/%E9%9A%8F%E7%AC%94/%E5%85%B3%E4%BA%8E-windows-10-%E4%BD%BF%E7%94%A8-ssd-%E6%AF%8F%E9%9A%94%E4%B8%80%E6%AE%B5%E6%97%B6%E9%97%B4%E5%8D%A1%E9%A1%BF%E9%97%AE%E9%A2%98%E7%9A%84%E6%8E%A2%E7%A9%B6%E4%B8%8E%E8%A7%A3%E5%86%B3/</guid><description>&lt;h2 id="前言">前言
+&lt;/h2>&lt;p>本来是使用 Intel 的 i5-6500 CPU，在更换为 AMD 的 Ryzen 2700 后，频繁出现卡机现象。&lt;/p>
+&lt;h2 id="现象">现象
+&lt;/h2>&lt;p>在卡机时，观测到任务管理器的硬盘占用率为100%，同时写入与写出量为0。硬盘位光威 悍将 512 GB杂牌。在事件管理器中有大量编号为129的事件。&lt;/p>
+&lt;h2 id="怀疑硬件问题">怀疑硬件问题
+&lt;/h2>&lt;p>在重复更换了SATA接口，重复拔插了电源，尝试无效，仍然卡机&lt;/p>
+&lt;h2 id="网上搜索相关问题">网上搜索相关问题
+&lt;/h2>&lt;p>在网上搜索到，大部分都指向了问题的根源，是WIN10的AHCI驱动问题，以及SSD固件的问题。&lt;/p>
+&lt;h2 id="解决途径一-更换ahci驱动-无效">解决途径一 更换AHCI驱动 无效
+&lt;/h2>&lt;p>为了更换AHCI驱动，尝试在AMD官网，在华硕官网下载了芯片组驱动，并手动在设备管理器中更换了驱动，使得显示为AMD SATA驱动。后又反复试过各种主板驱动，最终，测试无效，不能解决问题&lt;/p>
+&lt;h2 id="解决途径二-更换硬盘为raid格式-无效">解决途径二 更换硬盘为raid格式 无效
+&lt;/h2>&lt;p>为了更换raid格式，重新安装Windows，但是在安装过程中，Windows无法识别ssd。根据amd官方英文手册，以及官方raid驱动，手动载入raid驱动，仍然在Windows安装过程中无法看到ssd。重复多次无法看到。可能是因为只有一块硬盘，使用volume模式的raid不被支持吧。放弃该方式&lt;/p>
+&lt;h2 id="解决途径三-更改注册表关闭msi-无效">解决途径三 更改注册表，关闭MSI 无效
+&lt;/h2>&lt;p>&lt;a class="link" href="https://www.pconline.com.cn/win10/739/7395324.html" target="_blank" rel="noopener"
+>https://www.pconline.com.cn/win10/739/7395324.html&lt;/a>&lt;/p>
+&lt;blockquote>
+&lt;p>大意就是在某些AHCI模式下使用StorAHCI.sys驱动时，可能导致个别SSD无法在“信息信号中断”（MSI）模式下完成正确的输入/输出操作，最终表现就是系统停滞，同时任务管理器中磁盘占用率显示为100%。当然解决的方法也简单，直接在regedit里关闭它（MSI Mode）就成。&lt;/p>
+&lt;/blockquote>
+&lt;blockquote>
+&lt;p>　　4. 点击Contana，输入“regedit”启动注册表编辑器，导航到“HKEY_LOCAL_MACHINE\System\CurrentControlSet\Enum\PCI\xxxxx \Device Parameters\Interrupt Management\MessageSignaledInterruptProperties”（”xxxxx”是你刚刚记录的“设备实例路径”）；&lt;/p>
+&lt;/blockquote>
+&lt;blockquote>
+&lt;p>　　5. 最后更改右窗格中的“MSISupported”键值，由1改为0；&lt;/p>
+&lt;/blockquote>
+&lt;p>经过测试无效&lt;/p>
+&lt;h2 id="解决途径四--更改电源设置-无效">解决途径四 更改电源设置 无效
+&lt;/h2>&lt;p>PCIE-Express中的设置置为关闭，测试无效&lt;/p>
+&lt;h2 id="解决途径五-更改lpm-有用">解决途径五 更改LPM 有用
+&lt;/h2>&lt;p>&lt;a class="link" href="http://www.sohu.com/a/204645459_493865" target="_blank" rel="noopener"
+>http://www.sohu.com/a/204645459_493865&lt;/a>&lt;/p>
+&lt;p>&lt;a class="link" href="https://answers.microsoft.com/en-us/windows/forum/windows_10-hardware-winpc/event-id-129-storahci-resetting-raidport0/7b30c512-6597-438b-80cb-22fb2f85d62e" target="_blank" rel="noopener"
+>https://answers.microsoft.com/en-us/windows/forum/windows_10-hardware-winpc/event-id-129-storahci-resetting-raidport0/7b30c512-6597-438b-80cb-22fb2f85d62e&lt;/a>&lt;/p>
+&lt;p>其内容如下：&lt;/p>
+&lt;p>我们现在用的大多数SSD都支持一些省电的功能，DIPM/HIPM/Device Sleep。&lt;/p>
+&lt;p>&lt;img src="https://nansenli.com/img/rescued/8ef2136fa9e4.png"
+loading="lazy"
+alt="image"
+>&lt;/p>
+&lt;p>由主机 （Host）发出改变形态请求的我们叫做HIPM(Host-Initiated LPM, HIPM)，而直接由设备(Device)发出形态请求的叫(Device-Initiated LPM,DIPM)。请求什么，请求变慢，请求节能，请求Device Sleep。&lt;/p>
+&lt;p>而HIPM，DIPM都离不开电脑LPM技术的支持。LPM，Link Power Management (LPM)，链接电源管理。LPM是SATA接口物理层上的一个功能，它能够将主机（Host）和存储设备（Device）的链接分成3种形态：Active形态，Partial形态和Slumber形态，目的是降低物理层总线传输速度，这样达到省电效果。&lt;/p>
+&lt;p>&lt;img src="https://nansenli.com/img/rescued/beb05312d902.png"
+loading="lazy"
+alt="image"
+>&lt;/p>
+&lt;p>LPM一般是默认打开的。&lt;/p>
+&lt;p>那么打开这个LPM对于SSD好么？&lt;/p>
+&lt;p>1. 主机发送HIPM形态改变指令，而SSD设备标准不同，不能很好的支持，出现兼容问题导致卡顿，或者掉盘；&lt;/p>
+&lt;p>2. 主机发送HIPM形态改变指令太频繁，导致SSD设备不能及时反应，出现卡顿。&lt;/p>
+&lt;p>3. LPM开启后造成SATA总线传输延迟增加，导致高速SSD的传输受到阻塞而卡顿；&lt;/p>
+&lt;p>4. SSD内部的DIPM和主机请求的HIPM发生冲突导致卡顿。&lt;/p>
+&lt;p>很多时候，SSD导致电脑出现卡顿，突然掉盘，都是LPM引起的。&lt;/p>
+&lt;p>LPM是能够让SATA设备到达节能的效果。但是，也同样对SSD性能产生了影响。&lt;/p>
+&lt;p>那么为了节能，你愿意付出损失SSD性能的代价吗？&lt;/p>
+&lt;p>HDD的功耗大概在10-25W。也许LPM曾经仅仅是为HDD而来的。&lt;/p>
+&lt;p>SSD启动功耗：0.1W&lt;del>1W（2W），最高功耗：5&lt;/del>10W，平均功耗：4~5W左右。&lt;/p>
+&lt;p>我们的电源缺SSD这几W么？我们在乎这点电费么？好意思在乎么！&lt;/p>
+&lt;p>既然SSD用不着LPM，这样损害SSD性能的节能功能，那么我们可不可以给它关掉呢？&lt;/p>
+&lt;p>&lt;img src="https://nansenli.com/img/rescued/e3137f899356.png"
+loading="lazy"
+alt="image"
+>&lt;/p>
+&lt;p>保存为“.reg”格式。&lt;/p>
+&lt;p>&lt;img src="https://nansenli.com/img/rescued/bd0944771088.png"
+loading="lazy"
+alt="image"
+>&lt;/p>
+&lt;p>点击运行。自动写入注册表，更改LPM电源设置。&lt;/p>
+&lt;p>&lt;img src="https://nansenli.com/img/rescued/cfc7398516b6.png"
+loading="lazy"
+alt="image"
+>&lt;/p>
+&lt;p>&lt;img src="https://nansenli.com/img/rescued/cb2106c96417.png"
+loading="lazy"
+alt="image"
+>&lt;/p>
+&lt;p>如果你的SSD出现严重卡顿，掉盘等现象，你可以试试这个方法。&lt;/p>
+&lt;p>SSD卡顿、掉盘的主要原因还是，SSD太差劲。确实，在SSD价格不断上涨的今天，要想花较少的钱买到好的SSD是非常难的。&lt;/p>
+&lt;p>&lt;strong>经过测试，有效&lt;/strong>&lt;/p>
+&lt;h2 id="解决途径六-更改bios设置开启sata热拔插功能-推荐">解决途径六 更改BIOS设置，开启sata热拔插功能 推荐
+&lt;/h2>&lt;p>&lt;a class="link" href="https://www.aiweibk.com/5795.html" target="_blank" rel="noopener"
+>https://www.aiweibk.com/5795.html&lt;/a>&lt;/p>
+&lt;blockquote>
+&lt;p>在主板BIOS设置中开启Hot Plug热插拔属性之后还会带来一个副作用，那就是固态硬盘的LPM节能将会随热插拔的开启而关闭，从而避免热插拔时数据丢失或重新连接时失去响应。&lt;/p>
+&lt;/blockquote>
+&lt;blockquote>
+&lt;p>如果你的固态硬盘与主板搭配存在兼容性问题而有间歇性的卡顿现象，不妨在主板BIOS设置当中开启Hot Plug选项来禁用LPM节能，或许就能解决故障。&lt;/p>
+&lt;/blockquote>
+&lt;p>&lt;strong>经测试，有效&lt;/strong>&lt;/p>
+&lt;h2 id="总结">总结
+&lt;/h2>&lt;p>为什么之前用Intel就没问题用了AMD就有问题，我猜测是因为原来的Intel主板比较差，不支持SATA LPM，然后win10默认是开启了LPM，但是SSD因为杂牌，所以支持不好，虽然固件支持LPM，但是会出现严重问题。由于主板不支持LPM，就算Windows开启了LPM，问题也显现不出来。&lt;/p>
+&lt;p>现在换了新的主板，支持LPM，在默认情况下，与SSD出现兼容问题。需要手动关闭LPM功能。&lt;/p></description></item><item><title>SVN学习笔记</title><link>https://nansenli.com/zh-cn/post/jianshu/%E9%9A%8F%E7%AC%94/svn%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/</link><pubDate>Sun, 01 Jul 2018 15:01:00 +0000</pubDate><guid>https://nansenli.com/zh-cn/post/jianshu/%E9%9A%8F%E7%AC%94/svn%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/</guid><description>&lt;h2 id="前言">前言
+&lt;/h2>&lt;p>为了工作内容学习SVN。SVN是一个C/S类型的版本管理，对服务器依赖很大，大部分操作是和SVN服务器有关的。&lt;/p>
+&lt;h2 id="最常见的操作流程">最常见的操作流程
+&lt;/h2>&lt;p>这里假设服务器项目的地址是svn://192.168.1.1/shop&lt;/p>
+&lt;ul>
+&lt;li>通过checkout检出项目&lt;/li>
+&lt;li>update 更新服务器的项目到本地&lt;/li>
+&lt;li>commit 提交本地的更改&lt;/li>
+&lt;/ul>
+&lt;h2 id="如何部署一个svn服务器">如何部署一个svn服务器
+&lt;/h2>&lt;p>因为这个svn是一个c/s类型的软件，得部署服务器才能够使用。所以得先弄个服务器出来供我们测试。
+为了尽可能简单，这里在Windows下面安装一个visualsvn的软件来当作我们的服务器。注意一般服务器是运行在Linux的，这里只是为了上手方便才使用Windows的服务器软件。在官网很容易就能下载到visualsvn server的软件。我下了个3.9的版本。用就用最新稳定版。中间有一步选标准版，其他的按照默认来就可以了。其中有一个端口号的选择，注意一下不要和本机的端口冲突了。默认端口是443，你可以改成8443。&lt;/p>
+&lt;h2 id="在服务器端创建一个测试项目">在服务器端创建一个测试项目
+&lt;/h2>&lt;p>因为svn项目就是仓库，就是一个文件夹。我们需要建立一个文件夹。打开D:\Repositories文件夹，在该目录下面运行命令svnadmin create test1，这样就建立了一个项目。为了其他用户能够访问该目录，需要使用svnserve命令启动服务器，这个稍后再说。这里还需要配置权限设置。打开test1目录下面的conf目录svnserve.conf，将其中的anon-access 的注释去掉，将值改为write。此时允许匿名访问，并可写&lt;/p>
+&lt;p>然后在D:\Repositories目录下运行命令：
+&lt;code>svnserve -d -r ./test1&lt;/code>
+这一步是打开svn服务器的监听状态。&lt;/p>
+&lt;h2 id="svn客户端常用操作">svn客户端常用操作
+&lt;/h2>&lt;p>下载TortoiseSVN进行安装。&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>checkout 检出
+然后，在需要同步的目录下面单机右键，选择tortoise中的rebo-bowser，并输入svn://127.0.0.1确认。在文件夹图标上右键选择checkout并确认，此时检出成功。&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>commit
+添加一个txt文件，随便写点东西。然后右键commit。即可commit到服务器端。&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>update
+A开发者将提交的数据提交后，服务器发生了变化，B开发者需要同步。右键update即可。&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>ignore
+不需要提交文件时，在文件上面右键然后选择add to ignore list中&lt;/p>
+&lt;/li>
+&lt;/ul>
+&lt;h2 id="svn版本">SVN版本
+&lt;/h2>&lt;p>svn版本从1开始递增。svn可以会退版本。svn可以进行分支和合并操作，但是和git中的分支操作区别很大。似乎是重新创建了一个项目这样的。最后合并也是只是把冲突合并了。和git基于diff进行分支不同。&lt;/p></description></item><item><title>如何在windows10的微软拼音中设置小鹤双拼</title><link>https://nansenli.com/zh-cn/post/jianshu/%E9%9A%8F%E7%AC%94/%E5%A6%82%E4%BD%95%E5%9C%A8windows10%E7%9A%84%E5%BE%AE%E8%BD%AF%E6%8B%BC%E9%9F%B3%E4%B8%AD%E8%AE%BE%E7%BD%AE%E5%B0%8F%E9%B9%A4%E5%8F%8C%E6%8B%BC/</link><pubDate>Mon, 05 Jun 2017 06:16:00 +0000</pubDate><guid>https://nansenli.com/zh-cn/post/jianshu/%E9%9A%8F%E7%AC%94/%E5%A6%82%E4%BD%95%E5%9C%A8windows10%E7%9A%84%E5%BE%AE%E8%BD%AF%E6%8B%BC%E9%9F%B3%E4%B8%AD%E8%AE%BE%E7%BD%AE%E5%B0%8F%E9%B9%A4%E5%8F%8C%E6%8B%BC/</guid><description>&lt;h2 id="前言">前言
+&lt;/h2>&lt;p>win10最新版本系统自带的拼音已经可以支持小鹤双拼了，妈妈再也不用担心我装全家桶啦！&lt;/p>
+&lt;p>时隔4年，更新一下进阶版设置，妈妈再也不用担心我一个一个配置按键啦：&lt;/p>
+&lt;ol>
+&lt;li>win + R，输入 regedit，打开注册表&lt;/li>
+&lt;li>找到 &lt;code>计算机\HKEY_CURRENT_USER\Software\Microsoft\InputMethod\Settings\CHS&lt;/code> 项&lt;/li>
+&lt;li>新建一个名为 UserDefinedDoublePinyinScheme0 的字符串值，值为 &lt;code>小鹤双拼*2*^*iuvdjhcwfg^xmlnpbksqszxkrltvyovt&lt;/code>&lt;/li>
+&lt;li>打开微软拼音输入法设置，把 &lt;code>小鹤双拼&lt;/code> 设置为双拼的默认方案即可。&lt;/li>
+&lt;/ol>
+&lt;p>如果担心修改注册表引起系统错乱，这里还有手工配置的方案：&lt;/p>
+&lt;h2 id="第一步-打开设置">第一步 打开设置
+&lt;/h2>&lt;p>系统的拼音输入法虽然没有小鹤双拼，但是我们可以自定义。&lt;/p>
+&lt;p>首先在设置中找到设置双拼的位置，如果你找不到，可以看动图：
+&lt;img src="https://nansenli.com/img/rescued/98a28b5a7a49.gif"
+loading="lazy"
+alt="找到设置"
+>&lt;/p>
+&lt;h2 id="第二步-编辑自定义双拼">第二步 编辑自定义双拼
+&lt;/h2>&lt;p>双拼设置如下图所示&lt;/p>
+&lt;p>&lt;img src="https://nansenli.com/img/rescued/068b77b04598.png"
+loading="lazy"
+alt="小鹤方案"
+>&lt;/p>
+&lt;p>除了模板那里不用设置以外，其他的按照图中的设置就可以了，一个是零声母模式，另外一个是自定义按键，自定义按键按照图中的预览设置就可以了。需要注意的是，小鹤双拼中没有er这个音节，设置成e或者r键都可以。另外，ue，ve这两个音节都设置为T。有一个小技巧，设置按键的时候，可以直接按下对应的按键，而不用找到这个键来设置。&lt;/p>
+&lt;h2 id="第三步-保存方案">第三步 保存方案
+&lt;/h2>&lt;p>如果添加按钮变为可用，说明方案设置正确。添加为方案后，把该方案设置为默认方案，就可以使用小鹤双拼啦。&lt;/p>
+&lt;h2 id="测试">测试
+&lt;/h2>&lt;p>进行打字测试，查看设置的对不对&lt;/p>
+&lt;p>&lt;img src="https://nansenli.com/img/rescued/582a066041c2.gif"
+loading="lazy"
+alt="测试"
+>&lt;/p>
+&lt;h2 id="第四步-点击喜欢">第四步 点击喜欢
+&lt;/h2>&lt;p>点击喜欢，提高页面排名，帮助更多人用上win10小鹤双拼&lt;/p></description></item></channel></rss>

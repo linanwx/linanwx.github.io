@@ -1,0 +1,523 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>AI 工具 on Nansen Li's Blog
+李楠森的博客</title><link>https://nansenli.com/zh-cn/tags/ai-%E5%B7%A5%E5%85%B7/</link><description>Recent content in AI 工具 on Nansen Li's Blog
+李楠森的博客</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><copyright>Nansen Li 🌈 （李楠森）</copyright><lastBuildDate>Sat, 07 Feb 2026 16:52:42 +0000</lastBuildDate><atom:link href="https://nansenli.com/zh-cn/tags/ai-%E5%B7%A5%E5%85%B7/index.xml" rel="self" type="application/rss+xml"/><item><title>受不了 Openclaw Bug 太多，我手搓了一个新 Bot：Nagobot</title><link>https://nansenli.com/zh-cn/post/2026/02/nagobot-launch/</link><pubDate>Sat, 07 Feb 2026 16:52:42 +0000</pubDate><guid>https://nansenli.com/zh-cn/post/2026/02/nagobot-launch/</guid><description>&lt;p>最近一直在用 Openclaw，但 bug 实在太多了：经常莫名其妙中断、偶发“自爆”，排查成本也很高。&lt;/p>
+&lt;p>另外，token 成本也不低。和 DeepSeek、Kimi K2.5 相比，性价比并不占优。&lt;/p>
+&lt;p>后来我又试了 nanobot，本来想迁移过去，但它对新模型支持不够完整，K2.5 一直报“工具无法执行”。折腾几轮后，我决定不再等现成方案，直接自己做。&lt;/p>
+&lt;p>我和 Opus、Codex 来回打了几百回合，最后手搓了一个新的 bot：&lt;strong>Nagobot&lt;/strong>，使用 Golang 实现。至少在 provider 这一层，不再受制于人。&lt;/p>
+&lt;p>项目链接：&lt;a class="link" href="https://github.com/linanwx/nagobot" target="_blank" rel="noopener"
+>https://github.com/linanwx/nagobot&lt;/a>&lt;/p>
+&lt;p>实现过程中我学到很多，主要包括：&lt;/p>
+&lt;ul>
+&lt;li>线程与并发任务&lt;/li>
+&lt;li>Agent 与 Skill 设计&lt;/li>
+&lt;li>Cron 异步任务&lt;/li>
+&lt;li>会话记录与上下文压缩&lt;/li>
+&lt;/ul>
+&lt;p>说实话，目前很多代码还没有经过完整 review。开发期间基本是一边写一边和 AI 讨论架构，有时候被气哭，有时候又被惊艳到，过程非常真实，也挺有趣。&lt;/p>
+&lt;p>测试下来效果比预期好很多：现在已经可以让 bot 去创建异步任务、调查新闻、给自己设置提醒，实用性很强。&lt;/p>
+&lt;p>目前大部分功能都已经实现。下一步我会继续啃“长期记忆”这块设计。&lt;/p>
+&lt;p>如果你也有类似需求，欢迎交流或提 issue。我会持续更新这个项目。&lt;/p></description></item><item><title>我为何停止订阅ChatGPT</title><link>https://nansenli.com/zh-cn/post/2025/11/ai2025/</link><pubDate>Mon, 24 Nov 2025 23:13:25 +0000</pubDate><guid>https://nansenli.com/zh-cn/post/2025/11/ai2025/</guid><description>&lt;p>我最近停止订阅了ChatGPT。&lt;/p>
+&lt;p>这不是一个容易的决定。我从ChatGPT开始支持付费的那天就开始了付费。这一付费，就快接近了3年。&lt;/p>
+&lt;h1 id="停止付费的原因">停止付费的原因
+&lt;/h1>&lt;ol>
+&lt;li>延迟巨大。我经常等待回复时等待几十秒而没有响应。然而，免费版本通常使用mini模型，也足够回答大部分任务了。但是免费版本反而更快。我不明白，这是因为欧洲没有计算节点还是转发节点？&lt;/li>
+&lt;li>Mac上的bug太多了。卡顿，占用CPU，复制Latex文本出现bug。&lt;/li>
+&lt;li>一些交互体验很糟糕。例如，我们可能会需要重新使用Thinking来重新生成回答。然而，这个选项却在切换模型，需要多点一次，因为他们在二级菜单。而不经常使用的更精简/更多细节的重新回答按钮，却在重新回答的一级菜单&lt;/li>
+&lt;li>产品更新变动巨大，模型性格变化太快。这需要重新熟悉模型的成本。&lt;/li>
+&lt;li>模型固执，不遵守指令。例如，反复需要强调什么时候该搜索，什么时候不要问follow up 问题。&lt;/li>
+&lt;li>模型行为不稳定，且难以控制。例如，在instant模式下，模型调用搜索后会切换为小模型，使用网络资料回答问题，而不是instant模型。&lt;/li>
+&lt;li>模型质量不如其他模型，甚至不如一些开源免费模型，例如DeepSeek。&lt;/li>
+&lt;/ol>
+&lt;p>仍旧想让我留下来的原因：&lt;/p>
+&lt;ol>
+&lt;li>思考模式仍旧是王者，不断调用工具链来进行搜索和验证仍旧是性能佼佼者。但是Grok也很擅长搜索，而Grok免费额度已经足够使用了。&lt;/li>
+&lt;li>产品矩阵更强大，例如ChatGPT Atlas浏览器，或者Mac的独立客户端。再到很多插件。然而令人揪心的是，Atlas浏览器的Agent的额度令人惊奇的低，几乎不能作为实用使用。&lt;/li>
+&lt;/ol>
+&lt;h1 id="目前的代替品">目前的代替品
+&lt;/h1>&lt;p>&lt;img src="https://nansenli.com/img/ai2025-apps.png"
+loading="lazy"
+alt="手机上的 AI 应用"
+>&lt;/p>
+&lt;p>我尝试了众多免费软件，包括所有能想到的/大部分的LLM，甚至例如MiniMax/Kimi 团队开发的模型也都尝试了。我进行了总结。在总结前，我需要先定义一个软件行业的词汇。这个现象非常具有中国特色，或者地域特色。&lt;/p>
+&lt;p>目前的 LLM 软件确实存在一种为了追求日活（DAU）、留存率和商业变现，而牺牲工具纯粹性和用户体验的趋势。一些LLM软件塞入了很多运营化的东西，例如很时髦的运营话题，或者与技术不太相关的很多东西，例如智能体，赛事专区，头条文案或者小红书文案。这个现象表明了软件臃肿化，过度运营化，去工具化，庸俗化，信噪比降低。在该文，我们把这个现象叫做我们把这个现象叫做平台衰退 / 屎化 (Enshittification)。&lt;/p>
+&lt;ul>
+&lt;li>智谱清言：智谱清言的GLM4.6是一款非常强大的模型，特别是其Agent能力强大。但是其客户端屎化严重，打开首页即出现：“恋爱军师”，“黑暗料理大挑战”等屎化内容。不建议使用。&lt;/li>
+&lt;li>Yunbao：Yunbao是腾讯的软件，支持腾讯自研模型和DeepSeek，然而模型能力一般。软件呈现轻度屎化，例如植入腾讯游戏王者荣耀等内容。不建议使用。&lt;/li>
+&lt;li>Gemini：新晋之神。Gemini 3 pro模型性能出众。Nano Banana pro制作图片能力优秀。适合工作和生活使用。有Google运营，整体体验良好。然而最近由于流量大，服务不是特别稳定。最近流量过大，服务降级严重，使用量化服务开始提供服务，因此质量下降。长思考多次工具调用能力不及GPT5-Thinking或者Grok Expert。软件几乎没有屎化，强烈推荐使用&lt;/li>
+&lt;li>Grok：免费之神。强大的搜索能力，短思考，长思考质量结果均高。擅长挖掘网络信息下。免费版Expert足够一般用户使用。少量运营下内容，例如加入了AI虚拟人物，不过屎化非常轻微。推荐使用。&lt;/li>
+&lt;li>ChatGPT：逐渐退下神位。很多功能仍旧只有ChatGPT提供，例如语音对话。用户总量大。免费版本足够使用。很多用户仍旧有惯性/依赖。可保留在手机上。&lt;/li>
+&lt;li>DeepSeek：稳定的王者。功能最少，完全没有屎化，最干净的应用，服务极度稳定，模型风格极度稳定，智力也相当稳定。建议保留在手机上。&lt;/li>
+&lt;li>Kimi：模型能力一般，宣传的Agent能力强但是实际体验下来，模版化严重，大量prompt engineering痕迹。不建议使用。软件没有屎化，算是优点。&lt;/li>
+&lt;li>Claude：代码的神。客户端表现一般，特别是搜索上不如Grok和ChatGPT thinking激进。还是适合工作期间使用。无屎化。可以保留在手机上，蹭免费额度。值得注意的是该公司有地域歧视性言论，令人担忧。&lt;/li>
+&lt;li>Dola：抖音出品的客户端。模型能力一般。语音识别能力优秀。屎化严重。不建议使用。&lt;/li>
+&lt;li>Copilot：依托微软搜索和ChatGPT的产品，软件平平无奇。不建议使用。&lt;/li>
+&lt;li>Manus：早期依赖病毒营销，影响团队长期健康发展，该产品大概率在中长期慢性死亡。尽管有一定Agent能力，但不建议长期使用。&lt;/li>
+&lt;li>Perplexity：模型能力一般。软件使用逻辑略微混乱。管理团队的歧视性言论令人担忧，不建议使用。&lt;/li>
+&lt;li>MiniMax：模型能力优异，特别是Minimax M2模型，有很好的Agent能力。然而软件体验糟糕，甚至最基本的复制和粘贴功能都没有。不建议使用。&lt;/li>
+&lt;li>通义：只能在中国区下载，软件屎化浓郁，打开后满屏幕运营内容令人窒息，无法继续使用。建议立即卸载。&lt;/li>
+&lt;li>Qwen Chat：目前仍旧未上架iOS平台。是去屎化的通义，支持Qwen大模型。若能上架则推荐使用。&lt;/li>
+&lt;/ul>
+&lt;p>总结：&lt;/p>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>&lt;strong>软件名称&lt;/strong>&lt;/th>
+&lt;th>&lt;strong>模型能力&lt;/strong>&lt;/th>
+&lt;th>&lt;strong>屎化现象&lt;/strong>&lt;/th>
+&lt;th>&lt;strong>优点&lt;/strong>&lt;/th>
+&lt;th>&lt;strong>缺点&lt;/strong>&lt;/th>
+&lt;th>&lt;strong>建议&lt;/strong>&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>z-ai（Chinese version）&lt;/td>
+&lt;td>强大&lt;/td>
+&lt;td>严重&lt;/td>
+&lt;td>Agent能力强&lt;/td>
+&lt;td>客户端屎化&lt;/td>
+&lt;td>不建议使用&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>Yunbao&lt;/td>
+&lt;td>一般&lt;/td>
+&lt;td>轻度&lt;/td>
+&lt;td>支持多种模型&lt;/td>
+&lt;td>植入游戏内容&lt;/td>
+&lt;td>不建议使用&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>Gemini&lt;/td>
+&lt;td>出色&lt;/td>
+&lt;td>无&lt;/td>
+&lt;td>性能出众，体验良好&lt;/td>
+&lt;td>服务不稳定&lt;/td>
+&lt;td>强烈推荐使用&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>Grok&lt;/td>
+&lt;td>强大&lt;/td>
+&lt;td>轻微&lt;/td>
+&lt;td>免费，搜索能力强&lt;/td>
+&lt;td>少量运营化内容&lt;/td>
+&lt;td>推荐使用&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>ChatGPT&lt;/td>
+&lt;td>退步&lt;/td>
+&lt;td>轻微&lt;/td>
+&lt;td>功能多，用户基数大&lt;/td>
+&lt;td>逐渐退下神位&lt;/td>
+&lt;td>可保留&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>DeepSeek&lt;/td>
+&lt;td>稳定&lt;/td>
+&lt;td>无&lt;/td>
+&lt;td>稳定，无屎化&lt;/td>
+&lt;td>功能最少&lt;/td>
+&lt;td>建议保留&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>Kimi&lt;/td>
+&lt;td>一般&lt;/td>
+&lt;td>无&lt;/td>
+&lt;td>无屎化&lt;/td>
+&lt;td>模版化严重&lt;/td>
+&lt;td>不建议使用&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>Claude&lt;/td>
+&lt;td>强大&lt;/td>
+&lt;td>无&lt;/td>
+&lt;td>适合工作使用&lt;/td>
+&lt;td>搜索表现一般&lt;/td>
+&lt;td>可保留&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>Dola&lt;/td>
+&lt;td>一般&lt;/td>
+&lt;td>严重&lt;/td>
+&lt;td>语音识别优秀&lt;/td>
+&lt;td>模型能力一般&lt;/td>
+&lt;td>不建议使用&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>Copilot&lt;/td>
+&lt;td>一般&lt;/td>
+&lt;td>无&lt;/td>
+&lt;td>微软支持&lt;/td>
+&lt;td>平平无奇&lt;/td>
+&lt;td>不建议使用&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>Manus&lt;/td>
+&lt;td>一般&lt;/td>
+&lt;td>无&lt;/td>
+&lt;td>一定Agent能力&lt;/td>
+&lt;td>长期发展不佳&lt;/td>
+&lt;td>不建议使用&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>Perplexity&lt;/td>
+&lt;td>一般&lt;/td>
+&lt;td>轻微&lt;/td>
+&lt;td>无显著优点&lt;/td>
+&lt;td>歧视性言论&lt;/td>
+&lt;td>不建议使用&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>MiniMax&lt;/td>
+&lt;td>优异&lt;/td>
+&lt;td>无&lt;/td>
+&lt;td>模型能力优异&lt;/td>
+&lt;td>基本功能缺失&lt;/td>
+&lt;td>不建议使用&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>通义&lt;/td>
+&lt;td>强大&lt;/td>
+&lt;td>非常严重&lt;/td>
+&lt;td>模型能力强大&lt;/td>
+&lt;td>过度运营&lt;/td>
+&lt;td>建议卸载&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>Qwen&lt;/td>
+&lt;td>强大&lt;/td>
+&lt;td>无&lt;/td>
+&lt;td>模型能力强大&lt;/td>
+&lt;td>暂未上架iOS&lt;/td>
+&lt;td>可保留&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;p>结论：&lt;/p>
+&lt;ol>
+&lt;li>&lt;strong>强烈推荐使用的工具&lt;/strong>：
+&lt;ul>
+&lt;li>&lt;strong>Gemini&lt;/strong>：尽管存在服务不稳定的情况，模型性能出众且用户体验良好，适合工作和生活使用。&lt;/li>
+&lt;li>&lt;strong>Grok&lt;/strong>：强大的搜索能力和免费使用权限，使其成为一个值得保留的选择。&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;strong>建议保留的工具&lt;/strong>：
+&lt;ul>
+&lt;li>&lt;strong>ChatGPT&lt;/strong>：尽管逐渐退下神位，免费版仍然满足大部分需求，且用户基数大。&lt;/li>
+&lt;li>&lt;strong>DeepSeek&lt;/strong>：以稳定著称，没有任何过度运营化的问题，保持了工具的纯粹性。&lt;/li>
+&lt;li>&lt;strong>Claude&lt;/strong>：在代码领域表现优异，适合在工作中使用。&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;strong>不建议使用的工具&lt;/strong>：
+&lt;ul>
+&lt;li>&lt;strong>智谱清言、Yunbao、Kimi、Dola、Copilot、Manus、Perplexity、MiniMax、通义&lt;/strong>：这些工具要么因为屎化现象严重，要么因为模型能力一般或者基本功能缺失，并不推荐长期使用。但其背后的模型还是可圈可点，例如Kimi、MiniMax、Qwen模型。可惜产品不够好用。另外，截止今天，Qwen仍旧未上架iOS应用市场。&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ol>
+&lt;blockquote>
+&lt;p>上述结论仅限用户客户端，发表时间是2025年11月。不涉及API调用。
+对于工作和编程场景，Claude sonnet 4.5，ChatGPT-5.1-Codex，Grok Code Fast 1，MiniMax M2和GLM 4.6，Gemini 3 Pro 值得推荐&lt;/p>
+&lt;/blockquote>
+&lt;h3 id="后记">后记
+&lt;/h3>&lt;p>时过境迁，ChatGPT优化了在欧洲的使用体验，现在体验非常好，因此本文内容不再有效。&lt;/p></description></item><item><title>2025 年 4 月科技随笔2</title><link>https://nansenli.com/zh-cn/post/2025/04/tech250402/</link><pubDate>Sun, 20 Apr 2025 12:58:30 +0100</pubDate><guid>https://nansenli.com/zh-cn/post/2025/04/tech250402/</guid><description>&lt;h1 id="github-copoilt">Github copoilt
+&lt;/h1>&lt;p>&lt;img src="https://nansenli.com/img/rescued/6f49f8b9f1ec.png"
+loading="lazy"
+alt="Image.png"
+>&lt;/p>
+&lt;p>面对陌生的Github项目，再也不用害怕看不懂了。点击项目主页的Copolit图标，即可对话，还可使用GPT4.1交流，高达1M窗口上下文，从“这个项目能用来做什么”到“如何部署和处理bug”之类的问题，都能很好回答。&lt;/p>
+&lt;h1 id="dia-浏览器">Dia 浏览器
+&lt;/h1>&lt;p>&lt;img src="https://nansenli.com/img/rescued/ba4da2cf2850.png"
+loading="lazy"
+alt="Image.png"
+>&lt;/p>
+&lt;p>&lt;a class="link" href="https://www.diabrowser.com/" target="_blank" rel="noopener"
+>https://www.diabrowser.com/&lt;/a>&lt;/p>
+&lt;p>目前还未公测，可以通过上面的链接提交邮箱进入等待名单。&lt;/p>
+&lt;p>Arc浏览器确实很好用，它拥有稳定、成熟且一致的体验，不单纯的只是侧边栏标签创新那么简单。&lt;/p>
+&lt;p>Dia是Arc浏览器的下一代产品，其实不太理解为什么要重新发布一个新的产品，直接在Arc浏览器上做整合应该是最好的。现在创始人的想法反而是搁置Arc浏览器了。&lt;/p>
+&lt;p>从产品体验上来看，Dia浏览器似乎分为下面几个部分：&lt;/p>
+&lt;ul>
+&lt;li>一个内置的AI助手，可以进行日常对话&lt;/li>
+&lt;li>一个类似nanobrowser或browser-use的浏览器操作助手，帮助规划和操作浏览器&lt;/li>
+&lt;li>一个AI写作助手，可以在光标处生成文本&lt;/li>
+&lt;/ul>
+&lt;p>很有潜力的产品&lt;/p>
+&lt;h1 id="gpt-o3--o4-mini--o4-mini-high-41--41-mini--41-nano-发布">GPT o3 / o4-mini / o4-mini-high/ 4.1 / 4.1 mini / 4.1 nano 发布
+&lt;/h1>&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>&lt;strong>模型&lt;/strong>&lt;/th>
+&lt;th>&lt;strong>上下文窗口&lt;/strong>&lt;/th>
+&lt;th>&lt;strong>输入定价&lt;/strong>&lt;/th>
+&lt;th>&lt;strong>输出定价&lt;/strong>&lt;/th>
+&lt;th>&lt;strong>图片定价&lt;/strong>&lt;/th>
+&lt;th>&lt;strong>主要特性&lt;/strong>&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>o4‑mini‑high&lt;/td>
+&lt;td>200K 令牌&lt;/td>
+&lt;td>$1.10/M&lt;/td>
+&lt;td>$4.40/M&lt;/td>
+&lt;td>$0.842/K 图像输入&lt;/td>
+&lt;td>o4‑mini 的高推理努力版本；高吞吐、低延迟；支持链式调用与结构化输出&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>o4‑mini&lt;/td>
+&lt;td>200K 令牌&lt;/td>
+&lt;td>$1.10/M&lt;/td>
+&lt;td>$4.40/M&lt;/td>
+&lt;td>$0.842/K 图像输入&lt;/td>
+&lt;td>紧凑型推理；AIME 99.5%、SWE‑bench 高分；优秀 STEM、视觉与代码编辑能力&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>o3&lt;/td>
+&lt;td>200K 令牌&lt;/td>
+&lt;td>$10/M&lt;/td>
+&lt;td>$40/M&lt;/td>
+&lt;td>$7.65/K 图像输入&lt;/td>
+&lt;td>通用型强模型；顶级数学、科学、编码与视觉推理；需 BYOK&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>GPT‑4.1&lt;/td>
+&lt;td>1.05M 令牌&lt;/td>
+&lt;td>$2/M&lt;/td>
+&lt;td>$8/M&lt;/td>
+&lt;td>N/A&lt;/td>
+&lt;td>旗舰大模型；百万令牌上下文；卓越指令跟随、企业级检索与多模态理解&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>GPT‑4.1 Mini&lt;/td>
+&lt;td>1.05M 令牌&lt;/td>
+&lt;td>$0.40/M&lt;/td>
+&lt;td>$1.60/M&lt;/td>
+&lt;td>N/A&lt;/td>
+&lt;td>中型版本；接近 GPT‑4o 性能；低延迟、低成本；强编码与视觉理解&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>GPT‑4.1 Nano&lt;/td>
+&lt;td>1.05M 令牌&lt;/td>
+&lt;td>$0.10/M&lt;/td>
+&lt;td>$0.40/M&lt;/td>
+&lt;td>N/A&lt;/td>
+&lt;td>系列中最快最廉价；百万令牌上下文；适合分类与自动补全任务&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;p>GPT-4.1 Nano 天生适合翻译，成本非常低，例如配置在沉浸式翻译，开启中英双语字幕，平均每一集黑镜，仅需要0.5美分，翻译完7季只需要0.25美元，成本非常低。&lt;/p>
+&lt;p>GPT-4.1 的上下文窗口终于来到1M了，之前GPT写代码简直被吊打，现在只能说追平了。&lt;/p>
+&lt;p>o3、o4-mini、o4-mini-high表现非常惊喜，有一种小的deep research感觉。&lt;/p>
+&lt;p>目前，我的日常基本上变成了：&lt;/p>
+&lt;ul>
+&lt;li>o4-mini： 简单搜索和总结，可容忍失误&lt;/li>
+&lt;li>o4-mini-high: 复杂搜索、总结、多步推理&lt;/li>
+&lt;li>o3: 对准确率要求较高的复杂搜索、总结、多步推理&lt;/li>
+&lt;li>4o: 直觉类和记忆知识类的回答&lt;/li>
+&lt;/ul>
+&lt;p>而且我统计了每个模型的使用次数，差不多几乎都在使用，没有说哪个模型派不上用场的，不像是o3-mini幻觉太高基本就用不了。&lt;/p>
+&lt;p>&lt;img src="https://nansenli.com/img/rescued/018788a20986.png"
+loading="lazy"
+alt="Image.png"
+>&lt;/p>
+&lt;h1 id="元宝接入微信联系人">元宝接入微信联系人
+&lt;/h1>&lt;p>元宝微信，可以直接添加联系人发送信息。支持语音消息和图片消息。是豆包的竞品。优点是无需安装额外的应用。之前给父母推荐了豆包，他们都很喜欢使用。如果元宝也能支持语言通话，甚至视频聊天的话，可能会更有价值。&lt;/p>
+&lt;h1 id="openai免费令牌">OpenAI免费令牌
+&lt;/h1>&lt;p>&lt;img src="https://nansenli.com/img/rescued/7c4b97a270c2.png"
+loading="lazy"
+alt="Image.png"
+>&lt;/p>
+&lt;p>OpenAI 现在推出免费领牌活动，可以在Data controls中的sharing开启分享日志，即可领取。可惜就是时间太短了，只有一两周的时间，基本上用不完这么多额度。&lt;/p>
+&lt;h1 id="github-其他日榜周榜相关">Github 其他日榜周榜相关
+&lt;/h1>&lt;p>&lt;a class="link" href="https://github.com/kestra-io/kestra" target="_blank" rel="noopener"
+>https://github.com/kestra-io/kestra&lt;/a>&lt;/p>
+&lt;p>自动化运行平台，竞品包括：Airflow（数据管道）、Zapier（低代码营销自动化）、Rundeck（运维自动化）、Camunda （电商业务自动化）&lt;/p>
+&lt;p>&lt;a class="link" href="https://github.com/Zackriya-Solutions/meeting-minutes" target="_blank" rel="noopener"
+>https://github.com/Zackriya-Solutions/meeting-minutes&lt;/a>&lt;/p>
+&lt;p>一款语音转文本的软件，苹果 voice memos 的竞品。&lt;/p>
+&lt;p>&lt;a class="link" href="https://github.com/maybe-finance/maybe" target="_blank" rel="noopener"
+>https://github.com/maybe-finance/maybe&lt;/a>&lt;/p>
+&lt;p>个人财报管理，类似有知有行&lt;/p>
+&lt;p>&lt;a class="link" href="https://github.com/supabase-community/supabase-mcp" target="_blank" rel="noopener"
+>https://github.com/supabase-community/supabase-mcp&lt;/a>&lt;/p>
+&lt;p>在本地使用 AI 开发软件的时候，用于连接数据库的软件，基于 MCP 协议实现。若 MCP 真实未来标准协议之一，那数据库本身可能就会支持 MCP，可能会形成竞品。&lt;/p>
+&lt;p>&lt;a class="link" href="https://github.com/langgenius/dify" target="_blank" rel="noopener"
+>https://github.com/langgenius/dify&lt;/a>&lt;/p>
+&lt;p>低代码 LLM 平台，LangChain的竞品，在现阶段的应用领域可部分代替LangChain。&lt;/p></description></item><item><title>2025 年 4 月科技随笔</title><link>https://nansenli.com/zh-cn/post/2025/04/tech2504/</link><pubDate>Tue, 15 Apr 2025 20:45:20 +0100</pubDate><guid>https://nansenli.com/zh-cn/post/2025/04/tech2504/</guid><description>&lt;h1 id="前言">前言
+&lt;/h1>&lt;p>打算从这期记录一些每周的科技相关的随笔，还有一些感悟之类的。大概每两周到一个月更新一期吧。&lt;/p>
+&lt;h1 id="个人博客从-hugo-替换成-hexo">个人博客从 Hugo 替换成 Hexo
+&lt;/h1>&lt;p>这周开始，我把博客从 Hexo 迁移到 Hugo，主要是因为：&lt;/p>
+&lt;p>Hugo 对 i18n 支持更好。因为 Hexo 对 i18n 并不太支持，之前自己魔改了模板，最后实现了中文和英文切换，但是维护成本很高，了解后发现 Hugo 原生支持多语言。&lt;/p>
+&lt;p>不过在切换后，发现也有以下一些优点：&lt;/p>
+&lt;p>主题配置更简单。我使用的是&lt;a class="link" href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener"
+>Stack&lt;/a> 主题，基本上没有遇到坑。官方自带的 example 配置就很好，照这配置就好。另外，还带 Google Analysis 分析，还带 RSS 源，源也会自动区分语言，非常舒适。&lt;/p>
+&lt;p>在切换的过程中，基本上没有遇到什么障碍，只要有你过去的 Markdown 文件，直接复制到新工程的目录下，再强制推送到原来的 github pages仓库，就可以直接迁移过来。强制推送后，需要在 github重新配置一下自定义域名，就无损升级了，包括评论之类的都是一样的。&lt;/p>
+&lt;p>唯一不同的是，Hugo 默认使用小写链接，而 Hexo 默认保留大小写，这可能使得过去的一些链接失效，搜索引擎需要重新建立索引。&lt;/p>
+&lt;h1 id="神秘模型optimus-alpha出现在httpsopenrouteraihttpsopenrouterai-并霸榜">神秘模型Optimus Alpha出现在&lt;a class="link" href="https://openrouter.ai/" target="_blank" rel="noopener"
+>https://openrouter.ai/&lt;/a> 并霸榜
+&lt;/h1>&lt;p>&lt;img src="https://nansenli.com/img/rescued/a7835acf9e85.png"
+loading="lazy"
+alt="Image.png"
+>&lt;/p>
+&lt;p>由于该模型免费，并且性能很强，在上线后，就被选择成为 OpenRouter 的首席流量处理模型。&lt;/p>
+&lt;p>随着14 号 OpenAI 官方公布 GPT4.1 后，该模型从 OpenRouter 下架。显然，该模型就是 GPT4.1。&lt;/p>
+&lt;p>GPT4.1 是一个编程能力特化的模型，拥有 1M 的上下文窗口。确实，现在编程领域，OpenAI 被 Claude 3.7 还有 Gemini2.5pro 打的鼻青脸肿，无论是 o1 还是 o3 模型，都没能在编程领域取得什么领先地位。希望 OpenAI 再接再厉吧。&lt;/p>
+&lt;blockquote>
+&lt;p>OpenRouter 是一个让用户&lt;strong>统一接入多个大语言模型 API&lt;/strong> 的中间层服务平台。你可以把它理解成一个「代理」或「路由器」，统一管理不同大模型厂商（OpenAI、Anthropic、Mistral、Google Gemini、Cohere 等）的调用方式。&lt;/p>
+&lt;/blockquote>
+&lt;p>看起来，这次，OpenAI 选择了 OpenRouter 作为测试发布平台，而不是&lt;a class="link" href="https://lmarena.ai/" target="_blank" rel="noopener"
+>https://lmarena.ai/&lt;/a>&lt;/p>
+&lt;h1 id="openrouterai">OpenRouter.ai
+&lt;/h1>&lt;p>&lt;a class="link" href="https://openrouter.ai/" target="_blank" rel="noopener"
+>OpenRouter&lt;/a>&lt;/p>
+&lt;p>这是一个 LLM平台，包含大量的免费/收费高质量模型。&lt;/p>
+&lt;p>&lt;img src="https://nansenli.com/img/rescued/def8fd9ff726.png"
+loading="lazy"
+alt="Image.png"
+>&lt;/p>
+&lt;p>选择 Prompt pricing 为 0 元，再选择 Top Weekly，就可以看到目前最好的免费模型。&lt;/p>
+&lt;p>不过使用时需要开启 log 和使用数据进行训练。&lt;/p>
+&lt;p>目前可以选择 Gemini 2.5 pro。&lt;/p>
+&lt;p>其中Ranking功能可以实时查看平台上所有的流量分发情况，哪个模型好用一目了然。&lt;/p>
+&lt;h1 id="nanobrowser">nanobrowser
+&lt;/h1>&lt;p>&lt;img src="https://nansenli.com/img/rescued/8d34bb10e9ba.png"
+loading="lazy"
+alt="Image.png"
+>&lt;/p>
+&lt;p>一款用于 Chrome 的浏览器插件，可以控制浏览器的自动化操作。&lt;/p>
+&lt;p>试验了一下，无法支持 Arc 浏览器。体验下来能力有限，例如，对网页的滚动偶尔失效，无法总结整个页面的内容，只能看到局部的内容，操作偶尔不正确。&lt;/p>
+&lt;p>虽然该产品不太推荐，不过这可能是未来一个方向，看起来，以后会出现大量的 AI 代理。&lt;/p>
+&lt;p>抢票、刷分之类的灰色产业估计会很开心。&lt;/p>
+&lt;h1 id="markitdown">markitdown
+&lt;/h1>&lt;p>&lt;img src="https://nansenli.com/img/rescued/e37c2c0e7d7a.png"
+loading="lazy"
+alt="Image.png"
+>&lt;/p>
+&lt;p>一款用于将不同格式的内容转换成 Markdown 格式的工具。&lt;/p>
+&lt;p>离线情况下，可以处理不同的文件转换成 Markdown 格式，试用了一下，转换得比较基础。&lt;/p>
+&lt;p>也可以支持接入 LLM，提升转换结果和文档中图片的部分。&lt;/p>
+&lt;p>在未来可能是一款不错的 MCP 服务。&lt;/p>
+&lt;h1 id="pdf-search">PDF search
+&lt;/h1>&lt;p>&lt;img src="https://nansenli.com/img/rescued/d1310e598823.png"
+loading="lazy"
+alt="Image.png"
+>&lt;/p>
+&lt;p>一款应用，可以快速搜索多个 pdf 中出现的内容。&lt;/p>
+&lt;p>使用类似模糊搜索的方式，原理是对 PDF 做了分割并且进行了嵌入向量计算，随后和搜索词进行匹配。&lt;/p>
+&lt;p>适合考试期间搜索文档使用。&lt;/p>
+&lt;p>缺点是，index 是按照页面划分的，搜索后需要自己在页面中找到对应的 part。&lt;/p></description></item><item><title>LLM 工具使用体验总结</title><link>https://nansenli.com/zh-cn/post/2025/04/aitest/</link><pubDate>Tue, 08 Apr 2025 19:47:56 +0000</pubDate><guid>https://nansenli.com/zh-cn/post/2025/04/aitest/</guid><description>&lt;h1 id="chatgpt-o4-mini">ChatGPT o4-mini
+&lt;/h1>&lt;p>&lt;a class="link" href="day://2025.04.17" >&lt;code>Thu, Apr 17&lt;/code>&lt;/a> 这两天最新发布的模型，推理能力显著，多步执行能力优秀。看来o4-mini 在实际任务执行表现上全面超越 o3-mini。&lt;/p>
+&lt;p>下图展示了我的一个使用的例子，问题是：“黑镜第七季第三集中出现了很多亚裔，这些亚裔是中国人还是韩国人，或者是日本人还是马来西亚人或者新加坡？”，模型成功的多次调用搜索引擎进行搜索，并获取到了正确答案：&lt;/p>
+&lt;p>&lt;img src="https://nansenli.com/img/rescued/51ec0e03d882.png"
+loading="lazy"
+alt="Image.png"
+>&lt;/p>
+&lt;p>另外，projects也能在该模式下正常被调用和使用了，由于模型可以自主搜索，而不是使用rag的方式，使得搜索文件的效率大幅上升。&lt;/p>
+&lt;h1 id="chatgpt-不包含o3o4-mini">ChatGPT （不包含o3、o4-mini）
+&lt;/h1>&lt;ul>
+&lt;li>
+&lt;p>GPT-4o：全能。满足日常交流学习，上下文足够大，轻松处理代码、文档检索等任务。支持多种附件格式和在线执行代码。缺点是生成的上下文长度过小，不适合生成太长内容。对过长的对话，上下文压缩严重，可能会忘记早前的内容。&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>Projects：略鸡肋。适合用于多个文件频繁搜索和检索文本的场景。&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>GPT-4o mini：弱于 GPT-4o，优点是上下文窗口巨大，推荐用于翻译超长文本的场合。&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>o1：还不错的思维链模型，用于解决复杂的代码、数学题。不擅长处理感情及需要使用直觉的问题。但思维链过短，且质量不高。建议在输出结果后，将结果作为Gemini-2.5pro 或者DeepSeek-R1 的输入，优化质量。&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>o3-mini：幻觉严重，不如 o1，但推理速度极快。&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>Search：略微鸡肋。新版本搜索结果被严重阉割，甚至不如模型不搜索时的输出质量。适合替代轻度搜索。&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>Deep Research：神器。同类功能中质量最好，输出结果最完善。&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>GPT-4.5-preview：优秀。上下文窗口巨大，对长文本理解能力强。拥有海量记忆和最强直觉。其实不擅长推理，但是由于幻觉低，反而表现最好。&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>Canvas：整体不如 Cursor。上下文输出太小，文本长度受限。适合边写边编辑的短文本场景。&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>Work with Apps on macOS：功能体验被 Cursor 碾压，相当于 Cursor 的精简版。&lt;/p>
+&lt;/li>
+&lt;/ul>
+&lt;h1 id="claude">Claude
+&lt;/h1>&lt;ul>
+&lt;li>Claude 3.7 Sonnet：优秀，适合生成各类代码。网页版支持超大上下文，几乎与 API 提供一致的上下文历史消息保留。模型非常适合撰写沟通类文本，如邮件，用词准确、简洁、不浮夸。缺点是免费版使用次数有限。&lt;/li>
+&lt;/ul>
+&lt;h1 id="deepseek">DeepSeek
+&lt;/h1>&lt;ul>
+&lt;li>
+&lt;p>R1：幻觉严重，发挥不稳定，偶尔影响使用，对提示词质量要求极高。提示词正确或上下文完整时超越 o1。可以作为 o1 输出结果的输入，优化质量。&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>V3：非常优秀，GPT-4o 平替。&lt;/p>
+&lt;/li>
+&lt;/ul>
+&lt;h1 id="grok">Grok
+&lt;/h1>&lt;ul>
+&lt;li>
+&lt;p>Grok-3：生成文本流畅自然，AI 感较弱，适合自然写作和小说创作。整体中规中矩，生产力方面不如 GPT-4o 提供的工具多。&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>Grok-3 + search：优秀。坐拥英文社交数据，快速分析新闻实事。输出内容长，几乎不过滤索搜源内容，比 GPT-4o 搜索能力强。&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>Grok-Deep Search：略鸡肋，反而不如 Grok-3 + search。生成内容模板化严重，影响质量。&lt;/p>
+&lt;/li>
+&lt;/ul>
+&lt;h1 id="gemini">Gemini
+&lt;/h1>&lt;ul>
+&lt;li>
+&lt;p>2.5 Pro：非常优秀的模型，GPT-4o 平替，幻觉少，搜索结果质量高，思维链完整清晰，逻辑性强。支持与 Google 工具联动，特殊场景下非常有用，例如上传截图或文本并自动在 Google Calendar 中创建日程。缺点是经常声称自己使用了搜索，但实际上并未执行搜索。&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>Deep Research：一般，略优于旧版 GPT Search。偶尔存在理解偏差，搜索和文档生成是分阶段执行，过程割裂，模板化严重。目前唯一能替代 GPT Deep Research 的产品。&lt;/p>
+&lt;/li>
+&lt;/ul>
+&lt;h1 id="v0dev">v0.dev
+&lt;/h1>&lt;ul>
+&lt;li>适合编写并在线预览前端组件。&lt;/li>
+&lt;/ul>
+&lt;h1 id="chatqwenai">chat.qwen.ai
+&lt;/h1>&lt;ul>
+&lt;li>Qwen2.5-Max：非常优秀的模型，GPT-4o 平替，生成速度快，支持思考模式。&lt;/li>
+&lt;/ul>
+&lt;h1 id="知乎直答">知乎直答
+&lt;/h1>&lt;ul>
+&lt;li>支持搜索知乎全网内容。可能的竞品是小红书直答。&lt;/li>
+&lt;/ul>
+&lt;h1 id="perplexity">Perplexity
+&lt;/h1>&lt;ul>
+&lt;li>支持基础搜索，质量平庸，略鸡肋。&lt;/li>
+&lt;/ul>
+&lt;h1 id="mistralai">Mistral.ai
+&lt;/h1>&lt;ul>
+&lt;li>速度快，上下文窗口大，GPT4o-mini 平替。&lt;/li>
+&lt;/ul>
+&lt;h1 id="cursor">Cursor
+&lt;/h1>&lt;ul>
+&lt;li>神器。可对整个代码仓库建立索引，适合开发大型项目。支持多模型切换，支持本地命令行执行与终端接管，适合以下任务：
+&lt;ul>
+&lt;li>撰写 Latex 文档，替代 Overleaf&lt;/li>
+&lt;li>辅助完成各类作业&lt;/li>
+&lt;li>代码仓库搜索与特定功能定位&lt;/li>
+&lt;li>创建单元测试&lt;/li>
+&lt;li>执行 git 操作&lt;/li>
+&lt;li>执行部署任务&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>几乎可以执行一切涉及文档和命令行的功能，在开发、调试、Debug、文档撰写方面均有帮助&lt;/li>
+&lt;li>真正的现阶段最接近 Agent 的产品（于o3和o4-mini发布后不成立，因为o3和o4-mini也可以多步执行规划并完成任务了。不过o3和o4-mini仍然只能在自己的小环境里完成Agent，而Cursor可以在用户电脑上执行，这是一个优点。）&lt;/li>
+&lt;/ul>
+&lt;h1 id="例子leetcode-跟踪器">例子：Leetcode 跟踪器
+&lt;/h1>&lt;p>在淘宝上存在大量的 Leetcode 会员共享账号，但是我们有的时候还是需要将做题记录追加到自己的账号中。购买共享会员账号后，我们可以将某个公司的题目导出为 csv 文件，然后，将自己的做题记录也导出为 csv 文件，之后，对比这两个文件，我们可以轻松的去追踪当前的做题进度。Cursor 非常擅长撰写类似的小工具：&lt;/p>
+&lt;p>&lt;img src="https://nansenli.com/img/rescued/1a7bea6f828c.png"
+loading="lazy"
+alt="Image.png"
+>&lt;/p>
+&lt;p>我们只需要复制网页中的元素，Cursor 就可以为我们撰写完整的 csv 文件，并且自动生成完美的前端界面，极大的提高做题的效率。&lt;/p></description></item></channel></rss>

@@ -1333,7 +1333,27 @@ epoll_wait可以用于获得从内核得到的事件的集合。&lt;/p>
 &lt;/ol>
 &lt;h2 id="如何选择长连接还是短连接">如何选择长连接还是短连接
 &lt;/h2>&lt;p>长连接多用于操作频繁，点对点的通讯，而且连接数不能太多情况，。每个TCP连接都需要三步握手，这需要时间，如果每个操作都是先连接，再操作的话那么处理速度会降低很多，所以每个操作完后都不断开，次处理时直接发送数据包就OK了，不用建立TCP连接。例如：数据库的连接用长连接， 如果用短连接频繁的通信会造成socket错误，而且频繁的socket 创建也是对资源的浪费。&lt;/p>
-&lt;p>而像WEB网站的http服务一般都用短链接，因为长连接对于服务端来说会耗费一定的资源，而像WEB网站这么频繁的成千上万甚至上亿客户端的连接用短连接会更省一些资源，如果用长连接，而且同时有成千上万的用户，如果每个用户都占用一个连接的话，那可想而知吧。所以并发量大，但每个用户无需频繁操作情况下需用短连好。&lt;/p></description></item><item><title>epoll TCP服务器与客户端简明例子</title><link>https://nansenli.com/zh-cn/post/jianshu/%E7%BD%91%E7%BB%9C/epoll-tcp%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B8%8E%E5%AE%A2%E6%88%B7%E7%AB%AF%E7%AE%80%E6%98%8E%E4%BE%8B%E5%AD%90/</link><pubDate>Mon, 25 Dec 2017 02:52:00 +0000</pubDate><guid>https://nansenli.com/zh-cn/post/jianshu/%E7%BD%91%E7%BB%9C/epoll-tcp%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B8%8E%E5%AE%A2%E6%88%B7%E7%AB%AF%E7%AE%80%E6%98%8E%E4%BE%8B%E5%AD%90/</guid><description>&lt;h2 id="前言">前言
+&lt;p>而像WEB网站的http服务一般都用短链接，因为长连接对于服务端来说会耗费一定的资源，而像WEB网站这么频繁的成千上万甚至上亿客户端的连接用短连接会更省一些资源，如果用长连接，而且同时有成千上万的用户，如果每个用户都占用一个连接的话，那可想而知吧。所以并发量大，但每个用户无需频繁操作情况下需用短连好。&lt;/p></description></item><item><title>关于CSDN移动端被电信劫持红包广告的现象与感想</title><link>https://nansenli.com/zh-cn/post/jianshu/%E9%9A%8F%E7%AC%94/%E5%85%B3%E4%BA%8Ecsdn%E7%A7%BB%E5%8A%A8%E7%AB%AF%E8%A2%AB%E7%94%B5%E4%BF%A1%E5%8A%AB%E6%8C%81%E7%BA%A2%E5%8C%85%E5%B9%BF%E5%91%8A%E7%9A%84%E7%8E%B0%E8%B1%A1%E4%B8%8E%E6%84%9F%E6%83%B3/</link><pubDate>Sun, 31 Dec 2017 06:24:00 +0000</pubDate><guid>https://nansenli.com/zh-cn/post/jianshu/%E9%9A%8F%E7%AC%94/%E5%85%B3%E4%BA%8Ecsdn%E7%A7%BB%E5%8A%A8%E7%AB%AF%E8%A2%AB%E7%94%B5%E4%BF%A1%E5%8A%AB%E6%8C%81%E7%BA%A2%E5%8C%85%E5%B9%BF%E5%91%8A%E7%9A%84%E7%8E%B0%E8%B1%A1%E4%B8%8E%E6%84%9F%E6%83%B3/</guid><description>&lt;h2 id="前言">前言
+&lt;/h2>&lt;p>最近疑似被电信劫持，遂将分析记录下来&lt;/p>
+&lt;h2 id="现象">现象
+&lt;/h2>&lt;p>我的三星S8使用的是四川电信卡，在访问如下网站时会被跳转到全屏广告，也就是支付宝红包界界面，体验非常差，下面这个就是一个会被劫持的地址。
+&lt;a class="link" href="http://m.blog.csdn.net/skyroben/article/details/70195575" target="_blank" rel="noopener"
+>http://m.blog.csdn.net/skyroben/article/details/70195575&lt;/a>&lt;/p>
+&lt;h2 id="分析">分析
+&lt;/h2>&lt;ul>
+&lt;li>手机使用ss代理（4G）再访问上述网站，没有广告，没有劫持&lt;/li>
+&lt;li>手机直连，电信wifi，访问有劫持&lt;/li>
+&lt;li>使用热点，用电脑点击上面的网址，不会出现劫持&lt;/li>
+&lt;li>使用热点，使用插件更改电脑端user agent为Android客户端，有一定概率出现劫持？？&lt;/li>
+&lt;li>不使用热点，电脑有线（电信），更改电脑端user agent为Android客户端，有一定概率出现劫持？？&lt;/li>
+&lt;li>使用手机端chrome（s8），连上电信wifi，在网址前加上view-source:查看网页源码，并将结果分别保存，在电脑端查看两文件进行差分对比，并没有不同。&lt;/li>
+&lt;li>使用手机端chrome（s8），连上移动wifi，有劫持！（脚本缓存？）&lt;/li>
+&lt;li>使用ios chrome，连电信wifi，没有劫持&lt;/li>
+&lt;/ul>
+&lt;h2 id="综上">综上
+&lt;/h2>&lt;p>由于劫持后网页源码没有变化，可能是劫持了脚本。由于使用移动wifi访问也会出现劫持，所有不能排除csdn自己加入的广告。使用ss代理就可以破解劫持，说明劫持是区域性的。电脑和ios访问不会被劫持，说明劫持只针对Android浏览器。&lt;/p>
+&lt;h2 id="结论">结论
+&lt;/h2>&lt;p>一般用户最好不要使用电信网络和Android手机，并且建议所有网站使用https进行加密&lt;/p></description></item><item><title>epoll TCP服务器与客户端简明例子</title><link>https://nansenli.com/zh-cn/post/jianshu/%E7%BD%91%E7%BB%9C/epoll-tcp%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B8%8E%E5%AE%A2%E6%88%B7%E7%AB%AF%E7%AE%80%E6%98%8E%E4%BE%8B%E5%AD%90/</link><pubDate>Mon, 25 Dec 2017 02:52:00 +0000</pubDate><guid>https://nansenli.com/zh-cn/post/jianshu/%E7%BD%91%E7%BB%9C/epoll-tcp%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B8%8E%E5%AE%A2%E6%88%B7%E7%AB%AF%E7%AE%80%E6%98%8E%E4%BE%8B%E5%AD%90/</guid><description>&lt;h2 id="前言">前言
 &lt;/h2>&lt;p>epoll是Linux专有API，提供高效的文件描述符管理，常用于批量监听文件描述符的可读情况，是高并发服务器的有效手段之一。下面是一个简单的epoll服务器与客户端例子。&lt;/p>
 &lt;h2 id="服务器端">服务器端
 &lt;/h2>&lt;div class="highlight">&lt;div class="chroma">
@@ -1931,53 +1951,4 @@ getaddrinfo以host、service、hints参数作为输入，其中host参数包括�
 epoll函数包括三个API：epoll_create()、epoll_ctl()、epoll_wait()三个调用。
 epoll是三个调用中性能最好，效果最多的。但是只有Linux才可以使用。&lt;/li>
 &lt;/ul>
-&lt;p>主要是因为服务器上面会连接多个socket链接，如果为每一个套接字建立一个线程的话，会比较占用资源，所以需要使用epoll来优化性能。&lt;/p></description></item><item><title>基于Flask的个人博客搭建</title><link>https://nansenli.com/zh-cn/post/jianshu/%E7%BD%91%E7%BB%9C/%E5%9F%BA%E4%BA%8Eflask%E7%9A%84%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA/</link><pubDate>Sun, 30 Jul 2017 17:38:00 +0000</pubDate><guid>https://nansenli.com/zh-cn/post/jianshu/%E7%BD%91%E7%BB%9C/%E5%9F%BA%E4%BA%8Eflask%E7%9A%84%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA/</guid><description>&lt;h2 id="前言">前言
-&lt;/h2>&lt;p>源码可直接运行，支持markdown语法，支持邮箱注册，任何问题均可参考&lt;a class="link" href="https://book.douban.com/subject/26274202/" target="_blank" rel="noopener"
->《Flask Web开发：基于Python的Web应用开发实战》&lt;/a>。&lt;/p>
-&lt;p>博客网址：http://www.unrealblue.cc
-项目地址：https://github.com/linanwx/unrealblue-blog&lt;/p>
-&lt;h2 id="效果预览">效果预览
-&lt;/h2>&lt;p>&lt;img src="https://nansenli.com/img/rescued/a0027251f6b8.jpg"
-loading="lazy"
-alt="image.png"
->&lt;/p>
-&lt;p>&lt;img src="https://nansenli.com/img/rescued/ee8b6a7c6286.jpg"
-loading="lazy"
-alt="markdown语法"
->&lt;/p>
-&lt;p>&lt;img src="https://nansenli.com/img/rescued/2482752767fe.jpg"
-loading="lazy"
-alt="登录"
->&lt;/p>
-&lt;p>&lt;img src="https://nansenli.com/img/rescued/a827700f36d3.jpg"
-loading="lazy"
-alt="首页"
->&lt;/p>
-&lt;h2 id="部署过程">部署过程
-&lt;/h2>&lt;p>首先为了验证程序功能，需要在本机上部署，之后使用nginx反向代理工具，可以将端口号暴露出去，这样其他人就可以在公网访问你的博客了，之后在服务器进行同样的步骤。具体过程如下。&lt;/p>
-&lt;ol>
-&lt;li>安装virtualenv python虚拟环境，&lt;code>pip install virtualenv&lt;/code> 或者 &lt;code>pip3 install virtualenv&lt;/code> 。然后使用virtualenv在一个合适的目录，例如在该项目下面建立venv环境&lt;code>virtualenv venv&lt;/code>，&lt;/li>
-&lt;li>激活virtualenv环境，运行venv目录下的activate，&lt;code>. venv/bin/activate&lt;/code>， 注意点的位置，之后你会看到命令行前面多了(venv)这个标记。&lt;/li>
-&lt;li>在虚拟环境下安装所有requirements.txt中的模块, &lt;code>pip3 install -r requirements.txt&lt;/code>。如果安装太慢，你可能需要配置pip的国内源。更改pip源的方法参见pip官方页面。&lt;/li>
-&lt;li>导入坏境变量，在项目目录下创建文件 &lt;code>env&lt;/code> ，输入如下字段：&lt;/li>
-&lt;/ol>
-&lt;ul>
-&lt;li>&lt;code>MAIL_USERNAME=email@example.com&lt;/code> (服务器发验证码用的邮箱，开启了smtp服务的邮箱账号，程序里默认使用qq邮箱，修改config文件可成其它类型邮箱)&lt;/li>
-&lt;li>&lt;code>MAIL_PASSWORD=password&lt;/code> (上面邮箱的密码，注意qq邮箱使用特殊16位专用密码)&lt;/li>
-&lt;li>&lt;code>FLASK_ADMIN=admin@example.com&lt;/code> (服务器运行后，使用该邮箱创建账号就是管理者)&lt;/li>
-&lt;li>&lt;code>MAIL_SERVER=smtp.qq.com&lt;/code>(邮箱服务器地址)&lt;/li>
-&lt;li>&lt;code>FLASKY_MAIL_SENDER=example@foxmail.com&lt;/code>(发送人)&lt;/li>
-&lt;/ul>
-&lt;ol start="5">
-&lt;li>安装数据库迁移。输入以下命令&lt;/li>
-&lt;/ol>
-&lt;ul>
-&lt;li>&lt;code>python manager.py db init&lt;/code> (使用init命令创建迁移仓库，此时会多出 migrations 文件夹)&lt;/li>
-&lt;li>&lt;code>python manager.py db migrate -m &amp;quot;initial migration&amp;quot;&lt;/code>(migrate命令用来自动创建迁移脚本)&lt;/li>
-&lt;li>&lt;code>python manager.py db upgrade&lt;/code>(更新数据库，第一次使用该命令会新建一个数据库data-dev.sqlite)&lt;/li>
-&lt;/ul>
-&lt;ol start="6">
-&lt;li>部署程序， &lt;code>python manager.py deploy&lt;/code>&lt;/li>
-&lt;li>在本地运行程序, &lt;code>python manager.py runserver&lt;/code>打开 http://127.0.0.1:5000 端口查看，按Ctrl+C退出程序。&lt;/li>
-&lt;li>如果在服务器运行，要保留数据，则可以复制数据库 migrations 文件夹以及数据库 data-dev.sqlite 到服务器，然后使用 &lt;code>./venv/bin/gunicorn -w 4 -b 127.0.0.1:8080 manager:app&lt;/code> 此时应该可以查看8080端口显示了网页，且该端口是暴露外网的。在本地浏览器输入服务器地址，此时就可以看到博客了。&lt;/li>
-&lt;/ol></description></item></channel></rss>
+&lt;p>主要是因为服务器上面会连接多个socket链接，如果为每一个套接字建立一个线程的话，会比较占用资源，所以需要使用epoll来优化性能。&lt;/p></description></item></channel></rss>

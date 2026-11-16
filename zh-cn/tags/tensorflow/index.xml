@@ -1,0 +1,402 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>TensorFlow on Nansen Li's Blog
+李楠森的博客</title><link>https://nansenli.com/zh-cn/tags/tensorflow/</link><description>Recent content in TensorFlow on Nansen Li's Blog
+李楠森的博客</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><copyright>Nansen Li 🌈 （李楠森）</copyright><lastBuildDate>Wed, 13 Sep 2017 10:44:00 +0000</lastBuildDate><atom:link href="https://nansenli.com/zh-cn/tags/tensorflow/index.xml" rel="self" type="application/rss+xml"/><item><title>Deepin 安装 GPU版 Tensorflow 要点</title><link>https://nansenli.com/zh-cn/post/jianshu/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/deepin-%E5%AE%89%E8%A3%85-gpu%E7%89%88-tensorflow-%E8%A6%81%E7%82%B9/</link><pubDate>Wed, 13 Sep 2017 10:44:00 +0000</pubDate><guid>https://nansenli.com/zh-cn/post/jianshu/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/deepin-%E5%AE%89%E8%A3%85-gpu%E7%89%88-tensorflow-%E8%A6%81%E7%82%B9/</guid><description>&lt;h2 id="前言">前言
+&lt;/h2>&lt;p>虽然有很多教程都给出了如何在Ubuntu上安装Tensorflow，但是却没有一篇文章讲如何在Deepin系统安装Tensorflow，这里将安装过程的几个要点讲解一下&lt;/p>
+&lt;h2 id="流程">流程
+&lt;/h2>&lt;ul>
+&lt;li>首先下载Nvidia的Linux驱动。在官网可以下载。然后运行，如果不能运行，则需要修改驱动运行权限，使用chmod u+x来添加运行权限。关于deepin安装显卡驱动，可以参考这个文章 &lt;a class="link" href="https://wiki.deepin.org/index.php?title=%E6%98%BE%E5%8D%A1" target="_blank" rel="noopener"
+>https://wiki.deepin.org/index.php?title=%E6%98%BE%E5%8D%A1&lt;/a>&lt;/li>
+&lt;li>安装Docker-ce。这里一定要遵循官方的安装方案，只此一个方法可以正常安装最新版docker。https://wiki.deepin.org/index.php?title=Docker&lt;/li>
+&lt;li>下载Nvidia-docker。在Github的Nvidia-Docker页面找到Ubuntu的安装包和安装步骤，安装即可&lt;/li>
+&lt;li>接下来运行 &lt;code>docker run -it -p 8888:8888 tensorflow/tensorflow:latest-gpu &lt;/code> 此时可以进入官方的tensorflow带GPU版本的镜像啦，打开localhost:8888可以看到jupyter的页面&lt;/li>
+&lt;/ul>
+&lt;h2 id="坑">坑
+&lt;/h2>&lt;p>在安装Nvidia显卡驱动的时候，根据安装软件的提示，需要关闭Linux的桌面系统X server，此时可以通过tty1~6来进行终端操作。但是如果Deepin已经安装了自带的Nvidia驱动，要停止lightdm服务时，在Deepin在关闭X server的同时，显示器也关闭了，无法显示tty1 ~6的屏幕，由于这个问题，导致Nvidia驱动无法安装。即使手动卸载安装的Deepin官方Nvidia驱动，经过了繁琐的卸载指令，在切换到tty1 ~6后，在关闭图形界面的时候，仍然会导致tty屏幕被关闭，黑屏一片，无法继续后面的驱动卸载和重新安装官方Nvidia驱动。&lt;/p>
+&lt;h2 id="解决方案">解决方案
+&lt;/h2>&lt;p>为了避免Nvidia驱动无法安装，又能简洁科学的操作，所以必须在第一次安装Deepin系统的时候，在未安装显卡驱动的情况下对电脑进行操作进行安装Nvidia显卡官方linux驱动，首先按下快捷键“Ctrl+Alt+F2”，进入tty2，然后输入&lt;code>sudo systemctl stop lightdm&lt;/code> 停止lightdm服务，此时电脑关闭X server的时候不会导致显示器的关闭，之后运行&lt;code>chmod u+x NVIDIA-Linux-x86_64-352.55.run&lt;/code> #赋予可执行权限 以及&lt;code>sudo ./NVIDIA-Linux-x86_64-352.55.run&lt;/code> #安装驱动文件 然后重启就可以正常的使用官方闭源驱动啦。&lt;/p>
+&lt;h2 id="后续">后续
+&lt;/h2>&lt;p>使用GPU来运行Tensorflow程序是非常快的。一般的程序可以提速10倍以上，有些程序可以提速50到100倍的速度，所以使用GPU来进行Tensorflow编程是非常有必要的。
+另外，不知道是Deepin的问题还是Nvidia-Dcoker的问题还是驱动的问题，在电脑待机之后会导致Tensorflow镜像出错，所以在训练的时候不要让机器进行待机动作。&lt;/p></description></item><item><title>TensorFlow 一个简单的入门用例</title><link>https://nansenli.com/zh-cn/post/jianshu/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/tensorflow-%E4%B8%80%E4%B8%AA%E7%AE%80%E5%8D%95%E7%9A%84%E5%85%A5%E9%97%A8%E7%94%A8%E4%BE%8B/</link><pubDate>Wed, 09 Aug 2017 07:08:00 +0000</pubDate><guid>https://nansenli.com/zh-cn/post/jianshu/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/tensorflow-%E4%B8%80%E4%B8%AA%E7%AE%80%E5%8D%95%E7%9A%84%E5%85%A5%E9%97%A8%E7%94%A8%E4%BE%8B/</guid><description>&lt;h2 id="案例">案例
+&lt;/h2>&lt;p>假如我有一系列的数据x-y，x-y之间是呈线性关系的，如果我们需要用一条直线拟合这条直线，我们该如何做？&lt;/p>
+&lt;p>下面的程序中，train_x是一系列从-1到1之间的数字，train_y是x的两倍加10，然后随机加了一个0~1之间的数字
+接下来我们建立模型，X和Y是一个待初始化的张量占位符，在优化过程中，模型中的XY会一直改变为train_x和train_y中的数据，然后优化器会进行优化，使得w斜率和b截距按照使误差减小的方向变化，这样，w和b经过迭代最终就使模型满足数据了&lt;/p>
+&lt;p>模型建立好了以后，我们开始运行模型。首先打开一个会话，然后一定要记得初始化全部变量。接下来我们对全体数据进行10次遍历，在每一次迭代过程中，将一个坐标输入，并计算误差，然后利用梯度下降更正w和b。最后，我们输出解出来的w和b。&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-gdscript3" data-lang="gdscript3">&lt;span class="line">&lt;span class="cl">&lt;span class="n">import&lt;/span> &lt;span class="n">tensorflow&lt;/span> &lt;span class="n">as&lt;/span> &lt;span class="n">tf&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">import&lt;/span> &lt;span class="n">numpy&lt;/span> &lt;span class="n">as&lt;/span> &lt;span class="n">np&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">train_x&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">np&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">linspace&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">101&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">train_y&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">2&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="n">train_x&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="n">np&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">random&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">rand&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">train_x&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">shape&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="mi">0&lt;/span>&lt;span class="p">])&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="mi">10&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">X&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">tf&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">placeholder&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;float&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">Y&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">tf&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">placeholder&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;float&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">w&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">tf&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">Variable&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mf">0.0&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">name&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="s2">&amp;#34;w&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">b&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">tf&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">Variable&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mf">0.0&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">name&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="s2">&amp;#34;b&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">loss&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">tf&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">square&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">Y&lt;/span> &lt;span class="o">-&lt;/span> &lt;span class="n">tf&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">multiply&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">X&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="n">w&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="o">-&lt;/span> &lt;span class="n">b&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">train_op&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">tf&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">train&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">GradientDescentOptimizer&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mf">0.01&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">minimize&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">loss&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">with&lt;/span> &lt;span class="n">tf&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">Session&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="n">as&lt;/span> &lt;span class="n">session&lt;/span>&lt;span class="p">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">session&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">run&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">tf&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">global_variables_initializer&lt;/span>&lt;span class="p">())&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">for&lt;/span> &lt;span class="n">i&lt;/span> &lt;span class="ow">in&lt;/span> &lt;span class="nb">range&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">10&lt;/span>&lt;span class="p">):&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">for&lt;/span> &lt;span class="n">x&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="n">y&lt;/span> &lt;span class="ow">in&lt;/span> &lt;span class="n">zip&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">train_x&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">train_y&lt;/span>&lt;span class="p">):&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">session&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">run&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">train_op&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">feed_dict&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="p">{&lt;/span>&lt;span class="n">X&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="n">x&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">Y&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="n">y&lt;/span>&lt;span class="p">})&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">print&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;w: &amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">session&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">run&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">w&lt;/span>&lt;span class="p">))&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">print&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;b: &amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">session&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">run&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">b&lt;/span>&lt;span class="p">))&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>运行效果：
+&lt;img src="http://otwwkzjm5.bkt.clouddn.com/17-8-9/99539186.jpg"
+loading="lazy"
+alt="效果"
+>&lt;/p></description></item><item><title>TensorFlow Hello World 入门</title><link>https://nansenli.com/zh-cn/post/jianshu/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/tensorflow-hello-world-%E5%85%A5%E9%97%A8/</link><pubDate>Tue, 08 Aug 2017 09:58:00 +0000</pubDate><guid>https://nansenli.com/zh-cn/post/jianshu/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/tensorflow-hello-world-%E5%85%A5%E9%97%A8/</guid><description>&lt;h2 id="快速安装教程">快速安装教程
+&lt;/h2>&lt;ul>
+&lt;li>一、安装docker&lt;/li>
+&lt;/ul>
+&lt;p>&lt;a class="link" href="https://www.docker-cn.com/community-edition#/download" target="_blank" rel="noopener"
+>https://www.docker-cn.com/community-edition#/download&lt;/a>&lt;/p>
+&lt;p>然后配置官方中国镜像。&lt;/p>
+&lt;p>&lt;img src="https://nansenli.com/img/rescued/5832fec39b1c.jpg"
+loading="lazy"
+alt="image.png"
+>&lt;/p>
+&lt;ul>
+&lt;li>二、tensorflow环境搭建&lt;/li>
+&lt;/ul>
+&lt;p>&lt;code>$ docker run -it -p 8888:8888 tensorflow/tensorflow&lt;/code>
+运行上述命令会自动下载tensorflow镜像，前提是仓库镜像设置成中国的镜像，否则下载很慢。运行命令后，命令行会出现一个网址，会提示你打开网页，打开这个网址以后会显示tensorflow的jupyter编辑环境，之后我们将在网页中输入所有代码。&lt;/p>
+&lt;ul>
+&lt;li>挂载docker的文件目录
+如果我们需要打开本地文件，需要挂载本地的文件夹到容器目录中。关闭容器，重新打开容器，使用&lt;code>-v 主机目录:容器目录&lt;/code>来进行挂载。
+&lt;code>docker run -v /Users/hahaha/tensorflow/:/notebooks -it -p 8888:8888 tensorflow/tensorflow&lt;/code>&lt;/li>
+&lt;/ul>
+&lt;p>其中/Users/hahaha/tensorflow/是我的mac的一个文件夹，根目录下的notebooks是tensorflow中的jupyter默认编辑目录。&lt;/p>
+&lt;h2 id="运行hello-world-代码">运行hello world 代码
+&lt;/h2>&lt;p>&lt;img src="https://nansenli.com/img/rescued/5f59450b005f.png"
+loading="lazy"
+alt="image.png"
+>
+新建一个Python2 Jupyter文件，在文件中输入如下的代码，然后点击播放按钮，此时在下方应该会出现一段Hello, TensorFlow!字符串。说明程序运行成功了。&lt;/p>
+&lt;h2 id="程序解释">程序解释
+&lt;/h2>&lt;p>从这段简单的代码可以了解到TensorFlow的使用非常方便，通过Python标准库的形式导入，不需要启动额外的服务。第一次接触TensorFlow可能比较疑惑，输出一段helloworld Python本身可以实现，为什么要使用tf.constant()和tf.Session()呢？其实TensorFlow通过Graph和Session来定义运行的模型和训练，这在复杂的模型和分布式训练上有非常大好处。
+首先，在TensorFlow中，有Graph和Operation这两个概念。Operation代表需要计算的内容。一个Graph中有很多Operation。通过Session来执行Graph中的Operation。&lt;/p>
+&lt;h2 id="基本使用">基本使用
+&lt;/h2>&lt;p>使用 TensorFlow, 你必须明白 TensorFlow:&lt;/p>
+&lt;ul>
+&lt;li>使用 &lt;code>图 (graph)&lt;/code> 来表示计算任务.&lt;/li>
+&lt;li>在被称之为 &lt;code>会话 (Session)&lt;/code> 的 &lt;code>上下文 (context)&lt;/code> 中执行图.&lt;/li>
+&lt;li>使用 &lt;code>tensor&lt;/code> 表示数据.&lt;/li>
+&lt;li>通过 &lt;code>变量 (Variable)&lt;/code> 维护状态.
+使用 &lt;code>feed&lt;/code> 和 &lt;code>fetch&lt;/code> 可以为&lt;code>任意的操作(arbitrary operation) &lt;/code>赋值或者从其中获取数据.&lt;/li>
+&lt;/ul>
+&lt;h2 id="综述">综述
+&lt;/h2>&lt;p>TensorFlow 是一个编程系统, 使用图来表示计算任务. 图中的节点被称之为 &lt;strong>op&lt;/strong> (operation 的缩写)。 一个 op 使用 0 个或多个 Tensor ，执行计算产生0个或多个 Tensor。 每个 Tensor 是一个类型化的多维数组。 例如，你可以将一小组图像集表示为一个四维浮点数数组，这四个维度分别是 [batch, height, width, channels]。&lt;/p>
+&lt;p>一个 TensorFlow 图 &lt;strong>描述&lt;/strong> 了计算的过程。 为了进行计算，图必须在&lt;code>会话&lt;/code> 里被启动。 &lt;code>会话&lt;/code> 将图的 op 分发到诸如 CPU 或 GPU 之类的设备上，同时提供执行 op 的方法。这些方法执行后， 将产生的 tensor 返回。 在 Python 语言中, 返回的类型是 tensor 是&lt;a class="link" href="http://www.numpy.org/" target="_blank" rel="noopener"
+>numpy&lt;/a>中的&lt;code>ndarray&lt;/code>对象。在 C 和 C++ 语言中, 返回的 tensor 是 tensorflow::Tensor
+ 实例。&lt;/p></description></item><item><title>使用Tensorflow完成Kaggle任务——泰坦尼克号Titanic: Machine Learning from Disaster</title><link>https://nansenli.com/zh-cn/post/jianshu/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E4%BD%BF%E7%94%A8tensorflow%E5%AE%8C%E6%88%90kaggle%E4%BB%BB%E5%8A%A1%E6%B3%B0%E5%9D%A6%E5%B0%BC%E5%85%8B%E5%8F%B7titanic--machine-learning-from-disaster/</link><pubDate>Fri, 04 Aug 2017 10:08:00 +0000</pubDate><guid>https://nansenli.com/zh-cn/post/jianshu/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E4%BD%BF%E7%94%A8tensorflow%E5%AE%8C%E6%88%90kaggle%E4%BB%BB%E5%8A%A1%E6%B3%B0%E5%9D%A6%E5%B0%BC%E5%85%8B%E5%8F%B7titanic--machine-learning-from-disaster/</guid><description>&lt;h2 id="引入必要库">引入必要库
+&lt;/h2>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">import csv
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">import tensorflow as tf
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">import numpy as np
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">import random
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">import sys
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">import pandas as pd
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">from pandas import DataFrame
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">from __future__ import absolute_import
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">from __future__ import division
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">from __future__ import print_function
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="读取源文件并打印">读取源文件并打印
+&lt;/h2>&lt;p>在这部分，我们接触了基本的csv操作，并显示结果。
+我们读入kaggle上下载的train.csv文件，并展示内容&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">trainFilePath = &amp;#39;./train.csv&amp;#39;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">trainSize = 0
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">def testCSV(filePath):
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> with open(filePath, &amp;#39;rb&amp;#39;) as trainFile:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> global trainSize
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> csvReader = csv.reader(trainFile)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> dataList = [data for data in csvReader]
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> df = DataFrame(dataList[1:], columns=dataList[0])
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> trainSize = len(df)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> print(df)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> print(&amp;#34;trainSize&amp;#34;, trainSize)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">testCSV(trainFilePath)
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="读取源文件并提取数据建立神经网络">读取源文件并提取数据，建立神经网络
+&lt;/h2>&lt;p>在这部分，我们读取源文件中的性别，阶级，船费以及SibSp，用于拟合最终的生存概率
+然后我们建立一个总共5层，中间3层的神经网络，神经元的个数分别是4-10-20-10-2。
+然后运行读取函数。&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;span class="lnt">30
+&lt;/span>&lt;span class="lnt">31
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">def readTrainDataCSV(filePath):
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> global trainData, targetData, classifier
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> with open(filePath, &amp;#39;rb&amp;#39;) as trainFile:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> csvReader = csv.reader(trainFile)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> dataList = [data for data in csvReader]
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> dataSize = len(dataList) - 1
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> trainData = np.ndarray((dataSize, 4), dtype=np.float32)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> targetData = np.ndarray((dataSize, 1), dtype=np.int32)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> trainDataFrame = DataFrame(dataList[1:], columns=dataList[0])
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> trainDataFrame_fliter = trainDataFrame.loc[:,[&amp;#39;Pclass&amp;#39;,&amp;#39;Sex&amp;#39;,&amp;#39;SibSp&amp;#39;,&amp;#39;Fare&amp;#39;,&amp;#39;Survived&amp;#39;]]
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> for i in range(dataSize):
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> thisData = np.array(trainDataFrame_fliter.iloc[i])
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> Pclass,Sex,SibSp,Fare,Survived = thisData
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> Pclass = float(Pclass)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> Sex = 0 if Sex == &amp;#39;female&amp;#39; else 1
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> SibSp = float(SibSp)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> Fare = float(Fare)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> Survived = int(Survived)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> print(Pclass,Sex,SibSp,Fare,Survived)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> trainData[i,:] = [Pclass,Sex,SibSp,Fare]
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> targetData[i,:] = [Survived]
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> print(thisData)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> print(trainData)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> print(targetData)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> feature_columns = [tf.contrib.layers.real_valued_column(&amp;#34;&amp;#34;, dimension=4)]
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> classifier = tf.contrib.learn.DNNClassifier(feature_columns=feature_columns,
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> hidden_units=[10, 20, 10],
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> n_classes=2)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"># model_dir=&amp;#34;/tmp/titanic_model&amp;#34;)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">readTrainDataCSV(trainFilePath)
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="创建输入数据">创建输入数据
+&lt;/h2>&lt;p>我们将训练数据和标签包装成一个二元组，并返回&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;span class="lnt">8
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-gdscript3" data-lang="gdscript3">&lt;span class="line">&lt;span class="cl">&lt;span class="k">def&lt;/span> &lt;span class="nf">get_train_inputs&lt;/span>&lt;span class="p">():&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">x&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">tf&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">constant&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">trainData&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">y&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">tf&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">constant&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">targetData&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">print&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">x&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">print&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">y&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="n">x&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">y&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">get_train_inputs&lt;/span>&lt;span class="p">()&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="训练数据">训练数据
+&lt;/h2>&lt;p>我们开始训练神经网络&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">def train():
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> classifier.fit(input_fn=get_train_inputs, steps=2000)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">train()
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="检查准确度">检查准确度
+&lt;/h2>&lt;p>我们使用整个数据集来查看准确度。注意，我们应该使用验证集来完成这件事。但是由于我们只是用来演示，所以就算了&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">accuracy_score = classifier.evaluate(input_fn=get_train_inputs,
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> steps=1)[&amp;#34;accuracy&amp;#34;]
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">print(&amp;#34;accuracy:&amp;#34;,accuracy_score)
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="读入测试集并输出结果">读入测试集，并输出结果
+&lt;/h2>&lt;p>在这一部分，我们将读入kaggle中的数据，并输出到文件中，最终提交官网&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;span class="lnt">30
+&lt;/span>&lt;span class="lnt">31
+&lt;/span>&lt;span class="lnt">32
+&lt;/span>&lt;span class="lnt">33
+&lt;/span>&lt;span class="lnt">34
+&lt;/span>&lt;span class="lnt">35
+&lt;/span>&lt;span class="lnt">36
+&lt;/span>&lt;span class="lnt">37
+&lt;/span>&lt;span class="lnt">38
+&lt;/span>&lt;span class="lnt">39
+&lt;/span>&lt;span class="lnt">40
+&lt;/span>&lt;span class="lnt">41
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">testFilePath = &amp;#39;./test.csv&amp;#39;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">def readTestDataCSV(filePath):
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> global testData, PassengerIdStart
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> with open(filePath, &amp;#39;rb&amp;#39;) as testFile:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> csvReader = csv.reader(testFile)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> dataList = [data for data in csvReader]
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> dataSize = len(dataList)-1
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> trainDataFrame = DataFrame(dataList[1:], columns=dataList[0])
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> trainDataFrame_fliter = trainDataFrame.loc[:,[&amp;#39;Pclass&amp;#39;,&amp;#39;Sex&amp;#39;,&amp;#39;SibSp&amp;#39;,&amp;#39;Fare&amp;#39;]]
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> testData = np.ndarray((dataSize, 4), dtype=np.float32)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> PassengerIdStart = trainDataFrame[&amp;#39;PassengerId&amp;#39;][0]
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> PassengerIdStart = int(PassengerIdStart)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> print(&amp;#39;PassengerId&amp;#39;,PassengerIdStart)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> for i in range(dataSize):
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> thisData = np.array(trainDataFrame_fliter.iloc[i])
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> Pclass,Sex,SibSp,Fare = thisData
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> Pclass = float(Pclass)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> Sex = 0 if Sex == &amp;#39;female&amp;#39; else 1
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> SibSp = float(SibSp)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> Fare = 0 if Fare==&amp;#39;&amp;#39; else float(Fare)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> print(Pclass,Sex,SibSp,Fare)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> testData[i,:] = [Pclass,Sex,SibSp,Fare]
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> print(thisData)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> print(testData)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">def testData_samples():
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> return testData
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">readTestDataCSV(testFilePath)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">predictions = list(classifier.predict(input_fn=testData_samples))
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">print(predictions)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">with open(&amp;#39;predictions.csv&amp;#39;, &amp;#39;wb&amp;#39;) as csvfile:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> writer = csv.writer(csvfile, dialect=&amp;#39;excel&amp;#39;)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> writer.writerow([&amp;#39;PassengerId&amp;#39;,&amp;#39;Survived&amp;#39;])
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> PassengerId = PassengerIdStart
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> for i in predictions:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> writer.writerow([PassengerId, i])
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> PassengerId += 1
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>最终在只使用了4个特征值的情况下，准确率有75%。接下来的目标是将其他数据进行利用。&lt;/p></description></item></channel></rss>

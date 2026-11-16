@@ -1,0 +1,448 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Backend &amp; Ops on Nansen Li's Blog
+李楠森的博客</title><link>https://nansenli.com/categories/backend--ops/</link><description>Recent content in Backend &amp; Ops on Nansen Li's Blog
+李楠森的博客</description><generator>Hugo -- gohugo.io</generator><language>en</language><copyright>Nansen Li 🌈 （李楠森）</copyright><lastBuildDate>Sun, 20 Jun 2021 12:21:00 +0000</lastBuildDate><atom:link href="https://nansenli.com/categories/backend--ops/index.xml" rel="self" type="application/rss+xml"/><item><title>Classic Kubernetes Installation Process</title><link>https://nansenli.com/post/jianshu/k8s/k8s%E7%BB%8F%E5%85%B8%E5%AE%89%E8%A3%85%E6%B5%81%E7%A8%8B/</link><pubDate>Sun, 20 Jun 2021 12:21:00 +0000</pubDate><guid>https://nansenli.com/post/jianshu/k8s/k8s%E7%BB%8F%E5%85%B8%E5%AE%89%E8%A3%85%E6%B5%81%E7%A8%8B/</guid><description>&lt;h1 id="run-on-all-machines">Run on All Machines
+&lt;/h1>&lt;p>All machines are running Debian.
+First, install Docker:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;span class="lnt">30
+&lt;/span>&lt;span class="lnt">31
+&lt;/span>&lt;span class="lnt">32
+&lt;/span>&lt;span class="lnt">33
+&lt;/span>&lt;span class="lnt">34
+&lt;/span>&lt;span class="lnt">35
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-gdscript3" data-lang="gdscript3">&lt;span class="line">&lt;span class="cl"> &lt;span class="n">sudo&lt;/span> &lt;span class="n">apt&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">get&lt;/span> &lt;span class="n">update&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">sudo&lt;/span> &lt;span class="n">apt&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">get&lt;/span> &lt;span class="n">install&lt;/span> &lt;span class="o">-&lt;/span>&lt;span class="n">y&lt;/span> \
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">apt&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">transport&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">https&lt;/span> \
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">ca&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">certificates&lt;/span> \
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">curl&lt;/span> \
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">gnupg&lt;/span> \
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">lsb&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">release&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">curl&lt;/span> &lt;span class="o">-&lt;/span>&lt;span class="n">fsSL&lt;/span> &lt;span class="n">https&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="o">//&lt;/span>&lt;span class="n">download&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">docker&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">com&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">linux&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">debian&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">gpg&lt;/span> &lt;span class="o">|&lt;/span> &lt;span class="n">sudo&lt;/span> &lt;span class="n">gpg&lt;/span> &lt;span class="o">--&lt;/span>&lt;span class="n">dearmor&lt;/span> &lt;span class="o">-&lt;/span>&lt;span class="n">o&lt;/span> &lt;span class="o">/&lt;/span>&lt;span class="n">usr&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">share&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">keyrings&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">docker&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">archive&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">keyring&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">gpg&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">echo&lt;/span> \
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/debian &lt;/span>&lt;span class="se">\
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="se">&lt;/span>&lt;span class="s2"> $(lsb_release -cs) stable&amp;#34;&lt;/span> &lt;span class="o">|&lt;/span> &lt;span class="n">sudo&lt;/span> &lt;span class="n">tee&lt;/span> &lt;span class="o">/&lt;/span>&lt;span class="n">etc&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">apt&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">sources&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">list&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">d&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">docker&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">list&lt;/span> &lt;span class="o">&amp;gt;&lt;/span> &lt;span class="o">/&lt;/span>&lt;span class="n">dev&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">null&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">sudo&lt;/span> &lt;span class="n">apt&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">get&lt;/span> &lt;span class="n">update&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">sudo&lt;/span> &lt;span class="n">apt&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">get&lt;/span> &lt;span class="n">install&lt;/span> &lt;span class="o">-&lt;/span>&lt;span class="n">y&lt;/span> &lt;span class="n">docker&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">ce&lt;/span> &lt;span class="n">docker&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">ce&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">cli&lt;/span> &lt;span class="n">containerd&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">io&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">sudo&lt;/span> &lt;span class="n">mkdir&lt;/span> &lt;span class="o">/&lt;/span>&lt;span class="n">etc&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">docker&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">cat&lt;/span> &lt;span class="o">&amp;lt;&amp;lt;&lt;/span>&lt;span class="n">EOF&lt;/span> &lt;span class="o">|&lt;/span> &lt;span class="n">sudo&lt;/span> &lt;span class="n">tee&lt;/span> &lt;span class="o">/&lt;/span>&lt;span class="n">etc&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">docker&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">daemon&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">json&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;exec-opts&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="p">[&lt;/span>&lt;span class="s2">&amp;#34;native.cgroupdriver=systemd&amp;#34;&lt;/span>&lt;span class="p">],&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;log-driver&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;json-file&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;log-opts&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;max-size&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;100m&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">},&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;storage-driver&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;overlay2&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">EOF&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">sudo&lt;/span> &lt;span class="n">usermod&lt;/span> &lt;span class="o">-&lt;/span>&lt;span class="n">aG&lt;/span> &lt;span class="n">docker&lt;/span> &lt;span class="o">$&lt;/span>&lt;span class="p">{&lt;/span>&lt;span class="n">USER&lt;/span>&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">sudo&lt;/span> &lt;span class="n">systemctl&lt;/span> &lt;span class="n">restart&lt;/span> &lt;span class="n">docker&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">sudo&lt;/span> &lt;span class="n">su&lt;/span> &lt;span class="o">$&lt;/span>&lt;span class="p">{&lt;/span>&lt;span class="n">USER&lt;/span>&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>At this point, running &lt;code>docker ps -a&lt;/code> should work without errors, indicating Docker was installed successfully.&lt;/p>
+&lt;p>Next, install Kubernetes components:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-gdscript3" data-lang="gdscript3">&lt;span class="line">&lt;span class="cl">&lt;span class="n">cat&lt;/span> &lt;span class="o">&amp;lt;&amp;lt;&lt;/span>&lt;span class="n">EOF&lt;/span> &lt;span class="o">|&lt;/span> &lt;span class="n">sudo&lt;/span> &lt;span class="n">tee&lt;/span> &lt;span class="o">/&lt;/span>&lt;span class="n">etc&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">modules&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="nb">load&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">d&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">k8s&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">conf&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">br_netfilter&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">EOF&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">cat&lt;/span> &lt;span class="o">&amp;lt;&amp;lt;&lt;/span>&lt;span class="n">EOF&lt;/span> &lt;span class="o">|&lt;/span> &lt;span class="n">sudo&lt;/span> &lt;span class="n">tee&lt;/span> &lt;span class="o">/&lt;/span>&lt;span class="n">etc&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">sysctl&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">d&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">k8s&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">conf&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">net&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">bridge&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">bridge&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">nf&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">call&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">ip6tables&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">1&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">net&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">bridge&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">bridge&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">nf&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">call&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">iptables&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">1&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">EOF&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">sudo&lt;/span> &lt;span class="n">sysctl&lt;/span> &lt;span class="o">--&lt;/span>&lt;span class="n">system&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">sudo&lt;/span> &lt;span class="n">apt&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">get&lt;/span> &lt;span class="n">update&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">sudo&lt;/span> &lt;span class="n">apt&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">get&lt;/span> &lt;span class="n">install&lt;/span> &lt;span class="o">-&lt;/span>&lt;span class="n">y&lt;/span> &lt;span class="n">apt&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">transport&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">https&lt;/span> &lt;span class="n">ca&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">certificates&lt;/span> &lt;span class="n">curl&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">sudo&lt;/span> &lt;span class="n">curl&lt;/span> &lt;span class="o">-&lt;/span>&lt;span class="n">fsSLo&lt;/span> &lt;span class="o">/&lt;/span>&lt;span class="n">usr&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">share&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">keyrings&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">kubernetes&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">archive&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">keyring&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">gpg&lt;/span> &lt;span class="n">https&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="o">//&lt;/span>&lt;span class="n">packages&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">cloud&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">google&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">com&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">apt&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">doc&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">apt&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">key&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">gpg&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">echo&lt;/span> &lt;span class="s2">&amp;#34;deb [signed-by=/usr/share/keyrings/kubernetes-archive-keyring.gpg] https://apt.kubernetes.io/ kubernetes-xenial main&amp;#34;&lt;/span> &lt;span class="o">|&lt;/span> &lt;span class="n">sudo&lt;/span> &lt;span class="n">tee&lt;/span> &lt;span class="o">/&lt;/span>&lt;span class="n">etc&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">apt&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">sources&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">list&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">d&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">kubernetes&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">list&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">sudo&lt;/span> &lt;span class="n">apt&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">get&lt;/span> &lt;span class="n">update&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">sudo&lt;/span> &lt;span class="n">apt&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">get&lt;/span> &lt;span class="n">install&lt;/span> &lt;span class="o">-&lt;/span>&lt;span class="n">y&lt;/span> &lt;span class="n">kubelet&lt;/span> &lt;span class="n">kubeadm&lt;/span> &lt;span class="n">kubectl&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">sudo&lt;/span> &lt;span class="n">apt&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">mark&lt;/span> &lt;span class="n">hold&lt;/span> &lt;span class="n">kubelet&lt;/span> &lt;span class="n">kubeadm&lt;/span> &lt;span class="n">kubectl&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h1 id="run-on-the-master-node">Run on the Master Node
+&lt;/h1>&lt;p>Initialize the control plane:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">sudo kubeadm init --apiserver-advertise-address masterip --control-plane-endpoint masterdns --pod-network-cidr 10.244.0.0/16
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>Save the last part of the output for later use, including instructions on how to configure .kube and the join command for nodes. Follow the instructions to configure the .kube file.&lt;/p>
+&lt;p>Then initialize the network plugin:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">wget https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">kubectl apply -f kube-flannel.yml
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>Check if pods are running properly:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">kubectl get pods -A
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>On another node, install Kubernetes components, then run the join command. This command is printed at the end of the kubeadm init process.&lt;/p>
+&lt;p>Afterwards, check if the pods are running properly.&lt;/p>
+&lt;p>Download the dashboard:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">wget https://raw.githubusercontent.com/kubernetes/dashboard/v2.2.0/aio/deploy/recommended.yaml -o dashboard.yaml
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>Edit dashboard.yaml:
+Add nodePort: 31001 below port 8443, and change the type to NodePort above it. Find the namespace= line and add a line below it: - &amp;ndash;token-ttl=43200
+For details, refer to:
+&lt;a class="link" href="https://www.huaweicloud.com/articles/dc1dcb0c48cc785a9193c9ce709c8b35.html" target="_blank" rel="noopener"
+>https://www.huaweicloud.com/articles/dc1dcb0c48cc785a9193c9ce709c8b35.html&lt;/a>&lt;/p>
+&lt;p>Create an admin role:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">kubectl create -f https://raw.githubusercontent.com/rootsongjc/kubernetes-handbook/master/manifests/dashboard-1.7.1/admin-role.yaml
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>Apply the pod:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">kubectl apply -f dashboard.yaml
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>Check the port:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">sudo lsof -i:31001
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>Get the token:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">kubectl -n kube-system describe secret $(kubectl -n kube-system get secret | grep admin-token | awk &amp;#39;{print $1}&amp;#39;)
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>Visit https://masterip:31001 and enter &amp;rsquo;thisisunsafe&amp;rsquo; in Chrome, then input the token.&lt;/p>
+&lt;p>&lt;img src="https://nansenli.com/img/rescued/6e04c88e778d.png"
+loading="lazy"
+alt="dashboard"
+>&lt;/p></description></item><item><title>Redis Cluster Learning</title><link>https://nansenli.com/post/jianshu/%E6%95%B0%E6%8D%AE%E5%BA%93/redis-%E9%9B%86%E7%BE%A4%E5%AD%A6%E4%B9%A0/</link><pubDate>Sun, 02 Sep 2018 14:25:00 +0000</pubDate><guid>https://nansenli.com/post/jianshu/%E6%95%B0%E6%8D%AE%E5%BA%93/redis-%E9%9B%86%E7%BE%A4%E5%AD%A6%E4%B9%A0/</guid><description>&lt;h2 id="introduction">Introduction
+&lt;/h2>&lt;p>Let&amp;rsquo;s review the key concepts of Redis clusters:&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>Configuration&lt;/p>
+&lt;ul>
+&lt;li>A Redis database system has one master database and multiple slave databases&lt;/li>
+&lt;li>The master database doesn&amp;rsquo;t require any special configuration; slave databases just need to add &amp;ndash;slaveof ip port to their configuration&lt;/li>
+&lt;li>Slave databases are read-only by default, and even if changed to writable, it has no practical use&lt;/li>
+&lt;li>Besides adding to the configuration file, you can also use the slaveof command at runtime to modify the master database&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>Persistence Review&lt;/p>
+&lt;ul>
+&lt;li>RDB: This method forks the Redis process, the child process writes memory to a file, then replaces the previous RDB snapshot&lt;/li>
+&lt;li>AOF: This method writes every command to a file. When the AOF file gets too large, it needs to be rewritten after a certain number of commands are appended because some commands are redundant. File writing is cached by the operating system and can be configured. Without configuration, data is written to disk every 30s. You can configure it to synchronize the cache with each command or once per second.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;h2 id="principles">Principles
+&lt;/h2>&lt;ul>
+&lt;li>Initialization Replication
+&lt;ul>
+&lt;li>
+&lt;ol>
+&lt;li>When a slave database starts, it sends a SYNC command to the master database&lt;/li>
+&lt;/ol>
+&lt;/li>
+&lt;li>
+&lt;ol start="2">
+&lt;li>The master database performs a snapshot save, caches commands during the snapshot, then sends both the snapshot and the commands to the slave database&lt;/li>
+&lt;/ol>
+&lt;/li>
+&lt;li>
+&lt;ol start="3">
+&lt;li>If disconnected, Redis versions 2.6 and earlier would re-initialize replication. Redis 2.8 and later can just transmit commands during the disconnection period.&lt;/li>
+&lt;/ol>
+&lt;/li>
+&lt;li>
+&lt;ol start="4">
+&lt;li>The slave database replaces the temporary snapshot with the RDB snapshot file specified in the configuration. Subsequent operations are consistent with the RDB persistence recovery process.&lt;/li>
+&lt;/ol>
+&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>Replication Synchronization
+&lt;ul>
+&lt;li>Afterward, the master database sends commands that cause database changes to the slave database&lt;/li>
+&lt;li>Redis uses optimistic replication strategy, with a window of inconsistency. The master database can be configured to be writable when there are multiple database connections, as well as the maximum allowed disconnection time for databases. This can reduce data inconsistency issues to some extent.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;h2 id="readwrite-separation-for-performance-improvement">Read/Write Separation for Performance Improvement
+&lt;/h2>&lt;p>Some time-consuming read operations can be accelerated by establishing multiple database slave nodes through replication&lt;/p>
+&lt;h2 id="slave-database-persistence">Slave Database Persistence
+&lt;/h2>&lt;p>When using slave databases, the master database&amp;rsquo;s persistence can be disabled. However, when the master database crashes, a role switch between master and slave databases is needed to recover the master database&amp;rsquo;s content. The slave database uses &amp;ldquo;slaveof no one&amp;rdquo;, and the master database uses the slaveof command to set itself as a slave database.&lt;/p>
+&lt;p>In this case, if the master database crashes, it cannot be restarted immediately. Because if restarted immediately, since the master database has no persistence, it would clear the content in the slave database.&lt;/p>
+&lt;h2 id="diskless-replication">Diskless Replication
+&lt;/h2>&lt;p>Master-slave replication can use RDB persistence for initialization synchronization.
+When the master database disables RDB snapshots but performs initialization replication, it will still generate an RDB snapshot. At this point, when the master database restarts, it will use the RDB snapshot for recovery. Since the synchronization time point is uncertain, and initialization synchronization may not have happened for a long time, this could lead to recovery at an arbitrary time point.&lt;/p>
+&lt;p>Additionally, creating an RDB snapshot during initialization synchronization requires disk operations, which may affect synchronization efficiency if the disk is too slow.&lt;/p>
+&lt;p>Starting from Redis 2.8.18, Redis introduced diskless replication. When this option is enabled, initialization replication will no longer create an RDB snapshot but will send the RDB snapshot content directly over the network.&lt;/p>
+&lt;h2 id="incremental-replication">Incremental Replication
+&lt;/h2>&lt;p>If the master and slave databases disconnect, using initialization replication for the next reconnection would be quite expensive.&lt;/p>
+&lt;ul>
+&lt;li>Databases generate a unique ID each time they run.&lt;/li>
+&lt;li>During the replication synchronization phase, the master database places each command in a replay log and records the current command&amp;rsquo;s offset.&lt;/li>
+&lt;li>The slave database also needs to record the command offset when receiving commands.&lt;/li>
+&lt;li>When the master-slave connection is ready, the slave database sends psync to tell the master database it can use incremental replication.&lt;/li>
+&lt;li>The master database checks if the ID sent by the slave database matches its own. If not, the master database may have restarted.&lt;/li>
+&lt;li>Then it checks if the slave database&amp;rsquo;s command offset is in the backlog replay log. If so, it sends the commands from the replay log to the slave database.&lt;/li>
+&lt;li>The backlog size can be configured, with a default of 1MB. A larger size allows for better tolerance after disconnection and reconnection.&lt;/li>
+&lt;/ul>
+&lt;h2 id="sentinel">Sentinel
+&lt;/h2>&lt;p>The sentinel system was created to solve the inconvenience of maintaining master-slave databases. Previously, there were two problems: inability to detect when the master database goes down, and the master-slave conversion issue after the master database fails.&lt;/p>
+&lt;p>When a sentinel process starts, it reads the configuration file. The configuration file includes master-name, ip, and port. When the master node fails, the sentinel will automatically convert one of the slave nodes to become the master node. When the previous master node recovers, it automatically becomes a slave node.&lt;/p>
+&lt;p>After the sentinel starts, it will periodically perform the following three operations:&lt;/p>
+&lt;ul>
+&lt;li>Send INFO to master and slave every 10 seconds&lt;/li>
+&lt;li>Send its own information to the &lt;code>__sentinel__:hello&lt;/code> channel of master and slave every 2 seconds&lt;/li>
+&lt;li>Send PING to master database, slave database, and other sentinels every 1 second&lt;/li>
+&lt;/ul>
+&lt;p>INFO information allows the sentinel to obtain relevant information about the current database. Sending INFO to the master can obtain its slave databases.
+By sending its information to the channel, all sentinels can receive information about other sentinels monitoring the same database.
+Sentinels establish connections with each other to send ping information.
+When a sentinel sends a ping command and receives no reply, it will consider the target subjectively down. If a master database is found to be subjectively down, the sentinel will ask other sentinels if they also consider it subjectively down. When a certain number is reached, exceeding the quorum set in the sentinel startup parameters, the sentinel considers it objectively down.&lt;/p>
+&lt;p>RAFT Election:&lt;/p>
+&lt;ul>
+&lt;li>Sentinel A, which discovered the master database to be objectively down, sends a command to other sentinels requesting to be elected as the leader sentinel.&lt;/li>
+&lt;li>If the requested sentinel hasn&amp;rsquo;t voted for anyone else, it will agree.&lt;/li>
+&lt;li>If A finds that the number of agreements exceeds half of the sentinel count and the quorum parameter, then A becomes the leader sentinel.&lt;/li>
+&lt;li>Otherwise, A waits a random time and reinitiates the request for the next round of elections.&lt;/li>
+&lt;/ul>
+&lt;p>The leader sentinel will perform the following operations:&lt;/p>
+&lt;ul>
+&lt;li>Check the priority of slave databases; higher priority ones are chosen&lt;/li>
+&lt;li>Check the replication command offset of slave databases; those with larger offsets are chosen&lt;/li>
+&lt;li>Choose the slave database with the smaller ID&lt;/li>
+&lt;/ul>
+&lt;p>The selected database will receive a &amp;ldquo;slaveof no one&amp;rdquo; command from the leader sentinel to become the master database, and other slave databases will receive slaveof commands to change their master database. Finally, the internal record is updated to mark the stopped database as a slave of the master database, so when it resumes service, it will recover as a slave database.&lt;/p>
+&lt;h2 id="deployment">Deployment
+&lt;/h2>&lt;p>Sentinels are typically deployed on each node. If the Redis cluster is very large, the number of connections between all sentinels and a slave database might be too many, affecting Redis&amp;rsquo;s response to all sentinels. Therefore, the number of deployed sentinels should not be too high.&lt;/p>
+&lt;h2 id="cluster">Cluster
+&lt;/h2>&lt;p>For horizontal scaling, I became familiar with Codis during my internship at Tencent. Codis consists of Redis proxies and slave nodes. The main principle is to hash the keys and place them in specific Redis slaves. During script execution, scripts are allocated to specific slaves, which might lead to situations where other keys cannot be found.&lt;/p>
+&lt;p>Besides Codis, there&amp;rsquo;s also Redis Cluster.&lt;/p>
+&lt;p>When starting a Redis instance, change cluster-enables to yes in the configuration to enable cluster configuration.&lt;/p>
+&lt;p>Scripts can be used to conveniently create clusters. New nodes can be added using the cluster meet command with IP and port. After adding a new node, the node will use the gossip protocol to broadcast the node&amp;rsquo;s information to all nodes.&lt;/p>
+&lt;p>Slot allocation: After a new node joins the cluster, it has two options: either use the cluster replicate command to replicate each master database and run as a slave database, or request slot allocation from the cluster to run as a master database.&lt;/p>
+&lt;p>Keys are hashed using crc16. If {*} exists, that part is used for hashing, and then assigned to one of the 16384 slots. The cluster has a slot mapping table at the beginning of creation. Eventually, the data will be stored in the corresponding Redis node.&lt;/p></description></item><item><title>Solving Incorrect Network Card IP Issues When Building Cross-Provider Kubernetes Clusters on Tencent Cloud</title><link>https://nansenli.com/post/jianshu/k8s/%E8%A7%A3%E5%86%B3%E8%85%BE%E8%AE%AF%E4%BA%91%E6%9C%8D%E5%8A%A1%E5%99%A8%E8%B7%A8%E8%BF%90%E8%90%A5%E5%95%86%E6%90%AD%E5%BB%BAk8s%E9%9B%86%E7%BE%A4%E7%BD%91%E5%8D%A1ip%E4%B8%8D%E6%AD%A3%E7%A1%AE%E7%9A%84%E9%97%AE%E9%A2%98/</link><pubDate>Sun, 22 Jul 2018 13:40:00 +0000</pubDate><guid>https://nansenli.com/post/jianshu/k8s/%E8%A7%A3%E5%86%B3%E8%85%BE%E8%AE%AF%E4%BA%91%E6%9C%8D%E5%8A%A1%E5%99%A8%E8%B7%A8%E8%BF%90%E8%90%A5%E5%95%86%E6%90%AD%E5%BB%BAk8s%E9%9B%86%E7%BE%A4%E7%BD%91%E5%8D%A1ip%E4%B8%8D%E6%AD%A3%E7%A1%AE%E7%9A%84%E9%97%AE%E9%A2%98/</guid><description>&lt;p>Kubernetes requires fully connected networks for all nodes, so each node should have an accessible IP address. Although each node has a public IP, Tencent Cloud machines don&amp;rsquo;t show this IP on the network card. This causes nodes to use their network card IP when joining the cluster, making it impossible for other nodes to find them using this IP.&lt;/p>
+&lt;p>To make the IP visible on the network card, you need to enable Tencent Cloud&amp;rsquo;s EIP direct pass-through feature. Note that the official script has issues with Debian 10 and doesn&amp;rsquo;t properly auto-start. The following changes are required:&lt;/p>
+&lt;p>Add &lt;code>/etc/rc.d/rc.local&lt;/code> to the final line of &lt;code>/etc/rc.local&lt;/code>&lt;/p>
+&lt;p>Although Tencent Cloud&amp;rsquo;s Debian 10 will start &lt;code>/etc/rc.local&lt;/code> at boot, it won&amp;rsquo;t start &lt;code>/etc/rc.d/rc.local&lt;/code>, but the provided script writes to the latter.&lt;/p>
+&lt;p>Reference documentation: &lt;a class="link" href="https://cloud.tencent.com/document/product/1199/41709" target="_blank" rel="noopener"
+>https://cloud.tencent.com/document/product/1199/41709&lt;/a>&lt;/p></description></item><item><title>MySQL Study Notes</title><link>https://nansenli.com/post/jianshu/%E6%95%B0%E6%8D%AE%E5%BA%93/mysql%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/</link><pubDate>Mon, 05 Mar 2018 07:04:00 +0000</pubDate><guid>https://nansenli.com/post/jianshu/%E6%95%B0%E6%8D%AE%E5%BA%93/mysql%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/</guid><description>&lt;h2 id="introduction">Introduction
+&lt;/h2>&lt;p>I&amp;rsquo;m using Docker for learning. I&amp;rsquo;ve configured the docker-cn mirror.&lt;/p>
+&lt;h2 id="setting-up-a-mysql-cluster">Setting Up a MySQL Cluster
+&lt;/h2>&lt;p>Use the following command to pull the MySQL image:&lt;/p>
+&lt;pre>&lt;code>docker pull mysql
+&lt;/code>&lt;/pre>
+&lt;p>Use the following commands to set up one master and one slave:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">docker run --name mysql-master -P -d -e MYSQL_ROOT_PASSWORD=ln mysql
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">docker run --name mysql-slave1 -P -d -e MYSQL_ROOT_PASSWORD=ln mysql
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>Where -d configures it as a daemon process, -P exposes all ports, and the root password is set to &amp;ldquo;ln&amp;rdquo;.&lt;/p>
+&lt;p>Use the following commands to enter the two Docker containers:&lt;/p>
+&lt;pre>&lt;code>docker exec -it mysql-master bash
+docker exec -it mysql-slave1 bash
+&lt;/code>&lt;/pre>
+&lt;p>Check the network IP. First, we need to install net-tools, which requires an update, and before updating, we need to change the source:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-gdscript3" data-lang="gdscript3">&lt;span class="line">&lt;span class="cl">&lt;span class="n">sed&lt;/span> &lt;span class="o">-&lt;/span>&lt;span class="n">i&lt;/span> &lt;span class="s1">&amp;#39;s/deb.debian.org/mirrors.ustc.edu.cn/g&amp;#39;&lt;/span> &lt;span class="o">/&lt;/span>&lt;span class="n">etc&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">apt&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">sources&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">list&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">apt&lt;/span> &lt;span class="n">update&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">apt&lt;/span> &lt;span class="n">install&lt;/span> &lt;span class="n">net&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">tools&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>Enter ifconfig to check the IP address.
+The master is 172.17.0.2, and slave1 is 172.17.0.3.&lt;/p>
+&lt;p>Set login permissions
+In the MySQL master, follow these steps. First login, then set the root user to be accessible without a password from anywhere.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">mysql -uroot -p
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">mysql&amp;gt; grant all privileges on *.* to root@&amp;#39;%&amp;#39; identified by &amp;#39;&amp;#39;;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Query OK, 0 rows affected (0.02 sec)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">mysql&amp;gt; flush privileges;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Query OK, 0 rows affected (0.02 sec)
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>In slave1, use the master&amp;rsquo;s database with an empty password:&lt;/p>
+&lt;pre>&lt;code>mysql -uroot -p -h 172.17.0.2
+&lt;/code>&lt;/pre>
+&lt;p>Create a database in the master:&lt;/p>
+&lt;pre>&lt;code>create database test_docker;
+&lt;/code>&lt;/pre>
+&lt;p>Check if the database exists in the slave:&lt;/p>
+&lt;pre>&lt;code>show databases;
+&lt;/code>&lt;/pre>
+&lt;h2 id="miscellaneous">Miscellaneous
+&lt;/h2>&lt;p>SQL is case-insensitive; SELECT and select are the same.
+It&amp;rsquo;s better to add a semicolon at the end of SQL statements.
+Use &amp;ldquo;use&amp;rdquo; to select a database. Use &amp;ldquo;set&amp;rdquo; to set values.
+The method to add users is with &amp;ldquo;create&amp;rdquo;.
+Then grant permissions to users for databases and tables.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">mysql -u root -p
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Enter password:**
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">mysql&amp;gt; use mysql;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">mysql&amp;gt; create user &amp;#39;linanwx&amp;#39;@&amp;#39;%&amp;#39; identified by &amp;#39;ln&amp;#39;;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">mysql&amp;gt; grant all on *.* to &amp;#39;linanwx&amp;#39;@&amp;#39;%&amp;#39;;
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>SHOW DATABASES is used to display the current databases.
+SHOW TABLES is used to display the current tables.&lt;/p></description></item><item><title>Nowcoder Database Notes</title><link>https://nansenli.com/post/jianshu/%E6%95%B0%E6%8D%AE%E5%BA%93/%E7%89%9B%E5%AE%A2%E6%95%B0%E6%8D%AE%E5%BA%93%E7%AC%94%E8%AE%B0/</link><pubDate>Mon, 05 Mar 2018 07:04:00 +0000</pubDate><guid>https://nansenli.com/post/jianshu/%E6%95%B0%E6%8D%AE%E5%BA%93/%E7%89%9B%E5%AE%A2%E6%95%B0%E6%8D%AE%E5%BA%93%E7%AC%94%E8%AE%B0/</guid><description>&lt;h2 id="introduction">Introduction
+&lt;/h2>&lt;p>I&amp;rsquo;m not familiar with SQL but don&amp;rsquo;t want to spend time learning it. So let&amp;rsquo;s learn through practice.&lt;/p>
+&lt;h2 id="transactions">Transactions
+&lt;/h2>&lt;p>A transaction is the basic unit of concurrency control. A transaction is a sequence of operations that must either all be executed or none at all; it&amp;rsquo;s an indivisible work unit. For example, in bank transfers: debiting one account and crediting another account are two operations that must either both be executed or neither. Therefore, they should be considered as one transaction. Transactions are the unit by which databases maintain data consistency, ensuring data consistency at the end of each transaction.&lt;/p>
+&lt;p>In simple terms, a transaction is an atomic operation that cannot be divided.&lt;/p>
+&lt;h2 id="views">Views
+&lt;/h2>&lt;p>A view is a virtual table that doesn&amp;rsquo;t actually exist. It&amp;rsquo;s just a partial table extracted from the database to make it convenient for certain people to see. Views are defined by select queries—when you create a view, you&amp;rsquo;re actually executing a select statement in the database.&lt;/p>
+&lt;h2 id="instead-of-triggers">INSTEAD OF Triggers
+&lt;/h2>&lt;ul>
+&lt;li>Definition of Triggers
+Triggers are actually a special type of stored procedure. The main function of triggers is to monitor user modifications to data. If a trigger is built for a data table, then when the data table is modified (insert, update, or delete), SQL Server automatically executes the trigger to take appropriate measures for the data modification, thereby ensuring data integrity and security.&lt;/li>
+&lt;/ul>
+&lt;p>INSTEAD OF triggers specify that the trigger is executed instead of the triggering SQL statement, thus replacing the operation of the triggering statement.&lt;/p>
+&lt;h2 id="stored-procedures">Stored Procedures
+&lt;/h2>&lt;p>A stored procedure is a group of SQL statements in a database designed to accomplish a specific function. It&amp;rsquo;s stored in the database and doesn&amp;rsquo;t need to be recompiled when called again after the first compilation. Users execute it by specifying the name of the stored procedure and providing parameters (if the stored procedure has parameters). Stored procedures are important objects in databases.&lt;/p>
+&lt;h2 id="sql-relational-algebra">SQL Relational Algebra
+&lt;/h2>&lt;p>&lt;strong>Five Basic Operations:&lt;/strong>&lt;/p>
+&lt;pre>&lt;code>Union (∪), Difference (-), Cartesian Product (×), Projection (σ), Selection (π)
+&lt;/code>&lt;/pre>
+&lt;p>&lt;strong>Four Combined Operations:&lt;/strong>&lt;/p>
+&lt;pre>&lt;code>Intersection (∩), Join (equijoin), Natural Join, Division (÷)
+&lt;/code>&lt;/pre>
+&lt;p>Union includes records that are in both tables. Difference includes records that are in the first table but not in the second. Cartesian product is all one-to-one combinations of records from both tables. Projection is vertical selection, while selection is horizontal selection. Intersection is similar to union, and join connects through common attributes. Division is a complex operation.&lt;/p>
+&lt;h2 id="relational-schema">Relational Schema
+&lt;/h2>&lt;p>A relational schema is a description of a relation. As the real world changes over time, the relation in a relational schema will also change. However, many existing facts in the real world dictate that all possible relations in a relational schema must satisfy certain integrity constraints. These constraints are either expressed through limitations on the &lt;a class="link" href="https://baike.baidu.com/item/%E5%8F%96%E5%80%BC%E8%8C%83%E5%9B%B4" target="_blank" rel="noopener"
+>value range&lt;/a> of attributes, such as employee age less than 65 (mandatory retirement at 65), or through the interconnection between &lt;a class="link" href="https://baike.baidu.com/item/%E5%B1%9E%E6%80%A7%E5%80%BC" target="_blank" rel="noopener"
+>attribute values&lt;/a> (mainly reflected in whether values are equal). The relational schema should capture these integrity constraints.&lt;/p>
+&lt;h2 id="non-relational-databases">Non-relational Databases
+&lt;/h2>&lt;p>NoSQL (NoSQL = Not Only SQL) means &amp;ldquo;not just SQL.&amp;rdquo; It&amp;rsquo;s used for storing ultra-large-scale data.&lt;/p></description></item></channel></rss>

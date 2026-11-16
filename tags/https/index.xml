@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>HTTPS on Nansen Li's Blog
+李楠森的博客</title><link>https://nansenli.com/tags/https/</link><description>Recent content in HTTPS on Nansen Li's Blog
+李楠森的博客</description><generator>Hugo -- gohugo.io</generator><language>en</language><copyright>Nansen Li 🌈 （李楠森）</copyright><lastBuildDate>Mon, 04 Jun 2018 09:12:00 +0000</lastBuildDate><atom:link href="https://nansenli.com/tags/https/index.xml" rel="self" type="application/rss+xml"/><item><title>Using Let's Encrypt and Nginx to Configure HTTPS Access</title><link>https://nansenli.com/post/jianshu/%E7%BD%91%E7%BB%9C/%E4%BD%BF%E7%94%A8lets-encrypt%E5%92%8Cnginx%E9%85%8D%E7%BD%AEhttps%E8%AE%BF%E9%97%AE/</link><pubDate>Mon, 04 Jun 2018 09:12:00 +0000</pubDate><guid>https://nansenli.com/post/jianshu/%E7%BD%91%E7%BB%9C/%E4%BD%BF%E7%94%A8lets-encrypt%E5%92%8Cnginx%E9%85%8D%E7%BD%AEhttps%E8%AE%BF%E9%97%AE/</guid><description>&lt;h2 id="introduction">Introduction
+&lt;/h2>&lt;p>To encrypt HTTP data transmission, we need to use HTTPS certificates. Let&amp;rsquo;s Encrypt provides free certificates.&lt;/p>
+&lt;h2 id="configure-nginx-forwarding">Configure Nginx Forwarding
+&lt;/h2>&lt;p>We need to configure Nginx on our server so that Let&amp;rsquo;s Encrypt can verify our domain.
+Below is the configuration file for Nginx on my server:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-nginx" data-lang="nginx">&lt;span class="line">&lt;span class="cl">&lt;span class="k">server&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kn">listen&lt;/span> &lt;span class="mi">80&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kn">server_name&lt;/span> &lt;span class="s">www.unrealblue.cc&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kn">location&lt;/span> &lt;span class="s">/&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kn">return&lt;/span> &lt;span class="mi">301&lt;/span> &lt;span class="s">https://&lt;/span>&lt;span class="nv">$host$request_uri&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kn">location&lt;/span> &lt;span class="p">~&lt;/span> &lt;span class="sr">/.well-known/acme-challenge&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kn">root&lt;/span> &lt;span class="s">/var/www/html&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kn">allow&lt;/span> &lt;span class="s">all&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>Explanation: The first location directive forwards all HTTP requests on port 80 to HTTPS connections. The second location directive means that if /.well-known is accessed, use the /var/www/html directory we provided.&lt;/p>
+&lt;p>Save this file as default.conf.&lt;/p>
+&lt;p>Here I used an Nginx Docker container for deployment, so I didn&amp;rsquo;t install Nginx directly.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;span class="lnt">8
+&lt;/span>&lt;span class="lnt">9
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-docker" data-lang="docker">&lt;span class="line">&lt;span class="cl">&lt;span class="k">FROM&lt;/span>&lt;span class="s"> nginx&lt;/span>&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">&lt;/span>&lt;span class="k">LABEL&lt;/span> MAINTAINER linanwx@gmail.com&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">&lt;/span>&lt;span class="k">RUN&lt;/span> apt update&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">&lt;/span>&lt;span class="k">RUN&lt;/span> apt install -y certbot&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">&lt;/span>&lt;span class="k">RUN&lt;/span> mkdir -p /var/www/html&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">&lt;/span>&lt;span class="k">COPY&lt;/span> ./default.conf /etc/nginx/conf.d/&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">&lt;/span>&lt;span class="k">EXPOSE&lt;/span>&lt;span class="s"> 80:80&lt;/span>&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">&lt;/span>&lt;span class="k">EXPOSE&lt;/span>&lt;span class="s"> 443:443&lt;/span>&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">&lt;/span>&lt;span class="k">VOLUME&lt;/span> &lt;span class="p">[&lt;/span>&lt;span class="s2">&amp;#34;/etc/letsencrypt/&amp;#34;&lt;/span>&lt;span class="p">]&lt;/span>&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>Save the first code segment as default.conf and the second code segment as Dockerfile, then run &lt;code>docker build -t nginx-server .&lt;/code>&lt;/p>
+&lt;p>Run &lt;code>docker run -it --rm -d -p80:80 -p443:443 --net=server-net --name nginx-server -v $PWD/letsencrypt:/etc/letsencrypt nginx-server&lt;/code> to start the container in the background.&lt;/p>
+&lt;h2 id="generate-certificates">Generate Certificates
+&lt;/h2>&lt;p>Run &lt;code>docker exec -it nginx-server /bin/bash&lt;/code> to enter the container.
+Run the following commands to generate the certificate:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-gdscript3" data-lang="gdscript3">&lt;span class="line">&lt;span class="cl">&lt;span class="n">openssl&lt;/span> &lt;span class="n">dhparam&lt;/span> &lt;span class="o">-&lt;/span>&lt;span class="n">out&lt;/span> &lt;span class="o">/&lt;/span>&lt;span class="n">etc&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">letsencrypt&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">live&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">dhparams&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">pem&lt;/span> &lt;span class="mi">2048&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">certbot&lt;/span> &lt;span class="n">certonly&lt;/span> &lt;span class="o">--&lt;/span>&lt;span class="n">agree&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">tos&lt;/span> &lt;span class="o">-&lt;/span>&lt;span class="n">a&lt;/span> &lt;span class="n">webroot&lt;/span> &lt;span class="o">--&lt;/span>&lt;span class="n">webroot&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">path&lt;/span>&lt;span class="o">=/&lt;/span>&lt;span class="k">var&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">www&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">html&lt;/span> &lt;span class="o">-&lt;/span>&lt;span class="n">d&lt;/span> &lt;span class="n">www&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">unrealblue&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">cc&lt;/span> &lt;span class="o">-&lt;/span>&lt;span class="n">m&lt;/span> &lt;span class="n">linanwx&lt;/span>&lt;span class="err">@&lt;/span>&lt;span class="n">gmail&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">com&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>The certbot program will access your domain to confirm your domain ownership, which uses the Nginx configuration from the previous step. There are also some parameters that you can understand by checking the help documentation. Additionally, unless you are certain you want to deploy to a production server, use the &amp;ndash;test-cert parameter during the testing phase, as there are limits on the number of certificates that can be generated.
+Another point is generating dhparam. This is a parameter for the Diffie-Hellman key exchange protocol, which takes relatively long to generate. We will use this in Nginx later.&lt;/p>
+&lt;p>If everything goes well, you will obtain the certificates stored in the /etc/letsencrypt/ directory. Also, because we used a volume when starting the container, the certificates will appear on the host machine.&lt;/p>
+&lt;h2 id="configure-nginx-https">Configure Nginx HTTPS
+&lt;/h2>&lt;p>Create a new file named https.conf:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;span class="lnt">30
+&lt;/span>&lt;span class="lnt">31
+&lt;/span>&lt;span class="lnt">32
+&lt;/span>&lt;span class="lnt">33
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-nginx" data-lang="nginx">&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># https://www.jianshu.com/p/f7f39cb24423
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="k">server&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kn">listen&lt;/span> &lt;span class="mi">443&lt;/span> &lt;span class="s">ssl&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kn">server_name&lt;/span> &lt;span class="s">www.unrealblue.cc&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kn">ssl_certificate&lt;/span> &lt;span class="s">/etc/letsencrypt/live/www.unrealblue.cc/fullchain.pem&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kn">ssl_trusted_certificate&lt;/span> &lt;span class="s">/etc/letsencrypt/live/www.unrealblue.cc/fullchain.pem&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kn">ssl_certificate_key&lt;/span> &lt;span class="s">/etc/letsencrypt/live/www.unrealblue.cc/privkey.pem&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kn">ssl_dhparam&lt;/span> &lt;span class="s">/etc/letsencrypt/live/dhparams.pem&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kn">ssl_ciphers&lt;/span> &lt;span class="s">&amp;#39;ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA256:ECDHE-ECDSA-AES128-SHA:ECDHE-RSA-AES256-SHA384:ECDHE-RSA-AES128-SHA:ECDHE-ECDSA-AES256-SHA384:ECDHE-ECDSA-AES256-SHA:ECDHE-RSA-AES256-SHA:DHE-RSA-AES128-SHA256:DHE-RSA-AES128-SHA:DHE-RSA-AES256-SHA256:DHE-RSA-AES256-SHA:ECDHE-ECDSA-DES-CBC3-SHA:ECDHE-RSA-DES-CBC3-SHA:EDH-RSA-DES-CBC3-SHA:AES128-GCM-SHA256:AES256-GCM-SHA384:AES128-SHA256:AES256-SHA256:AES128-SHA:AES256-SHA:DES-CBC3-SHA:!DSS&amp;#39;&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kn">ssl_prefer_server_ciphers&lt;/span> &lt;span class="no">on&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kn">ssl_protocols&lt;/span> &lt;span class="s">TLSv1&lt;/span> &lt;span class="s">TLSv1.1&lt;/span> &lt;span class="s">TLSv1.2&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kn">ssl_session_cache&lt;/span> &lt;span class="s">shared:SSL:50m&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kn">ssl_session_timeout&lt;/span> &lt;span class="s">1d&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kn">ssl_stapling&lt;/span> &lt;span class="no">on&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kn">ssl_stapling_verify&lt;/span> &lt;span class="no">on&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kn">add_header&lt;/span> &lt;span class="s">Strict-Transport-Security&lt;/span> &lt;span class="s">max-age=60&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kn">location&lt;/span> &lt;span class="s">/&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kn">root&lt;/span> &lt;span class="s">/usr/share/nginx/html&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kn">index&lt;/span> &lt;span class="s">index.html&lt;/span> &lt;span class="s">index.htm&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1"># location = /gfwlist {
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="c1"># proxy_pass http://server-handy:8081;
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="c1"># }
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kn">error_page&lt;/span> &lt;span class="mi">500&lt;/span> &lt;span class="mi">502&lt;/span> &lt;span class="mi">503&lt;/span> &lt;span class="mi">504&lt;/span> &lt;span class="s">/50x.html&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kn">location&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="s">/50x.html&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kn">root&lt;/span> &lt;span class="s">/usr/share/nginx/html&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>Save this file. Then modify the Dockerfile as follows:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-dockerfile" data-lang="dockerfile">&lt;span class="line">&lt;span class="cl">&lt;span class="k">FROM&lt;/span>&lt;span class="s"> nginx&lt;/span>&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">&lt;/span>&lt;span class="k">LABEL&lt;/span> MAINTAINER linanwx@gmail.com&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">&lt;/span>&lt;span class="k">RUN&lt;/span> apt update&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">&lt;/span>&lt;span class="k">RUN&lt;/span> apt install -y certbot&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">&lt;/span>&lt;span class="k">RUN&lt;/span> mkdir -p /var/www/html&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">&lt;/span>&lt;span class="k">COPY&lt;/span> ./default.conf /etc/nginx/conf.d/&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">&lt;/span>&lt;span class="k">COPY&lt;/span> ./https.conf /etc/nginx/conf.d/&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">&lt;/span>&lt;span class="k">EXPOSE&lt;/span>&lt;span class="s"> 80:80&lt;/span>&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">&lt;/span>&lt;span class="k">EXPOSE&lt;/span>&lt;span class="s"> 443:443&lt;/span>&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">&lt;/span>&lt;span class="k">VOLUME&lt;/span> &lt;span class="p">[&lt;/span>&lt;span class="s2">&amp;#34;/etc/letsencrypt/&amp;#34;&lt;/span>&lt;span class="p">]&lt;/span>&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>Here, the https.conf file is also copied in.&lt;/p>
+&lt;p>Restart the container, visit https://127.0.0.1, and you can see the access is successful.&lt;/p>
+&lt;p>&lt;img src="https://nansenli.com/img/rescued/27b7400a5c27.png"
+loading="lazy"
+alt="image.png"
+>&lt;/p>
+&lt;p>When testing in a local environment, you will be prompted that the certificate is not correct.
+Click continue.&lt;/p>
+&lt;p>&lt;img src="https://nansenli.com/img/rescued/52f75e932b3a.png"
+loading="lazy"
+alt="image.png"
+>&lt;/p></description></item><item><title>HTTPS Two-way Encryption Process Analysis</title><link>https://nansenli.com/post/jianshu/%E7%BD%91%E7%BB%9C/https-%E5%8F%8C%E5%90%91%E5%8A%A0%E5%AF%86%E8%BF%87%E7%A8%8B%E5%88%86%E6%9E%90/</link><pubDate>Mon, 26 Mar 2018 14:42:00 +0000</pubDate><guid>https://nansenli.com/post/jianshu/%E7%BD%91%E7%BB%9C/https-%E5%8F%8C%E5%90%91%E5%8A%A0%E5%AF%86%E8%BF%87%E7%A8%8B%E5%88%86%E6%9E%90/</guid><description>&lt;p>HTTPS authentication process:&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>① The browser sends a connection request to the secure server.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>② The server sends its certificate and certificate-related information to the client browser.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>③ The client browser checks whether the certificate sent by the server is issued by a trusted CA (Certificate Authority). If it is, the protocol continues execution; if not, the client browser gives the user a warning message: warning that this certificate is not trustworthy and asking whether the user wants to continue.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>④ Next, the client browser compares the information in the certificate, such as domain name and public key, with the relevant information just sent by the server. If they match, the client browser recognizes the server&amp;rsquo;s legal identity.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>⑤ The server requests the client to send its own certificate. After receiving it, the server verifies the client&amp;rsquo;s certificate. If it fails verification, the connection is refused; if it passes verification, the server obtains the user&amp;rsquo;s public key.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>⑥ The client browser informs the server of the symmetric encryption methods it supports.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>⑦ The server selects the encryption method with the highest level of encryption from the methods sent by the client, encrypts it with the client&amp;rsquo;s public key, and notifies the browser.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>⑧ The browser selects a session key for this encryption method, encrypts it with the server&amp;rsquo;s public key, and sends it to the server.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>⑨ The server receives the message sent by the browser, decrypts it with its own private key, and obtains the session key.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>⑩ The subsequent communication between the server and browser uses the symmetric encryption method, and the symmetric key is encrypted.&lt;/p>
+&lt;/li>
+&lt;/ul>
+&lt;p>The above describes the specific communication process of two-way authentication SSL protocol, which requires certificates from both the server and user. One-way authentication SSL protocol does not require the client to have a CA certificate. Compared to the steps above, it only needs to remove the process of server-side verification of the client certificate, and when negotiating the symmetric encryption method and session key, the server sends the unencrypted encryption method to the client (this does not affect the security of the SSL process). This way, the specific communication content between both parties is encrypted data. If a third party attacks and obtains the data, they only get encrypted information. For the third party to obtain useful information, they need to decrypt the encrypted data, and at this point, security depends on the security of the encryption method. Fortunately, the current encryption methods are sufficiently secure as long as the communication key is long enough. This is why we emphasize the requirement to use 128-bit encrypted communication.&lt;/p></description></item></channel></rss>

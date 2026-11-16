@@ -1,0 +1,1017 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>TCP on Nansen Li's Blog
+李楠森的博客</title><link>https://nansenli.com/tags/tcp/</link><description>Recent content in TCP on Nansen Li's Blog
+李楠森的博客</description><generator>Hugo -- gohugo.io</generator><language>en</language><copyright>Nansen Li 🌈 （李楠森）</copyright><lastBuildDate>Wed, 11 Apr 2018 08:39:00 +0000</lastBuildDate><atom:link href="https://nansenli.com/tags/tcp/index.xml" rel="self" type="application/rss+xml"/><item><title>Tencent Campus Recruitment Essay</title><link>https://nansenli.com/post/jianshu/%E9%9A%8F%E7%AC%94/%E8%85%BE%E8%AE%AF%E6%A0%A1%E6%8B%9B%E9%9A%8F%E7%AC%94/</link><pubDate>Wed, 11 Apr 2018 08:39:00 +0000</pubDate><guid>https://nansenli.com/post/jianshu/%E9%9A%8F%E7%AC%94/%E8%85%BE%E8%AE%AF%E6%A0%A1%E6%8B%9B%E9%9A%8F%E7%AC%94/</guid><description>&lt;h2 id="introduction">Introduction
+&lt;/h2>&lt;p>There were two phone interviews in the early selection phase, which I&amp;rsquo;ll skip here.
+First published at: &lt;a class="link" href="https://www.jianshu.com/p/d5aa63a27172" target="_blank" rel="noopener"
+>https://www.jianshu.com/p/d5aa63a27172&lt;/a>&lt;/p>
+&lt;h2 id="first-interview">First Interview
+&lt;/h2>&lt;p>Chengdu, April 11&lt;/p>
+&lt;ul>
+&lt;li>Introduce your projects, what were the difficulties, and how did you solve them&lt;/li>
+&lt;li>Introduce C++11 features&lt;/li>
+&lt;li>Explain the fork function&lt;/li>
+&lt;li>Explain the TIME_WAIT state&lt;/li>
+&lt;li>Why does a TCP connection handshake require three steps&lt;/li>
+&lt;li>Explain iterator invalidation. Does push_back cause iterator invalidation?&lt;/li>
+&lt;li>Characteristics of red-black trees, explain&lt;/li>
+&lt;li>Methods to resolve hash collisions&lt;/li>
+&lt;li>Differences between processes and threads&lt;/li>
+&lt;li>What thread models do you use&lt;/li>
+&lt;li>Explain coroutines&lt;/li>
+&lt;li>Explain the quicksort algorithm&lt;/li>
+&lt;li>What is a stable sort, is quicksort stable, and why&lt;/li>
+&lt;li>Derive the formula for the worst-case scenario of quicksort&lt;/li>
+&lt;li>Why should a destructor be virtual&lt;/li>
+&lt;li>Why can&amp;rsquo;t a constructor be a virtual function&lt;/li>
+&lt;li>Questions printed on paper, testing: new[] objects, static members, what exactly a subclass constructor calls, differences between copy constructors and assignment operators, when the equals sign appears in a copy constructor, when an assignment operator is needed, deep copy vs. shallow copy, when virtual functions are called.&lt;/li>
+&lt;/ul>
+&lt;p>Below is one of the questions, please write the output:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;span class="lnt">30
+&lt;/span>&lt;span class="lnt">31
+&lt;/span>&lt;span class="lnt">32
+&lt;/span>&lt;span class="lnt">33
+&lt;/span>&lt;span class="lnt">34
+&lt;/span>&lt;span class="lnt">35
+&lt;/span>&lt;span class="lnt">36
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-c++" data-lang="c++">&lt;span class="line">&lt;span class="cl">&lt;span class="cp">#include&lt;/span> &lt;span class="cpf">&amp;lt;iostream&amp;gt;&lt;/span>&lt;span class="cp">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp">&lt;/span>&lt;span class="k">using&lt;/span> &lt;span class="k">namespace&lt;/span> &lt;span class="n">std&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">struct&lt;/span> &lt;span class="nc">A&lt;/span>&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">A&lt;/span>&lt;span class="p">(){&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">local_var&lt;/span>&lt;span class="o">++&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">virtual&lt;/span> &lt;span class="kt">void&lt;/span> &lt;span class="nf">func&lt;/span>&lt;span class="p">(){&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">cout&lt;/span> &lt;span class="o">&amp;lt;&amp;lt;&lt;/span> &lt;span class="s">&amp;#34;A&amp;#34;&lt;/span> &lt;span class="o">&amp;lt;&amp;lt;&lt;/span> &lt;span class="n">endl&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">static&lt;/span> &lt;span class="kt">int&lt;/span> &lt;span class="n">local_var&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">};&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kt">int&lt;/span> &lt;span class="n">A&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">local_var&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">struct&lt;/span> &lt;span class="nc">B&lt;/span> &lt;span class="o">:&lt;/span> &lt;span class="n">A&lt;/span>&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">B&lt;/span>&lt;span class="p">(){&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">local_var&lt;/span>&lt;span class="o">+=&lt;/span>&lt;span class="mi">2&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">virtual&lt;/span> &lt;span class="kt">void&lt;/span> &lt;span class="nf">func&lt;/span>&lt;span class="p">(){&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">cout&lt;/span> &lt;span class="o">&amp;lt;&amp;lt;&lt;/span> &lt;span class="s">&amp;#34;B&amp;#34;&lt;/span> &lt;span class="o">&amp;lt;&amp;lt;&lt;/span> &lt;span class="n">endl&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">};&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kt">int&lt;/span> &lt;span class="nf">main&lt;/span>&lt;span class="p">(){&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">A&lt;/span>&lt;span class="o">*&lt;/span> &lt;span class="n">a1&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="k">new&lt;/span> &lt;span class="n">B&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="mi">3&lt;/span>&lt;span class="p">];&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">cout&lt;/span> &lt;span class="o">&amp;lt;&amp;lt;&lt;/span> &lt;span class="n">a1&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="mi">0&lt;/span>&lt;span class="p">].&lt;/span>&lt;span class="n">local_var&lt;/span> &lt;span class="o">&amp;lt;&amp;lt;&lt;/span> &lt;span class="n">endl&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">a1&lt;/span>&lt;span class="o">-&amp;gt;&lt;/span>&lt;span class="n">func&lt;/span>&lt;span class="p">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">A&lt;/span> &lt;span class="n">a2&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">a1&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="mi">0&lt;/span>&lt;span class="p">];&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">cout&lt;/span> &lt;span class="o">&amp;lt;&amp;lt;&lt;/span> &lt;span class="n">a2&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">local_var&lt;/span> &lt;span class="o">&amp;lt;&amp;lt;&lt;/span> &lt;span class="n">endl&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">a2&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">func&lt;/span>&lt;span class="p">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">A&lt;/span> &lt;span class="n">a3&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">a3&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">a1&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="mi">0&lt;/span>&lt;span class="p">];&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">cout&lt;/span> &lt;span class="o">&amp;lt;&amp;lt;&lt;/span> &lt;span class="n">a3&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">local_var&lt;/span> &lt;span class="o">&amp;lt;&amp;lt;&lt;/span> &lt;span class="n">endl&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">a3&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">func&lt;/span>&lt;span class="p">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>What problem will occur in the following code?&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-c++" data-lang="c++">&lt;span class="line">&lt;span class="cl">&lt;span class="cp">#include&lt;/span> &lt;span class="cpf">&amp;lt;iostream&amp;gt;&lt;/span>&lt;span class="cp">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp">&lt;/span>&lt;span class="k">using&lt;/span> &lt;span class="k">namespace&lt;/span> &lt;span class="n">std&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">struct&lt;/span> &lt;span class="nc">A&lt;/span>&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">virtual&lt;/span> &lt;span class="kt">void&lt;/span> &lt;span class="nf">func1&lt;/span>&lt;span class="p">(){&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">cout&lt;/span> &lt;span class="o">&amp;lt;&amp;lt;&lt;/span> &lt;span class="n">a&lt;/span> &lt;span class="o">&amp;lt;&amp;lt;&lt;/span> &lt;span class="n">endl&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">void&lt;/span> &lt;span class="nf">func2&lt;/span>&lt;span class="p">(){&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">cout&lt;/span> &lt;span class="o">&amp;lt;&amp;lt;&lt;/span> &lt;span class="n">a&lt;/span> &lt;span class="o">&amp;lt;&amp;lt;&lt;/span> &lt;span class="n">endl&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">void&lt;/span> &lt;span class="nf">func3&lt;/span>&lt;span class="p">(){&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">cout&lt;/span> &lt;span class="o">&amp;lt;&amp;lt;&lt;/span> &lt;span class="s">&amp;#34;a&amp;#34;&lt;/span> &lt;span class="o">&amp;lt;&amp;lt;&lt;/span> &lt;span class="n">endl&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">int&lt;/span> &lt;span class="n">a&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">};&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kt">int&lt;/span> &lt;span class="nf">main&lt;/span>&lt;span class="p">(){&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">A&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="n">a&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">A&lt;/span>&lt;span class="o">*&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="n">malloc&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="k">sizeof&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">A&lt;/span>&lt;span class="p">));&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">a&lt;/span>&lt;span class="o">-&amp;gt;&lt;/span>&lt;span class="n">func1&lt;/span>&lt;span class="p">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">a&lt;/span>&lt;span class="o">-&amp;gt;&lt;/span>&lt;span class="n">func2&lt;/span>&lt;span class="p">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">a&lt;/span>&lt;span class="o">-&amp;gt;&lt;/span>&lt;span class="n">func3&lt;/span>&lt;span class="p">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;ul>
+&lt;li>The approach to a problem during the written test (previous Nowcoder test. The interviewer actually printed all my test answers and results, including multiple-choice and algorithm questions, how many times I submitted, how many times I failed). Testing when the virtual pointer is initialized.&lt;/li>
+&lt;li>Randomly selected a question on paper. Given preorder traversal ABC and postorder traversal CBA, what is the inorder traversal? Draw out the two possible scenarios.&lt;/li>
+&lt;li>The approach to the first algorithm question during the written test (previous Nowcoder test)&lt;/li>
+&lt;li>There are 100 marbles, two players take turns, each person can only take 1-5 marbles, the person who cannot take any loses, what is the winning strategy?&lt;/li>
+&lt;li>What have you been learning recently (server programming)? What did you learn before (TensorFlow)? How did you learn it? What do you think about TensorFlow&amp;rsquo;s powerful neural networks?&lt;/li>
+&lt;li>Family situation.&lt;/li>
+&lt;li>After leaving, wrote code in the lobby: find elements in char array a that are not in char array b, and put them in char array c. Here I forgot to convert char characters to unsigned char type.&lt;/li>
+&lt;/ul>
+&lt;h2 id="second-interview">Second Interview
+&lt;/h2>&lt;p>Chengdu, April 13&lt;/p>
+&lt;ul>
+&lt;li>Self-introduction&lt;/li>
+&lt;li>What are system calls? Which system calls have you used? Which system calls take a long time?&lt;/li>
+&lt;li>Have you used gdb debugging? What is a conditional breakpoint?&lt;/li>
+&lt;li>Difference between function pointers and pointer functions. Write an example.&lt;/li>
+&lt;li>Write a fork call example by hand. In what situations have you used fork calls?&lt;/li>
+&lt;li>Explain the connect function in UDP.&lt;/li>
+&lt;li>What is an index? Is adding more indexes always better? (I admitted to looking at interview experiences for the index question, but came up with the follow-up question myself)&lt;/li>
+&lt;li>Which questions from the last interview did you research afterward?&lt;/li>
+&lt;li>There was a problem with your code in the last interview, do you know what it was?&lt;/li>
+&lt;li>Where did you learn the answers to these questions? What have you been doing these two days?&lt;/li>
+&lt;li>Some suggestions for you: look into gdb debugging, database knowledge, network programming, and practice more.&lt;/li>
+&lt;/ul>
+&lt;h2 id="aftermath">Aftermath
+&lt;/h2>&lt;p>Received a phone call on April 20 confirming the offer from Tencent.&lt;/p></description></item><item><title>TCP UDP IP Maximum Message Length</title><link>https://nansenli.com/post/jianshu/%E7%BD%91%E7%BB%9C/tcp-udp-ip%E6%9C%80%E5%A4%A7%E6%8A%A5%E6%96%87%E9%95%BF%E5%BA%A6/</link><pubDate>Mon, 26 Mar 2018 16:41:00 +0000</pubDate><guid>https://nansenli.com/post/jianshu/%E7%BD%91%E7%BB%9C/tcp-udp-ip%E6%9C%80%E5%A4%A7%E6%8A%A5%E6%96%87%E9%95%BF%E5%BA%A6/</guid><description>&lt;h2 id="udp">UDP
+&lt;/h2>&lt;p>For UDP protocol, the maximum length of the entire packet is 65535 bytes, and the payload length is 65535-20=65515 bytes.&lt;/p>
+&lt;h2 id="tcp">TCP
+&lt;/h2>&lt;p>For TCP protocol, the maximum length of the entire packet is determined by the Maximum Segment Size (MSS). MSS is the maximum data segment that a TCP packet can transmit each time. To achieve optimal transmission performance, the TCP protocol usually negotiates the MSS value between both parties when establishing a connection. When implementing the TCP protocol, the MTU value is often used as a substitute (minus the size of the IP packet header of 20 bytes and the TCP segment header of 20 bytes), so the MSS is often 1460 bytes. The communicating parties will determine the maximum MSS value for this connection based on the smaller of the two MSS values provided.&lt;/p>
+&lt;h2 id="ip">IP
+&lt;/h2>&lt;p>For IP protocol, the size of the IP packet is determined by the MTU (Maximum Transmission Unit).&lt;/p></description></item><item><title>TCP Message Format and HTTP Message Format</title><link>https://nansenli.com/post/jianshu/%E7%BD%91%E7%BB%9C/tcp-%E6%8A%A5%E6%96%87%E6%A0%BC%E5%BC%8F-http%E6%8A%A5%E6%96%87%E6%A0%BC%E5%BC%8F/</link><pubDate>Mon, 26 Mar 2018 16:37:00 +0000</pubDate><guid>https://nansenli.com/post/jianshu/%E7%BD%91%E7%BB%9C/tcp-%E6%8A%A5%E6%96%87%E6%A0%BC%E5%BC%8F-http%E6%8A%A5%E6%96%87%E6%A0%BC%E5%BC%8F/</guid><description>&lt;h2 id="tcp">TCP
+&lt;/h2>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">Source Port Destination Port
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> Sequence Number
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> Acknowledgment Number
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Flags Window
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Checksum Urgent Pointer
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> Options
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> Data
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="http">HTTP
+&lt;/h2>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">Request URL Protocol-Version\r\n
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Field: Value\r\n
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">\r\n
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Body
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">Protocol-Version Status-Code Status-Description\r\n
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Field: Value\r\n
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">\r\n
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Body
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div></description></item><item><title>TCP UDP Connection Establishment Process via Socket</title><link>https://nansenli.com/post/jianshu/%E7%BD%91%E7%BB%9C/tcp-udp-%E9%80%9A%E8%BF%87socket%E5%BB%BA%E7%AB%8B%E8%BF%9E%E6%8E%A5%E7%9A%84%E8%BF%87%E7%A8%8B/</link><pubDate>Mon, 26 Mar 2018 14:46:00 +0000</pubDate><guid>https://nansenli.com/post/jianshu/%E7%BD%91%E7%BB%9C/tcp-udp-%E9%80%9A%E8%BF%87socket%E5%BB%BA%E7%AB%8B%E8%BF%9E%E6%8E%A5%E7%9A%84%E8%BF%87%E7%A8%8B/</guid><description>&lt;h2 id="tcp">TCP
+&lt;/h2>&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>Phase&lt;/th>
+&lt;th style="text-align:right">Server&lt;/th>
+&lt;th style="text-align:center">Client&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>&lt;/td>
+&lt;td style="text-align:right">socket&lt;/td>
+&lt;td style="text-align:center">socket&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;/td>
+&lt;td style="text-align:right">bind&lt;/td>
+&lt;td style="text-align:center">&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;/td>
+&lt;td style="text-align:right">listen&lt;/td>
+&lt;td style="text-align:center">&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;/td>
+&lt;td style="text-align:right">accept&lt;/td>
+&lt;td style="text-align:center">connect&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;/td>
+&lt;td style="text-align:right">write&lt;/td>
+&lt;td style="text-align:center">write&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;/td>
+&lt;td style="text-align:right">read&lt;/td>
+&lt;td style="text-align:center">read&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;/td>
+&lt;td style="text-align:right">close&lt;/td>
+&lt;td style="text-align:center">close&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;h2 id="udp">UDP
+&lt;/h2>&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>Phase&lt;/th>
+&lt;th style="text-align:right">Server&lt;/th>
+&lt;th style="text-align:center">Client&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>&lt;/td>
+&lt;td style="text-align:right">socket&lt;/td>
+&lt;td style="text-align:center">socket&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;/td>
+&lt;td style="text-align:right">bind&lt;/td>
+&lt;td style="text-align:center">&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;/td>
+&lt;td style="text-align:right">sendto&lt;/td>
+&lt;td style="text-align:center">recvfrom&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;/td>
+&lt;td style="text-align:right">recvfrom&lt;/td>
+&lt;td style="text-align:center">sendto&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;/td>
+&lt;td style="text-align:right">close&lt;/td>
+&lt;td style="text-align:center">close&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table></description></item><item><title>Cainiao B2B First Interview Experience Record, C++ Backend Development</title><link>https://nansenli.com/post/jianshu/%E9%9A%8F%E7%AC%94/%E8%8F%9C%E9%B8%9Fb2b%E9%9D%A2%E8%AF%95%E4%B8%80%E9%9D%A2%E7%BB%8F%E5%8E%86%E8%AE%B0%E5%BD%95c++%E5%90%8E%E5%8F%B0%E5%BC%80%E5%8F%91/</link><pubDate>Fri, 09 Mar 2018 02:30:00 +0000</pubDate><guid>https://nansenli.com/post/jianshu/%E9%9A%8F%E7%AC%94/%E8%8F%9C%E9%B8%9Fb2b%E9%9D%A2%E8%AF%95%E4%B8%80%E9%9D%A2%E7%BB%8F%E5%8E%86%E8%AE%B0%E5%BD%95c++%E5%90%8E%E5%8F%B0%E5%BC%80%E5%8F%91/</guid><description>&lt;h2 id="introduction">Introduction
+&lt;/h2>&lt;p>I&amp;rsquo;m a second-year master&amp;rsquo;s student, and my advisor doesn&amp;rsquo;t allow internships, but I interviewed for spring internships to gain interview experience.
+My resume is very simple and modest, so the interviewer&amp;rsquo;s questions were relatively easy. The first interview was scheduled for 7 PM on March 8, 2018. Since I was doing an Alibaba test the night before, the interviewer said the interview would be postponed by one day, which gave me time to prepare. I especially reviewed basic knowledge again, which was very helpful.&lt;/p>
+&lt;h2 id="self-introduction">Self-introduction
+&lt;/h2>&lt;ul>
+&lt;li>Omitted&lt;/li>
+&lt;/ul>
+&lt;h2 id="project-experience-and-its-impact-on-you">Project experience and its impact on you
+&lt;/h2>&lt;ul>
+&lt;li>Omitted&lt;/li>
+&lt;/ul>
+&lt;h2 id="what-are-the-four-layers-of-network-architecture">What are the four layers of network architecture?
+&lt;/h2>&lt;ul>
+&lt;li>I answered the physical layer which includes fiber optics, switches, and twisted pairs; the network layer with IP; the transport layer with TCP, ICMP, and UDP; and the application layer with HTTP and DNS.&lt;/li>
+&lt;li>Standard answer: Actually, the TCP/IP standard does not define functionalities corresponding to the ISO data link layer and physical layer. Instead, it defines protocols like the Address Resolution Protocol (ARP), which provides interfaces between TCP/IP protocol data structures and actual physical hardware. So the first layer should be the link layer, which includes the ARP protocol and device drivers.&lt;/li>
+&lt;/ul>
+&lt;h2 id="which-layer-are-you-most-familiar-with">Which layer are you most familiar with?
+&lt;/h2>&lt;ul>
+&lt;li>I answered the transport layer with the TCP protocol.&lt;/li>
+&lt;/ul>
+&lt;h2 id="what-are-the-differences-between-tcp-and-udp">What are the differences between TCP and UDP?
+&lt;/h2>&lt;ul>
+&lt;li>Omitted&lt;/li>
+&lt;/ul>
+&lt;h2 id="three-way-handshake-and-four-way-termination">Three-way handshake and four-way termination?
+&lt;/h2>&lt;ul>
+&lt;li>Omitted&lt;/li>
+&lt;/ul>
+&lt;h2 id="why-are-you-familiar-with-this-process">Why are you familiar with this process?
+&lt;/h2>&lt;ul>
+&lt;li>I answered that I mainly learned it from books. Of course, I also used it in projects and observed the process by capturing packets with tcpdump and Wireshark.&lt;/li>
+&lt;/ul>
+&lt;h2 id="how-does-io-multiplexing-work">How does I/O multiplexing work?
+&lt;/h2>&lt;ul>
+&lt;li>
+&lt;p>I answered that it&amp;rsquo;s because multithreading is resource-intensive, etc. After listening for a while, the interviewer said that&amp;rsquo;s not what they meant; they wanted to know the implementation principle of I/O multiplexing. I replied that I had forgotten, but I remembered that in the implementation process of select, poll, and epoll, efficient data structures are used to check which file descriptor has I/O operations.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>The standard answer is:&lt;/p>
+&lt;blockquote>
+&lt;p>The efficiency of epoll lies in the fact that when we call epoll_ctl to insert millions of handles, epoll_wait can still return quickly and effectively give us the handles with events. This is because when we call epoll_create, the kernel not only creates a file node in the epoll file system for us and builds a red-black tree in the kernel cache to store the sockets passed by epoll_ctl later, but also establishes a list to store ready events. When epoll_wait is called, it only needs to observe whether there is data in this list. If there is data, it returns; if there is no data, it sleeps until it returns when the timeout time arrives, even if the list has no data. Therefore, epoll_wait is very efficient.
+Another fatal weakness of traditional select/poll is that when you have a large socket collection, due to network latency, only part of the sockets are &amp;ldquo;active&amp;rdquo; at any time, but select/poll will linearly scan the entire collection for each call, causing efficiency to decrease linearly. However, epoll does not have this problem; it only operates on &amp;ldquo;active&amp;rdquo; sockets - this is because in the kernel implementation, epoll is implemented based on the callback function on each fd. Therefore, only &amp;ldquo;active&amp;rdquo; sockets will actively call the callback function, while other idle state sockets will not.&lt;/p>
+&lt;/blockquote>
+&lt;/li>
+&lt;/ul>
+&lt;h2 id="explain-polymorphism-in-c">Explain polymorphism in C++
+&lt;/h2>&lt;ul>
+&lt;li>Omitted&lt;/li>
+&lt;/ul>
+&lt;h2 id="what-is-a-destructor-and-what-is-its-purpose">What is a destructor and what is its purpose?
+&lt;/h2>&lt;ul>
+&lt;li>Omitted&lt;/li>
+&lt;/ul>
+&lt;h2 id="what-is-the-purpose-of-a-virtual-destructor">What is the purpose of a virtual destructor?
+&lt;/h2>&lt;ul>
+&lt;li>Omitted&lt;/li>
+&lt;/ul>
+&lt;h2 id="should-the-parent-classs-destructor-be-set-as-a-virtual-function">Should the parent class&amp;rsquo;s destructor be set as a virtual function?
+&lt;/h2>&lt;ul>
+&lt;li>Definitely yes&lt;/li>
+&lt;/ul>
+&lt;h2 id="what-is-the-difference-between-shallow-copy-and-deep-copy">What is the difference between shallow copy and deep copy?
+&lt;/h2>&lt;ul>
+&lt;li>Omitted&lt;/li>
+&lt;/ul>
+&lt;h2 id="if-a-function-accepts-an-object-as-a-parameter-is-that-a-shallow-copy-or-a-deep-copy">If a function accepts an object as a parameter, is that a shallow copy or a deep copy?
+&lt;/h2>&lt;ul>
+&lt;li>I answered that it depends on the copy constructor. But I wasn&amp;rsquo;t sure about the specifics.&lt;/li>
+&lt;li>The standard answer should be: if references or pointers are used, no copying occurs. If the passed class hasn&amp;rsquo;t implemented a copy constructor, it&amp;rsquo;s a shallow copy. If it has implemented a copy constructor, it depends on whether the implemented copy constructor performs a shallow or deep copy.&lt;/li>
+&lt;/ul>
+&lt;h2 id="what-is-a-pointer-in-c-language">What is a pointer in C language?
+&lt;/h2>&lt;ul>
+&lt;li>I answered that it&amp;rsquo;s first a variable that stores the address of the internal data type or object it points to. Dereferencing it retrieves the data or object.&lt;/li>
+&lt;li>In fact, a pointer is not necessarily a variable; there are also constant pointers, but generally, &amp;ldquo;pointer&amp;rdquo; is short for &amp;ldquo;pointer variable.&amp;rdquo; So the above expression doesn&amp;rsquo;t have any issues.&lt;/li>
+&lt;/ul>
+&lt;h2 id="what-is-the-difference-between-formal-parameters-and-actual-parameters">What is the difference between formal parameters and actual parameters?
+&lt;/h2>&lt;ul>
+&lt;li>Honestly, I wasn&amp;rsquo;t clear about this either. I said I didn&amp;rsquo;t know but explained pointers, references, and regular parameter passing.&lt;/li>
+&lt;li>Later I found out that actual parameters (arguments) refer to the parameters passed in when an external function is called, and formal parameters are the parameters used when processing inside the function.&lt;/li>
+&lt;/ul>
+&lt;h2 id="introduce-the-simulated-annealing-algorithm">Introduce the simulated annealing algorithm
+&lt;/h2>&lt;ul>
+&lt;li>Because it was mentioned on my resume&lt;/li>
+&lt;/ul>
+&lt;h2 id="what-is-entropy-and-what-does-an-increase-represent">What is entropy, and what does an increase represent?
+&lt;/h2>&lt;ul>
+&lt;li>Omitted&lt;/li>
+&lt;/ul>
+&lt;h2 id="the-department-primarily-uses-java-development-would-you-be-resistant-if-asked-to-do-java-development">The department primarily uses Java development. Would you be resistant if asked to do Java development?
+&lt;/h2>&lt;ul>
+&lt;li>Omitted&lt;/li>
+&lt;/ul>
+&lt;h2 id="what-would-you-like-to-know-about-the-company">What would you like to know about the company?
+&lt;/h2>&lt;ul>
+&lt;li>Omitted&lt;/li>
+&lt;/ul>
+&lt;h2 id="aftermath">Aftermath
+&lt;/h2>&lt;p>Total duration was 27 minutes. I spoke rather quickly and was a bit nervous and excited. That&amp;rsquo;s about it, and I&amp;rsquo;ll add more if I remember anything else.&lt;/p></description></item><item><title>HTTP Long and Short Connections</title><link>https://nansenli.com/post/jianshu/%E7%BD%91%E7%BB%9C/http%E9%95%BF%E8%BF%9E%E6%8E%A5%E4%B8%8E%E7%9F%AD%E8%BF%9E%E6%8E%A5/</link><pubDate>Wed, 07 Mar 2018 03:15:00 +0000</pubDate><guid>https://nansenli.com/post/jianshu/%E7%BD%91%E7%BB%9C/http%E9%95%BF%E8%BF%9E%E6%8E%A5%E4%B8%8E%E7%9F%AD%E8%BF%9E%E6%8E%A5/</guid><description>&lt;h2 id="the-relationship-between-http-protocol-and-tcpip-protocol">The Relationship Between HTTP Protocol and TCP/IP Protocol
+&lt;/h2>&lt;p>HTTP long and short connections are essentially TCP long and short connections. HTTP is an application layer protocol that uses TCP protocol at the transport layer and IP protocol at the network layer. The IP protocol mainly solves network routing and addressing issues, while the TCP protocol mainly solves how to reliably deliver data packets over the IP layer, ensuring that all packets sent from one end are received at the other end of the network in the same order as they were sent. TCP has reliable, connection-oriented characteristics.&lt;/p>
+&lt;h2 id="understanding-why-http-protocol-is-stateless">Understanding Why HTTP Protocol is Stateless
+&lt;/h2>&lt;p>The HTTP protocol is stateless, meaning that the protocol has no memory capability for transaction processing, and the server doesn&amp;rsquo;t know what state the client is in. In other words, there is no connection between opening a webpage on a server and previously opening a webpage on that server. HTTP is a stateless connection-oriented protocol. Being stateless doesn&amp;rsquo;t mean that HTTP cannot maintain a TCP connection, and it certainly doesn&amp;rsquo;t mean that HTTP uses the UDP protocol (connectionless).&lt;/p>
+&lt;h2 id="what-are-long-connections-and-short-connections">What are Long Connections and Short Connections?
+&lt;/h2>&lt;p>In HTTP/1.0, short connections are used by default. This means that the browser and server establish a connection for each HTTP operation, but the connection is terminated once the task is completed. If a client browser accesses an HTML or other type of Web page that contains other Web resources such as JavaScript files, image files, CSS files, etc., the browser will establish an HTTP session each time it encounters such a Web resource. However, from HTTP/1.1 onwards, long connections are used by default to maintain connection characteristics. HTTP protocols using long connections will add this line of code to the response header: &lt;code>Connection:keep-alive&lt;/code>. In the case of using a long connection, when a webpage is fully opened, the TCP connection used to transmit HTTP data between the client and server will not close. If the client accesses the webpage on this server again, it will continue to use this already established connection. Keep-Alive will not permanently maintain the connection; it has a retention time that can be set in different server software (such as Apache). Both the client and server must support long connections to implement them. The long and short connections of the HTTP protocol are essentially the long and short connections of the TCP protocol.&lt;/p>
+&lt;h2 id="tcp-connection">TCP Connection
+&lt;/h2>&lt;p>When using TCP protocol for network communication, a connection must be established between the server and client before any actual read/write operations. When the read/write operations are completed and both parties no longer need this connection, they can release it. Establishing a connection requires a three-way handshake, while releasing it requires a four-way handshake, so establishing each connection consumes resources and time.&lt;/p>
+&lt;h2 id="tcp-short-connection">TCP Short Connection
+&lt;/h2>&lt;p>Let&amp;rsquo;s simulate a short connection scenario. The client initiates a connection to the server, the server accepts the client connection, and both parties establish a connection. After the client and server complete a read/write operation, their connection is actively closed.&lt;/p>
+&lt;h2 id="tcp-long-connection">TCP Long Connection
+&lt;/h2>&lt;p>Now let&amp;rsquo;s simulate a long connection scenario. The client initiates a connection to the server, the server accepts the client connection, and both parties establish a connection. After the client and server complete a read/write operation, their connection is not actively closed, and subsequent read/write operations will continue to use this connection.&lt;/p>
+&lt;p>Let&amp;rsquo;s first talk about the TCP keepalive function mentioned in TCP/IP in Detail. The keepalive function is mainly provided for server applications. Server applications want to know whether the client host has crashed, so they can use resources on behalf of the client. If the client has disappeared, leaving a half-open connection on the server, and the server is waiting for data from the client, the server will wait indefinitely for client data. The keepalive function attempts to detect such half-open connections on the server side.&lt;/p>
+&lt;p>If a given connection has no activity for two hours, the server sends a probe segment to the client. The client host must be in one of the following four states:&lt;/p>
+&lt;ol>
+&lt;li>The client host is still running normally and is reachable from the server. The client&amp;rsquo;s TCP responds normally, and the server knows that the other party is normal. The server resets the keepalive timer after two hours.&lt;/li>
+&lt;li>The client host has crashed and is either shut down or restarting. In either case, the client&amp;rsquo;s TCP does not respond. The server will not receive a response to the probe and will time out after 75 seconds. The server sends a total of 10 such probes, each at an interval of 75 seconds. If the server does not receive a response, it assumes that the client host is closed and terminates the connection.&lt;/li>
+&lt;li>The client host has crashed and has restarted. The server will receive a response to its keepalive probe, which is a reset, causing the server to terminate the connection.&lt;/li>
+&lt;li>The client is running normally, but the server is unreachable. This situation is similar to category 2; TCP can only discover that it has not received a response to the probe.&lt;/li>
+&lt;/ol>
+&lt;h2 id="how-to-choose-between-long-and-short-connections">How to Choose Between Long and Short Connections
+&lt;/h2>&lt;p>Long connections are often used for frequent operations, point-to-point communications, and situations where the number of connections cannot be too many. Each TCP connection requires a three-way handshake, which takes time. If each operation first establishes a connection and then operates, processing speed will be reduced significantly. So, if the connection is not disconnected after each operation, subsequent processing can directly send data packets without establishing a TCP connection. For example, database connections use long connections. Using short connections for frequent communication will cause socket errors, and frequent socket creation is also a waste of resources.&lt;/p>
+&lt;p>Web services like HTTP websites generally use short connections because long connections consume certain resources on the server side. For websites with such frequent connections from thousands or even millions of clients, using short connections saves resources. If long connections were used, and there were thousands of users at the same time, each user occupying one connection would be unimaginable. Therefore, short connections are better for situations with high concurrency but where each user does not need frequent operations.&lt;/p></description></item><item><title>Epoll TCP Server and Client Simple Example</title><link>https://nansenli.com/post/jianshu/%E7%BD%91%E7%BB%9C/epoll-tcp%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B8%8E%E5%AE%A2%E6%88%B7%E7%AB%AF%E7%AE%80%E6%98%8E%E4%BE%8B%E5%AD%90/</link><pubDate>Mon, 25 Dec 2017 02:52:00 +0000</pubDate><guid>https://nansenli.com/post/jianshu/%E7%BD%91%E7%BB%9C/epoll-tcp%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B8%8E%E5%AE%A2%E6%88%B7%E7%AB%AF%E7%AE%80%E6%98%8E%E4%BE%8B%E5%AD%90/</guid><description>&lt;h2 id="introduction">Introduction
+&lt;/h2>&lt;p>epoll is a Linux-specific API that provides efficient file descriptor management. It&amp;rsquo;s commonly used to monitor the readability of multiple file descriptors in batch and is one of the effective methods for high-concurrency servers. Below is a simple example of an epoll server and client.&lt;/p>
+&lt;h2 id="server-side">Server Side
+&lt;/h2>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt"> 10
+&lt;/span>&lt;span class="lnt"> 11
+&lt;/span>&lt;span class="lnt"> 12
+&lt;/span>&lt;span class="lnt"> 13
+&lt;/span>&lt;span class="lnt"> 14
+&lt;/span>&lt;span class="lnt"> 15
+&lt;/span>&lt;span class="lnt"> 16
+&lt;/span>&lt;span class="lnt"> 17
+&lt;/span>&lt;span class="lnt"> 18
+&lt;/span>&lt;span class="lnt"> 19
+&lt;/span>&lt;span class="lnt"> 20
+&lt;/span>&lt;span class="lnt"> 21
+&lt;/span>&lt;span class="lnt"> 22
+&lt;/span>&lt;span class="lnt"> 23
+&lt;/span>&lt;span class="lnt"> 24
+&lt;/span>&lt;span class="lnt"> 25
+&lt;/span>&lt;span class="lnt"> 26
+&lt;/span>&lt;span class="lnt"> 27
+&lt;/span>&lt;span class="lnt"> 28
+&lt;/span>&lt;span class="lnt"> 29
+&lt;/span>&lt;span class="lnt"> 30
+&lt;/span>&lt;span class="lnt"> 31
+&lt;/span>&lt;span class="lnt"> 32
+&lt;/span>&lt;span class="lnt"> 33
+&lt;/span>&lt;span class="lnt"> 34
+&lt;/span>&lt;span class="lnt"> 35
+&lt;/span>&lt;span class="lnt"> 36
+&lt;/span>&lt;span class="lnt"> 37
+&lt;/span>&lt;span class="lnt"> 38
+&lt;/span>&lt;span class="lnt"> 39
+&lt;/span>&lt;span class="lnt"> 40
+&lt;/span>&lt;span class="lnt"> 41
+&lt;/span>&lt;span class="lnt"> 42
+&lt;/span>&lt;span class="lnt"> 43
+&lt;/span>&lt;span class="lnt"> 44
+&lt;/span>&lt;span class="lnt"> 45
+&lt;/span>&lt;span class="lnt"> 46
+&lt;/span>&lt;span class="lnt"> 47
+&lt;/span>&lt;span class="lnt"> 48
+&lt;/span>&lt;span class="lnt"> 49
+&lt;/span>&lt;span class="lnt"> 50
+&lt;/span>&lt;span class="lnt"> 51
+&lt;/span>&lt;span class="lnt"> 52
+&lt;/span>&lt;span class="lnt"> 53
+&lt;/span>&lt;span class="lnt"> 54
+&lt;/span>&lt;span class="lnt"> 55
+&lt;/span>&lt;span class="lnt"> 56
+&lt;/span>&lt;span class="lnt"> 57
+&lt;/span>&lt;span class="lnt"> 58
+&lt;/span>&lt;span class="lnt"> 59
+&lt;/span>&lt;span class="lnt"> 60
+&lt;/span>&lt;span class="lnt"> 61
+&lt;/span>&lt;span class="lnt"> 62
+&lt;/span>&lt;span class="lnt"> 63
+&lt;/span>&lt;span class="lnt"> 64
+&lt;/span>&lt;span class="lnt"> 65
+&lt;/span>&lt;span class="lnt"> 66
+&lt;/span>&lt;span class="lnt"> 67
+&lt;/span>&lt;span class="lnt"> 68
+&lt;/span>&lt;span class="lnt"> 69
+&lt;/span>&lt;span class="lnt"> 70
+&lt;/span>&lt;span class="lnt"> 71
+&lt;/span>&lt;span class="lnt"> 72
+&lt;/span>&lt;span class="lnt"> 73
+&lt;/span>&lt;span class="lnt"> 74
+&lt;/span>&lt;span class="lnt"> 75
+&lt;/span>&lt;span class="lnt"> 76
+&lt;/span>&lt;span class="lnt"> 77
+&lt;/span>&lt;span class="lnt"> 78
+&lt;/span>&lt;span class="lnt"> 79
+&lt;/span>&lt;span class="lnt"> 80
+&lt;/span>&lt;span class="lnt"> 81
+&lt;/span>&lt;span class="lnt"> 82
+&lt;/span>&lt;span class="lnt"> 83
+&lt;/span>&lt;span class="lnt"> 84
+&lt;/span>&lt;span class="lnt"> 85
+&lt;/span>&lt;span class="lnt"> 86
+&lt;/span>&lt;span class="lnt"> 87
+&lt;/span>&lt;span class="lnt"> 88
+&lt;/span>&lt;span class="lnt"> 89
+&lt;/span>&lt;span class="lnt"> 90
+&lt;/span>&lt;span class="lnt"> 91
+&lt;/span>&lt;span class="lnt"> 92
+&lt;/span>&lt;span class="lnt"> 93
+&lt;/span>&lt;span class="lnt"> 94
+&lt;/span>&lt;span class="lnt"> 95
+&lt;/span>&lt;span class="lnt"> 96
+&lt;/span>&lt;span class="lnt"> 97
+&lt;/span>&lt;span class="lnt"> 98
+&lt;/span>&lt;span class="lnt"> 99
+&lt;/span>&lt;span class="lnt">100
+&lt;/span>&lt;span class="lnt">101
+&lt;/span>&lt;span class="lnt">102
+&lt;/span>&lt;span class="lnt">103
+&lt;/span>&lt;span class="lnt">104
+&lt;/span>&lt;span class="lnt">105
+&lt;/span>&lt;span class="lnt">106
+&lt;/span>&lt;span class="lnt">107
+&lt;/span>&lt;span class="lnt">108
+&lt;/span>&lt;span class="lnt">109
+&lt;/span>&lt;span class="lnt">110
+&lt;/span>&lt;span class="lnt">111
+&lt;/span>&lt;span class="lnt">112
+&lt;/span>&lt;span class="lnt">113
+&lt;/span>&lt;span class="lnt">114
+&lt;/span>&lt;span class="lnt">115
+&lt;/span>&lt;span class="lnt">116
+&lt;/span>&lt;span class="lnt">117
+&lt;/span>&lt;span class="lnt">118
+&lt;/span>&lt;span class="lnt">119
+&lt;/span>&lt;span class="lnt">120
+&lt;/span>&lt;span class="lnt">121
+&lt;/span>&lt;span class="lnt">122
+&lt;/span>&lt;span class="lnt">123
+&lt;/span>&lt;span class="lnt">124
+&lt;/span>&lt;span class="lnt">125
+&lt;/span>&lt;span class="lnt">126
+&lt;/span>&lt;span class="lnt">127
+&lt;/span>&lt;span class="lnt">128
+&lt;/span>&lt;span class="lnt">129
+&lt;/span>&lt;span class="lnt">130
+&lt;/span>&lt;span class="lnt">131
+&lt;/span>&lt;span class="lnt">132
+&lt;/span>&lt;span class="lnt">133
+&lt;/span>&lt;span class="lnt">134
+&lt;/span>&lt;span class="lnt">135
+&lt;/span>&lt;span class="lnt">136
+&lt;/span>&lt;span class="lnt">137
+&lt;/span>&lt;span class="lnt">138
+&lt;/span>&lt;span class="lnt">139
+&lt;/span>&lt;span class="lnt">140
+&lt;/span>&lt;span class="lnt">141
+&lt;/span>&lt;span class="lnt">142
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-c++" data-lang="c++">&lt;span class="line">&lt;span class="cl">&lt;span class="cp">#include&lt;/span> &lt;span class="cpf">&amp;lt;fcntl.h&amp;gt;&lt;/span>&lt;span class="cp">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp">#include&lt;/span> &lt;span class="cpf">&amp;lt;unistd.h&amp;gt;&lt;/span>&lt;span class="cp">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp">#include&lt;/span> &lt;span class="cpf">&amp;lt;sys/socket.h&amp;gt;&lt;/span>&lt;span class="cp">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp">#include&lt;/span> &lt;span class="cpf">&amp;lt;netinet/in.h&amp;gt;&lt;/span>&lt;span class="cp">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp">#include&lt;/span> &lt;span class="cpf">&amp;lt;arpa/inet.h&amp;gt;&lt;/span>&lt;span class="cp">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp">#include&lt;/span> &lt;span class="cpf">&amp;lt;stdio.h&amp;gt;&lt;/span>&lt;span class="cp">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp">#include&lt;/span> &lt;span class="cpf">&amp;lt;stdlib.h&amp;gt;&lt;/span>&lt;span class="cp">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp">#include&lt;/span> &lt;span class="cpf">&amp;lt;sys/epoll.h&amp;gt;&lt;/span>&lt;span class="cp">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp">&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">using&lt;/span> &lt;span class="k">namespace&lt;/span> &lt;span class="n">std&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">const&lt;/span> &lt;span class="kt">int&lt;/span> &lt;span class="n">MAX_EPOLL_EVENTS&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">1000&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">const&lt;/span> &lt;span class="kt">int&lt;/span> &lt;span class="n">MAX_MSG_LEN&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">1024&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kt">void&lt;/span> &lt;span class="nf">setFdNonblock&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="kt">int&lt;/span> &lt;span class="n">fd&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">fcntl&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">fd&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">F_SETFL&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">fcntl&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">fd&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">F_GETFL&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="o">|&lt;/span> &lt;span class="n">O_NONBLOCK&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kt">void&lt;/span> &lt;span class="nf">err_exit&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="k">const&lt;/span> &lt;span class="kt">char&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="n">s&lt;/span>&lt;span class="p">){&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">printf&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;error: %s&lt;/span>&lt;span class="se">\n&lt;/span>&lt;span class="s">&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="n">s&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">exit&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">0&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kt">int&lt;/span> &lt;span class="nf">create_socket&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="k">const&lt;/span> &lt;span class="kt">char&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="n">ip&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="k">const&lt;/span> &lt;span class="kt">int&lt;/span> &lt;span class="n">port_number&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">struct&lt;/span> &lt;span class="nc">sockaddr_in&lt;/span> &lt;span class="n">server_addr&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="mi">0&lt;/span>&lt;span class="p">};&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="cm">/* Set IPv4 mode */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">server_addr&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">sin_family&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">AF_INET&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="cm">/* ipv4 */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="cm">/* Set port number */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">server_addr&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">sin_port&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">htons&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">port_number&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="cm">/* Set host address */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">inet_pton&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">server_addr&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">sin_family&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">ip&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="o">&amp;amp;&lt;/span>&lt;span class="n">server_addr&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">sin_addr&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="o">==&lt;/span> &lt;span class="o">-&lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="p">){&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">err_exit&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;inet_pton&amp;#34;&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="cm">/* Create socket */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">int&lt;/span> &lt;span class="n">sockfd&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">socket&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">PF_INET&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">SOCK_STREAM&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">sockfd&lt;/span> &lt;span class="o">==&lt;/span> &lt;span class="o">-&lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="p">){&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">err_exit&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;socket&amp;#34;&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="cm">/* Set reuse mode */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">int&lt;/span> &lt;span class="n">reuse&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">setsockopt&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">sockfd&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">SOL_SOCKET&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">SO_REUSEADDR&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="o">&amp;amp;&lt;/span>&lt;span class="n">reuse&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="k">sizeof&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">reuse&lt;/span>&lt;span class="p">))&lt;/span> &lt;span class="o">==&lt;/span> &lt;span class="o">-&lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">err_exit&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;setsockopt&amp;#34;&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="cm">/* Bind to port */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">bind&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">sockfd&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">sockaddr&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="o">&amp;amp;&lt;/span>&lt;span class="n">server_addr&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="k">sizeof&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">server_addr&lt;/span>&lt;span class="p">))&lt;/span> &lt;span class="o">==&lt;/span> &lt;span class="o">-&lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="p">){&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">err_exit&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;bind&amp;#34;&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="cm">/* Set passive open */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">listen&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">sockfd&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">5&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="o">==&lt;/span> &lt;span class="o">-&lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="p">){&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">err_exit&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;listen&amp;#34;&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="n">sockfd&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kt">int&lt;/span> &lt;span class="nf">main&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="kt">int&lt;/span> &lt;span class="n">argc&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="k">const&lt;/span> &lt;span class="kt">char&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="n">argv&lt;/span>&lt;span class="p">[])&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="cm">/* Help message */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">argc&lt;/span> &lt;span class="o">&amp;lt;&lt;/span> &lt;span class="mi">3&lt;/span>&lt;span class="p">){&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">printf&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;usage:%s ip port&lt;/span>&lt;span class="se">\n&lt;/span>&lt;span class="s">&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">argv&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="mi">0&lt;/span>&lt;span class="p">]);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">exit&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">0&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="cm">/* Get server parameters */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">const&lt;/span> &lt;span class="kt">char&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="n">ip&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">argv&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="p">];&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">const&lt;/span> &lt;span class="kt">int&lt;/span> &lt;span class="n">port&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">atoi&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">argv&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="mi">2&lt;/span>&lt;span class="p">]);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="cm">/* Create socket */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">int&lt;/span> &lt;span class="n">sockfd&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">create_socket&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">ip&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">port&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">printf&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;success create sockfd %d&lt;/span>&lt;span class="se">\n&lt;/span>&lt;span class="s">&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">sockfd&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">setFdNonblock&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">sockfd&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="cm">/* Create epoll */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">int&lt;/span> &lt;span class="n">epollfd&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">epoll_create1&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">0&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">epollfd&lt;/span> &lt;span class="o">==&lt;/span> &lt;span class="o">-&lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="n">err_exit&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;epoll_create1&amp;#34;&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="cm">/* Add sockfd to epollfd interest list */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">struct&lt;/span> &lt;span class="nc">epoll_event&lt;/span> &lt;span class="n">ev&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">ev&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">data&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">fd&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">sockfd&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">ev&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">events&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">EPOLLIN&lt;/span> &lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">epoll_ctl&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">epollfd&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">EPOLL_CTL_ADD&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">sockfd&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="o">&amp;amp;&lt;/span>&lt;span class="n">ev&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="o">==&lt;/span> &lt;span class="o">-&lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="p">){&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">err_exit&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;epoll_ctl1&amp;#34;&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="cm">/* Create a list to store events returned by wait */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">struct&lt;/span> &lt;span class="nc">epoll_event&lt;/span> &lt;span class="n">events&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">MAX_EPOLL_EVENTS&lt;/span>&lt;span class="p">]&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="mi">0&lt;/span>&lt;span class="p">};&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="cm">/* Start waiting for all events registered on epoll */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">while&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="p">){&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="cm">/* Wait for events */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">printf&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;begin wait&lt;/span>&lt;span class="se">\n&lt;/span>&lt;span class="s">&amp;#34;&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">int&lt;/span> &lt;span class="n">number&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">epoll_wait&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">epollfd&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">events&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">MAX_EPOLL_EVENTS&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="o">-&lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">printf&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;end wait&lt;/span>&lt;span class="se">\n&lt;/span>&lt;span class="s">&amp;#34;&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">sleep&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">number&lt;/span> &lt;span class="o">&amp;gt;&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">){&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="cm">/* Traverse all events */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">for&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="kt">int&lt;/span> &lt;span class="n">i&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="n">i&lt;/span> &lt;span class="o">&amp;lt;&lt;/span> &lt;span class="n">number&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="n">i&lt;/span>&lt;span class="o">++&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">int&lt;/span> &lt;span class="n">eventfd&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">events&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">i&lt;/span>&lt;span class="p">].&lt;/span>&lt;span class="n">data&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">fd&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="cm">/* If the fd triggering the event is sockfd, someone has connected, and we need to accept them */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">eventfd&lt;/span> &lt;span class="o">==&lt;/span> &lt;span class="n">sockfd&lt;/span>&lt;span class="p">){&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">printf&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;accept new client...&lt;/span>&lt;span class="se">\n&lt;/span>&lt;span class="s">&amp;#34;&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">struct&lt;/span> &lt;span class="nc">sockaddr_in&lt;/span> &lt;span class="n">client_addr&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">socklen_t&lt;/span> &lt;span class="n">client_addr_len&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="k">sizeof&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">client_addr&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">int&lt;/span> &lt;span class="n">connfd&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">accept&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">sockfd&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="k">struct&lt;/span> &lt;span class="nc">sockaddr&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="o">&amp;amp;&lt;/span>&lt;span class="n">client_addr&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="o">&amp;amp;&lt;/span>&lt;span class="n">client_addr_len&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">setFdNonblock&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">connfd&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="cm">/* After accept, we need to add the file descriptor to the monitoring list */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">struct&lt;/span> &lt;span class="nc">epoll_event&lt;/span> &lt;span class="n">ev&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">ev&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">data&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">fd&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">connfd&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">ev&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">events&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">EPOLLIN&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">epoll_ctl&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">epollfd&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">EPOLL_CTL_ADD&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">connfd&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="o">&amp;amp;&lt;/span>&lt;span class="n">ev&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="o">==&lt;/span> &lt;span class="o">-&lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="p">){&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">err_exit&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;epoll_ctl2&amp;#34;&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">printf&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;accept new client end.&lt;/span>&lt;span class="se">\n&lt;/span>&lt;span class="s">&amp;#34;&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="cm">/* If the triggering fd is not sockfd, it&amp;#39;s the newly added connfd */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">else&lt;/span>&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="cm">/* Read content until encountering a newline, then display the content */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">printf&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;read start...&lt;/span>&lt;span class="se">\n&lt;/span>&lt;span class="s">&amp;#34;&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">while&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="p">){&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">char&lt;/span> &lt;span class="n">buff&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="o">-&lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">int&lt;/span> &lt;span class="n">ret&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">read&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">eventfd&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="o">&amp;amp;&lt;/span>&lt;span class="n">buff&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">ret&lt;/span> &lt;span class="o">&amp;gt;&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">){&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">printf&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;%c&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">buff&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">buff&lt;/span> &lt;span class="o">==&lt;/span> &lt;span class="sc">&amp;#39;\n&amp;#39;&lt;/span>&lt;span class="p">){&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">break&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">else&lt;/span> &lt;span class="k">if&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">ret&lt;/span> &lt;span class="o">==&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">){&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">printf&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;client close.&lt;/span>&lt;span class="se">\n&lt;/span>&lt;span class="s">&amp;#34;&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">close&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">eventfd&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">epoll_ctl&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">epollfd&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">EPOLL_CTL_DEL&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">eventfd&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nb">NULL&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">break&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">else&lt;/span> &lt;span class="k">if&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">ret&lt;/span> &lt;span class="o">&amp;lt;&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">){&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">printf&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;read error.&lt;/span>&lt;span class="se">\n&lt;/span>&lt;span class="s">&amp;#34;&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">break&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">printf&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;read end.&lt;/span>&lt;span class="se">\n&lt;/span>&lt;span class="s">&amp;#34;&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="client-side">Client Side
+&lt;/h2>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;span class="lnt">30
+&lt;/span>&lt;span class="lnt">31
+&lt;/span>&lt;span class="lnt">32
+&lt;/span>&lt;span class="lnt">33
+&lt;/span>&lt;span class="lnt">34
+&lt;/span>&lt;span class="lnt">35
+&lt;/span>&lt;span class="lnt">36
+&lt;/span>&lt;span class="lnt">37
+&lt;/span>&lt;span class="lnt">38
+&lt;/span>&lt;span class="lnt">39
+&lt;/span>&lt;span class="lnt">40
+&lt;/span>&lt;span class="lnt">41
+&lt;/span>&lt;span class="lnt">42
+&lt;/span>&lt;span class="lnt">43
+&lt;/span>&lt;span class="lnt">44
+&lt;/span>&lt;span class="lnt">45
+&lt;/span>&lt;span class="lnt">46
+&lt;/span>&lt;span class="lnt">47
+&lt;/span>&lt;span class="lnt">48
+&lt;/span>&lt;span class="lnt">49
+&lt;/span>&lt;span class="lnt">50
+&lt;/span>&lt;span class="lnt">51
+&lt;/span>&lt;span class="lnt">52
+&lt;/span>&lt;span class="lnt">53
+&lt;/span>&lt;span class="lnt">54
+&lt;/span>&lt;span class="lnt">55
+&lt;/span>&lt;span class="lnt">56
+&lt;/span>&lt;span class="lnt">57
+&lt;/span>&lt;span class="lnt">58
+&lt;/span>&lt;span class="lnt">59
+&lt;/span>&lt;span class="lnt">60
+&lt;/span>&lt;span class="lnt">61
+&lt;/span>&lt;span class="lnt">62
+&lt;/span>&lt;span class="lnt">63
+&lt;/span>&lt;span class="lnt">64
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-c++" data-lang="c++">&lt;span class="line">&lt;span class="cl">&lt;span class="cp">#include&lt;/span> &lt;span class="cpf">&amp;lt;stdio.h&amp;gt;&lt;/span>&lt;span class="cp">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp">#include&lt;/span> &lt;span class="cpf">&amp;lt;string.h&amp;gt;&lt;/span>&lt;span class="cp">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp">#include&lt;/span> &lt;span class="cpf">&amp;lt;stdlib.h&amp;gt;&lt;/span>&lt;span class="cp">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp">#include&lt;/span> &lt;span class="cpf">&amp;lt;unistd.h&amp;gt;&lt;/span>&lt;span class="cp">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp">#include&lt;/span> &lt;span class="cpf">&amp;lt;arpa/inet.h&amp;gt;&lt;/span>&lt;span class="cp">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp">#include&lt;/span> &lt;span class="cpf">&amp;lt;sys/socket.h&amp;gt;&lt;/span>&lt;span class="cp">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp">#include&lt;/span> &lt;span class="cpf">&amp;lt;string&amp;gt;&lt;/span>&lt;span class="cp">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp">#include&lt;/span> &lt;span class="cpf">&amp;lt;iostream&amp;gt;&lt;/span>&lt;span class="cp">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp">&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">using&lt;/span> &lt;span class="k">namespace&lt;/span> &lt;span class="n">std&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kt">void&lt;/span> &lt;span class="nf">err_exit&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="k">const&lt;/span> &lt;span class="kt">char&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="n">s&lt;/span>&lt;span class="p">){&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">printf&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;error: %s&lt;/span>&lt;span class="se">\n&lt;/span>&lt;span class="s">&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="n">s&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">exit&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">0&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kt">int&lt;/span> &lt;span class="nf">create_socket&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="k">const&lt;/span> &lt;span class="kt">char&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="n">ip&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="k">const&lt;/span> &lt;span class="kt">int&lt;/span> &lt;span class="n">port_number&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">struct&lt;/span> &lt;span class="nc">sockaddr_in&lt;/span> &lt;span class="n">server_addr&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="mi">0&lt;/span>&lt;span class="p">};&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="cm">/* Set IPv4 mode */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">server_addr&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">sin_family&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">AF_INET&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="cm">/* ipv4 */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="cm">/* Set port number */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">server_addr&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">sin_port&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">htons&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">port_number&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="cm">/* Set host address */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">inet_pton&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">PF_INET&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">ip&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="o">&amp;amp;&lt;/span>&lt;span class="n">server_addr&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">sin_addr&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="o">==&lt;/span> &lt;span class="o">-&lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="p">){&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">err_exit&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;inet_pton&amp;#34;&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="cm">/* Create socket */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">int&lt;/span> &lt;span class="n">sockfd&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">socket&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">PF_INET&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">SOCK_STREAM&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">sockfd&lt;/span> &lt;span class="o">==&lt;/span> &lt;span class="o">-&lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="p">){&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">err_exit&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;socket&amp;#34;&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">connect&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">sockfd&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="k">struct&lt;/span> &lt;span class="nc">sockaddr&lt;/span>&lt;span class="o">*&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="o">&amp;amp;&lt;/span>&lt;span class="n">server_addr&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="k">sizeof&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">server_addr&lt;/span>&lt;span class="p">))&lt;/span> &lt;span class="o">==&lt;/span> &lt;span class="o">-&lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="p">){&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">err_exit&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;connect&amp;#34;&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="n">sockfd&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kt">int&lt;/span> &lt;span class="nf">main&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="kt">int&lt;/span> &lt;span class="n">argc&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="k">const&lt;/span> &lt;span class="kt">char&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="n">argv&lt;/span>&lt;span class="p">[]){&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">argc&lt;/span> &lt;span class="o">&amp;lt;&lt;/span> &lt;span class="mi">3&lt;/span>&lt;span class="p">){&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">printf&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;usage:%s ip port&lt;/span>&lt;span class="se">\n&lt;/span>&lt;span class="s">&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">argv&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="mi">0&lt;/span>&lt;span class="p">]);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">exit&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">0&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="cm">/* Get server parameters */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">const&lt;/span> &lt;span class="kt">char&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="n">ip&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">argv&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="p">];&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">const&lt;/span> &lt;span class="kt">int&lt;/span> &lt;span class="n">port&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">atoi&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">argv&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="mi">2&lt;/span>&lt;span class="p">]);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">//Create socket
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="kt">int&lt;/span> &lt;span class="n">sock&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">create_socket&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">ip&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">port&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">//Initiate request to server (specific IP and port)
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">while&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="p">){&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">string&lt;/span> &lt;span class="n">buff&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">getline&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">cin&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">buff&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">buff&lt;/span> &lt;span class="o">==&lt;/span> &lt;span class="s">&amp;#34;exit&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="k">break&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">write&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">sock&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">buff&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">c_str&lt;/span>&lt;span class="p">(),&lt;/span> &lt;span class="n">buff&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">size&lt;/span>&lt;span class="p">());&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">char&lt;/span> &lt;span class="n">end&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="sc">&amp;#39;\n&amp;#39;&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">write&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">sock&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="o">&amp;amp;&lt;/span>&lt;span class="n">end&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">close&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">sock&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="compilation">Compilation
+&lt;/h2>&lt;p>Save the above text as socket_server.cpp and socket_client.cpp, then compile and link the programs.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">g++ -Wall socket_server.cpp -o server &amp;amp;&amp;amp; g++ -Wall socket_client.cpp -o client
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="execution">Execution
+&lt;/h2>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">./server localhost 1234
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">./client localhost 1234
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>Entering text on the client side and pressing Enter will display it on the server side. Press Ctrl+C or type &amp;ldquo;exit&amp;rdquo; to close the client.&lt;/p>
+&lt;h2 id="execution-flow">Execution Flow
+&lt;/h2>&lt;p>The server first creates a passive open socket file descriptor, then adds this file descriptor to the epoll interest list. It then enters a loop. Whenever the interest list&amp;rsquo;s wait ends, it means the corresponding file descriptor can be operated on. When a client connects to the passive open socket file descriptor, it indicates a client has connected, and the passive open file descriptor can be accepted. The new file descriptor created after accept is the file descriptor for communicating with the client, which is also added to the interest list. When the client sends data, this file descriptor will also generate a readable signal, causing the wait to end. At this point, it enters processing mode, reading and displaying the data sent by the client.&lt;/p></description></item><item><title>SOCKET Learning Notes</title><link>https://nansenli.com/post/jianshu/%E7%BD%91%E7%BB%9C/socket-%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/</link><pubDate>Mon, 25 Dec 2017 02:34:00 +0000</pubDate><guid>https://nansenli.com/post/jianshu/%E7%BD%91%E7%BB%9C/socket-%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/</guid><description>&lt;h2 id="introduction">Introduction
+&lt;/h2>&lt;p>Interview questions mentioning epoll involve socket programming. To understand epoll principles in depth, we first need to understand socket programming. A socket is an inter-process communication (IPC) mechanism, even in networks. This means the main entities communicating in a network are processes, not computers. Socket learning includes how to establish servers and clients, and how to use socket APIs.&lt;/p>
+&lt;h4 id="fdsocketdomain-type-protocol">fd=socket(domain, type, protocol);
+&lt;/h4>&lt;p>The socket call can be used to create a socket, for example,
+domain can specify IPv4, type can specify TCP, and protocol is generally 0.&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>domain
+domain specifies the communication scope and the type of communication address. There are several classic types:
+UNIX IPV4 IPV6, corresponding to parameters AF_UNIX AF_INET AF_INET6.
+The domain parameters all start with AF, representing address families. PF stands for protocol families. Originally, address families and protocol families were designed to have many-to-many relationships, but during implementation, each protocol family corresponds to exactly one address family. So basically, specifying the domain determines the protocol family and the address family.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>type
+Socket indicates whether it&amp;rsquo;s a stream or a datagram, which essentially means TCP or UDP. For TCP, it&amp;rsquo;s SOCK_STREAM; for UDP, it&amp;rsquo;s SOCK_DGRAM.&lt;/p>
+&lt;/li>
+&lt;/ul>
+&lt;h4 id="bindint-sockfd-const-struct-sockaddr-addr-socklen_t-addrlen">bind(int sockfd, const struct sockaddr *addr, socklen_t addrlen);
+&lt;/h4>&lt;p>This call is used to bind a socket to an address. After that, TCP packets can be sent, and in some cases, UDP packets can also be sent through write, but only data from the peer socket can be read on this socket.&lt;/p>
+&lt;ul>
+&lt;li>sockaddr
+This structure has an integer representing the address type, followed by a char array. As we&amp;rsquo;ll see, depending on the use case, other data structures are passed in, but they are generic.&lt;/li>
+&lt;/ul>
+&lt;h4 id="listenint-sockfd-int-backlog">listen(int sockfd, int backlog)
+&lt;/h4>&lt;p>Marks a socket descriptor as passive. It can be connected by active sockets. backlog is used to limit the number of pending connections.&lt;/p>
+&lt;h4 id="acceptint-sockfd-struct-sockaddr-addr-socklen_t--addrlen">accept(int sockfd, struct sockaddr *addr, socklen_t * addrlen);
+&lt;/h4>&lt;p>The accept call blocks and waits for an incoming request on the file descriptor sockfd. Once the request succeeds, a new socket is created, and this new socket connects with the other party.&lt;/p>
+&lt;ul>
+&lt;li>addr
+Returns the address of the other party&lt;/li>
+&lt;li>addrlen
+Passes in the length of addr, indicating the maximum length that can be written.&lt;/li>
+&lt;/ul>
+&lt;h4 id="connectint-sockfd-const-struct-sockaddr--addr-socklen_t-addrlen">connect(int sockfd, const struct sockaddr * addr, socklen_t addrlen);
+&lt;/h4>&lt;p>Connects sockfd to the address described by addr.&lt;/p>
+&lt;h4 id="closeint-fd">close(int fd)
+&lt;/h4>&lt;p>Used to close the connection&lt;/p>
+&lt;h4 id="read-write">read write
+&lt;/h4>&lt;p>Used for reading from or writing to sockfd&lt;/p>
+&lt;h4 id="recvfromint-sockfd-void-buffer-size_t-length-int-flags-struct-sockaddr-src_addr-socklen_t-addrlen">recvfrom(int sockfd, void *buffer, size_t length, int flags, struct sockaddr *src_addr, socklen_t *addrlen);
+&lt;/h4>&lt;h4 id="sendtoint-sockfd-const-void-buffer-size_t-length-int-flags-const-struct-sockaddr-dest_addr-socklen_t-addrlen">sendto(int sockfd, const void *buffer, size_t length, int flags, const struct sockaddr *dest_addr, socklen_t addrlen);
+&lt;/h4>&lt;p>Used to send and receive UDP packets. The server side cannot use the listen function and accept function, and the client side cannot use the connect function.&lt;/p>
+&lt;h4 id="unix-domain">unix domain
+&lt;/h4>&lt;p>Using the APIs above, communication through files on the local machine can be implemented.
+The sockaddr used by unix domain is sockaddr_un, represented as follows:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">struct sockaddr_un{
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> sa_family_t sun_family;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> char sun_path[108];
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h4 id="network-byte-order">Network Byte Order
+&lt;/h4>&lt;p>The network byte order follows big-endian, while x86 is a little-endian structure. The conversion is done using the following functions:&lt;/p>
+&lt;ul>
+&lt;li>htons&lt;/li>
+&lt;li>htonl&lt;/li>
+&lt;li>ntohs&lt;/li>
+&lt;li>ntohl
+h is for host, n is for net, s is for 16-bit, and l is for 32-bit. s and l stand for short and long, although these standards are no longer used that way now.&lt;/li>
+&lt;/ul>
+&lt;h4 id="internet-socket-address-structure">Internet Socket Address Structure
+&lt;/h4>&lt;p>The socket address used in networks is sockaddr_in, defined as follows:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">struct sockaddr_in{
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> sa_family_t sin_family;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> in_port_t sin_port;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> struct in_addr sin_addr;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> unsigned char __pad[X];
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>As you can see, the difference is that the char array is replaced by a port and an address. sin is the abbreviation of socket Internet, which is as poor an abbreviation as sun.&lt;/p>
+&lt;h4 id="internet-socket-address-conversion">Internet Socket Address Conversion
+&lt;/h4>&lt;p>APIs for converting string address formats to binary address formats:&lt;/p>
+&lt;h4 id="inet_ptonint-domain-const-char-src-void-addrptr">inet_pton(int domain, const char *src, void *addrptr);
+&lt;/h4>&lt;p>This function is used to convert the string contained in src to a &lt;strong>network byte order&lt;/strong> binary address, storing it in addrptr. p stands for presentation, meaning a human-readable address.&lt;/p>
+&lt;h4 id="const-char--inet_ntopint-domain-const-void-addrptr-char-dst_str-size_t-len">const char * inet_ntop(int domain, const void *addrptr, char *dst_str, size_t len);
+&lt;/h4>&lt;p>This function converts a network byte order binary address to a human-readable address, writing it to dst_str. The buffer size is passed in by len.&lt;/p>
+&lt;h4 id="getaddrinfoconst-char-host-const-char-service-const-struct-addrinfo-hints-struct-result">getaddrinfo(const char *host, const char *service, const struct addrinfo *hints, struct **result);
+&lt;/h4>&lt;p>This function returns a socket address and port number given a host name and service name.
+getaddrinfo takes host, service, and hints as inputs, where the host parameter includes a hostname or an IPv4 string. Service is a service name or a port number. After calling this function, freeaddrinfo should be used to free the space.&lt;/p>
+&lt;h4 id="getnameinfoconst-struct-sockaddr-addr-socklen_t-addrlen-char-host-size_t-hostlen-char-service-size_t-servlen-int-flags">getnameinfo(const struct sockaddr *addr, socklen_t addrlen, char *host, size_t hostlen, char *service, size_t servlen, int flags);
+&lt;/h4>&lt;p>Given a socket address structure, returns a host and service name string.&lt;/p>
+&lt;h4 id="setsockoptint-sockfd-int-level-int-optname-const-void-optval-socklen_t-optlen">setsockopt(int sockfd, int level, int optname, const void *optval, socklen_t optlen);
+&lt;/h4>&lt;p>sockfd is the file descriptor pointing to the socket. The level parameter specifies the protocol to which the socket option applies, such as TCP or IP, indicating the socket API layer where the option takes effect. Generally, this option is set to SOL_SOCKET, indicating that it applies to the socket API layer. The optname parameter indicates the option we expect to set, optvalue is used to set the value of that option, which can be an integer or a pointer to a structure pointing to a buffer, and the optlen parameter is the size of the region pointed to by that pointer.&lt;/p>
+&lt;p>For example, to set sockfd to the reuseaddr property, you can call:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl"> int reuse = 1;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> if(setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &amp;amp;reuse, sizeof(reuse)) == -1)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> {
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> err_exit(&amp;#34;setsockopt&amp;#34;);
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> }
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h4 id="getsockoptint-sockfd-int-level-int-optname-void-optval-socklen_t-optlen">getsockopt(int sockfd, int level, int optname, void *optval, socklen_t optlen);
+&lt;/h4>&lt;p>The usage is the same as above, but it&amp;rsquo;s for getting rather than setting.&lt;/p></description></item></channel></rss>

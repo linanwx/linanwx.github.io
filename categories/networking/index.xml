@@ -1400,7 +1400,27 @@ This conforms to intuitive thinking; the events returned by epoll_wait represent
 &lt;/ol>
 &lt;h2 id="how-to-choose-between-long-and-short-connections">How to Choose Between Long and Short Connections
 &lt;/h2>&lt;p>Long connections are often used for frequent operations, point-to-point communications, and situations where the number of connections cannot be too many. Each TCP connection requires a three-way handshake, which takes time. If each operation first establishes a connection and then operates, processing speed will be reduced significantly. So, if the connection is not disconnected after each operation, subsequent processing can directly send data packets without establishing a TCP connection. For example, database connections use long connections. Using short connections for frequent communication will cause socket errors, and frequent socket creation is also a waste of resources.&lt;/p>
-&lt;p>Web services like HTTP websites generally use short connections because long connections consume certain resources on the server side. For websites with such frequent connections from thousands or even millions of clients, using short connections saves resources. If long connections were used, and there were thousands of users at the same time, each user occupying one connection would be unimaginable. Therefore, short connections are better for situations with high concurrency but where each user does not need frequent operations.&lt;/p></description></item><item><title>Epoll TCP Server and Client Simple Example</title><link>https://nansenli.com/post/jianshu/%E7%BD%91%E7%BB%9C/epoll-tcp%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B8%8E%E5%AE%A2%E6%88%B7%E7%AB%AF%E7%AE%80%E6%98%8E%E4%BE%8B%E5%AD%90/</link><pubDate>Mon, 25 Dec 2017 02:52:00 +0000</pubDate><guid>https://nansenli.com/post/jianshu/%E7%BD%91%E7%BB%9C/epoll-tcp%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B8%8E%E5%AE%A2%E6%88%B7%E7%AB%AF%E7%AE%80%E6%98%8E%E4%BE%8B%E5%AD%90/</guid><description>&lt;h2 id="introduction">Introduction
+&lt;p>Web services like HTTP websites generally use short connections because long connections consume certain resources on the server side. For websites with such frequent connections from thousands or even millions of clients, using short connections saves resources. If long connections were used, and there were thousands of users at the same time, each user occupying one connection would be unimaginable. Therefore, short connections are better for situations with high concurrency but where each user does not need frequent operations.&lt;/p></description></item><item><title>Thoughts on the Phenomenon of Telecom Hijacking Red Packet Ads on CSDN Mobile</title><link>https://nansenli.com/post/jianshu/%E9%9A%8F%E7%AC%94/%E5%85%B3%E4%BA%8Ecsdn%E7%A7%BB%E5%8A%A8%E7%AB%AF%E8%A2%AB%E7%94%B5%E4%BF%A1%E5%8A%AB%E6%8C%81%E7%BA%A2%E5%8C%85%E5%B9%BF%E5%91%8A%E7%9A%84%E7%8E%B0%E8%B1%A1%E4%B8%8E%E6%84%9F%E6%83%B3/</link><pubDate>Sun, 31 Dec 2017 06:24:00 +0000</pubDate><guid>https://nansenli.com/post/jianshu/%E9%9A%8F%E7%AC%94/%E5%85%B3%E4%BA%8Ecsdn%E7%A7%BB%E5%8A%A8%E7%AB%AF%E8%A2%AB%E7%94%B5%E4%BF%A1%E5%8A%AB%E6%8C%81%E7%BA%A2%E5%8C%85%E5%B9%BF%E5%91%8A%E7%9A%84%E7%8E%B0%E8%B1%A1%E4%B8%8E%E6%84%9F%E6%83%B3/</guid><description>&lt;h2 id="introduction">Introduction
+&lt;/h2>&lt;p>Recently I suspected being hijacked by China Telecom, so I&amp;rsquo;m recording my analysis here.&lt;/p>
+&lt;h2 id="phenomenon">Phenomenon
+&lt;/h2>&lt;p>I use a Sichuan Telecom SIM card with my Samsung S8. When visiting the following websites, I am redirected to a full-screen advertisement, which is the Alipay red packet interface. The user experience is terrible. Below is an address that gets hijacked:
+&lt;a class="link" href="http://m.blog.csdn.net/skyroben/article/details/70195575" target="_blank" rel="noopener"
+>http://m.blog.csdn.net/skyroben/article/details/70195575&lt;/a>&lt;/p>
+&lt;h2 id="analysis">Analysis
+&lt;/h2>&lt;ul>
+&lt;li>When using SS proxy (4G) on my phone to visit the above website, there&amp;rsquo;s no advertisement or hijacking&lt;/li>
+&lt;li>With direct connection via Telecom WiFi, hijacking occurs&lt;/li>
+&lt;li>Using hotspot and accessing the URL from a computer, no hijacking occurs&lt;/li>
+&lt;li>Using hotspot and changing the user agent on the computer to an Android client, hijacking occurs with some probability??&lt;/li>
+&lt;li>Without using hotspot, with a wired connection (Telecom) on the computer, changing the user agent to Android client, hijacking occurs with some probability??&lt;/li>
+&lt;li>Using Chrome on mobile (S8), connected to Telecom WiFi, adding view-source: before the URL to view the source code, and saving the results for comparison on the computer, no differences were found&lt;/li>
+&lt;li>Using Chrome on mobile (S8), connected to China Mobile WiFi, hijacking occurs! (Script cache?)&lt;/li>
+&lt;li>Using iOS Chrome, connected to Telecom WiFi, no hijacking&lt;/li>
+&lt;/ul>
+&lt;h2 id="summary">Summary
+&lt;/h2>&lt;p>Since the webpage source code doesn&amp;rsquo;t change after hijacking, it might be a script hijack. Since hijacking also occurs when using China Mobile WiFi, we can&amp;rsquo;t rule out the possibility that CSDN added the advertisements themselves. Using an SS proxy can bypass the hijacking, indicating that the hijacking is regional. The fact that computers and iOS devices aren&amp;rsquo;t hijacked suggests that the hijacking specifically targets Android browsers.&lt;/p>
+&lt;h2 id="conclusion">Conclusion
+&lt;/h2>&lt;p>Regular users should avoid using Telecom networks and Android phones, and all websites are advised to use HTTPS encryption.&lt;/p></description></item><item><title>Epoll TCP Server and Client Simple Example</title><link>https://nansenli.com/post/jianshu/%E7%BD%91%E7%BB%9C/epoll-tcp%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B8%8E%E5%AE%A2%E6%88%B7%E7%AB%AF%E7%AE%80%E6%98%8E%E4%BE%8B%E5%AD%90/</link><pubDate>Mon, 25 Dec 2017 02:52:00 +0000</pubDate><guid>https://nansenli.com/post/jianshu/%E7%BD%91%E7%BB%9C/epoll-tcp%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B8%8E%E5%AE%A2%E6%88%B7%E7%AB%AF%E7%AE%80%E6%98%8E%E4%BE%8B%E5%AD%90/</guid><description>&lt;h2 id="introduction">Introduction
 &lt;/h2>&lt;p>epoll is a Linux-specific API that provides efficient file descriptor management. It&amp;rsquo;s commonly used to monitor the readability of multiple file descriptors in batch and is one of the effective methods for high-concurrency servers. Below is a simple example of an epoll server and client.&lt;/p>
 &lt;h2 id="server-side">Server Side
 &lt;/h2>&lt;div class="highlight">&lt;div class="chroma">
@@ -1998,55 +2018,4 @@ The parameters are: an array containing elements with file descriptors, states t
 The epoll function includes three APIs: epoll_create(), epoll_ctl(), and epoll_wait().
 Among the three calls, epoll has the best performance and most effectiveness. However, it can only be used on Linux.&lt;/li>
 &lt;/ul>
-&lt;p>This is mainly because a server will have multiple socket connections, and if a thread were created for each socket, it would consume considerable resources. Therefore, epoll is needed to optimize performance.&lt;/p></description></item><item><title>Building a Personal Blog with Flask</title><link>https://nansenli.com/post/jianshu/%E7%BD%91%E7%BB%9C/%E5%9F%BA%E4%BA%8Eflask%E7%9A%84%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA/</link><pubDate>Sun, 30 Jul 2017 17:38:00 +0000</pubDate><guid>https://nansenli.com/post/jianshu/%E7%BD%91%E7%BB%9C/%E5%9F%BA%E4%BA%8Eflask%E7%9A%84%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA/</guid><description>&lt;h2 id="introduction">Introduction
-&lt;/h2>&lt;p>The source code can be run directly, supports markdown syntax, supports email registration, and any issues can be referenced in &lt;a class="link" href="https://book.douban.com/subject/26274202/" target="_blank" rel="noopener"
->《Flask Web Development: Web Application Development in Action with Python》&lt;/a>.&lt;/p>
-&lt;p>Blog website: &lt;a class="link" href="http://www.unrealblue.cc" target="_blank" rel="noopener"
->http://www.unrealblue.cc&lt;/a>
-Project repository: &lt;a class="link" href="https://github.com/linanwx/unrealblue-blog" target="_blank" rel="noopener"
->https://github.com/linanwx/unrealblue-blog&lt;/a>&lt;/p>
-&lt;h2 id="preview">Preview
-&lt;/h2>&lt;p>&lt;img src="https://nansenli.com/img/rescued/a0027251f6b8.jpg"
-loading="lazy"
-alt="image.png"
->&lt;/p>
-&lt;p>&lt;img src="https://nansenli.com/img/rescued/ee8b6a7c6286.jpg"
-loading="lazy"
-alt="markdown syntax"
->&lt;/p>
-&lt;p>&lt;img src="https://nansenli.com/img/rescued/2482752767fe.jpg"
-loading="lazy"
-alt="login"
->&lt;/p>
-&lt;p>&lt;img src="https://nansenli.com/img/rescued/a827700f36d3.jpg"
-loading="lazy"
-alt="homepage"
->&lt;/p>
-&lt;h2 id="deployment-process">Deployment Process
-&lt;/h2>&lt;p>First, to verify the program functionality, you need to deploy it on your local machine. After that, you can use nginx as a reverse proxy tool to expose the port, so that others can access your blog on the public network. Then follow the same steps on the server. The specific process is as follows:&lt;/p>
-&lt;ol>
-&lt;li>Install the virtualenv Python virtual environment with &lt;code>pip install virtualenv&lt;/code> or &lt;code>pip3 install virtualenv&lt;/code>. Then use virtualenv to create a venv environment in a suitable directory, for example under this project with &lt;code>virtualenv venv&lt;/code>.&lt;/li>
-&lt;li>Activate the virtualenv environment by running the activate script in the venv directory: &lt;code>. venv/bin/activate&lt;/code>. Note the position of the dot. After this, you will see the (venv) marker at the beginning of the command line.&lt;/li>
-&lt;li>Install all modules listed in requirements.txt within the virtual environment: &lt;code>pip3 install -r requirements.txt&lt;/code>. If installation is too slow, you may need to configure a domestic pip source. See the pip official page for how to change the pip source.&lt;/li>
-&lt;li>Import environment variables by creating an &lt;code>env&lt;/code> file in the project directory with the following fields:&lt;/li>
-&lt;/ol>
-&lt;ul>
-&lt;li>&lt;code>MAIL_USERNAME=email@example.com&lt;/code> (Email used by the server to send verification codes, an email account with smtp service enabled. The program uses QQ email by default, modify the config file to use other types of email)&lt;/li>
-&lt;li>&lt;code>MAIL_PASSWORD=password&lt;/code> (Password for the above email, note that QQ email uses a special 16-digit password)&lt;/li>
-&lt;li>&lt;code>FLASK_ADMIN=admin@example.com&lt;/code> (After the server is running, an account created with this email will be the administrator)&lt;/li>
-&lt;li>&lt;code>MAIL_SERVER=smtp.qq.com&lt;/code> (Email server address)&lt;/li>
-&lt;li>&lt;code>FLASKY_MAIL_SENDER=example@foxmail.com&lt;/code> (Sender&amp;rsquo;s email)&lt;/li>
-&lt;/ul>
-&lt;ol start="5">
-&lt;li>Set up database migration by entering the following commands:&lt;/li>
-&lt;/ol>
-&lt;ul>
-&lt;li>&lt;code>python manager.py db init&lt;/code> (The init command creates a migration repository, which will add a migrations folder)&lt;/li>
-&lt;li>&lt;code>python manager.py db migrate -m &amp;quot;initial migration&amp;quot;&lt;/code> (The migrate command is used to automatically create migration scripts)&lt;/li>
-&lt;li>&lt;code>python manager.py db upgrade&lt;/code> (Update the database. The first time you use this command, it will create a new database called data-dev.sqlite)&lt;/li>
-&lt;/ul>
-&lt;ol start="6">
-&lt;li>Deploy the program: &lt;code>python manager.py deploy&lt;/code>&lt;/li>
-&lt;li>Run the program locally: &lt;code>python manager.py runserver&lt;/code>. Open http://127.0.0.1:5000 to view it, press Ctrl+C to exit the program.&lt;/li>
-&lt;li>If running on a server and you want to preserve data, you can copy the migrations folder and the data-dev.sqlite database to the server, then use &lt;code>./venv/bin/gunicorn -w 4 -b 127.0.0.1:8080 manager:app&lt;/code>. At this point, you should be able to see the webpage on port 8080, and this port is exposed to the external network. Enter the server address in your local browser, and you will be able to see the blog.&lt;/li>
-&lt;/ol></description></item></channel></rss>
+&lt;p>This is mainly because a server will have multiple socket connections, and if a thread were created for each socket, it would consume considerable resources. Therefore, epoll is needed to optimize performance.&lt;/p></description></item></channel></rss>

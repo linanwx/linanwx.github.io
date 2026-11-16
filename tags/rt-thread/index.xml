@@ -1,0 +1,405 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>RT-Thread on Nansen Li's Blog
+李楠森的博客</title><link>https://nansenli.com/tags/rt-thread/</link><description>Recent content in RT-Thread on Nansen Li's Blog
+李楠森的博客</description><generator>Hugo -- gohugo.io</generator><language>en</language><copyright>Nansen Li 🌈 （李楠森）</copyright><lastBuildDate>Thu, 06 Apr 2017 10:22:00 +0000</lastBuildDate><atom:link href="https://nansenli.com/tags/rt-thread/index.xml" rel="self" type="application/rss+xml"/><item><title>Using STM32 HAL Library to Drive UART in RT-Thread</title><link>https://nansenli.com/post/jianshu/%E5%B5%8C%E5%85%A5%E5%BC%8F/%E5%9C%A8rt-thread%E4%B8%AD%E4%BD%BF%E7%94%A8stm32%E7%9A%84hal%E5%BA%93%E9%A9%B1%E5%8A%A8%E4%B8%B2%E5%8F%A3uart/</link><pubDate>Thu, 06 Apr 2017 10:22:00 +0000</pubDate><guid>https://nansenli.com/post/jianshu/%E5%B5%8C%E5%85%A5%E5%BC%8F/%E5%9C%A8rt-thread%E4%B8%AD%E4%BD%BF%E7%94%A8stm32%E7%9A%84hal%E5%BA%93%E9%A9%B1%E5%8A%A8%E4%B8%B2%E5%8F%A3uart/</guid><description>&lt;h2 id="introduction">Introduction
+&lt;/h2>&lt;p>Previously, I had been trying to develop STM32 with RT-Thread under Linux. While this approach is feasible, it comes with various inconveniences. Using VSCode + Scons + openocd for editing, compiling/linking, and flashing is possible for development, but there&amp;rsquo;s no complete solution for debugging in this environment, requiring Eclipse for debugging. Although converting RT-Thread to an Eclipse project is possible, at that point it might be better to directly use Keil 5 for development under Windows.&lt;/p>
+&lt;p>Since the STM32F103&amp;rsquo;s onboard flash is too small and its stack is very limited, I switched to STM32F411. The board is from Waveshare&amp;rsquo;s XNUCLEO, which is compatible with STM&amp;rsquo;s official NUCLEO boards.&lt;/p>
+&lt;h2 id="installing-keil-523">Installing Keil 5.23
+&lt;/h2>&lt;p>I first installed Keil 5.11 and cracked it, then uninstalled it and installed Keil 5.23, which automatically showed as successfully cracked. The cracking tool is the registration code generator that has been popular for many years. I&amp;rsquo;m using Keil 5.23 because RT-Thread projects can only be opened with this version.&lt;/p>
+&lt;h2 id="installing-libraries-with-pack-installer">Installing Libraries with Pack Installer
+&lt;/h2>&lt;p>You need to install Keil::STM32F4xx_DFP to open the nucleo project in RT-Thread&amp;rsquo;s bps branch.&lt;/p>
+&lt;h2 id="installing-stm32cubemx">Installing STM32CubeMX
+&lt;/h2>&lt;p>With STM32CubeMX, we can easily generate initialization code by clicking with the mouse. However, we still need to write function calls ourselves, which is not as convenient as NPX&amp;rsquo;s PE.&lt;/p>
+&lt;h2 id="installing-st-link-driver">Installing ST-Link Driver
+&lt;/h2>&lt;p>Waveshare&amp;rsquo;s 100 yuan board includes an ST-Link debugger, so we&amp;rsquo;ll use ST-Link for debugging.&lt;/p>
+&lt;h2 id="downloading-the-nucleo-project">Downloading the Nucleo Project
+&lt;/h2>&lt;p>Open the Keil 5 project in &lt;code>rt-thread-master\bsp\stm32f411-nucleo&lt;/code>, try to compile it, and after it passes, set up the project&amp;rsquo;s debug configuration to use ST-Link for debugging, then download the program to the board. Although the program is downloaded, there&amp;rsquo;s no visible effect because the main function is empty.&lt;/p>
+&lt;p>Let&amp;rsquo;s add the following code to the main function:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-C" data-lang="C">&lt;span class="line">&lt;span class="cl">&lt;span class="kt">int&lt;/span> &lt;span class="nf">main&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="kt">void&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="cm">/* user app entry */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nf">MX_GPIO_Init&lt;/span>&lt;span class="p">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">while&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="p">){&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nf">rt_thread_delay&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">5&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nf">HAL_GPIO_WritePin&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">GPIOC&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">GPIO_PIN_5&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">GPIO_PIN_SET&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nf">rt_thread_delay&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">5&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nf">HAL_GPIO_WritePin&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">GPIOC&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">GPIO_PIN_5&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">GPIO_PIN_RESET&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>And add the LED initialization function:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">static void MX_GPIO_Init(void)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">{
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> GPIO_InitTypeDef GPIO_InitStruct;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> /* GPIO Ports Clock Enable */
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> __HAL_RCC_GPIOC_CLK_ENABLE();
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> /*Configure GPIO pin Output Level */
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> HAL_GPIO_WritePin(GPIOC, GPIO_PIN_5, GPIO_PIN_RESET);
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> /*Configure GPIO pin : PC5 */
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> GPIO_InitStruct.Pin = GPIO_PIN_5;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> GPIO_InitStruct.Pull = GPIO_NOPULL;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> HAL_GPIO_Init(GPIOC, &amp;amp;GPIO_InitStruct);
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>Now we can see the onboard LED4 light up and blink.&lt;/p>
+&lt;p>Where do these initialization codes come from? The code in the main function is found online, a simple function to operate GPIO. The MX_GPIO_Init code segment comes from the code automatically generated by STM32CubeMX. Below I&amp;rsquo;ll explain how to generate UART initialization code using STM32CubeMX.&lt;/p>
+&lt;h2 id="generating-uart-initialization-code-with-stm32cubemx">Generating UART Initialization Code with STM32CubeMX
+&lt;/h2>&lt;ul>
+&lt;li>First, create a project and set the chip model. Here&amp;rsquo;s a demonstration:&lt;/li>
+&lt;/ul>
+&lt;p>&lt;img src="https://nansenli.com/img/rescued/905af84ac774.gif"
+loading="lazy"
+alt="2017-04-06_16-41-06.gif"
+>&lt;/p>
+&lt;ul>
+&lt;li>Then set up the serial port pins.
+Since RT-Thread has already initialized UART1, we can&amp;rsquo;t use this one. We can use UART6.&lt;/li>
+&lt;/ul>
+&lt;p>&lt;img src="https://nansenli.com/img/rescued/4985758a4b21.gif"
+loading="lazy"
+alt="2017-04-06_16-57-29.gif"
+>&lt;/p>
+&lt;ul>
+&lt;li>Open the project and extract the code. The blue part is the code we need to take:&lt;/li>
+&lt;/ul>
+&lt;p>&lt;img src="https://nansenli.com/img/rescued/f06cc889e552.gif"
+loading="lazy"
+alt="2017-04-06_17-01-11.gif"
+>&lt;/p>
+&lt;ul>
+&lt;li>Port the code
+In the void HAL_UART_MspInit(UART_HandleTypeDef *huart) function, add the code for USART6:&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;span class="lnt">30
+&lt;/span>&lt;span class="lnt">31
+&lt;/span>&lt;span class="lnt">32
+&lt;/span>&lt;span class="lnt">33
+&lt;/span>&lt;span class="lnt">34
+&lt;/span>&lt;span class="lnt">35
+&lt;/span>&lt;span class="lnt">36
+&lt;/span>&lt;span class="lnt">37
+&lt;/span>&lt;span class="lnt">38
+&lt;/span>&lt;span class="lnt">39
+&lt;/span>&lt;span class="lnt">40
+&lt;/span>&lt;span class="lnt">41
+&lt;/span>&lt;span class="lnt">42
+&lt;/span>&lt;span class="lnt">43
+&lt;/span>&lt;span class="lnt">44
+&lt;/span>&lt;span class="lnt">45
+&lt;/span>&lt;span class="lnt">46
+&lt;/span>&lt;span class="lnt">47
+&lt;/span>&lt;span class="lnt">48
+&lt;/span>&lt;span class="lnt">49
+&lt;/span>&lt;span class="lnt">50
+&lt;/span>&lt;span class="lnt">51
+&lt;/span>&lt;span class="lnt">52
+&lt;/span>&lt;span class="lnt">53
+&lt;/span>&lt;span class="lnt">54
+&lt;/span>&lt;span class="lnt">55
+&lt;/span>&lt;span class="lnt">56
+&lt;/span>&lt;span class="lnt">57
+&lt;/span>&lt;span class="lnt">58
+&lt;/span>&lt;span class="lnt">59
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">void HAL_UART_MspInit(UART_HandleTypeDef *huart)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">{
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> GPIO_InitTypeDef GPIO_InitStruct;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> if (huart-&amp;gt;Instance == USART2)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> {
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> /*##-1- Enable peripherals and GPIO Clocks #################################*/
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> /* Enable GPIO TX/RX clock */
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> USARTx_TX_GPIO_CLK_ENABLE();
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> USARTx_RX_GPIO_CLK_ENABLE();
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> /* Enable USARTx clock */
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> USARTx_CLK_ENABLE();
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> /*##-2- Configure peripheral GPIO ##########################################*/
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> /* UART TX GPIO pin configuration */
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> GPIO_InitStruct.Pin = USARTx_TX_PIN;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> GPIO_InitStruct.Pull = GPIO_PULLUP;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> GPIO_InitStruct.Speed = GPIO_SPEED_FAST;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> GPIO_InitStruct.Alternate = USARTx_TX_AF;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> HAL_GPIO_Init(USARTx_TX_GPIO_PORT, &amp;amp;GPIO_InitStruct);
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> /* UART RX GPIO pin configuration */
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> GPIO_InitStruct.Pin = USARTx_RX_PIN;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> GPIO_InitStruct.Alternate = USARTx_RX_AF;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> HAL_GPIO_Init(USARTx_RX_GPIO_PORT, &amp;amp;GPIO_InitStruct);
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> HAL_NVIC_SetPriority(USART2_IRQn, 0, 1);
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> HAL_NVIC_EnableIRQ(USART2_IRQn);
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> }
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> if (huart-&amp;gt;Instance == USART6)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> {
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> /* USER CODE BEGIN USART6_MspInit 0 */
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> /* USER CODE END USART6_MspInit 0 */
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> /* Peripheral clock enable */
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> __HAL_RCC_USART6_CLK_ENABLE();
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> /**USART6 GPIO Configuration
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> PC6 ------&amp;gt; USART6_TX
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> PC7 ------&amp;gt; USART6_RX
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> */
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> GPIO_InitStruct.Pin = GPIO_PIN_6|GPIO_PIN_7;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> GPIO_InitStruct.Pull = GPIO_PULLUP;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> GPIO_InitStruct.Alternate = GPIO_AF8_USART6;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> HAL_GPIO_Init(GPIOC, &amp;amp;GPIO_InitStruct);
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> /* Peripheral interrupt init */
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> HAL_NVIC_SetPriority(USART6_IRQn, 0, 0);
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> HAL_NVIC_EnableIRQ(USART6_IRQn);
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> /* USER CODE BEGIN USART6_MspInit 1 */
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> /* USER CODE END USART6_MspInit 1 */
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> }
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>In the main.c file, add the &lt;code>MX_USART6_UART_Init();&lt;/code> function content, and call &lt;code>MX_USART6_UART_Init();&lt;/code> in the main function to initialize.&lt;/p>
+&lt;p>Then, test it in the main() function:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl"> uint8_t TxData[10]= &amp;#34;01234abcde&amp;#34;;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> HAL_UART_Transmit(&amp;amp;huart6,TxData,10,0xf);
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>We&amp;rsquo;ll place the Waveshare board&amp;rsquo;s JP4 jumper on the right side so that the USB TO UART can use PC6 and PC7 as the serial interface. Then, connect the USB interface to the PC, and we can view the character string received by the PC in a serial terminal like XSHELL.&lt;/p></description></item><item><title>Using SPI and UART Devices in RT-Thread</title><link>https://nansenli.com/post/jianshu/%E5%B5%8C%E5%85%A5%E5%BC%8F/%E5%9C%A8rt-thread%E4%B8%AD%E4%BD%BF%E7%94%A8spi%E5%92%8Cuart%E8%AE%BE%E5%A4%87/</link><pubDate>Tue, 07 Mar 2017 09:41:00 +0000</pubDate><guid>https://nansenli.com/post/jianshu/%E5%B5%8C%E5%85%A5%E5%BC%8F/%E5%9C%A8rt-thread%E4%B8%AD%E4%BD%BF%E7%94%A8spi%E5%92%8Cuart%E8%AE%BE%E5%A4%87/</guid><description>&lt;p>RT-Thread uses function calls similar to Linux. Here&amp;rsquo;s how to use devices in a simple way.&lt;/p>
+&lt;ul>
+&lt;li>Hardware Environment: STM32F103RBT6&lt;/li>
+&lt;/ul>
+&lt;h2 id="user-program-location">User Program Location
+&lt;/h2>&lt;p>User programs are written and called in applications.c in the applications folder under the bsp folder. If you have many programs, create another c file to separate them.&lt;/p>
+&lt;h2 id="spi-driver-files">SPI Driver Files
+&lt;/h2>&lt;p>The stm32f10x drivers folder doesn&amp;rsquo;t have SPI drivers. We need to port them from stm32f107. Copy rt_stm32f10x_spi.c, rt_stm32f10x_spi.h, and platform.c files, then add the call to rt_platform_init() in the rt_init_thread_entry function, and add the headers to the corresponding files. Then modify SConscript to include platform.c and rt_stm32f10x_spi.c for compilation, and add the RT_USING_SPI and RT_USING_SPI1 macro definitions in the config.&lt;/p>
+&lt;p>Add the following code to the SPI initialization in platform.c to configure the frequency:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl"> /* config spi */
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> {
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> struct rt_spi_configuration cfg;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> cfg.data_width = 8;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> cfg.mode = RT_SPI_MODE_3 | RT_SPI_MSB; /* SPI Compatible Modes 3 and SPI_FirstBit_MSB in lis302dl datasheet */
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> //APB2=168M/2=84M, SPI1 = 84/2,4,8,16,32 = 42M, 21M, 10.5M, 5.25M, 2.625M ...
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> cfg.max_hz = 2625000; /* SPI_BaudRatePrescaler_16=84000000/16=5.25MHz. The max_hz of lis302dl is 10MHz in datasheet */
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> rt_spi_configure(&amp;amp;spi_device, &amp;amp;cfg);
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> } /* config spi */
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="hardware-configuration">Hardware Configuration
+&lt;/h2>&lt;p>The hardware pins are configured in the platform.c file. We won&amp;rsquo;t modify the default configuration, which means PA4567 are the default SPI input/output pins.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">/*
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> * SPI1_MOSI: PA7
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> * SPI1_MISO: PA6
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> * SPI1_SCK : PA5
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> *
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> * CS0: PA4 SD card. You can change this to your own SPI device&amp;#39;s CS pin
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">*/
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="spi-calls">SPI Calls
+&lt;/h2>&lt;p>SPI calls don&amp;rsquo;t require the open function, just execute:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl"> rt_spi_transfer(spi_device, &amp;amp;ReadAddr, &amp;amp;pBuffer, 1);
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>or rt_spi_send_then_recv can also achieve different effects.&lt;/p>
+&lt;h2 id="uart-calls">UART Calls
+&lt;/h2>&lt;p>UART calls require the open function. Here&amp;rsquo;s a simple example of using a serial device:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">void device_thread_entry(void* parameter)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">{
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> rt_device_t device;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> device = rt_device_find(&amp;#34;uart2&amp;#34;);
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> rt_device_open(device, RT_DEVICE_OFLAG_RDWR|RT_DEVICE_FLAG_INT_RX);
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> char test[10] = &amp;#34;abc&amp;#34;;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> while(1){
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> rt_size_t reclen = rt_device_read(device, 0, test, 10);
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> if(reclen &amp;gt; 0) rt_device_write(device, 0, test, reclen);
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> rt_thread_delay(500);
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> }
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>You can start this thread, and when we input up to 10 characters in uart2, they will be echoed back after 5 seconds. If more than 10 characters are entered, they should be displayed in the next 5-second cycle.
+The official markdown documentation uses a message mechanism to handle UART communication, which can also be referenced.&lt;/p></description></item><item><title>Deploying RT-thread System on STM32 in Ubuntu Environment</title><link>https://nansenli.com/post/jianshu/%E5%B5%8C%E5%85%A5%E5%BC%8F/ubuntu%E7%8E%AF%E5%A2%83%E4%B8%8B%E5%9C%A8stm32%E4%B8%8A%E9%83%A8%E7%BD%B2rt-thread%E7%B3%BB%E7%BB%9F/</link><pubDate>Thu, 02 Mar 2017 07:59:00 +0000</pubDate><guid>https://nansenli.com/post/jianshu/%E5%B5%8C%E5%85%A5%E5%BC%8F/ubuntu%E7%8E%AF%E5%A2%83%E4%B8%8B%E5%9C%A8stm32%E4%B8%8A%E9%83%A8%E7%BD%B2rt-thread%E7%B3%BB%E7%BB%9F/</guid><description>&lt;p>RT-Thread is an open-source embedded operating system from China, with the current version being 2.2. It supports many microcontrollers, such as the STM32 series, and can even run on Bluetooth BLE chips. Despite resource constraints in microcontrollers, deploying an easy-to-use micro operating system is beneficial for project development and code management.&lt;/p>
+&lt;h2 id="required-tools">Required Tools
+&lt;/h2>&lt;ul>
+&lt;li>An STM32 development board with USB download capability&lt;/li>
+&lt;li>Ubuntu system&lt;/li>
+&lt;li>USB to serial cable&lt;/li>
+&lt;/ul>
+&lt;p>I&amp;rsquo;m using the classic &lt;code>ALIENTEK STM32 MINI V2.0&lt;/code> development board with an &lt;code>STM32F103RBT6&lt;/code> chip, and Ubuntu version &lt;code>16.04&lt;/code>&lt;/p>
+&lt;h2 id="1-download-the-cross-compilation-toolchain">1. Download the Cross-compilation Toolchain
+&lt;/h2>&lt;ul>
+&lt;li>Download the &lt;code>gcc-arm-none-eabi&lt;/code> cross-compilation toolchain. For 16.04 systems, simply use &lt;code>apt install gcc-arm-none-eabi&lt;/code> to install&lt;/li>
+&lt;/ul>
+&lt;h2 id="2-download-rt-thread-compilation-tools">2. Download RT-Thread Compilation Tools
+&lt;/h2>&lt;ul>
+&lt;li>This system uses scons for compilation. For 16.04 systems, use &lt;code>apt install scons&lt;/code> to install&lt;/li>
+&lt;/ul>
+&lt;h2 id="3-download-the-source-code">3. Download the Source Code
+&lt;/h2>&lt;ul>
+&lt;li>Download the RT-Thread system from: &lt;code>https://github.com/RT-Thread&lt;/code>&lt;/li>
+&lt;li>Extract the directory&lt;/li>
+&lt;/ul>
+&lt;h2 id="4-modify-the-compilation-project">4. Modify the Compilation Project
+&lt;/h2>&lt;ul>
+&lt;li>Enter the &lt;code>bsp/stm32f10x&lt;/code> directory&lt;/li>
+&lt;li>Edit the &lt;code>rtconfig.py&lt;/code> file&lt;/li>
+&lt;li>Change CROSS_TOOL to gcc&lt;/li>
+&lt;/ul>
+&lt;h2 id="5-configure-for-your-board">5. Configure for Your Board
+&lt;/h2>&lt;ul>
+&lt;li>Configure the crystal oscillator in &lt;code>stm32f10x.h&lt;/code> via &lt;code>HSE_VALUE&lt;/code>, for example 800000&lt;/li>
+&lt;li>Configure RAM in &lt;code>board.h&lt;/code> via &lt;code>STM32_SRAM_SIZE&lt;/code>, for example 20&lt;/li>
+&lt;li>Configure the LED in &lt;code>led.c&lt;/code>&lt;/li>
+&lt;/ul>
+&lt;h2 id="6-compile-the-source-code">6. Compile the Source Code
+&lt;/h2>&lt;ul>
+&lt;li>Run &lt;code>scons&lt;/code> in the &lt;code>bsp/stm32f10x&lt;/code> directory to generate the rtthread.bin file&lt;/li>
+&lt;/ul>
+&lt;h2 id="7-flash-the-code">7. Flash the Code
+&lt;/h2>&lt;ul>
+&lt;li>You can use Jlink for downloading. Download the Linux executable file from the Jlink official website. Since I&amp;rsquo;m using a Debian system, I can directly open the JLink_Linux_V614a_x86_64.deb file to install. Then, in the system&amp;rsquo;s lib/ directory, execute the &lt;code>JlinkExe&lt;/code> file to download and flash the program through Jlink.&lt;/li>
+&lt;li>Here I used a more convenient serial port flashing method. First set pin B0 to high level, B1 to low level, then use the STM32flash-5.0 software for flashing.
+&lt;ul>
+&lt;li>Download from &lt;code>https://sourceforge.net/projects/stm32flash/&lt;/code>&lt;/li>
+&lt;li>Extract the directory, run make in that directory to get stm32flash&lt;/li>
+&lt;li>Copy &lt;code>rtthread.bin&lt;/code> to that directory, connect the USB to serial cable, then enter &lt;code>sudo ./stm32flash -w rtthread.bin -v -g 0x0 /dev/ttyUSB0&lt;/code>, where &lt;code>ttyUSB0&lt;/code> is the serial device&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;h2 id="8-verify-success">8. Verify Success
+&lt;/h2>&lt;ul>
+&lt;li>If you can see the LED blinking, the deployment was successful&lt;/li>
+&lt;/ul></description></item></channel></rss>

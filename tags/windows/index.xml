@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Windows on Nansen Li's Blog
+李楠森的博客</title><link>https://nansenli.com/tags/windows/</link><description>Recent content in Windows on Nansen Li's Blog
+李楠森的博客</description><generator>Hugo -- gohugo.io</generator><language>en</language><copyright>Nansen Li 🌈 （李楠森）</copyright><lastBuildDate>Wed, 24 Oct 2018 11:47:00 +0000</lastBuildDate><atom:link href="https://nansenli.com/tags/windows/index.xml" rel="self" type="application/rss+xml"/><item><title>Investigation and Solution of Windows 10 SSD Periodic Stuttering Problems</title><link>https://nansenli.com/post/jianshu/%E9%9A%8F%E7%AC%94/%E5%85%B3%E4%BA%8E-windows-10-%E4%BD%BF%E7%94%A8-ssd-%E6%AF%8F%E9%9A%94%E4%B8%80%E6%AE%B5%E6%97%B6%E9%97%B4%E5%8D%A1%E9%A1%BF%E9%97%AE%E9%A2%98%E7%9A%84%E6%8E%A2%E7%A9%B6%E4%B8%8E%E8%A7%A3%E5%86%B3/</link><pubDate>Wed, 24 Oct 2018 11:47:00 +0000</pubDate><guid>https://nansenli.com/post/jianshu/%E9%9A%8F%E7%AC%94/%E5%85%B3%E4%BA%8E-windows-10-%E4%BD%BF%E7%94%A8-ssd-%E6%AF%8F%E9%9A%94%E4%B8%80%E6%AE%B5%E6%97%B6%E9%97%B4%E5%8D%A1%E9%A1%BF%E9%97%AE%E9%A2%98%E7%9A%84%E6%8E%A2%E7%A9%B6%E4%B8%8E%E8%A7%A3%E5%86%B3/</guid><description>&lt;h2 id="introduction">Introduction
+&lt;/h2>&lt;p>I was originally using an Intel i5-6500 CPU, but after switching to an AMD Ryzen 2700, frequent system freezes started occurring.&lt;/p>
+&lt;h2 id="symptoms">Symptoms
+&lt;/h2>&lt;p>During these freezes, I observed that the disk usage in Task Manager was at 100%, while both read and write rates were at 0. The SSD is a generic Lexar Hades 512 GB. In Event Viewer, there were numerous events with ID 129.&lt;/p>
+&lt;h2 id="suspecting-hardware-issues">Suspecting Hardware Issues
+&lt;/h2>&lt;p>After repeatedly changing SATA ports and reconnecting power cables, the freezes persisted.&lt;/p>
+&lt;h2 id="searching-for-related-issues-online">Searching for Related Issues Online
+&lt;/h2>&lt;p>Online searches mostly pointed to the root cause being Windows 10&amp;rsquo;s AHCI driver issues and SSD firmware problems.&lt;/p>
+&lt;h2 id="solution-approach-1-replacing-the-ahci-driver---ineffective">Solution Approach 1: Replacing the AHCI Driver - Ineffective
+&lt;/h2>&lt;p>To replace the AHCI driver, I tried downloading chipset drivers from both AMD&amp;rsquo;s official website and ASUS&amp;rsquo;s official website, and manually replaced the driver in Device Manager so that it showed as an AMD SATA driver. I also tried various motherboard drivers, but testing proved ineffective, and the problem remained unsolved.&lt;/p>
+&lt;h2 id="solution-approach-2-converting-the-drive-to-raid-format---ineffective">Solution Approach 2: Converting the Drive to RAID Format - Ineffective
+&lt;/h2>&lt;p>To convert to RAID format, I reinstalled Windows, but during the installation process, Windows could not recognize the SSD. According to AMD&amp;rsquo;s official English manual and official RAID drivers, I manually loaded the RAID drivers, but Windows still couldn&amp;rsquo;t see the SSD during installation. After multiple attempts, it remained undetected. This might be because volume mode RAID is not supported with only one drive. I abandoned this approach.&lt;/p>
+&lt;h2 id="solution-approach-3-modifying-the-registry-disabling-msi---ineffective">Solution Approach 3: Modifying the Registry, Disabling MSI - Ineffective
+&lt;/h2>&lt;p>&lt;a class="link" href="https://www.pconline.com.cn/win10/739/7395324.html" target="_blank" rel="noopener"
+>https://www.pconline.com.cn/win10/739/7395324.html&lt;/a>&lt;/p>
+&lt;blockquote>
+&lt;p>In essence, when using the StorAHCI.sys driver in certain AHCI modes, some SSDs may not be able to complete input/output operations correctly in &amp;ldquo;Message Signaled Interrupt&amp;rdquo; (MSI) mode, ultimately resulting in system freezes with disk usage showing 100% in Task Manager. Of course, the solution is simple: just disable it (MSI Mode) directly in regedit.&lt;/p>
+&lt;/blockquote>
+&lt;blockquote>
+&lt;p>　　4. Click Cortana, type &amp;ldquo;regedit&amp;rdquo; to launch the Registry Editor, navigate to &amp;ldquo;HKEY_LOCAL_MACHINE\System\CurrentControlSet\Enum\PCI\xxxxx\Device Parameters\Interrupt Management\MessageSignaledInterruptProperties&amp;rdquo; (where &amp;ldquo;xxxxx&amp;rdquo; is the &amp;ldquo;device instance path&amp;rdquo; you just recorded);&lt;/p>
+&lt;/blockquote>
+&lt;blockquote>
+&lt;p>　　5. Finally, change the &amp;ldquo;MSISupported&amp;rdquo; key value in the right pane from 1 to 0;&lt;/p>
+&lt;/blockquote>
+&lt;p>Testing proved this ineffective.&lt;/p>
+&lt;h2 id="solution-approach-4-changing-power-settings---ineffective">Solution Approach 4: Changing Power Settings - Ineffective
+&lt;/h2>&lt;p>Setting the PCI-Express setting to OFF, testing proved ineffective.&lt;/p>
+&lt;h2 id="solution-approach-5-changing-lpm---effective">Solution Approach 5: Changing LPM - Effective
+&lt;/h2>&lt;p>&lt;a class="link" href="http://www.sohu.com/a/204645459_493865" target="_blank" rel="noopener"
+>http://www.sohu.com/a/204645459_493865&lt;/a>&lt;/p>
+&lt;p>&lt;a class="link" href="https://answers.microsoft.com/en-us/windows/forum/windows_10-hardware-winpc/event-id-129-storahci-resetting-raidport0/7b30c512-6597-438b-80cb-22fb2f85d62e" target="_blank" rel="noopener"
+>https://answers.microsoft.com/en-us/windows/forum/windows_10-hardware-winpc/event-id-129-storahci-resetting-raidport0/7b30c512-6597-438b-80cb-22fb2f85d62e&lt;/a>&lt;/p>
+&lt;p>The content is as follows:&lt;/p>
+&lt;p>Most SSDs we use today support some power-saving features, such as DIPM/HIPM/Device Sleep.&lt;/p>
+&lt;p>&lt;img src="https://nansenli.com/img/rescued/8ef2136fa9e4.png"
+loading="lazy"
+alt="image"
+>&lt;/p>
+&lt;p>When a state change request is initiated by the host, we call it HIPM (Host-Initiated LPM), and when it&amp;rsquo;s directly initiated by the device, we call it DIPM (Device-Initiated LPM). What are they requesting? Requesting to slow down, save energy, or enter Device Sleep.&lt;/p>
+&lt;p>Both HIPM and DIPM rely on the computer&amp;rsquo;s LPM technology support. LPM, or Link Power Management, is a function at the physical layer of the SATA interface that can divide the link between the host and storage device into three states: Active state, Partial state, and Slumber state. The goal is to reduce the physical layer bus transmission speed, thus achieving power-saving effects.&lt;/p>
+&lt;p>&lt;img src="https://nansenli.com/img/rescued/beb05312d902.png"
+loading="lazy"
+alt="image"
+>&lt;/p>
+&lt;p>LPM is generally enabled by default.&lt;/p>
+&lt;p>So is enabling LPM good for SSDs?&lt;/p>
+&lt;p>1. The host sends an HIPM state change command, but due to differing SSD device standards, it may not be well-supported, causing compatibility issues leading to stuttering or drive disconnection;&lt;/p>
+&lt;p>2. The host sends HIPM state change commands too frequently, causing the SSD device to not respond in time, resulting in stuttering;&lt;/p>
+&lt;p>3. After LPM is enabled, it increases SATA bus transmission delays, causing high-speed SSDs to become blocked and stutter;&lt;/p>
+&lt;p>4. Conflicts between the SSD&amp;rsquo;s internal DIPM and the host&amp;rsquo;s requested HIPM cause stuttering.&lt;/p>
+&lt;p>Often, SSD-induced computer stuttering and sudden drive disconnections are caused by LPM.&lt;/p>
+&lt;p>LPM can help SATA devices achieve power-saving effects. However, it also affects SSD performance.&lt;/p>
+&lt;p>So, for the sake of power saving, are you willing to pay the price of losing SSD performance?&lt;/p>
+&lt;p>HDD power consumption is around 10-25W. Perhaps LPM was originally only intended for HDDs.&lt;/p>
+&lt;p>SSD startup power consumption: 0.1W&lt;del>1W (2W), maximum power consumption: 5&lt;/del>10W, average power consumption: around 4~5W.&lt;/p>
+&lt;p>Does our power supply care about these few watts from the SSD? Do we care about this bit of electricity cost? Should we even care!&lt;/p>
+&lt;p>If SSDs don&amp;rsquo;t need LPM, which harms SSD performance, can we turn it off?&lt;/p>
+&lt;p>&lt;img src="https://nansenli.com/img/rescued/e3137f899356.png"
+loading="lazy"
+alt="image"
+>&lt;/p>
+&lt;p>Save as &amp;ldquo;.reg&amp;rdquo; format.&lt;/p>
+&lt;p>&lt;img src="https://nansenli.com/img/rescued/bd0944771088.png"
+loading="lazy"
+alt="image"
+>&lt;/p>
+&lt;p>Click to run. It will automatically write to the registry, changing the LPM power settings.&lt;/p>
+&lt;p>&lt;img src="https://nansenli.com/img/rescued/cfc7398516b6.png"
+loading="lazy"
+alt="image"
+>&lt;/p>
+&lt;p>&lt;img src="https://nansenli.com/img/rescued/cb2106c96417.png"
+loading="lazy"
+alt="image"
+>&lt;/p>
+&lt;p>If your SSD is experiencing severe stuttering or disconnections, you can try this method.&lt;/p>
+&lt;p>The main reason for SSD stuttering and disconnections is that the SSD is too poor quality. Indeed, with SSD prices constantly rising today, it&amp;rsquo;s very difficult to buy a good SSD at a relatively low price.&lt;/p>
+&lt;p>&lt;strong>After testing, this was effective&lt;/strong>&lt;/p>
+&lt;h2 id="solution-approach-6-changing-bios-settings-enabling-sata-hot-plug-functionality---recommended">Solution Approach 6: Changing BIOS Settings, Enabling SATA Hot Plug Functionality - Recommended
+&lt;/h2>&lt;p>&lt;a class="link" href="https://www.aiweibk.com/5795.html" target="_blank" rel="noopener"
+>https://www.aiweibk.com/5795.html&lt;/a>&lt;/p>
+&lt;blockquote>
+&lt;p>After enabling the Hot Plug attribute in the motherboard BIOS settings, there will be a side effect: the SSD&amp;rsquo;s LPM power saving will be turned off as hot-plugging is enabled, thereby avoiding data loss during hot-plugging or loss of response when reconnecting.&lt;/p>
+&lt;/blockquote>
+&lt;blockquote>
+&lt;p>If your SSD and motherboard have compatibility issues causing intermittent stuttering, try enabling the Hot Plug option in the motherboard BIOS settings to disable LPM power saving, which might solve the problem.&lt;/p>
+&lt;/blockquote>
+&lt;p>&lt;strong>After testing, this was effective&lt;/strong>&lt;/p>
+&lt;h2 id="conclusion">Conclusion
+&lt;/h2>&lt;p>Why was there no problem with Intel before, but problems arose after switching to AMD? I suspect it&amp;rsquo;s because the original Intel motherboard was inferior and didn&amp;rsquo;t support SATA LPM, while Windows 10 has LPM enabled by default. The generic SSD doesn&amp;rsquo;t support LPM well, so even though its firmware supports LPM, serious issues can occur. Since the motherboard didn&amp;rsquo;t support LPM, even with Windows enabling LPM, the problem didn&amp;rsquo;t manifest.&lt;/p>
+&lt;p>Now with a new motherboard that supports LPM, compatibility issues with the SSD have emerged under default settings. LPM functionality needs to be manually disabled.&lt;/p></description></item><item><title>How to Set Up Xiaohe Shuangpin in Microsoft Pinyin for Windows 10</title><link>https://nansenli.com/post/jianshu/%E9%9A%8F%E7%AC%94/%E5%A6%82%E4%BD%95%E5%9C%A8windows10%E7%9A%84%E5%BE%AE%E8%BD%AF%E6%8B%BC%E9%9F%B3%E4%B8%AD%E8%AE%BE%E7%BD%AE%E5%B0%8F%E9%B9%A4%E5%8F%8C%E6%8B%BC/</link><pubDate>Mon, 05 Jun 2017 06:16:00 +0000</pubDate><guid>https://nansenli.com/post/jianshu/%E9%9A%8F%E7%AC%94/%E5%A6%82%E4%BD%95%E5%9C%A8windows10%E7%9A%84%E5%BE%AE%E8%BD%AF%E6%8B%BC%E9%9F%B3%E4%B8%AD%E8%AE%BE%E7%BD%AE%E5%B0%8F%E9%B9%A4%E5%8F%8C%E6%8B%BC/</guid><description>&lt;h2 id="introduction">Introduction
+&lt;/h2>&lt;p>The latest version of Windows 10 system&amp;rsquo;s built-in Pinyin input method already supports Xiaohe Shuangpin. Mom no longer has to worry about me installing bloatware!&lt;/p>
+&lt;p>After 4 years, here&amp;rsquo;s an updated advanced setup method. Mom no longer has to worry about me configuring keys one by one:&lt;/p>
+&lt;ol>
+&lt;li>Press Win + R, type regedit, and open Registry Editor&lt;/li>
+&lt;li>Find the &lt;code>Computer\HKEY_CURRENT_USER\Software\Microsoft\InputMethod\Settings\CHS&lt;/code> entry&lt;/li>
+&lt;li>Create a new string value named UserDefinedDoublePinyinScheme0 with the value &lt;code>小鹤双拼*2*^*iuvdjhcwfg^xmlnpbksqszxkrltvyovt&lt;/code>&lt;/li>
+&lt;li>Open Microsoft Pinyin input method settings and set &lt;code>Xiaohe Shuangpin&lt;/code> as the default scheme for Shuangpin.&lt;/li>
+&lt;/ol>
+&lt;p>If you&amp;rsquo;re concerned about registry modifications causing system issues, here&amp;rsquo;s a manual configuration method:&lt;/p>
+&lt;h2 id="step-1-open-settings">Step 1: Open Settings
+&lt;/h2>&lt;p>Although the system&amp;rsquo;s Pinyin input method doesn&amp;rsquo;t have Xiaohe Shuangpin by default, we can customize it.&lt;/p>
+&lt;p>First, find the Shuangpin settings location. If you can&amp;rsquo;t find it, you can refer to the animated GIF:
+&lt;img src="https://nansenli.com/img/rescued/98a28b5a7a49.gif"
+loading="lazy"
+alt="Find settings"
+>&lt;/p>
+&lt;h2 id="step-2-edit-custom-shuangpin">Step 2: Edit Custom Shuangpin
+&lt;/h2>&lt;p>The Shuangpin settings are shown in the figure below&lt;/p>
+&lt;p>&lt;img src="https://nansenli.com/img/rescued/068b77b04598.png"
+loading="lazy"
+alt="Xiaohe scheme"
+>&lt;/p>
+&lt;p>Except for the template section which doesn&amp;rsquo;t need to be set, the rest should be configured according to the image. One is the zero initial mode, and the other is custom key mapping. Custom key mapping should be set according to the preview in the image. Note that there is no &amp;ldquo;er&amp;rdquo; syllable in Xiaohe Shuangpin, so you can set it to either the &amp;ldquo;e&amp;rdquo; or &amp;ldquo;r&amp;rdquo; key. Also, both the &amp;ldquo;ue&amp;rdquo; and &amp;ldquo;ve&amp;rdquo; syllables are set to the &amp;ldquo;T&amp;rdquo; key. Here&amp;rsquo;s a tip: when setting keys, you can directly press the corresponding key instead of finding the key to set.&lt;/p>
+&lt;h2 id="step-3-save-the-scheme">Step 3: Save the Scheme
+&lt;/h2>&lt;p>If the add button becomes available, it means the scheme is set correctly. After adding the scheme, set it as the default scheme, and you can now use Xiaohe Shuangpin!&lt;/p>
+&lt;h2 id="testing">Testing
+&lt;/h2>&lt;p>Perform a typing test to check if the settings are correct&lt;/p>
+&lt;p>&lt;img src="https://nansenli.com/img/rescued/582a066041c2.gif"
+loading="lazy"
+alt="Testing"
+>&lt;/p>
+&lt;h2 id="step-4-click-like">Step 4: Click &amp;ldquo;Like&amp;rdquo;
+&lt;/h2>&lt;p>Click &amp;ldquo;Like&amp;rdquo; to improve page ranking and help more people use Xiaohe Shuangpin on Windows 10&lt;/p></description></item></channel></rss>

@@ -1,0 +1,405 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>RT-Thread on Nansen Li's Blog
+李楠森的博客</title><link>https://nansenli.com/zh-cn/tags/rt-thread/</link><description>Recent content in RT-Thread on Nansen Li's Blog
+李楠森的博客</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><copyright>Nansen Li 🌈 （李楠森）</copyright><lastBuildDate>Thu, 06 Apr 2017 10:22:00 +0000</lastBuildDate><atom:link href="https://nansenli.com/zh-cn/tags/rt-thread/index.xml" rel="self" type="application/rss+xml"/><item><title>在RT-Thread中使用stm32的hal库驱动串口UART</title><link>https://nansenli.com/zh-cn/post/jianshu/%E5%B5%8C%E5%85%A5%E5%BC%8F/%E5%9C%A8rt-thread%E4%B8%AD%E4%BD%BF%E7%94%A8stm32%E7%9A%84hal%E5%BA%93%E9%A9%B1%E5%8A%A8%E4%B8%B2%E5%8F%A3uart/</link><pubDate>Thu, 06 Apr 2017 10:22:00 +0000</pubDate><guid>https://nansenli.com/zh-cn/post/jianshu/%E5%B5%8C%E5%85%A5%E5%BC%8F/%E5%9C%A8rt-thread%E4%B8%AD%E4%BD%BF%E7%94%A8stm32%E7%9A%84hal%E5%BA%93%E9%A9%B1%E5%8A%A8%E4%B8%B2%E5%8F%A3uart/</guid><description>&lt;h2 id="前言">前言
+&lt;/h2>&lt;p>之前一直在Linux下面尝试进行部署了RT-Thread的stm32的开发，这种方式确实是可行的，但是也会带来种种不便之处。使用VSCode + Scons + openocd 进行编辑、编译链接、烧录确实是可以进行开发，但是若要进行调试则没有这种环境的解决方案，只得在eclipse中进行调试。而将RT-Thread改成eclipse的方案虽然可行，但是这样还不如直接在windows下面采用keil 5 来进行开发。&lt;/p>
+&lt;p>由于stm32f103板载flash过小，栈也十分的小，于是换成stm32f411。板子来自于微雪科技的XNUCLEO，和STM官方NUCLEO板子是兼容的。&lt;/p>
+&lt;h2 id="安装keil-523">安装Keil 5.23
+&lt;/h2>&lt;p>由于我首先安装了Keil 5.11，然后附带的破解器破解了，之后卸载再安装了Keil 5.23，直接显示已经破解成功。破解器仍然是多年前就流行的注册码生成器。之所以使用Keil 5.23版本，是因为RT-Thread工程只能使用这个版本进行打开。&lt;/p>
+&lt;h2 id="使用pack-installer安装库">使用pack installer安装库
+&lt;/h2>&lt;p>只有安装了Keil::STM32F4xx_DFP才能打开RT-Thread的bps分支下的nucleo工程。&lt;/p>
+&lt;h2 id="安装stm32cubemx">安装STM32CubeMX
+&lt;/h2>&lt;p>通过STM32CubeMX，我们可以方便的通过鼠标点击生成初始化代码。但是调用函数还是得我们自己写，不如NPX的PE方便。&lt;/p>
+&lt;h2 id="安装st-link驱动">安装ST-Link驱动
+&lt;/h2>&lt;p>微雪科技售卖100块钱的板子还附带了ST-Link调试器，那我们就是用ST-Link来进行调试吧。&lt;/p>
+&lt;h2 id="下载nucleo工程">下载nucleo工程
+&lt;/h2>&lt;p>打开&lt;code>rt-thread-master\bsp\stm32f411-nucleo&lt;/code>下的Keil 5工程，尝试编译，通过后，简单设置工程的debug，使用ST-Link来进行调试，然后将程序下载到板子里面。虽然程序下进去了，但是没有任何效果，因为主函数是空的。&lt;/p>
+&lt;p>我们在main函数中加入如下代码：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-C" data-lang="C">&lt;span class="line">&lt;span class="cl">&lt;span class="kt">int&lt;/span> &lt;span class="nf">main&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="kt">void&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="cm">/* user app entry */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nf">MX_GPIO_Init&lt;/span>&lt;span class="p">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">while&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="p">){&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nf">rt_thread_delay&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">5&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nf">HAL_GPIO_WritePin&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">GPIOC&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">GPIO_PIN_5&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">GPIO_PIN_SET&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nf">rt_thread_delay&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">5&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nf">HAL_GPIO_WritePin&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">GPIOC&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">GPIO_PIN_5&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">GPIO_PIN_RESET&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>并加上LED的初始化函数&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">static void MX_GPIO_Init(void)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">{
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> GPIO_InitTypeDef GPIO_InitStruct;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> /* GPIO Ports Clock Enable */
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> __HAL_RCC_GPIOC_CLK_ENABLE();
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> /*Configure GPIO pin Output Level */
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> HAL_GPIO_WritePin(GPIOC, GPIO_PIN_5, GPIO_PIN_RESET);
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> /*Configure GPIO pin : PC5 */
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> GPIO_InitStruct.Pin = GPIO_PIN_5;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> GPIO_InitStruct.Pull = GPIO_NOPULL;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> HAL_GPIO_Init(GPIOC, &amp;amp;GPIO_InitStruct);
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>这样我们就可以看到板载的LED4灯亮起来了，并且在闪烁。&lt;/p>
+&lt;p>这些初始化代码是从哪来的呢？主函数中的代码，是从网上找的，很简单的操作GPIO的函数，而MX_GPIO_Init这段代码，则来自于STM32CubeMX自动生成的代码。下面会讲如何通过STM32CubeMX生成初始化UART代码。&lt;/p>
+&lt;h2 id="使用stm32cubemx生成uart初始化代码">使用STM32CubeMX生成UART初始化代码
+&lt;/h2>&lt;ul>
+&lt;li>首先我们建立一个工程，并设置好芯片型号，下面是演示&lt;/li>
+&lt;/ul>
+&lt;p>&lt;img src="https://nansenli.com/img/rescued/905af84ac774.gif"
+loading="lazy"
+alt="2017-04-06_16-41-06.gif"
+>&lt;/p>
+&lt;ul>
+&lt;li>然后设置串口引脚。
+由于RT-Thread已经初始化了串口1，我以我们不能使用这个。我们可以使用UART6。&lt;/li>
+&lt;/ul>
+&lt;p>&lt;img src="https://nansenli.com/img/rescued/4985758a4b21.gif"
+loading="lazy"
+alt="2017-04-06_16-57-29.gif"
+>&lt;/p>
+&lt;ul>
+&lt;li>打开工程，将代码偷走，蓝色部分就是我们要拿走的代码&lt;/li>
+&lt;/ul>
+&lt;p>&lt;img src="https://nansenli.com/img/rescued/f06cc889e552.gif"
+loading="lazy"
+alt="2017-04-06_17-01-11.gif"
+>&lt;/p>
+&lt;ul>
+&lt;li>移植代码
+在void HAL_UART_MspInit(UART_HandleTypeDef *huart)中，添加USART6的代码：&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;span class="lnt">30
+&lt;/span>&lt;span class="lnt">31
+&lt;/span>&lt;span class="lnt">32
+&lt;/span>&lt;span class="lnt">33
+&lt;/span>&lt;span class="lnt">34
+&lt;/span>&lt;span class="lnt">35
+&lt;/span>&lt;span class="lnt">36
+&lt;/span>&lt;span class="lnt">37
+&lt;/span>&lt;span class="lnt">38
+&lt;/span>&lt;span class="lnt">39
+&lt;/span>&lt;span class="lnt">40
+&lt;/span>&lt;span class="lnt">41
+&lt;/span>&lt;span class="lnt">42
+&lt;/span>&lt;span class="lnt">43
+&lt;/span>&lt;span class="lnt">44
+&lt;/span>&lt;span class="lnt">45
+&lt;/span>&lt;span class="lnt">46
+&lt;/span>&lt;span class="lnt">47
+&lt;/span>&lt;span class="lnt">48
+&lt;/span>&lt;span class="lnt">49
+&lt;/span>&lt;span class="lnt">50
+&lt;/span>&lt;span class="lnt">51
+&lt;/span>&lt;span class="lnt">52
+&lt;/span>&lt;span class="lnt">53
+&lt;/span>&lt;span class="lnt">54
+&lt;/span>&lt;span class="lnt">55
+&lt;/span>&lt;span class="lnt">56
+&lt;/span>&lt;span class="lnt">57
+&lt;/span>&lt;span class="lnt">58
+&lt;/span>&lt;span class="lnt">59
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">void HAL_UART_MspInit(UART_HandleTypeDef *huart)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">{
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> GPIO_InitTypeDef GPIO_InitStruct;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> if (huart-&amp;gt;Instance == USART2)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> {
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> /*##-1- Enable peripherals and GPIO Clocks #################################*/
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> /* Enable GPIO TX/RX clock */
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> USARTx_TX_GPIO_CLK_ENABLE();
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> USARTx_RX_GPIO_CLK_ENABLE();
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> /* Enable USARTx clock */
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> USARTx_CLK_ENABLE();
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> /*##-2- Configure peripheral GPIO ##########################################*/
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> /* UART TX GPIO pin configuration */
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> GPIO_InitStruct.Pin = USARTx_TX_PIN;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> GPIO_InitStruct.Pull = GPIO_PULLUP;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> GPIO_InitStruct.Speed = GPIO_SPEED_FAST;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> GPIO_InitStruct.Alternate = USARTx_TX_AF;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> HAL_GPIO_Init(USARTx_TX_GPIO_PORT, &amp;amp;GPIO_InitStruct);
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> /* UART RX GPIO pin configuration */
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> GPIO_InitStruct.Pin = USARTx_RX_PIN;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> GPIO_InitStruct.Alternate = USARTx_RX_AF;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> HAL_GPIO_Init(USARTx_RX_GPIO_PORT, &amp;amp;GPIO_InitStruct);
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> HAL_NVIC_SetPriority(USART2_IRQn, 0, 1);
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> HAL_NVIC_EnableIRQ(USART2_IRQn);
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> }
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> if (huart-&amp;gt;Instance == USART6)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> {
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> /* USER CODE BEGIN USART6_MspInit 0 */
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> /* USER CODE END USART6_MspInit 0 */
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> /* Peripheral clock enable */
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> __HAL_RCC_USART6_CLK_ENABLE();
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> /**USART6 GPIO Configuration
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> PC6 ------&amp;gt; USART6_TX
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> PC7 ------&amp;gt; USART6_RX
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> */
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> GPIO_InitStruct.Pin = GPIO_PIN_6|GPIO_PIN_7;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> GPIO_InitStruct.Pull = GPIO_PULLUP;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> GPIO_InitStruct.Alternate = GPIO_AF8_USART6;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> HAL_GPIO_Init(GPIOC, &amp;amp;GPIO_InitStruct);
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> /* Peripheral interrupt init */
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> HAL_NVIC_SetPriority(USART6_IRQn, 0, 0);
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> HAL_NVIC_EnableIRQ(USART6_IRQn);
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> /* USER CODE BEGIN USART6_MspInit 1 */
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> /* USER CODE END USART6_MspInit 1 */
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> }
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>在main.c文件中，添加&lt;code>MX_USART6_UART_Init();&lt;/code>函数内容，并在主函数中，调用&lt;code>MX_USART6_UART_Init();&lt;/code>进行初始化。&lt;/p>
+&lt;p>之后，在main()函数中进行测试：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl"> uint8_t TxData[10]= &amp;#34;01234abcde&amp;#34;;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> HAL_UART_Transmit(&amp;amp;huart6,TxData,10,0xf);
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>我们将微雪的板子上的JP4跳帽接在右侧，这样，USB TO UART就能使用PC6、PC7作为串口接口了。然后，接上USB接口到PC机，我们可以在XSHELL之类的串口终端查看PC接受到的字符串。&lt;/p></description></item><item><title>在RT-Thread中使用SPI和UART设备</title><link>https://nansenli.com/zh-cn/post/jianshu/%E5%B5%8C%E5%85%A5%E5%BC%8F/%E5%9C%A8rt-thread%E4%B8%AD%E4%BD%BF%E7%94%A8spi%E5%92%8Cuart%E8%AE%BE%E5%A4%87/</link><pubDate>Tue, 07 Mar 2017 09:41:00 +0000</pubDate><guid>https://nansenli.com/zh-cn/post/jianshu/%E5%B5%8C%E5%85%A5%E5%BC%8F/%E5%9C%A8rt-thread%E4%B8%AD%E4%BD%BF%E7%94%A8spi%E5%92%8Cuart%E8%AE%BE%E5%A4%87/</guid><description>&lt;p>RT-Thread采用了类似于linux的函数调用方法，这里说明一下如何简单的使用设备。&lt;/p>
+&lt;ul>
+&lt;li>硬件环境 ：STM32F103RBT6&lt;/li>
+&lt;/ul>
+&lt;h2 id="用户程序位置">用户程序位置
+&lt;/h2>&lt;p>用户程序在bsp文件夹下面的applications中的applications.c中书写和调用，如果程序比较多，再新建一个c文件分离出去。&lt;/p>
+&lt;h2 id="spi-驱动文件">SPI 驱动文件
+&lt;/h2>&lt;p>stm32f10x下面的drivers并没有spi驱动，我们需要将stm32f107对应的spi驱动移植过来。将rt_stm32f10x_spi.c，rt_stm32f10x_spi.h，以及platform.c文件复制过去，然后在rt_init_thread_entry函数中添加rt_platform_init();的调用，在对应文件中加入头文件。然后修改SConscript添加对platform.c，rt_stm32f10x_spi.c的编译，并在config中添加RT_USING_SPI和RT_USING_SPI1的宏定义&lt;/p>
+&lt;p>在platform.c中spi初始化加入如下代码，配置频率&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl"> /* config spi */
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> {
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> struct rt_spi_configuration cfg;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> cfg.data_width = 8;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> cfg.mode = RT_SPI_MODE_3 | RT_SPI_MSB; /* SPI Compatible Modes 3 and SPI_FirstBit_MSB in lis302dl datasheet */
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> //APB2=168M/2=84M, SPI1 = 84/2,4,8,16,32 = 42M, 21M, 10.5M, 5.25M, 2.625M ...
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> cfg.max_hz = 2625000; /* SPI_BaudRatePrescaler_16=84000000/16=5.25MHz. The max_hz of lis302dl is 10MHz in datasheet */
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> rt_spi_configure(&amp;amp;spi_device, &amp;amp;cfg);
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> } /* config spi */
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="硬件配置">硬件配置
+&lt;/h2>&lt;p>硬件管脚被配置在platform.c文件中, 我们不修改默认的配置,也就是 PA4567这几个管脚为默认的spi输入输出管脚&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">/*
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> * SPI1_MOSI: PA7
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> * SPI1_MISO: PA6
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> * SPI1_SCK : PA5
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> *
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> * CS0: PA4 SD card. 这里可以改成自己的spi设备的cs管脚
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">*/
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="spi调用">SPI调用
+&lt;/h2>&lt;p>SPI调用不用使用open函数，只需执行&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl"> rt_spi_transfer(spi_device, &amp;amp;ReadAddr, &amp;amp;pBuffer, 1);
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>或者rt_spi_send_then_recv也可以实现不同的效果。&lt;/p>
+&lt;h2 id="uart调用">UART调用
+&lt;/h2>&lt;p>UART调用需要使用open函数，这里给出一个简单的例子使用串口设备。&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">void device_thread_entry(void* parameter)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">{
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> rt_device_t device;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> device = rt_device_find(&amp;#34;uart2&amp;#34;);
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> rt_device_open(device, RT_DEVICE_OFLAG_RDWR|RT_DEVICE_FLAG_INT_RX);
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> char test[10] = &amp;#34;abc&amp;#34;;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> while(1){
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> rt_size_t reclen = rt_device_read(device, 0, test, 10);
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> if(reclen &amp;gt; 0) rt_device_write(device, 0, test, reclen);
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> rt_thread_delay(500);
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> }
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>可以开启这个线程，我们在uart2中输入10个以内的字符，在5秒后就会回显。如果超过10个字符，应该会在下一次5秒显示。
+在官方markdown文档中，使用了消息机制来处理UART通信，也可以参考。&lt;/p></description></item><item><title>Ubuntu环境下在STM32上部署RT-thread系统</title><link>https://nansenli.com/zh-cn/post/jianshu/%E5%B5%8C%E5%85%A5%E5%BC%8F/ubuntu%E7%8E%AF%E5%A2%83%E4%B8%8B%E5%9C%A8stm32%E4%B8%8A%E9%83%A8%E7%BD%B2rt-thread%E7%B3%BB%E7%BB%9F/</link><pubDate>Thu, 02 Mar 2017 07:59:00 +0000</pubDate><guid>https://nansenli.com/zh-cn/post/jianshu/%E5%B5%8C%E5%85%A5%E5%BC%8F/ubuntu%E7%8E%AF%E5%A2%83%E4%B8%8B%E5%9C%A8stm32%E4%B8%8A%E9%83%A8%E7%BD%B2rt-thread%E7%B3%BB%E7%BB%9F/</guid><description>&lt;p>RT-Thread是一个中国开源嵌入式系统，目前版本为2.2，已经支持许多微控制器，例如STM32系列，甚至可以在蓝牙BLE芯片中运行。尽管微控制器中资源紧张，但是部署一个易用的微操作系统对项目开发和代码管理是很有益的。&lt;/p>
+&lt;h2 id="准备工具">准备工具
+&lt;/h2>&lt;ul>
+&lt;li>STM32开发版一个，支持USB下载功能&lt;/li>
+&lt;li>Ubuntu系统&lt;/li>
+&lt;li>USB转串口线&lt;/li>
+&lt;/ul>
+&lt;p>这里我使用了古老的&lt;code>ALIENTEK STM32 MINI V2.0&lt;/code> 开发板，芯片型号为&lt;code>STM32F103RBT6&lt;/code>，Ubuntu系统版本为&lt;code>16.04&lt;/code>&lt;/p>
+&lt;h2 id="1下载交叉编译工具链">1.下载交叉编译工具链
+&lt;/h2>&lt;ul>
+&lt;li>下载&lt;code>gcc-arm-none-eabi&lt;/code>交叉编译工具链，对于16.04系统，直接使用&lt;code>apt install gcc-arm-none-eabi&lt;/code> 进行安装&lt;/li>
+&lt;/ul>
+&lt;h2 id="2下载rt-thread编译工具">2.下载RT-Thread编译工具
+&lt;/h2>&lt;ul>
+&lt;li>该系统使用scons编译，对于16.04系统，使用 &lt;code>apt install scons&lt;/code> 进行安装&lt;/li>
+&lt;/ul>
+&lt;h2 id="3下载系统源码">3.下载系统源码
+&lt;/h2>&lt;ul>
+&lt;li>下载RT-Thread系统，地址为：&lt;code>https://github.com/RT-Thread&lt;/code>&lt;/li>
+&lt;li>解压目录&lt;/li>
+&lt;/ul>
+&lt;h2 id="4修改编译工程">4.修改编译工程
+&lt;/h2>&lt;ul>
+&lt;li>进入目录&lt;code>bsp/stm32f10x&lt;/code>&lt;/li>
+&lt;li>编辑文件&lt;code>rtconfig.py&lt;/code>&lt;/li>
+&lt;li>修改 CROSS_TOOL 为 gcc&lt;/li>
+&lt;/ul>
+&lt;h2 id="5针对板子进行配置">5.针对板子进行配置
+&lt;/h2>&lt;ul>
+&lt;li>&lt;code>stm32f10x.h&lt;/code> 中对晶振进行配置 &lt;code>HSE_VALUE&lt;/code>，例如800000&lt;/li>
+&lt;li>&lt;code>board.h&lt;/code> 中对RAM进行配置 &lt;code>STM32_SRAM_SIZE&lt;/code>，例如20&lt;/li>
+&lt;li>&lt;code>led.c&lt;/code> 中对 led进行配置&lt;/li>
+&lt;/ul>
+&lt;h2 id="6编译源码">6.编译源码
+&lt;/h2>&lt;ul>
+&lt;li>在&lt;code>bsp/stm32f10x&lt;/code>目录下运行 &lt;code>scons&lt;/code>，输入rtthread.bin文件&lt;/li>
+&lt;/ul>
+&lt;h2 id="7烧录代码">7.烧录代码
+&lt;/h2>&lt;ul>
+&lt;li>你可以使用Jlink进行下载，须在Jlink官网下载Linux执行文件，由于我是debian系统，可以直接打开JLink_Linux_V614a_x86_64.deb文件进行安装。然后在系统文件下lib/目录下执行&lt;code>JlinkExe&lt;/code>文件，即可以通过Jlink进行下载烧录程序。&lt;/li>
+&lt;li>这里我采用了更为方便的串口烧录。首先将开发板的B0接高电平，B1接低电平，然后使用STM32flash-5.0这个软件进行烧录。
+&lt;ul>
+&lt;li>下载地址&lt;code>https://sourceforge.net/projects/stm32flash/&lt;/code>&lt;/li>
+&lt;li>解压目录，在该目录下运行make，得到stm32flash&lt;/li>
+&lt;li>将&lt;code>rtthread.bin&lt;/code>复制到该目录下，接入USB转串口线，然后输入&lt;code>sudo ./stm32flash -w rtthread.bin -v -g 0x0 /dev/ttyUSB0&lt;/code>，其中&lt;code>ttyUSB0&lt;/code>是串口设备&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;h2 id="8检查是否成功">8.检查是否成功
+&lt;/h2>&lt;ul>
+&lt;li>若能看到LED灯闪烁，则成功&lt;/li>
+&lt;/ul></description></item></channel></rss>

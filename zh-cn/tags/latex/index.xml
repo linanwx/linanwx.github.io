@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>LaTeX on Nansen Li's Blog
+李楠森的博客</title><link>https://nansenli.com/zh-cn/tags/latex/</link><description>Recent content in LaTeX on Nansen Li's Blog
+李楠森的博客</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><copyright>Nansen Li 🌈 （李楠森）</copyright><lastBuildDate>Sat, 26 Oct 2024 12:59:17 +0000</lastBuildDate><atom:link href="https://nansenli.com/zh-cn/tags/latex/index.xml" rel="self" type="application/rss+xml"/><item><title>如何处理ChatGPT的Latex格式和Obsidian与Craft不一致的问题</title><link>https://nansenli.com/zh-cn/post/2024/10/raycast-craft/</link><pubDate>Sat, 26 Oct 2024 12:59:17 +0000</pubDate><guid>https://nansenli.com/zh-cn/post/2024/10/raycast-craft/</guid><description>&lt;p>在之前的文章中，我使用了 Obsidian 的 QuickAdd 来创建一个脚本，自动转换从 ChatGPT 中复制的文本，修复其中的 LaTeX 格式。然而，对于 Craft 这款应用，并没有合适的插件可以使用。&lt;/p>
+&lt;p>我们可以通过 Raycast 来实现这个功能的统一操作。&lt;/p>
+&lt;hr>
+&lt;h1 id="创建-raycast-脚本">创建 Raycast 脚本
+&lt;/h1>&lt;p>首先，我们需要创建一个脚本。&lt;/p>
+&lt;p>&lt;img src="https://nansenli.com/img/rescued/2abd177df831.png"
+loading="lazy"
+alt="image"
+>&lt;/p>
+&lt;p>接着选择 Bash 模板。&lt;/p>
+&lt;p>然后，我们编辑这个 Bash 脚本，输入如下代码：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;span class="lnt">30
+&lt;/span>&lt;span class="lnt">31
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">&lt;span class="cp">#!/bin/bash
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp">&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># Required parameters:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># @raycast.schemaVersion 1&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># @raycast.title Copy From ChatGPT&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># @raycast.mode silent&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># Optional parameters:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># @raycast.icon 🤖&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># @raycast.packageName ChatGPT Utils&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># Documentation:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># @raycast.description Copy From ChatGPT&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># @raycast.author Nansen Li&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># @raycast.authorURL nansenli.com&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 获取剪贴板内容&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nv">clipboard_content&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="k">$(&lt;/span>pbpaste&lt;span class="k">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 检查是否成功获取内容&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">if&lt;/span> &lt;span class="o">[&lt;/span> -z &lt;span class="s2">&amp;#34;&lt;/span>&lt;span class="nv">$clipboard_content&lt;/span>&lt;span class="s2">&amp;#34;&lt;/span> &lt;span class="o">]&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="k">then&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">echo&lt;/span> &lt;span class="s2">&amp;#34;剪贴板为空或无法访问。&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">exit&lt;/span> &lt;span class="m">1&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">fi&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 处理剪贴板内容&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nv">modified_content&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="k">$(&lt;/span>&lt;span class="nb">echo&lt;/span> &lt;span class="s2">&amp;#34;&lt;/span>&lt;span class="nv">$clipboard_content&lt;/span>&lt;span class="s2">&amp;#34;&lt;/span> &lt;span class="p">|&lt;/span> &lt;span class="se">\
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="se">&lt;/span> sed &lt;span class="s1">&amp;#39;s/\\\[/$$/g; s/\\\]/$$/g; s/\\( /$/g; s/ \\\)/$/g&amp;#39;&lt;/span>&lt;span class="k">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 将修改后的内容写回剪贴板&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">echo&lt;/span> &lt;span class="s2">&amp;#34;&lt;/span>&lt;span class="nv">$modified_content&lt;/span>&lt;span class="s2">&amp;#34;&lt;/span> &lt;span class="p">|&lt;/span> pbcopy
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;hr>
+&lt;p>创建完脚本后，我们还需要将脚本所在的目录添加到 Raycast 中。&lt;/p>
+&lt;p>&lt;img src="https://nansenli.com/img/rescued/60724508c66a.png"
+loading="lazy"
+alt="image"
+>&lt;/p>
+&lt;p>在这一步中，选择刚刚创建的脚本目录。此时，我们可以在 &lt;code>Script Commands&lt;/code> 中看到刚刚创建的脚本。&lt;/p>
+&lt;hr>
+&lt;h1 id="如何使用">如何使用
+&lt;/h1>&lt;p>在复制完 ChatGPT 的公式后，打开 Raycast 的面板，找到刚刚的脚本并运行，此时剪贴板中的内容就会被自动修复。接下来，只需将其粘贴到 Obsidian 或 Craft 中即可。&lt;/p></description></item><item><title>将ChatGPT公式格式转换为Obsidian兼容格式</title><link>https://nansenli.com/zh-cn/post/2024/10/obsidian-latex-fix/</link><pubDate>Mon, 14 Oct 2024 15:24:27 +0000</pubDate><guid>https://nansenli.com/zh-cn/post/2024/10/obsidian-latex-fix/</guid><description>&lt;p>ChatGPT生成的公式使用了以下格式：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">\[
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">公式内容
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">\]
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>而Obsidian中的公式渲染使用的是以下格式：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">$$
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">公式内容
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">$$
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>当我们将ChatGPT的公式复制到Obsidian中时，这种差异会导致无法正确渲染。&lt;/p>
+&lt;h2 id="解决方案">解决方案
+&lt;/h2>&lt;p>我们可以创建一个Obsidian脚本，在粘贴操作时自动替换公式的格式。&lt;/p>
+&lt;h3 id="1-创建脚本">1. 创建脚本
+&lt;/h3>&lt;p>可以使用Obsidian中的插件来解决这个问题。&lt;/p>
+&lt;p>在你的库中，在&lt;code>template&lt;/code>目录下创建一个文件&lt;code>fixlatex.js&lt;/code>，并输入以下内容：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-js" data-lang="js">&lt;span class="line">&lt;span class="cl">&lt;span class="nx">module&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">exports&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="kr">async&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nx">params&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">=&amp;gt;&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kr">const&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="nx">quickAddApi&lt;/span> &lt;span class="p">}&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="nx">params&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// 获取剪贴板内容
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="kr">const&lt;/span> &lt;span class="nx">clipboardContent&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="kr">await&lt;/span> &lt;span class="nx">quickAddApi&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">utility&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">getClipboard&lt;/span>&lt;span class="p">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// 检查是否成功获取内容
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="k">if&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="o">!&lt;/span>&lt;span class="nx">clipboardContent&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">new&lt;/span> &lt;span class="nx">Notice&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;剪贴板为空或无法访问。&amp;#34;&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kr">const&lt;/span> &lt;span class="nx">modifiedContent&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="nx">clipboardContent&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">.&lt;/span>&lt;span class="nx">replace&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="sr">/\\\[|\\\]/g&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s1">&amp;#39;$$$$&amp;#39;&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="c1">// 转换 \[ \] 为 $$ $$
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="p">.&lt;/span>&lt;span class="nx">replace&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="sr">/\\\(\s*|\s*\\\)/g&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s1">&amp;#39;$$&amp;#39;&lt;/span>&lt;span class="p">);&lt;/span> &lt;span class="c1">// 转换 \( \) 为 $
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// 将修改后的内容写回剪贴板
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="kr">await&lt;/span> &lt;span class="nx">navigator&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">clipboard&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">writeText&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">modifiedContent&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">new&lt;/span> &lt;span class="nx">Notice&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;剪贴板内容已处理并修改！&amp;#34;&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">};&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="2-在quickadd中设置脚本">2. 在QuickAdd中设置脚本
+&lt;/h3>&lt;p>安装QuickAdd插件，并创建一个&lt;code>Macro&lt;/code>，按如下图中的配置进行设置并保存。Macro的第一步是执行我们刚刚创建的用户脚本&lt;code>fixlatex.js&lt;/code>，第二步是等待100毫秒，第三步是执行粘贴操作。&lt;/p>
+&lt;p>&lt;img src="https://nansenli.com/img/rescued/ec99ec1deab8.png"
+loading="lazy"
+>&lt;/p>
+&lt;h3 id="3-在commander中设置侧边快捷键">3. 在Commander中设置侧边快捷键
+&lt;/h3>&lt;p>安装Commander插件，并将刚刚创建的QuickAdd操作设置为侧边栏的快捷键。你也可以跳过这一步，直接使用Obsidian命令执行这个操作。&lt;/p>
+&lt;h3 id="4-验证效果">4. 验证效果
+&lt;/h3>&lt;p>现在，在ChatGPT的网页中（目前在APP中点击复制按钮似乎有点问题），点击复制按钮后，在Obsidian中点击侧边栏快捷键，或者手动执行QuickAdd命令，就可以将ChatGPT中的内容复制到Obsidian中，并自动转换Latex格式。&lt;/p></description></item></channel></rss>

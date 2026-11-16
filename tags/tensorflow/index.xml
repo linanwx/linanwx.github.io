@@ -1,0 +1,402 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>TensorFlow on Nansen Li's Blog
+李楠森的博客</title><link>https://nansenli.com/tags/tensorflow/</link><description>Recent content in TensorFlow on Nansen Li's Blog
+李楠森的博客</description><generator>Hugo -- gohugo.io</generator><language>en</language><copyright>Nansen Li 🌈 （李楠森）</copyright><lastBuildDate>Wed, 13 Sep 2017 10:44:00 +0000</lastBuildDate><atom:link href="https://nansenli.com/tags/tensorflow/index.xml" rel="self" type="application/rss+xml"/><item><title>Key Points for Installing GPU Version of TensorFlow on Deepin</title><link>https://nansenli.com/post/jianshu/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/deepin-%E5%AE%89%E8%A3%85-gpu%E7%89%88-tensorflow-%E8%A6%81%E7%82%B9/</link><pubDate>Wed, 13 Sep 2017 10:44:00 +0000</pubDate><guid>https://nansenli.com/post/jianshu/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/deepin-%E5%AE%89%E8%A3%85-gpu%E7%89%88-tensorflow-%E8%A6%81%E7%82%B9/</guid><description>&lt;h2 id="introduction">Introduction
+&lt;/h2>&lt;p>Although there are many tutorials on how to install TensorFlow on Ubuntu, there isn&amp;rsquo;t a single article explaining how to install TensorFlow on Deepin systems. Here I&amp;rsquo;ll explain the key points of the installation process.&lt;/p>
+&lt;h2 id="process">Process
+&lt;/h2>&lt;ul>
+&lt;li>First, download the Nvidia Linux driver from the official website. If you can&amp;rsquo;t run it, you&amp;rsquo;ll need to modify the driver&amp;rsquo;s execution permissions using chmod u+x. For information on installing graphics drivers on Deepin, refer to this article: &lt;a class="link" href="https://wiki.deepin.org/index.php?title=%E6%98%BE%E5%8D%A1" target="_blank" rel="noopener"
+>https://wiki.deepin.org/index.php?title=%E6%98%BE%E5%8D%A1&lt;/a>&lt;/li>
+&lt;li>Install Docker-ce. You must follow the official installation guide; this is the only method to properly install the latest version of Docker: &lt;a class="link" href="https://wiki.deepin.org/index.php?title=Docker" target="_blank" rel="noopener"
+>https://wiki.deepin.org/index.php?title=Docker&lt;/a>&lt;/li>
+&lt;li>Download Nvidia-docker. Find the Ubuntu installation package and installation steps on the Nvidia-Docker page on GitHub and follow them.&lt;/li>
+&lt;li>Next, run &lt;code>docker run -it -p 8888:8888 tensorflow/tensorflow:latest-gpu&lt;/code>. At this point, you can enter the official TensorFlow GPU version container. Open localhost:8888 to see the Jupyter page.&lt;/li>
+&lt;/ul>
+&lt;h2 id="pitfalls">Pitfalls
+&lt;/h2>&lt;p>When installing the Nvidia graphics driver, according to the installation software&amp;rsquo;s instructions, you need to close the Linux desktop system X server. At this point, you can use tty1&lt;del>6 for terminal operations. However, if Deepin has already installed its own Nvidia driver, when stopping the lightdm service, Deepin closes both the X server and the monitor, making it impossible to display the tty1&lt;/del>6 screens. This issue prevents Nvidia driver installation. Even after manually uninstalling the official Deepin Nvidia driver through complex uninstallation commands, when switching to tty1~6 and closing the graphical interface, the tty screen still shuts down, resulting in a black screen and making it impossible to continue with driver uninstallation and reinstallation of the official Nvidia driver.&lt;/p>
+&lt;h2 id="solution">Solution
+&lt;/h2>&lt;p>To avoid problems with Nvidia driver installation while maintaining a clean and scientific operation, you must install the official Nvidia Linux driver during the first installation of the Deepin system, before any graphics drivers are installed. First, press the shortcut &amp;ldquo;Ctrl+Alt+F2&amp;rdquo; to enter tty2, then enter &lt;code>sudo systemctl stop lightdm&lt;/code> to stop the lightdm service. At this point, when the computer closes the X server, it won&amp;rsquo;t cause the monitor to shut down. Then run &lt;code>chmod u+x NVIDIA-Linux-x86_64-352.55.run&lt;/code> to grant executable permissions, followed by &lt;code>sudo ./NVIDIA-Linux-x86_64-352.55.run&lt;/code> to install the driver file. After restarting, you can use the official closed-source driver normally.&lt;/p>
+&lt;h2 id="follow-up">Follow-up
+&lt;/h2>&lt;p>Using a GPU to run TensorFlow programs is very fast. Normal programs can speed up by more than 10 times, and some programs can speed up by 50 to 100 times, so using a GPU for TensorFlow programming is essential.
+Additionally, I&amp;rsquo;m not sure if it&amp;rsquo;s an issue with Deepin, Nvidia-Docker, or the driver, but after the computer goes into standby mode, it causes errors in the TensorFlow container. Therefore, don&amp;rsquo;t let the machine enter standby mode during training.&lt;/p></description></item><item><title>TensorFlow: A Simple Introduction Case Study</title><link>https://nansenli.com/post/jianshu/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/tensorflow-%E4%B8%80%E4%B8%AA%E7%AE%80%E5%8D%95%E7%9A%84%E5%85%A5%E9%97%A8%E7%94%A8%E4%BE%8B/</link><pubDate>Wed, 09 Aug 2017 07:08:00 +0000</pubDate><guid>https://nansenli.com/post/jianshu/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/tensorflow-%E4%B8%80%E4%B8%AA%E7%AE%80%E5%8D%95%E7%9A%84%E5%85%A5%E9%97%A8%E7%94%A8%E4%BE%8B/</guid><description>&lt;h2 id="case-study">Case Study
+&lt;/h2>&lt;p>Suppose I have a series of x-y data points with a linear relationship between x and y. How would we fit a straight line to this data?&lt;/p>
+&lt;p>In the program below, train_x is a series of numbers between -1 and 1, and train_y is twice x plus 10, with a random number between 0 and 1 added.
+Next, we build the model. X and Y are tensor placeholders waiting to be initialized. During optimization, the XY values in the model will continuously change to data from train_x and train_y, and then the optimizer will optimize by changing the slope w and intercept b in a direction that reduces error. Through iteration, w and b will eventually make the model fit the data.&lt;/p>
+&lt;p>After the model is built, we start running it. First, we open a session, and we must remember to initialize all variables. Next, we iterate through all the data 10 times. In each iteration, we input a coordinate, calculate the error, and use gradient descent to correct w and b. Finally, we output the calculated values of w and b.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-gdscript3" data-lang="gdscript3">&lt;span class="line">&lt;span class="cl">&lt;span class="n">import&lt;/span> &lt;span class="n">tensorflow&lt;/span> &lt;span class="n">as&lt;/span> &lt;span class="n">tf&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">import&lt;/span> &lt;span class="n">numpy&lt;/span> &lt;span class="n">as&lt;/span> &lt;span class="n">np&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">train_x&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">np&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">linspace&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">101&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">train_y&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">2&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="n">train_x&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="n">np&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">random&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">rand&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">train_x&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">shape&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="mi">0&lt;/span>&lt;span class="p">])&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="mi">10&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">X&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">tf&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">placeholder&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;float&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">Y&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">tf&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">placeholder&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;float&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">w&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">tf&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">Variable&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mf">0.0&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">name&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="s2">&amp;#34;w&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">b&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">tf&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">Variable&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mf">0.0&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">name&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="s2">&amp;#34;b&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">loss&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">tf&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">square&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">Y&lt;/span> &lt;span class="o">-&lt;/span> &lt;span class="n">tf&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">multiply&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">X&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="n">w&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="o">-&lt;/span> &lt;span class="n">b&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">train_op&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">tf&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">train&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">GradientDescentOptimizer&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mf">0.01&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">minimize&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">loss&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">with&lt;/span> &lt;span class="n">tf&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">Session&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="n">as&lt;/span> &lt;span class="n">session&lt;/span>&lt;span class="p">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">session&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">run&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">tf&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">global_variables_initializer&lt;/span>&lt;span class="p">())&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">for&lt;/span> &lt;span class="n">i&lt;/span> &lt;span class="ow">in&lt;/span> &lt;span class="nb">range&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">10&lt;/span>&lt;span class="p">):&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">for&lt;/span> &lt;span class="n">x&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="n">y&lt;/span> &lt;span class="ow">in&lt;/span> &lt;span class="n">zip&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">train_x&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">train_y&lt;/span>&lt;span class="p">):&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">session&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">run&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">train_op&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">feed_dict&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="p">{&lt;/span>&lt;span class="n">X&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="n">x&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">Y&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="n">y&lt;/span>&lt;span class="p">})&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">print&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;w: &amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">session&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">run&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">w&lt;/span>&lt;span class="p">))&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">print&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;b: &amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">session&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">run&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">b&lt;/span>&lt;span class="p">))&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>Running results:
+&lt;img src="http://otwwkzjm5.bkt.clouddn.com/17-8-9/99539186.jpg"
+loading="lazy"
+alt="Results"
+>&lt;/p></description></item><item><title>TensorFlow Hello World Introduction</title><link>https://nansenli.com/post/jianshu/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/tensorflow-hello-world-%E5%85%A5%E9%97%A8/</link><pubDate>Tue, 08 Aug 2017 09:58:00 +0000</pubDate><guid>https://nansenli.com/post/jianshu/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/tensorflow-hello-world-%E5%85%A5%E9%97%A8/</guid><description>&lt;h2 id="quick-installation-guide">Quick Installation Guide
+&lt;/h2>&lt;ul>
+&lt;li>Step 1: Install Docker&lt;/li>
+&lt;/ul>
+&lt;p>&lt;a class="link" href="https://www.docker-cn.com/community-edition#/download" target="_blank" rel="noopener"
+>https://www.docker-cn.com/community-edition#/download&lt;/a>&lt;/p>
+&lt;p>Then configure the official Chinese mirror.&lt;/p>
+&lt;p>&lt;img src="https://nansenli.com/img/rescued/5832fec39b1c.jpg"
+loading="lazy"
+alt="image.png"
+>&lt;/p>
+&lt;ul>
+&lt;li>Step 2: Set up TensorFlow environment&lt;/li>
+&lt;/ul>
+&lt;p>&lt;code>$ docker run -it -p 8888:8888 tensorflow/tensorflow&lt;/code>
+Running this command will automatically download the TensorFlow image, provided that the repository mirror is set to a Chinese mirror; otherwise, the download will be very slow. After running the command, the terminal will display a URL that prompts you to open a web page. When you open this URL, you&amp;rsquo;ll see the TensorFlow Jupyter editing environment, where we&amp;rsquo;ll input all our code.&lt;/p>
+&lt;ul>
+&lt;li>Mounting Docker file directory
+If we need to access local files, we need to mount a local folder to the container directory. Close the container, reopen it, and use &lt;code>-v host_directory:container_directory&lt;/code> for mounting.
+&lt;code>docker run -v /Users/hahaha/tensorflow/:/notebooks -it -p 8888:8888 tensorflow/tensorflow&lt;/code>&lt;/li>
+&lt;/ul>
+&lt;p>Where /Users/hahaha/tensorflow/ is a folder on my Mac, and notebooks is the default Jupyter editing directory in the TensorFlow container.&lt;/p>
+&lt;h2 id="running-hello-world-code">Running Hello World Code
+&lt;/h2>&lt;p>&lt;img src="https://nansenli.com/img/rescued/5f59450b005f.png"
+loading="lazy"
+alt="image.png"
+>
+Create a new Python 2 Jupyter file, enter the following code, and then click the play button. At this point, a &amp;ldquo;Hello, TensorFlow!&amp;rdquo; string should appear below, indicating that the program has run successfully.&lt;/p>
+&lt;h2 id="program-explanation">Program Explanation
+&lt;/h2>&lt;p>From this simple code, we can see that TensorFlow is very easy to use. It&amp;rsquo;s imported as a standard Python library without requiring additional services to be started. For those new to TensorFlow, you might wonder why we need to use tf.constant() and tf.Session() to output a &amp;ldquo;Hello World&amp;rdquo; string when Python itself could do it. The reason is that TensorFlow defines and runs models and training through Graphs and Sessions, which provides significant benefits for complex models and distributed training.&lt;/p>
+&lt;p>First, in TensorFlow, there are two concepts: Graph and Operation. Operation represents what needs to be computed. A Graph contains many Operations. A Session is used to execute Operations in a Graph.&lt;/p>
+&lt;h2 id="basic-usage">Basic Usage
+&lt;/h2>&lt;p>When using TensorFlow, you must understand that TensorFlow:&lt;/p>
+&lt;ul>
+&lt;li>Uses a &lt;code>graph&lt;/code> to represent computational tasks&lt;/li>
+&lt;li>Executes the graph in a &lt;code>context&lt;/code> called a &lt;code>Session&lt;/code>&lt;/li>
+&lt;li>Represents data using &lt;code>tensors&lt;/code>&lt;/li>
+&lt;li>Maintains state through &lt;code>Variables&lt;/code>&lt;/li>
+&lt;li>Uses &lt;code>feed&lt;/code> and &lt;code>fetch&lt;/code> to assign values to or retrieve data from &lt;code>arbitrary operations&lt;/code>&lt;/li>
+&lt;/ul>
+&lt;h2 id="overview">Overview
+&lt;/h2>&lt;p>TensorFlow is a programming system that uses graphs to represent computational tasks. Nodes in the graph are called &lt;strong>ops&lt;/strong> (short for operations). An op takes 0 or more Tensors, performs computations, and produces 0 or more Tensors. Each Tensor is a typed multi-dimensional array. For example, you can represent a small batch of images as a four-dimensional floating-point array with dimensions [batch, height, width, channels].&lt;/p>
+&lt;p>A TensorFlow graph &lt;strong>describes&lt;/strong> the computation process. To perform computation, the graph must be launched in a &lt;code>session&lt;/code>. The &lt;code>session&lt;/code> distributes the graph&amp;rsquo;s ops to devices like CPUs or GPUs and provides methods to execute ops. After execution, these methods return the resulting tensors. In Python, the returned tensors are &lt;a class="link" href="http://www.numpy.org/" target="_blank" rel="noopener"
+>numpy&lt;/a> &lt;code>ndarray&lt;/code> objects. In C and C++, the returned tensors are tensorflow::Tensor instances.&lt;/p></description></item><item><title>Using TensorFlow for a Kaggle Task — Titanic: Machine Learning from Disaster</title><link>https://nansenli.com/post/jianshu/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E4%BD%BF%E7%94%A8tensorflow%E5%AE%8C%E6%88%90kaggle%E4%BB%BB%E5%8A%A1%E6%B3%B0%E5%9D%A6%E5%B0%BC%E5%85%8B%E5%8F%B7titanic--machine-learning-from-disaster/</link><pubDate>Fri, 04 Aug 2017 10:08:00 +0000</pubDate><guid>https://nansenli.com/post/jianshu/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E4%BD%BF%E7%94%A8tensorflow%E5%AE%8C%E6%88%90kaggle%E4%BB%BB%E5%8A%A1%E6%B3%B0%E5%9D%A6%E5%B0%BC%E5%85%8B%E5%8F%B7titanic--machine-learning-from-disaster/</guid><description>&lt;h2 id="import-necessary-libraries">Import Necessary Libraries
+&lt;/h2>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">import csv
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">import tensorflow as tf
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">import numpy as np
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">import random
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">import sys
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">import pandas as pd
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">from pandas import DataFrame
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">from __future__ import absolute_import
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">from __future__ import division
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">from __future__ import print_function
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="read-source-file-and-display">Read Source File and Display
+&lt;/h2>&lt;p>In this section, we&amp;rsquo;ll work with basic CSV operations and display the results.
+We&amp;rsquo;ll read the train.csv file downloaded from Kaggle and show its contents.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">trainFilePath = &amp;#39;./train.csv&amp;#39;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">trainSize = 0
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">def testCSV(filePath):
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> with open(filePath, &amp;#39;rb&amp;#39;) as trainFile:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> global trainSize
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> csvReader = csv.reader(trainFile)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> dataList = [data for data in csvReader]
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> df = DataFrame(dataList[1:], columns=dataList[0])
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> trainSize = len(df)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> print(df)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> print(&amp;#34;trainSize&amp;#34;, trainSize)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">testCSV(trainFilePath)
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="read-source-file-extract-data-and-build-neural-network">Read Source File, Extract Data, and Build Neural Network
+&lt;/h2>&lt;p>In this section, we&amp;rsquo;ll extract gender, class, ticket fare, and SibSp from the source file to fit the survival probability.
+Then we&amp;rsquo;ll build a 5-layer neural network with 3 hidden layers containing 4-10-20-10-2 neurons respectively.
+Finally, we&amp;rsquo;ll execute the reading function.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;span class="lnt">30
+&lt;/span>&lt;span class="lnt">31
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">def readTrainDataCSV(filePath):
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> global trainData, targetData, classifier
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> with open(filePath, &amp;#39;rb&amp;#39;) as trainFile:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> csvReader = csv.reader(trainFile)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> dataList = [data for data in csvReader]
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> dataSize = len(dataList) - 1
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> trainData = np.ndarray((dataSize, 4), dtype=np.float32)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> targetData = np.ndarray((dataSize, 1), dtype=np.int32)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> trainDataFrame = DataFrame(dataList[1:], columns=dataList[0])
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> trainDataFrame_fliter = trainDataFrame.loc[:,[&amp;#39;Pclass&amp;#39;,&amp;#39;Sex&amp;#39;,&amp;#39;SibSp&amp;#39;,&amp;#39;Fare&amp;#39;,&amp;#39;Survived&amp;#39;]]
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> for i in range(dataSize):
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> thisData = np.array(trainDataFrame_fliter.iloc[i])
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> Pclass,Sex,SibSp,Fare,Survived = thisData
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> Pclass = float(Pclass)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> Sex = 0 if Sex == &amp;#39;female&amp;#39; else 1
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> SibSp = float(SibSp)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> Fare = float(Fare)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> Survived = int(Survived)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> print(Pclass,Sex,SibSp,Fare,Survived)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> trainData[i,:] = [Pclass,Sex,SibSp,Fare]
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> targetData[i,:] = [Survived]
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> print(thisData)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> print(trainData)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> print(targetData)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> feature_columns = [tf.contrib.layers.real_valued_column(&amp;#34;&amp;#34;, dimension=4)]
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> classifier = tf.contrib.learn.DNNClassifier(feature_columns=feature_columns,
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> hidden_units=[10, 20, 10],
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> n_classes=2)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"># model_dir=&amp;#34;/tmp/titanic_model&amp;#34;)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">readTrainDataCSV(trainFilePath)
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="create-input-data">Create Input Data
+&lt;/h2>&lt;p>We&amp;rsquo;ll wrap the training data and labels into a tuple and return it.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;span class="lnt">8
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-gdscript3" data-lang="gdscript3">&lt;span class="line">&lt;span class="cl">&lt;span class="k">def&lt;/span> &lt;span class="nf">get_train_inputs&lt;/span>&lt;span class="p">():&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">x&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">tf&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">constant&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">trainData&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">y&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">tf&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">constant&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">targetData&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">print&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">x&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">print&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">y&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="n">x&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">y&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">get_train_inputs&lt;/span>&lt;span class="p">()&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="train-the-model">Train the Model
+&lt;/h2>&lt;p>Now we start training the neural network.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">def train():
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> classifier.fit(input_fn=get_train_inputs, steps=2000)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">train()
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="check-accuracy">Check Accuracy
+&lt;/h2>&lt;p>We use the entire dataset to check accuracy. Note that we should use a validation set for this task, but since this is just for demonstration purposes, we&amp;rsquo;ll skip that step.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">accuracy_score = classifier.evaluate(input_fn=get_train_inputs,
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> steps=1)[&amp;#34;accuracy&amp;#34;]
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">print(&amp;#34;accuracy:&amp;#34;,accuracy_score)
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="read-test-set-and-output-results">Read Test Set and Output Results
+&lt;/h2>&lt;p>In this section, we&amp;rsquo;ll read the test data from Kaggle and output the results to a file, which will ultimately be submitted to the official website.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;span class="lnt">30
+&lt;/span>&lt;span class="lnt">31
+&lt;/span>&lt;span class="lnt">32
+&lt;/span>&lt;span class="lnt">33
+&lt;/span>&lt;span class="lnt">34
+&lt;/span>&lt;span class="lnt">35
+&lt;/span>&lt;span class="lnt">36
+&lt;/span>&lt;span class="lnt">37
+&lt;/span>&lt;span class="lnt">38
+&lt;/span>&lt;span class="lnt">39
+&lt;/span>&lt;span class="lnt">40
+&lt;/span>&lt;span class="lnt">41
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">testFilePath = &amp;#39;./test.csv&amp;#39;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">def readTestDataCSV(filePath):
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> global testData, PassengerIdStart
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> with open(filePath, &amp;#39;rb&amp;#39;) as testFile:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> csvReader = csv.reader(testFile)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> dataList = [data for data in csvReader]
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> dataSize = len(dataList)-1
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> trainDataFrame = DataFrame(dataList[1:], columns=dataList[0])
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> trainDataFrame_fliter = trainDataFrame.loc[:,[&amp;#39;Pclass&amp;#39;,&amp;#39;Sex&amp;#39;,&amp;#39;SibSp&amp;#39;,&amp;#39;Fare&amp;#39;]]
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> testData = np.ndarray((dataSize, 4), dtype=np.float32)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> PassengerIdStart = trainDataFrame[&amp;#39;PassengerId&amp;#39;][0]
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> PassengerIdStart = int(PassengerIdStart)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> print(&amp;#39;PassengerId&amp;#39;,PassengerIdStart)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> for i in range(dataSize):
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> thisData = np.array(trainDataFrame_fliter.iloc[i])
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> Pclass,Sex,SibSp,Fare = thisData
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> Pclass = float(Pclass)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> Sex = 0 if Sex == &amp;#39;female&amp;#39; else 1
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> SibSp = float(SibSp)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> Fare = 0 if Fare==&amp;#39;&amp;#39; else float(Fare)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> print(Pclass,Sex,SibSp,Fare)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> testData[i,:] = [Pclass,Sex,SibSp,Fare]
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> print(thisData)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> print(testData)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">def testData_samples():
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> return testData
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">readTestDataCSV(testFilePath)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">predictions = list(classifier.predict(input_fn=testData_samples))
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">print(predictions)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">with open(&amp;#39;predictions.csv&amp;#39;, &amp;#39;wb&amp;#39;) as csvfile:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> writer = csv.writer(csvfile, dialect=&amp;#39;excel&amp;#39;)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> writer.writerow([&amp;#39;PassengerId&amp;#39;,&amp;#39;Survived&amp;#39;])
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> PassengerId = PassengerIdStart
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> for i in predictions:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> writer.writerow([PassengerId, i])
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> PassengerId += 1
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>Finally, using only 4 features, we achieved an accuracy of 75%. The next goal is to utilize the other available data.&lt;/p></description></item></channel></rss>

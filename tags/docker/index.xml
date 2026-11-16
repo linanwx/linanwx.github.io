@@ -1,0 +1,349 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Docker on Nansen Li's Blog
+李楠森的博客</title><link>https://nansenli.com/tags/docker/</link><description>Recent content in Docker on Nansen Li's Blog
+李楠森的博客</description><generator>Hugo -- gohugo.io</generator><language>en</language><copyright>Nansen Li 🌈 （李楠森）</copyright><lastBuildDate>Sun, 20 Jun 2021 12:21:00 +0000</lastBuildDate><atom:link href="https://nansenli.com/tags/docker/index.xml" rel="self" type="application/rss+xml"/><item><title>Classic Kubernetes Installation Process</title><link>https://nansenli.com/post/jianshu/k8s/k8s%E7%BB%8F%E5%85%B8%E5%AE%89%E8%A3%85%E6%B5%81%E7%A8%8B/</link><pubDate>Sun, 20 Jun 2021 12:21:00 +0000</pubDate><guid>https://nansenli.com/post/jianshu/k8s/k8s%E7%BB%8F%E5%85%B8%E5%AE%89%E8%A3%85%E6%B5%81%E7%A8%8B/</guid><description>&lt;h1 id="run-on-all-machines">Run on All Machines
+&lt;/h1>&lt;p>All machines are running Debian.
+First, install Docker:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;span class="lnt">30
+&lt;/span>&lt;span class="lnt">31
+&lt;/span>&lt;span class="lnt">32
+&lt;/span>&lt;span class="lnt">33
+&lt;/span>&lt;span class="lnt">34
+&lt;/span>&lt;span class="lnt">35
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-gdscript3" data-lang="gdscript3">&lt;span class="line">&lt;span class="cl"> &lt;span class="n">sudo&lt;/span> &lt;span class="n">apt&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">get&lt;/span> &lt;span class="n">update&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">sudo&lt;/span> &lt;span class="n">apt&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">get&lt;/span> &lt;span class="n">install&lt;/span> &lt;span class="o">-&lt;/span>&lt;span class="n">y&lt;/span> \
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">apt&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">transport&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">https&lt;/span> \
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">ca&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">certificates&lt;/span> \
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">curl&lt;/span> \
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">gnupg&lt;/span> \
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">lsb&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">release&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">curl&lt;/span> &lt;span class="o">-&lt;/span>&lt;span class="n">fsSL&lt;/span> &lt;span class="n">https&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="o">//&lt;/span>&lt;span class="n">download&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">docker&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">com&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">linux&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">debian&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">gpg&lt;/span> &lt;span class="o">|&lt;/span> &lt;span class="n">sudo&lt;/span> &lt;span class="n">gpg&lt;/span> &lt;span class="o">--&lt;/span>&lt;span class="n">dearmor&lt;/span> &lt;span class="o">-&lt;/span>&lt;span class="n">o&lt;/span> &lt;span class="o">/&lt;/span>&lt;span class="n">usr&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">share&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">keyrings&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">docker&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">archive&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">keyring&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">gpg&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">echo&lt;/span> \
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/debian &lt;/span>&lt;span class="se">\
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="se">&lt;/span>&lt;span class="s2"> $(lsb_release -cs) stable&amp;#34;&lt;/span> &lt;span class="o">|&lt;/span> &lt;span class="n">sudo&lt;/span> &lt;span class="n">tee&lt;/span> &lt;span class="o">/&lt;/span>&lt;span class="n">etc&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">apt&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">sources&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">list&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">d&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">docker&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">list&lt;/span> &lt;span class="o">&amp;gt;&lt;/span> &lt;span class="o">/&lt;/span>&lt;span class="n">dev&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">null&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">sudo&lt;/span> &lt;span class="n">apt&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">get&lt;/span> &lt;span class="n">update&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">sudo&lt;/span> &lt;span class="n">apt&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">get&lt;/span> &lt;span class="n">install&lt;/span> &lt;span class="o">-&lt;/span>&lt;span class="n">y&lt;/span> &lt;span class="n">docker&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">ce&lt;/span> &lt;span class="n">docker&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">ce&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">cli&lt;/span> &lt;span class="n">containerd&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">io&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">sudo&lt;/span> &lt;span class="n">mkdir&lt;/span> &lt;span class="o">/&lt;/span>&lt;span class="n">etc&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">docker&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">cat&lt;/span> &lt;span class="o">&amp;lt;&amp;lt;&lt;/span>&lt;span class="n">EOF&lt;/span> &lt;span class="o">|&lt;/span> &lt;span class="n">sudo&lt;/span> &lt;span class="n">tee&lt;/span> &lt;span class="o">/&lt;/span>&lt;span class="n">etc&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">docker&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">daemon&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">json&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;exec-opts&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="p">[&lt;/span>&lt;span class="s2">&amp;#34;native.cgroupdriver=systemd&amp;#34;&lt;/span>&lt;span class="p">],&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;log-driver&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;json-file&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;log-opts&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;max-size&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;100m&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">},&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;storage-driver&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;overlay2&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">EOF&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">sudo&lt;/span> &lt;span class="n">usermod&lt;/span> &lt;span class="o">-&lt;/span>&lt;span class="n">aG&lt;/span> &lt;span class="n">docker&lt;/span> &lt;span class="o">$&lt;/span>&lt;span class="p">{&lt;/span>&lt;span class="n">USER&lt;/span>&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">sudo&lt;/span> &lt;span class="n">systemctl&lt;/span> &lt;span class="n">restart&lt;/span> &lt;span class="n">docker&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">sudo&lt;/span> &lt;span class="n">su&lt;/span> &lt;span class="o">$&lt;/span>&lt;span class="p">{&lt;/span>&lt;span class="n">USER&lt;/span>&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>At this point, running &lt;code>docker ps -a&lt;/code> should work without errors, indicating Docker was installed successfully.&lt;/p>
+&lt;p>Next, install Kubernetes components:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-gdscript3" data-lang="gdscript3">&lt;span class="line">&lt;span class="cl">&lt;span class="n">cat&lt;/span> &lt;span class="o">&amp;lt;&amp;lt;&lt;/span>&lt;span class="n">EOF&lt;/span> &lt;span class="o">|&lt;/span> &lt;span class="n">sudo&lt;/span> &lt;span class="n">tee&lt;/span> &lt;span class="o">/&lt;/span>&lt;span class="n">etc&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">modules&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="nb">load&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">d&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">k8s&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">conf&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">br_netfilter&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">EOF&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">cat&lt;/span> &lt;span class="o">&amp;lt;&amp;lt;&lt;/span>&lt;span class="n">EOF&lt;/span> &lt;span class="o">|&lt;/span> &lt;span class="n">sudo&lt;/span> &lt;span class="n">tee&lt;/span> &lt;span class="o">/&lt;/span>&lt;span class="n">etc&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">sysctl&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">d&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">k8s&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">conf&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">net&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">bridge&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">bridge&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">nf&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">call&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">ip6tables&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">1&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">net&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">bridge&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">bridge&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">nf&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">call&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">iptables&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">1&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">EOF&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">sudo&lt;/span> &lt;span class="n">sysctl&lt;/span> &lt;span class="o">--&lt;/span>&lt;span class="n">system&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">sudo&lt;/span> &lt;span class="n">apt&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">get&lt;/span> &lt;span class="n">update&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">sudo&lt;/span> &lt;span class="n">apt&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">get&lt;/span> &lt;span class="n">install&lt;/span> &lt;span class="o">-&lt;/span>&lt;span class="n">y&lt;/span> &lt;span class="n">apt&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">transport&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">https&lt;/span> &lt;span class="n">ca&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">certificates&lt;/span> &lt;span class="n">curl&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">sudo&lt;/span> &lt;span class="n">curl&lt;/span> &lt;span class="o">-&lt;/span>&lt;span class="n">fsSLo&lt;/span> &lt;span class="o">/&lt;/span>&lt;span class="n">usr&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">share&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">keyrings&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">kubernetes&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">archive&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">keyring&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">gpg&lt;/span> &lt;span class="n">https&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="o">//&lt;/span>&lt;span class="n">packages&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">cloud&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">google&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">com&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">apt&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">doc&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">apt&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">key&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">gpg&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">echo&lt;/span> &lt;span class="s2">&amp;#34;deb [signed-by=/usr/share/keyrings/kubernetes-archive-keyring.gpg] https://apt.kubernetes.io/ kubernetes-xenial main&amp;#34;&lt;/span> &lt;span class="o">|&lt;/span> &lt;span class="n">sudo&lt;/span> &lt;span class="n">tee&lt;/span> &lt;span class="o">/&lt;/span>&lt;span class="n">etc&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">apt&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">sources&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">list&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">d&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">kubernetes&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">list&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">sudo&lt;/span> &lt;span class="n">apt&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">get&lt;/span> &lt;span class="n">update&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">sudo&lt;/span> &lt;span class="n">apt&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">get&lt;/span> &lt;span class="n">install&lt;/span> &lt;span class="o">-&lt;/span>&lt;span class="n">y&lt;/span> &lt;span class="n">kubelet&lt;/span> &lt;span class="n">kubeadm&lt;/span> &lt;span class="n">kubectl&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">sudo&lt;/span> &lt;span class="n">apt&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">mark&lt;/span> &lt;span class="n">hold&lt;/span> &lt;span class="n">kubelet&lt;/span> &lt;span class="n">kubeadm&lt;/span> &lt;span class="n">kubectl&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h1 id="run-on-the-master-node">Run on the Master Node
+&lt;/h1>&lt;p>Initialize the control plane:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">sudo kubeadm init --apiserver-advertise-address masterip --control-plane-endpoint masterdns --pod-network-cidr 10.244.0.0/16
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>Save the last part of the output for later use, including instructions on how to configure .kube and the join command for nodes. Follow the instructions to configure the .kube file.&lt;/p>
+&lt;p>Then initialize the network plugin:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">wget https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">kubectl apply -f kube-flannel.yml
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>Check if pods are running properly:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">kubectl get pods -A
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>On another node, install Kubernetes components, then run the join command. This command is printed at the end of the kubeadm init process.&lt;/p>
+&lt;p>Afterwards, check if the pods are running properly.&lt;/p>
+&lt;p>Download the dashboard:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">wget https://raw.githubusercontent.com/kubernetes/dashboard/v2.2.0/aio/deploy/recommended.yaml -o dashboard.yaml
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>Edit dashboard.yaml:
+Add nodePort: 31001 below port 8443, and change the type to NodePort above it. Find the namespace= line and add a line below it: - &amp;ndash;token-ttl=43200
+For details, refer to:
+&lt;a class="link" href="https://www.huaweicloud.com/articles/dc1dcb0c48cc785a9193c9ce709c8b35.html" target="_blank" rel="noopener"
+>https://www.huaweicloud.com/articles/dc1dcb0c48cc785a9193c9ce709c8b35.html&lt;/a>&lt;/p>
+&lt;p>Create an admin role:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">kubectl create -f https://raw.githubusercontent.com/rootsongjc/kubernetes-handbook/master/manifests/dashboard-1.7.1/admin-role.yaml
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>Apply the pod:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">kubectl apply -f dashboard.yaml
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>Check the port:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">sudo lsof -i:31001
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>Get the token:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">kubectl -n kube-system describe secret $(kubectl -n kube-system get secret | grep admin-token | awk &amp;#39;{print $1}&amp;#39;)
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>Visit https://masterip:31001 and enter &amp;rsquo;thisisunsafe&amp;rsquo; in Chrome, then input the token.&lt;/p>
+&lt;p>&lt;img src="https://nansenli.com/img/rescued/6e04c88e778d.png"
+loading="lazy"
+alt="dashboard"
+>&lt;/p></description></item><item><title>MySQL Study Notes</title><link>https://nansenli.com/post/jianshu/%E6%95%B0%E6%8D%AE%E5%BA%93/mysql%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/</link><pubDate>Mon, 05 Mar 2018 07:04:00 +0000</pubDate><guid>https://nansenli.com/post/jianshu/%E6%95%B0%E6%8D%AE%E5%BA%93/mysql%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/</guid><description>&lt;h2 id="introduction">Introduction
+&lt;/h2>&lt;p>I&amp;rsquo;m using Docker for learning. I&amp;rsquo;ve configured the docker-cn mirror.&lt;/p>
+&lt;h2 id="setting-up-a-mysql-cluster">Setting Up a MySQL Cluster
+&lt;/h2>&lt;p>Use the following command to pull the MySQL image:&lt;/p>
+&lt;pre>&lt;code>docker pull mysql
+&lt;/code>&lt;/pre>
+&lt;p>Use the following commands to set up one master and one slave:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">docker run --name mysql-master -P -d -e MYSQL_ROOT_PASSWORD=ln mysql
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">docker run --name mysql-slave1 -P -d -e MYSQL_ROOT_PASSWORD=ln mysql
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>Where -d configures it as a daemon process, -P exposes all ports, and the root password is set to &amp;ldquo;ln&amp;rdquo;.&lt;/p>
+&lt;p>Use the following commands to enter the two Docker containers:&lt;/p>
+&lt;pre>&lt;code>docker exec -it mysql-master bash
+docker exec -it mysql-slave1 bash
+&lt;/code>&lt;/pre>
+&lt;p>Check the network IP. First, we need to install net-tools, which requires an update, and before updating, we need to change the source:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-gdscript3" data-lang="gdscript3">&lt;span class="line">&lt;span class="cl">&lt;span class="n">sed&lt;/span> &lt;span class="o">-&lt;/span>&lt;span class="n">i&lt;/span> &lt;span class="s1">&amp;#39;s/deb.debian.org/mirrors.ustc.edu.cn/g&amp;#39;&lt;/span> &lt;span class="o">/&lt;/span>&lt;span class="n">etc&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">apt&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">sources&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">list&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">apt&lt;/span> &lt;span class="n">update&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">apt&lt;/span> &lt;span class="n">install&lt;/span> &lt;span class="n">net&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">tools&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>Enter ifconfig to check the IP address.
+The master is 172.17.0.2, and slave1 is 172.17.0.3.&lt;/p>
+&lt;p>Set login permissions
+In the MySQL master, follow these steps. First login, then set the root user to be accessible without a password from anywhere.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">mysql -uroot -p
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">mysql&amp;gt; grant all privileges on *.* to root@&amp;#39;%&amp;#39; identified by &amp;#39;&amp;#39;;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Query OK, 0 rows affected (0.02 sec)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">mysql&amp;gt; flush privileges;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Query OK, 0 rows affected (0.02 sec)
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>In slave1, use the master&amp;rsquo;s database with an empty password:&lt;/p>
+&lt;pre>&lt;code>mysql -uroot -p -h 172.17.0.2
+&lt;/code>&lt;/pre>
+&lt;p>Create a database in the master:&lt;/p>
+&lt;pre>&lt;code>create database test_docker;
+&lt;/code>&lt;/pre>
+&lt;p>Check if the database exists in the slave:&lt;/p>
+&lt;pre>&lt;code>show databases;
+&lt;/code>&lt;/pre>
+&lt;h2 id="miscellaneous">Miscellaneous
+&lt;/h2>&lt;p>SQL is case-insensitive; SELECT and select are the same.
+It&amp;rsquo;s better to add a semicolon at the end of SQL statements.
+Use &amp;ldquo;use&amp;rdquo; to select a database. Use &amp;ldquo;set&amp;rdquo; to set values.
+The method to add users is with &amp;ldquo;create&amp;rdquo;.
+Then grant permissions to users for databases and tables.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">mysql -u root -p
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Enter password:**
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">mysql&amp;gt; use mysql;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">mysql&amp;gt; create user &amp;#39;linanwx&amp;#39;@&amp;#39;%&amp;#39; identified by &amp;#39;ln&amp;#39;;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">mysql&amp;gt; grant all on *.* to &amp;#39;linanwx&amp;#39;@&amp;#39;%&amp;#39;;
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>SHOW DATABASES is used to display the current databases.
+SHOW TABLES is used to display the current tables.&lt;/p></description></item><item><title>TensorFlow Hello World Introduction</title><link>https://nansenli.com/post/jianshu/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/tensorflow-hello-world-%E5%85%A5%E9%97%A8/</link><pubDate>Tue, 08 Aug 2017 09:58:00 +0000</pubDate><guid>https://nansenli.com/post/jianshu/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/tensorflow-hello-world-%E5%85%A5%E9%97%A8/</guid><description>&lt;h2 id="quick-installation-guide">Quick Installation Guide
+&lt;/h2>&lt;ul>
+&lt;li>Step 1: Install Docker&lt;/li>
+&lt;/ul>
+&lt;p>&lt;a class="link" href="https://www.docker-cn.com/community-edition#/download" target="_blank" rel="noopener"
+>https://www.docker-cn.com/community-edition#/download&lt;/a>&lt;/p>
+&lt;p>Then configure the official Chinese mirror.&lt;/p>
+&lt;p>&lt;img src="https://nansenli.com/img/rescued/5832fec39b1c.jpg"
+loading="lazy"
+alt="image.png"
+>&lt;/p>
+&lt;ul>
+&lt;li>Step 2: Set up TensorFlow environment&lt;/li>
+&lt;/ul>
+&lt;p>&lt;code>$ docker run -it -p 8888:8888 tensorflow/tensorflow&lt;/code>
+Running this command will automatically download the TensorFlow image, provided that the repository mirror is set to a Chinese mirror; otherwise, the download will be very slow. After running the command, the terminal will display a URL that prompts you to open a web page. When you open this URL, you&amp;rsquo;ll see the TensorFlow Jupyter editing environment, where we&amp;rsquo;ll input all our code.&lt;/p>
+&lt;ul>
+&lt;li>Mounting Docker file directory
+If we need to access local files, we need to mount a local folder to the container directory. Close the container, reopen it, and use &lt;code>-v host_directory:container_directory&lt;/code> for mounting.
+&lt;code>docker run -v /Users/hahaha/tensorflow/:/notebooks -it -p 8888:8888 tensorflow/tensorflow&lt;/code>&lt;/li>
+&lt;/ul>
+&lt;p>Where /Users/hahaha/tensorflow/ is a folder on my Mac, and notebooks is the default Jupyter editing directory in the TensorFlow container.&lt;/p>
+&lt;h2 id="running-hello-world-code">Running Hello World Code
+&lt;/h2>&lt;p>&lt;img src="https://nansenli.com/img/rescued/5f59450b005f.png"
+loading="lazy"
+alt="image.png"
+>
+Create a new Python 2 Jupyter file, enter the following code, and then click the play button. At this point, a &amp;ldquo;Hello, TensorFlow!&amp;rdquo; string should appear below, indicating that the program has run successfully.&lt;/p>
+&lt;h2 id="program-explanation">Program Explanation
+&lt;/h2>&lt;p>From this simple code, we can see that TensorFlow is very easy to use. It&amp;rsquo;s imported as a standard Python library without requiring additional services to be started. For those new to TensorFlow, you might wonder why we need to use tf.constant() and tf.Session() to output a &amp;ldquo;Hello World&amp;rdquo; string when Python itself could do it. The reason is that TensorFlow defines and runs models and training through Graphs and Sessions, which provides significant benefits for complex models and distributed training.&lt;/p>
+&lt;p>First, in TensorFlow, there are two concepts: Graph and Operation. Operation represents what needs to be computed. A Graph contains many Operations. A Session is used to execute Operations in a Graph.&lt;/p>
+&lt;h2 id="basic-usage">Basic Usage
+&lt;/h2>&lt;p>When using TensorFlow, you must understand that TensorFlow:&lt;/p>
+&lt;ul>
+&lt;li>Uses a &lt;code>graph&lt;/code> to represent computational tasks&lt;/li>
+&lt;li>Executes the graph in a &lt;code>context&lt;/code> called a &lt;code>Session&lt;/code>&lt;/li>
+&lt;li>Represents data using &lt;code>tensors&lt;/code>&lt;/li>
+&lt;li>Maintains state through &lt;code>Variables&lt;/code>&lt;/li>
+&lt;li>Uses &lt;code>feed&lt;/code> and &lt;code>fetch&lt;/code> to assign values to or retrieve data from &lt;code>arbitrary operations&lt;/code>&lt;/li>
+&lt;/ul>
+&lt;h2 id="overview">Overview
+&lt;/h2>&lt;p>TensorFlow is a programming system that uses graphs to represent computational tasks. Nodes in the graph are called &lt;strong>ops&lt;/strong> (short for operations). An op takes 0 or more Tensors, performs computations, and produces 0 or more Tensors. Each Tensor is a typed multi-dimensional array. For example, you can represent a small batch of images as a four-dimensional floating-point array with dimensions [batch, height, width, channels].&lt;/p>
+&lt;p>A TensorFlow graph &lt;strong>describes&lt;/strong> the computation process. To perform computation, the graph must be launched in a &lt;code>session&lt;/code>. The &lt;code>session&lt;/code> distributes the graph&amp;rsquo;s ops to devices like CPUs or GPUs and provides methods to execute ops. After execution, these methods return the resulting tensors. In Python, the returned tensors are &lt;a class="link" href="http://www.numpy.org/" target="_blank" rel="noopener"
+>numpy&lt;/a> &lt;code>ndarray&lt;/code> objects. In C and C++, the returned tensors are tensorflow::Tensor instances.&lt;/p></description></item></channel></rss>
